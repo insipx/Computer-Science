@@ -5,18 +5,8 @@ public class UUI {
 	public UUI(String string) {
 		number = string;
 	}
-	//Definitely "not equal to"
+	//Definitely not equal to
 	public boolean NE(UUI val) {
-		char[] numberCharArray = this.number.toCharArray(); 
-		char[] valCharArray = val.number.toCharArray();
-		if(numberCharArray.length == valCharArray.length){
-			
-			
-		}else{
-			
-			return false;
-		}
-	
 		
 		return false;
 	}

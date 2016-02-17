@@ -9,14 +9,10 @@ public class UUI {
 	public boolean NE(UUI val) {
 		char[] numberCharArray = this.number.toCharArray(); 
 		char[] valCharArray = val.number.toCharArray();
-		if(numberCharArray.length == valCharArray.length){
-			
-			
-		}else{
-			
+		if(numberCharArray.length < valCharArray.length || numberCharArray.length > valCharArray.length){
 			return false;
 		}
-	
+		
 		
 		return false;
 	}

@@ -17,7 +17,6 @@ public class UUIAccumulator {
       System.out.println("Accumulator is "+accumulator.toString());
       do {
          System.out.print("Enter an UUI:");
-         //Value is the value the user types in
          value = new UUI(keyboard.nextLine());
          //System.out.println("value is "+value.toString());
          if(value.NE(SENTINEL)) {

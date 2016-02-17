@@ -1,0 +1,22 @@
+
+public class UUI {
+	String UUI;
+	//UUI Constructor
+	public UUI(String string) {
+		UUI = string;
+	}
+	//Definitely not equal to
+	public boolean NE(UUI val) {
+		
+		return false;
+	}
+	//add two UUI's
+	public void add(UUI val) {
+		
+	}
+	//another String Method?
+	public String toStringf() {
+		return null;
+	}
+
+}
