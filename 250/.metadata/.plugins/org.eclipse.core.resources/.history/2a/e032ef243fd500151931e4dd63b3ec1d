@@ -10,17 +10,26 @@ public class UUI {
 		char[] numberCharArray = this.number.toCharArray(); 
 		char[] valCharArray = val.number.toCharArray();
 		if(numberCharArray.length == valCharArray.length){
-			for(int i = 0; i < numberCharArray.length; i++){
-				if (checkEquality(numberCharArray[i], valCharArray[i]) == true){
-					//do nothing
+			for(int i = 0; i < numberCharArray.length; i ++){
+				int a, b;
+				a = (int) numberCharArray[i];
+				b = (int) valCharArray[i];
+				if (a == b){
+					
 				}else{
 					break;
 				}
+				
+				
+				
 			}
 		}else{
+			
 			return false;
 		}
-		return true;
+	
+		
+		return false;
 	}
 	//add two UUI's
 	public void add(UUI val) {
@@ -30,15 +39,9 @@ public class UUI {
 	public String toStringf() {
 		return null;
 	}
-	//don't really need this here but it's good for readability
-	private boolean checkEquality(char charA, char charB){
-		int a, b;
-		a = (int)charA;
-		b = (int) charB;
-		if (a == b){
-			return true;
-		}else{
-			return false;
-		}
+	private boolean checkEquality(char a, char b){
+		
+	return null;	
 	}
+
 }
