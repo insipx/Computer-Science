@@ -30,7 +30,11 @@ public class RandomTest {
    private Random r = new Random();
    
    public RandomTest(Integer range){
-
+	   
+	   for(int i =0; i < 5;i++){
+		   
+		   
+	   }
    }
 
    public void InitUniform(){
