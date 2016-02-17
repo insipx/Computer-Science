@@ -37,7 +37,7 @@ public class UUI {
 					valCharArray[i]= '0';
 				 }else{
 					numberCharArray[numberCharArray.length - j] = (char) (tmp); 
-					valCharArray[i] = '0';
+					valCharArray[i] = '0'
 				 }
 				 
 				 j++;

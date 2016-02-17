@@ -33,11 +33,9 @@ public class UUI {
 				 tmp = (int) numberCharArray[numberCharArray.length - j] + (int) valCharArray[i];
 				 if(tmp > 10){
 					numberCharArray[(numberCharArray.length - j)-1] += 1;  
-					numberCharArray[numberCharArray.length-j] = (char) (tmp%10);
-					valCharArray[i]= '0';
+					numberCharArray[numberCharArray.length-j] = (char) tmp%10;
 				 }else{
-					numberCharArray[numberCharArray.length - j] = (char) (tmp); 
-					valCharArray[i] = '0';
+					numberCharArray[numberCharArray.length - j] = (char) tmp; 
 				 }
 				 
 				 j++;

@@ -10,8 +10,6 @@ public class UUIAccumulator {
    static Scanner keyboard = new Scanner(System.in);
 
    public static void main(String args[]) {
-	   int a = 678/100;
-	   System.out.println(a);
       final UUI SENTINEL = new UUI("0");
       UUI value;
       UUI accumulator = new UUI("0");

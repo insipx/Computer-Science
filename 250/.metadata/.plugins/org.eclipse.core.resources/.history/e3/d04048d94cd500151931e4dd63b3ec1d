@@ -34,10 +34,8 @@ public class UUI {
 				 if(tmp > 10){
 					numberCharArray[(numberCharArray.length - j)-1] += 1;  
 					numberCharArray[numberCharArray.length-j] = (char) (tmp%10);
-					valCharArray[i]= '0';
 				 }else{
 					numberCharArray[numberCharArray.length - j] = (char) (tmp); 
-					valCharArray[i] = '0';
 				 }
 				 
 				 j++;
