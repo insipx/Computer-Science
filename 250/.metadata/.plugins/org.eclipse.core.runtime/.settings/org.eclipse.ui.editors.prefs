@@ -21,6 +21,7 @@ hyperlinkColor.SystemDefault=false
 infoIndicationColor=86,194,170
 javaScriptOccurrenceIndicationColor=7,54,66
 lineNumberColor=101,123,131
+lineNumberRuler=true
 linked.slave.color=66,156,255
 matchingTagIndicationColor=7,54,66
 occurrenceIndicationColor=7,54,66

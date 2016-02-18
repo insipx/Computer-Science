@@ -1,0 +1,119 @@
+
+public class UUI {
+	String number;
+	//UUI Constructor
+	public UUI(String string) {
+		number = string;
+	}
+	//Definitely "not equal to"
+	public boolean NE(UUI val) {
+		char[] numberCharArray = this.number.toCharArray(); 
+		char[] valCharArray = val.number.toCharArray();
+		if(numberCharArray.length == valCharArray.length){
+			for(int i = 0; i < numberCharArray.length; i++){
+				if (checkEquality(numberCharArray[i], valCharArray[i]) == true){
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}else{
+			return true;
+		}
+		return true;
+	}
+	//add two UUI's
+	public void add(UUI val) {
+		//the number to add to (accumulator)
+		char[] numberCharArray = this.number.toCharArray();
+		//value being added
+		char[] valCharArray = val.number.toCharArray();
+		
+		if(numberCharArray.length == 1 && numberCharArray[0]=='0'){
+		
+			numberCharArray = valCharArray;
+			
+		}else if(numberCharArray.length > valCharArray.length){
+			int j = numberCharArray.length - 1;
+			for(int i = valCharArray.length-1; i >= 0; i-- ){
+				 int tmp;
+				 
+				 tmp = (int) numberCharArray[j] + (int) valCharArray[i];
+				 if(tmp > 10){
+					numberCharArray[j-1] += 1;  
+					numberCharArray[j] = (char) (tmp%10);
+					valCharArray[i]= '0';
+				 }else{
+					numberCharArray[j] = (char) (tmp); 
+					valCharArray[i] = '0';
+				 }
+				 
+				 j--;
+			}
+		//NUMBER is accumulator
+		}else if(numberCharArray.length < valCharArray.length){
+			int j = valCharArray.length - 1;
+			
+			for(int i = numberCharArray.length-1; i >= 0; i-- ){
+				 
+				 int tmp;
+				 tmp = (int) valCharArray[j] + (int) numberCharArray[i];
+				 
+				 if(tmp >= 10){
+				
+				 }else{
+					 numberCharArray[i] = (char) tmp;
+					 valCharArray[j] = '0';
+				 }
+				 
+				 j--;
+			
+			}
+		}else{
+			int j = numberCharArray.length -1;
+			for(int i = valCharArray.length-1; i >= 0; i-- ){
+				 int tmp;
+			//	 System.out.println("length of valCharArray is: " + valCharArray.length + " ||let's minus one|| " + (valCharArray.length - 1));
+			//	 System.out.println("I is: " + i + " and j is: " + j);
+			//	 System.out.println("NumberChar Array is " + numberCharArray[j] + " and valChar is: " + valCharArray[i] + " BEFORE");
+			//	 System.out.println("NumCharArray is when casted: " + (int)numberCharArray[j] + " and ValChar is: " + (int) valCharArray[i] + " AFTER");
+				 
+				 tmp =  Character.getNumericValue(numberCharArray[j]) + Character.getNumericValue(valCharArray[i]);
+				 System.out.println(tmp); 
+				 if(tmp > 10){
+					numberCharArray[j-1] += 1;  
+					numberCharArray[j] = (char) (tmp%10);
+					valCharArray[i]= '0';
+				 }else{
+					numberCharArray[j] = (char) (tmp); 
+					valCharArray[i] = '0';
+				 }
+				 
+				 j--;
+			}
+		}
+		String endCalc = "";
+		for(int i =0; i < numberCharArray.length; i++){
+			endCalc += numberCharArray[i];
+		}
+		this.number = endCalc;
+	}
+	//another String Method?
+	public String toString(){
+		return number;
+	}
+	public String toStringf() {
+		return number;
+	}
+	//don't really need this here but it's good for readability
+	private boolean checkEquality(char charA, char charB){
+		int a, b;
+		a = (int)charA;
+		b = (int) charB;
+		if (a == b){
+			return true;
+		}else{
+			return false;
+		}
+	}
+}
