@@ -96,7 +96,7 @@ public class UUI {
 			}
 		}
 		String endCalc = "";
-		for(int i =0; i < numberCharArray.length; i++){
+		for(int i =1; i < numberCharArray.length; i++){
 			endCalc += numberCharArray[i];
 		}
 		this.number = endCalc;
@@ -108,7 +108,7 @@ public class UUI {
 	public String toStringf() {
 		return number;
 	}
-	//don't really need this here but it's good for readability
+	
 	private boolean checkEquality(char charA, char charB){
 		int a, b;
 		a = (int)charA;
@@ -122,11 +122,7 @@ public class UUI {
 	private char[] makeArray(String str){
 		int size = str.length();
 		char[] charArr = new char[size + 1];
-		if(charArr[0] == '0'){
-			
-		}else{
-			charArr[0] = '0';
-		}
+		charArr[0] = '0';
 		for(int i = 1; i < charArr.length; i++){
 			char tmp = str.charAt(i-1);
 			charArr[i] = tmp;
