@@ -1,3 +1,7 @@
+// Andrew Plaza
+// Worked Alone
+// Not yet aware of any flaws
+// toString and toStringf are the same thing, not sure what the difference should be
 
 public class UUI {
 	String number;
@@ -69,7 +73,19 @@ public class UUI {
 		return number;
 	}
 	public String toStringf() {
-		return number;
+		String temp = number;
+		for(int i = temp.length() - 1; i > 0 ; i --){
+			if(i%3==0){
+				//don't want it at the beginning or end
+				if(i==0 || i == temp.length() - 1 ){
+					
+				}else{
+					temp = temp.substring(0, i+1) + "," + temp.substring(i-1, temp.length());
+				}
+			}else{
+			}
+		}
+		return temp;
 	}
 	
 	private boolean checkEquality(char[] charA, char[] charB){
@@ -78,13 +94,12 @@ public class UUI {
 			a = Character.getNumericValue(charA[i]);
 			b = Character.getNumericValue(charB[i]);
 			if(a == b){
-				
 			}else{
 				return false;
 			}
+			
 		}
 		return true;
-	
 	}
 	private char[] makeArray(String str, int size){
 		int strSize = str.length();
@@ -105,7 +120,6 @@ public class UUI {
 	}
 	private char[] addTen(char[] charArr, int j, int tmp){
 		if((Character.getNumericValue(charArr[j-1]) + 1)>= 10){
-			
 			charArr[j] = Integer.toString(tmp%10).charAt(0);
 			tmp = Character.getNumericValue(charArr[j-1]) + 1;
 			j--;
