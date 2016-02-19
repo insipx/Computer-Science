@@ -45,11 +45,16 @@ public class UUI {
 			 }
 			 
 		}
-
+		//get rid of all those useless zeros...
+		//Look et alllll thooooooose zeeeroooooos https://youtu.be/F-X4SLhorvw?t=25s
 		String endCalc = "";
 		if(numberCharArray[0] == '0'){
-			for(int i =1; i < numberCharArray.length; i++){
-			endCalc += numberCharArray[i];
+			int i = 0;
+			while(Character.getNumericValue(numberCharArray[i]) == 0){
+				i++;
+			}
+			for( ; i < numberCharArray.length; i++){
+				endCalc += numberCharArray[i];
 			}
 		}else{
 			for(int i = 0; i < numberCharArray.length; i++){
