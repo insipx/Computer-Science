@@ -33,64 +33,19 @@ public class UUI {
 		char[] numberCharArray = makeArray(this.number, size);
 		char[] valCharArray = makeArray(val.number, size);
 
-		if(numberCharArray.length == 2 && numberCharArray[1]=='0'){
-		
-			numberCharArray = valCharArray;
-			
-		}else if(numberCharArray.length > valCharArray.length){
-			int j = numberCharArray.length - 1;
-			for(int i = valCharArray.length-1; i >= 0; i-- ){
-				 int tmp;
-				 tmp =  Character.getNumericValue(numberCharArray[j]) + Character.getNumericValue(valCharArray[i]);
-
-				 	
-				 if(tmp > 10){
-					numberCharArray = addTen(numberCharArray, j, tmp);
-					valCharArray[i]= '0';
-				 }else{
-					numberCharArray[j] = Integer.toString(tmp).charAt(0); 
-					valCharArray[i] = '0';
-				 }
-				 
-				 j--;
-			}
-		//NUMBER is accumulator
-		}else if(numberCharArray.length < valCharArray.length){
-			int j = valCharArray.length - 1;
-			
-			for(int i = numberCharArray.length-1; i >= 0; i-- ){
-				 
-				 int tmp;
-				 tmp =  Character.getNumericValue(numberCharArray[i]) + Character.getNumericValue(valCharArray[j]);
- 
-				 if(tmp >= 10){
-					 numberCharArray = addTen(numberCharArray, i, tmp);
-					 valCharArray[j] = '0';
-				 }else{
-					 numberCharArray[i] = Integer.toString(tmp).charAt(0);
-					 valCharArray[j] = '0';
-				 }
-				 
-				 j--;
-			
-			}
-		}else{
-			int j = numberCharArray.length -1;
-			for(int i = valCharArray.length-1; i >= 0; i-- ){
-				 int tmp;
-				 tmp =  Character.getNumericValue(numberCharArray[j]) + Character.getNumericValue(valCharArray[i]);
-				 System.out.println(tmp); 
-				 if(tmp > 10){
-					 numberCharArray = addTen(numberCharArray, j, tmp);
-  					 valCharArray[i]= '0';
-				 }else{
-					numberCharArray[j] = Integer.toString(tmp).charAt(0); 
-					valCharArray[i] = '0';
-				 }
-				 
-				 j--;
-			}
+		for(int i = valCharArray.length-1; i >= 0; i-- ){
+			 int tmp;
+			 tmp =  Character.getNumericValue(numberCharArray[i]) + Character.getNumericValue(valCharArray[i]);
+			 if(tmp >= 10){
+				 numberCharArray = addTen(numberCharArray, i, tmp);
+				   valCharArray[i]= '0';
+			 }else{
+				numberCharArray[i] = Integer.toString(tmp).charAt(0); 
+				valCharArray[i] = '0';
+			 }
+			 
 		}
+
 		String endCalc = "";
 		if(numberCharArray[0] == '0'){
 			for(int i =1; i < numberCharArray.length; i++){
@@ -102,8 +57,6 @@ public class UUI {
 		}
 
 		}
-
-		
 		this.number = endCalc;
 	}
 	//another String Method?
@@ -146,13 +99,15 @@ public class UUI {
 	return charArr;	
 	}
 	private char[] addTen(char[] charArr, int j, int tmp){
-		
-		if((Character.getNumericValue(charArr[j-1]) + 1)== 10){
+		if((Character.getNumericValue(charArr[j-1]) + 1)>= 10){
+			
+			charArr[j] = Integer.toString(tmp%10).charAt(0);
+			tmp = Character.getNumericValue(charArr[j-1]) + 1;
 			j--;
 			addTen(charArr,j,tmp);
 		}else{
-		charArr[j-1] = Integer.toString(Character.getNumericValue(charArr[j-1]) + 1).charAt(0);  
-		charArr[j] = Integer.toString(tmp%10).charAt(0);
+			charArr[j-1] = Integer.toString(Character.getNumericValue(charArr[j-1]) + 1).charAt(0);  
+			charArr[j] = Integer.toString(tmp%10).charAt(0);
 		}
 
 		return charArr;
