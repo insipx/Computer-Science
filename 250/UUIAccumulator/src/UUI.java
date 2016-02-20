@@ -1,6 +1,13 @@
-// Andrew Plaza
-// Worked Alone
-// Not yet aware of any flaws
+/*  This is a solution for Assignment 1 in CMPS 250 for Spring 2016
+    
+     I, Andrew Plaza, am the developer of this work.
+ 	 Worked Alone
+ 	 
+ 	 Not yet aware of any flaws, maybe uses too much memory?
+ 	 the terminate function may also be a little redundant, but I like
+ 	 the ability of adding up as many UUI's as my heart desires
+ 	 
+*/
 
 public class UUI {
 	String number;
