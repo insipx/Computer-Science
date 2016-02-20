@@ -4,6 +4,10 @@
 240/.metadata/.plugins/*
 250/.metadata/.plugins/
 240/.metadata/.plugins/
+240/.recommenders/
+240/.recommenders/*
+250/.recommenders/
+250/.recommenders/*
 .metadata/*
 .recommenders/*
 .plugins/*
