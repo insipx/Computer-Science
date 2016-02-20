@@ -1,8 +1,14 @@
 250/.metadata/*
 240/.metadata/*
+250/.metadata/.plugins/*
+240/.metadata/.plugins/*
+250/.metadata/.plugins/
+240/.metadata/.plugins/
 .metadata/*
 .recommenders/*
+.plugins/*
 *.ini
 *.xml
 *.xml.zip
 *.tasks.xml.zip
+

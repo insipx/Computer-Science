@@ -1,3 +1,0 @@
-INDEX VERSION 1.127+C:\Users\insidious\Documents\Computer Science\Computer-Science\240\.metadata\.plugins\org.eclipse.jdt.core
-3946093975.index
-1834443931.index
