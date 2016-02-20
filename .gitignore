@@ -10,6 +10,14 @@
 250/.recommenders/*
 240/.metadata/.mylyn
 250/metadata/mylyn
+Help/.metadata/*
+Help/.metadata/.plugins/*
+Help/.metadata/.plugins/
+Help/.recommenders/
+Help/.recommenders/*
+Help/.metadata/.mylyn
+Help/metadata/mylyn
+
 .metadata/*
 .recommenders/*
 .plugins/*
