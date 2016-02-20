@@ -8,6 +8,8 @@
 240/.recommenders/*
 250/.recommenders/
 250/.recommenders/*
+240/.metadata/.mylyn
+250/metadata/mylyn
 .metadata/*
 .recommenders/*
 .plugins/*
