@@ -17,4 +17,6 @@
 *.xml
 *.xml.zip
 *.tasks.xml.zip
+*.log
+*.lock
 
