@@ -2,9 +2,13 @@
    Assignment 01 - Unlimited Unsigned Integers
   
    This is the main program that makes use of the UUI class.
-    
+     Andrew Plaza
+ 	 Worked Alone
+ 	 Not yet aware of any flaws
+
    P.M.J.
 */
+
 import java.util.*;
 public class UUIAccumulator {
    static Scanner keyboard = new Scanner(System.in);
