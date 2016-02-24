@@ -16,7 +16,7 @@
 
 //void printUUIf(struct UUI *num);
 void destroy(char *str);
-
+void die(const char *message);
 char * readUUI();
 
 //public int NE(char *val);
