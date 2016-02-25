@@ -15,7 +15,7 @@ int main()  {
     if(NE(value,SENTINEL)) {
       accumulator = sum(accumulator,value);
       printf("Current accumulation is "); printUUI(accumulator);   printf("\n");
-      printf("Which is equivalent to  "); printUUIf(accumulator);  printf("\n");
+      printf("Which is equivalent to "); printUUIf(accumulator);  printf("\n");
     }
   } while(NE(value,SENTINEL));
   printf("Final accumulation is   "); printUUI(accumulator);   printf("\n");

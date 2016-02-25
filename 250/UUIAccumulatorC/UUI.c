@@ -1,5 +1,3 @@
-#define TRUE 1
-#define FALSE 0
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -128,7 +126,7 @@ for(i=0; i < resultSize; i++){
 char * readUUI()
 {
   //allocate 64bytes for usage
-  size_t size = 0;
+  size_t size = 1;
   char *str = (char*)malloc(size);
   if(str){
   }else{
@@ -166,47 +164,20 @@ char toChar(int i){ return i + '0'; }
 //because sizeof returns the size of the pointer -_-
 
 
-//I don't know if we need this if we just use strcmp. We shouldn't even need
-//the boolean typedef.
-int checkEquality(char *charA, char *charB){
-int i;  
-for(i = 0; i < getSize(charA); i++)
-  {
-    int a, b;
-    a = toInt(charA[i]);
-    b = toInt(charB[i]);
-    if(a == b){
-    } else {
-      return FALSE;
-    }
-  
-  }
-  return TRUE;
-}
-
-int NE(char *val0, char *val1){
-  int val0Size = getSize(val0);
-  int val1Size = getSize(val1); 
-
-  if(val0Size == val1Size){
-    if(checkEquality(val0, val1) == TRUE){
-      return FALSE;
-    } else {
-      return TRUE;
-    }
-  } else {
-    return TRUE;
-  }
-}
 
 //I handled NE like this, I just ix-nayed the oolean-bay and it works perfectly.
 //We might want to try that it'll also speed us up and we'll take up slightly
 //less space in memory.
-//int NE(char *one, char *two){
-//    return strcmp(one,two);
-//}
-//Yep okay I tried replacing the original with this, didn't work. Just kept adding more 0's to the string??? Yeah actually does the same thing the way it is right now.
 
+int NE(char *one, char *two){
+  if (*one == '0' && *two == '0'){
+    return 0;
+  } else {
+    return 1;
+  }
+  
+  return strcmp(one,two);
+}
 
 //What's the idea behind this sub?
 char * addTen(char *charArr, int j, int tmp)
@@ -248,24 +219,12 @@ char * endCalc(char *charArr)
 {
   //look at alll thooooose zeroooooos :P
   //what does this even do?
-  char *endCalc = "";
   int i = 0;
-  if(charArr[0] == '0'){
-    while (toChar(charArr[i] == 0 && i < (sizeof(charArr) / sizeof(char) + 1)))
-    {
-      i++;
-    }
-    for(; i < sizeof(charArr)/sizeof(char);i ++)
-    {
-      endCalc += charArr[i];
-    }
-  } else {
-    for (i = 0; i < (sizeof(charArr)/sizeof(char)) ; i++)
-    {
-      endCalc += charArr[i];
-    }
-  }
-  return endCalc; 
+  while(charArr[i] == '0'){
+    charArr += 1;
+  } 
+  return charArr;
+ 
 }
 
 
@@ -323,20 +282,18 @@ char * sum(char *val0, char *val1)
     
     if(tmp >= 10){
       numArr = addTen(numArr, i, tmp);
-      valArr[i] = '0';
+    //  valArr[i] = '0';
     } else {
       numArr[i] = toChar(tmp);
-      valArr[i] = '0';
+  //    valArr[i] = '0';
     }
   }
-  //let's leave endCalc out of this for now
-  //Honestly, what does this subroutine even do?
-  //val0 = endCalc(numArr);
+
   val0 = numArr;  
-  //printf("%s%s%s", "this is val0", val0, "\n"); 
- 
-  return val0;
-  //free(val0);
-  //free(val1);
+
+  free(val1);
+  
+  return endCalc(val0);
+
 }
 

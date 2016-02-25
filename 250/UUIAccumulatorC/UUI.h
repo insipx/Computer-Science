@@ -30,7 +30,6 @@ char toChar(int i);
 
 char * sum(char *val0, char *val1);
 
-int checkEquality(char *charA, char *charB);
 
 //should return a String
 char * parseString(char *str, int size);
