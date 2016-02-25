@@ -1,37 +1,40 @@
 //UUIAccumulator.h
 //Andrew Plaza-Spring 2016
-#define TRUE 1
-#define FALSE 0
 
-// loosely interpreted, this should basically act as a constructor, 
-//struct UUI{
-//  char *number;
-//}
+#define TRUE 0
+#define FALSE 1
 
-//char * newUUI(char *str);
+
+
+char *newUUI(char *str);
 
 //void destroyUUI(struct UUI *num);
 
-//void printUUI(struct UUI *num);
+void printUUI(char *str);
 
-//void printUUIf(struct UUI *num);
-void destroy(char *str);
+void printUUIf(char *num);
+
 void die(const char *message);
+
+char * makeArray(char *str, int size);
+
+char * addTen(char *charArr, int j, int tmp);
+
 char * readUUI();
 
-//public int NE(char *val);
+int NE(char *val0, char *val1);
 
-//public void add(char *val);
+int toInt(char c);
 
-//private int checkEquality(char *charA, char *charB);
+char toChar(int i);
+
+char * sum(char *val0, char *val1);
+
+//int checkEquality(char *charA, char *charB);
 
 //should return a String
-//private char * parseString(char *str, int size);
-
-//private char * makeArray(char *str, int size);
-
-//private char * addTen(char *charArr, int j, int tmp);
+char * parseString(char *str, int size);
 
 //possibly might statically allocate the size with const char*
-//private char * endCalc(char *charArr);
+char * endCalc(char *charArr);
 
