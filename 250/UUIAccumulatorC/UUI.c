@@ -29,6 +29,7 @@ void die(const char *message)
   }
   exit(1); //The "nervous breakdown" statement.
 }
+
 int getSize(char *str){
   char c;
   int i = 0;
@@ -38,10 +39,10 @@ int getSize(char *str){
   }while(c != '\0');
 
   //because somehow the nullbyte is still there
-  printf("%s%s", "==================================", "\n");
-  printf("%s%s%s", "GETSIZE: this is the str: ", str, "\n" );
-  printf("%s%d%s", "GETSIZE: this is the size of str: ", i-1, "\n" );
-  printf("%s%s", "==================================", "\n");
+  //printf("%s%s", "==================================", "\n");
+  //printf("%s%s%s", "GETSIZE: this is the str: ", str, "\n" );
+  //printf("%s%d%s", "GETSIZE: this is the size of str: ", i-1, "\n" );
+  //printf("%s%s", "==================================", "\n");
 
   return i - 1;
 }
@@ -59,6 +60,7 @@ char *makeArray(char *str, int size)
   //for the extra 0
   size++; 
   char *charArr = (char *)malloc(size);
+  
   if(charArr){
   }else{
     die("Memory allocation unsuccessful");
@@ -67,8 +69,8 @@ char *makeArray(char *str, int size)
   charArr[0] = '0';
 
   //add zeroes at the beginning of the array
-int i;  
-for(i = 1; i < (size-strSize); i++){
+int i = 1;  
+for(i; i < (size-strSize); i++){
     charArr[i]='0';
   }
   //printf("%s%s%s", "there should be only zeroes: ", charArr, "\n"); 
@@ -121,7 +123,7 @@ for(i=0; i < resultSize; i++){
 char * readUUI()
 {
   //allocate 64bytes for usage
-  size_t size = 1;
+  size_t size = 0;
   char *str = (char*)malloc(size);
   if(str){
   }else{
@@ -147,8 +149,8 @@ char * readUUI()
     }
   
   }while(1);
-  //printf("%s%s", " This is the Readline String: ", str); 
-  //printf("%s%d%s", " and this is the size ", size, "\n");
+ // printf("%s%s", " This is the Readline String: ", str); 
+ // printf("%s%d%s", " and this is the size ", size, "\n");
   return str;
 }
 
@@ -267,7 +269,7 @@ char * sum(char *val0, char *val1)
 {
   int size;
   
-  // -1 because nullbyte 
+  // -1 because nullbyte I actually don't think so
   //Okay, here we're just getting the sizes of the variables we need?
   int val0Size = getSize(val0);
   int val1Size = getSize(val1);
@@ -286,27 +288,33 @@ char * sum(char *val0, char *val1)
   } else {
     size = val1Size;
   }
-  printf("%s%s%s", "This is numArr before: ", val0, "\n");
-  printf("%s%d%s", "This is the size ", size, "\n");
-  printf("%s%d%s", "This is the val0Size ", val0Size, "\n");
+  //printf("%s%s%s", "This is numArr before: ", val0, "\n");
+  //printf("%s%s", "++++++++++++++++++++++++ ", "\n");
+  //printf("%s%s%s", "This is valArr before: ", val1, "\n");
+  //printf("%s%d%s", "This is the size ", size, "\n");
+ // printf("%s%d%s", "This is the val0Size ", val0Size, "\n");
+  //printf("%s%d%s", "This is the val1Size ", val1Size, "\n");
+   //printf("%s%s", "++++++++++++++++++++++++ ", "\n");
 
   //I'm sitting here watching my memory usage slowly climb... 
   //Something on my Mint system has a huge leak and I think this might be it.
   //account for an extra zero at the beginning
-  char *numArr = makeArray(val0, size);
-  printf("%s%s%s", "This is numARR AFTER: ", numArr, "\n");
+  //probably is, haven't worked with freeing memory yet
+  char *numArr = makeArray(val0, size - 1);
+//  printf("%s%s%s", "This is numARR AFTER: ", numArr, "\n");
   char *valArr = makeArray(val1, size); 
-  //printf("%s%s%s", " this is numArr: ", numArr, "\n");
-  //printf("%s%s%s", " this is valArr: ", valArr, "\n"); 
+  //printf("%s%s%s", "This is valARR AFTER: ", valArr, "\n");
 
-  int i = getSize(valArr);
-  printf("%s%d%s", " || This Is i: ", i, " ||\n");
-  printf("%s%d%s", " || This Is the size of valArr: ", getSize(valArr), " ||\n");
-  printf("%s%s%s", " || This Is valArr: ", valArr, " ||\n");
+  int i =size - 1;
+  //printf("%s%d%s", " || This Is i: ", i, " ||\n");
+  //printf("%s%d%s", " || This Is the size of valArr: ", getSize(valArr), " ||\n");
   for (i; i >=0; i--)
   {
-    int tmp = toInt(numArr[i] + toInt(valArr[i]));
-    printf("%s%d%s", "THIS IS TEMP MOFO: ", tmp, "\n");
+    int numArrTmp = toInt(numArr[i]);
+    int valArrTmp = toInt(valArr[i]);
+    int tmp = numArrTmp + valArrTmp;
+
+   // printf("%s%d%s", "THIS IS TEMP MOFO: ", tmp, "\n");
     
     if(tmp >= 10){
       numArr = addTen(numArr, i, tmp);
@@ -320,7 +328,7 @@ char * sum(char *val0, char *val1)
   //Honestly, what does this subroutine even do?
   //val0 = endCalc(numArr);
   val0 = numArr;  
-  printf("%s%s%s", "this is val0", val0, "\n"); 
+  //printf("%s%s%s", "this is val0", val0, "\n"); 
 //  free(numArr);
 //  free(valArr);
  
