@@ -90,24 +90,24 @@ char * parseString(char *str, int size)
 char * readUUI()
 {
   //allocate 64bytes for usage
-  unsigned int size = 3;
+  size_t size = 64;
   char *str = (char*)malloc(size);
   if(str){
   }else{
     die("Mem allocate unsuccessful");
   }
 
-  unsigned char c;
+  char c;
   int i = 0;
   do
   {
     c = fgetc(stdin); 
-    str[i] = (char) c;
+    str[i] = c;
     i++;
     //reallocate memory by +1 every time, we use very little memory this way
     //this isn't the most mem-efficient method but it should use less cycles
     if(i >= size){
-      size = size + 1;
+      size++;
       str = (char*) realloc(str, size);
     }
     if(c == '\n' || c == EOF){
@@ -116,7 +116,8 @@ char * readUUI()
     }
   
   }while(1);
-  
+  printf("%s%s", " This is the Readline String: ", str); 
+  printf("%s%d%s", " and this is the size ", sizeof(str)/sizeof(char), "\n");
   return str;
 }
 
@@ -197,11 +198,14 @@ char * endCalc(char *charArr)
 char * sum(char *val0, char *val1)
 {
   int size;
-  //this is in effect just dividing by 1 but whatever
- 
-  int val0Size = sizeof(val0) / sizeof(char);
-  int val1Size = sizeof(val1) / sizeof(char);
   
+  // -1 because nullbyte 
+  int val0Size = sizeof(val0) -1;
+  int val1Size = sizeof(val1) -1;
+  
+  printf("%s%d%s", " || This is val0 ", val0Size, " || \n"); 
+  printf("%s%d%s", " || This is val1 ", val1Size, " || \n"); 
+
   if (val0Size > val1Size){
     size = val0Size;
   }
@@ -217,10 +221,12 @@ char * sum(char *val0, char *val1)
   char *valArr = makeArray(val1, size); 
   printf("%s%s", " this is val 1: ", val1);
 
-  int i = sizeof(valArr) / sizeof(char) - 1;
+  int i = (sizeof(valArr) / sizeof(char)) - 1;
+  printf("%s%d%s", " || This Is i: ", i, " ||\n");
   for (i; i >=0; i--)
   {
     int tmp = toInt(numArr[i] + toInt(valArr[i]));
+    printf("%s%d%s", " || this is tmp ", tmp, " ||\n");
     if(tmp >= 10){
       numArr = addTen(numArr, i, tmp);
       valArr[i] = '0';
