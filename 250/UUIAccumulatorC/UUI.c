@@ -26,14 +26,19 @@ void die(const char *message)
   exit(1);
 }
 int getSize(char *str){
-  char c = str[0];
+  char c;
   int i = 0;
-  while(c != '\0'){
+  do{
+    c=str[i];
     i++;
-    c = str[i]; 
-  }
+  }while(c != '\0');
+
   //because somehow the nullbyte is still there
-  
+  printf("%s%s", "==================================", "\n");
+  printf("%s%s%s", "GETSIZE: this is the str: ", str, "\n" );
+  printf("%s%d%s", "GETSIZE: this is the size of str: ", i-1, "\n" );
+  printf("%s%s", "==================================", "\n");
+
   return i - 1;
 }
 
@@ -248,7 +253,7 @@ char * sum(char *val0, char *val1)
 
   //account for an extra zero at the beginning
   char *numArr = makeArray(val0, size);
-  printf("%s%s%s", "This is numARR: ", numArr, "\n");
+  printf("%s%s%s", "This is numARR AFTER: ", numArr, "\n");
   char *valArr = makeArray(val1, size); 
   //printf("%s%s%s", " this is numArr: ", numArr, "\n");
   //printf("%s%s%s", " this is valArr: ", valArr, "\n"); 
@@ -273,9 +278,9 @@ char * sum(char *val0, char *val1)
   //let's leave endCalc out of this for now
   //val0 = endCalc(numArr);
   val0 = numArr;  
-  
-  free(numArr);
-  free(valArr);
+  printf("%s%s%s", "this is val0", val0, "\n"); 
+//  free(numArr);
+//  free(valArr);
  
   return val0;
 
