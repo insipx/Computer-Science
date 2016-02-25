@@ -5,6 +5,11 @@
 #include <string.h>
 
 //Alright I'm up to like 750 mb of memory used.
+//there is alot of memory problems
+//but it works
+//that's what counts
+//now we just have to free the memory properly
+//
 
 //Pseudo-constructor that just sends the program back exactly what it
 //receives as a parameter.
@@ -329,10 +334,9 @@ char * sum(char *val0, char *val1)
   //val0 = endCalc(numArr);
   val0 = numArr;  
   //printf("%s%s%s", "this is val0", val0, "\n"); 
-//  free(numArr);
-//  free(valArr);
  
   return val0;
-
+  //free(val0);
+  //free(val1);
 }
 
