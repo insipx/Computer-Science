@@ -5,8 +5,9 @@
 #include <string.h>
 
 //Alright I'm up to like 750 mb of memory used.
-//there is alot of memory problems
+//there are a lot of memory problems
 //but it works
+//kind of
 //that's what counts
 //now we just have to free the memory properly
 //
@@ -184,6 +185,7 @@ for(i = 0; i < getSize(charA); i++)
   return TRUE;
 }
 
+/*
 int NE(char *val0, char *val1){
   int val0Size = getSize(val0);
   int val1Size = getSize(val1); 
@@ -198,13 +200,14 @@ int NE(char *val0, char *val1){
     return TRUE;
   }
 }
+*/
 
 //I handled NE like this, I just ix-nayed the oolean-bay and it works perfectly.
 //We might want to try that it'll also speed us up and we'll take up slightly
 //less space in memory.
-//int NE(char *one, char *two){
-//    return strcmp(one,two);
-//}
+int NE(char *one, char *two){
+    return strcmp(one,two);
+}
 //Yep okay I tried replacing the original with this, didn't work. Just kept adding more 0's to the string??? Yeah actually does the same thing the way it is right now.
 
 
@@ -244,13 +247,21 @@ char * addTen(char *charArr, int j, int tmp)
   return charArr;
 }
 
-char * endCalc(char *charArr)
+char *endCalc(char *charArr)
 {
+int i = 0;
+  do{
+    if (charrArr[i] == '0'){
+      charrArr[i] = '';
+    }
+    i++;
+  }while(charArr[i] == '0');
   //look at alll thooooose zeroooooos :P
-  //what does this even do?
-  char *endCalc = "";
-  int i = 0;
-  if(charArr[0] == '0'){
+  //Not anymore!
+  /*
+  char *endCalc = ""; //we got an empty string.
+  int i = 0; //Initializing the stuff.
+  if(charArr[0] == '0'){ // While the value in the index is NOT 0
     while (toChar(charArr[i] == 0 && i < (sizeof(charArr) / sizeof(char) + 1)))
     {
       i++;
@@ -265,7 +276,7 @@ char * endCalc(char *charArr)
       endCalc += charArr[i];
     }
   }
-  return endCalc; 
+  */
 }
 
 
