@@ -161,14 +161,7 @@ int toInt(char c){ return c - '0'; }
 
 char toChar(int i){ return i + '0'; }
 
-//because sizeof returns the size of the pointer -_-
-
-
-
-//I handled NE like this, I just ix-nayed the oolean-bay and it works perfectly.
-//We might want to try that it'll also speed us up and we'll take up slightly
-//less space in memory.
-
+// This kind of works. We have to check the size of both char *str though.
 int NE(char *one, char *two){
   if (*one == '0' && *two == '0'){
     return 0;
