@@ -110,7 +110,7 @@ char * parseString(char *str, int size)
 char * readUUI()
 {
   //allocate 64bytes for usage
-  size_t size = 0;
+  size_t size = 1;
   char *str = (char*)malloc(size);
   if(str){
   }else{
@@ -238,18 +238,27 @@ char * sum(char *val0, char *val1)
   } else {
     size = val1Size;
   }
+  printf("%s%s%s", "This is numArr before: ", val0, "\n");
+  printf("%s%d%s", "This is the size ", size, "\n");
+  printf("%s%d%s", "This is the val0Size ", val0Size, "\n");
+
+
   //account for an extra zero at the beginning
   char *numArr = makeArray(val0, size);
+  printf("%s%s%s", "This is numARR: ", numArr, "\n");
   char *valArr = makeArray(val1, size); 
   //printf("%s%s%s", " this is numArr: ", numArr, "\n");
   //printf("%s%s%s", " this is valArr: ", valArr, "\n"); 
 
   int i = getSize(valArr);
   printf("%s%d%s", " || This Is i: ", i, " ||\n");
+  printf("%s%d%s", " || This Is the size of valArr: ", getSize(valArr), " ||\n");
+  printf("%s%s%s", " || This Is valArr: ", valArr, " ||\n");
   for (i; i >=0; i--)
   {
     int tmp = toInt(numArr[i] + toInt(valArr[i]));
-    //printf("%s%d%s", " || this is tmp ", tmp, " ||\n");
+    printf("%s%d%s", "THIS IS TEMP MOFO: ", tmp, "\n");
+    
     if(tmp >= 10){
       numArr = addTen(numArr, i, tmp);
       valArr[i] = '0';
@@ -262,13 +271,10 @@ char * sum(char *val0, char *val1)
   //val0 = endCalc(numArr);
   val0 = numArr;  
   
-  //free(numArr);
-  //free(valArr);
+  free(numArr);
+  free(valArr);
  
   return val0;
 
 }
-
-
-
 
