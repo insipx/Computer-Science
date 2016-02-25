@@ -59,7 +59,8 @@ char *makeArray(char *str, int size)
   charArr[0] = '0';
 
   //add zeroes at the beginning of the array
-  for(int i = 1; i < (size-strSize); i++){
+int i;  
+for(i = 1; i < (size-strSize); i++){
     charArr[i]='0';
   }
   //printf("%s%s%s", "there should be only zeroes: ", charArr, "\n"); 
@@ -69,7 +70,7 @@ char *makeArray(char *str, int size)
   //printf("%s%d%s", "this is size-strSize: ", size-strSize, "\n");
 
   int j = 0;
-  int i = (size-strSize);
+  i = (size-strSize);
   for (i; i< size; i++ )
   {
     char tmp = str[j];
@@ -87,7 +88,8 @@ char * parseString(char *str, int size)
   int resultSize = getSize(result);
 
   //make sure every element is a digit
-  for(int i=0; i < resultSize; i++){
+int i;  
+for(i=0; i < resultSize; i++){
     if(result[i] >= '0' && result[i] <= '9')
     {
       
@@ -149,7 +151,8 @@ char toChar(int i){ return i + '0'; }
 
 
 int checkEquality(char *charA, char *charB){
-  for(int i = 0; i < getSize(charA); i++)
+int i;  
+for(i = 0; i < getSize(charA); i++)
   {
     int a, b;
     a = toInt(charA[i]);
@@ -198,8 +201,8 @@ char * endCalc(char *charArr)
 {
   //look at alll thooooose zeroooooos :P
   char *endCalc = "";
+  int i = 0;
   if(charArr[0] == '0'){
-    int i = 0;
     while (toChar(charArr[i] == 0 && i < (sizeof(charArr) / sizeof(char) + 1)))
     {
       i++;
@@ -209,7 +212,7 @@ char * endCalc(char *charArr)
       endCalc += charArr[i];
     }
   } else {
-    for (int i = 0; i < (sizeof(charArr)/sizeof(char)) ; i++)
+    for (i = 0; i < (sizeof(charArr)/sizeof(char)) ; i++)
     {
       endCalc += charArr[i];
     }
