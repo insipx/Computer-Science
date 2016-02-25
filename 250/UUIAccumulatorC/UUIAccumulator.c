@@ -11,6 +11,7 @@ int main()  {
   do {
     printf("Enter an UUI:");
     value = readUUI();
+    //printUUI(value); printf("\n");
     if(NE(value,SENTINEL)) {
       accumulator = sum(accumulator,value);
       printf("Current accumulation is "); printUUI(accumulator);   printf("\n");
