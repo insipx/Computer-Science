@@ -52,7 +52,6 @@ char *makeArray(char *str, int size)
   //we are assuming here that we never have to add a number with a 
   //greater amount of characters than 32,767
   //that would be a bit crazy
-  //char is one so division here is a bit redundant
   size_t strSize = getSize(str);
   //printf("%s%s%s", "this is the string: ", str, "\n"); 
 
@@ -206,16 +205,34 @@ int NE(char *val0, char *val1){
 char * addTen(char *charArr, int j, int tmp)
 {
   if(toInt(charArr[j-1] + 1) >= 10) //If the last digit is greater than 1 digit
+                                    //this actually takes the digit before the digit passed so if
+                                    //099+099
+                                    // ^
+                                    // this is checking if that one is >= ten and if it is that means that
+                                    // we need to carry the one to the next place, so
+                                    // recursively do that
+                                    // the next one that it will check is
+                                    // 099+099
+                                    // ^
+                                    // that one
   {
-    charArr[j] = toChar(tmp % 10); //Take the 1's place,
-    tmp = toInt(charArr[j-1] + 1); //Carry the 10's place.
-    j--; //Go to the next index of the array.
-    addTen(charArr, j, tmp); //Continue the operation. Hang on, what's tmp?
-  } else { //Else if it's just 1 digit,
-    charArr[j-1] = toChar(toInt(charArr[j-1] + 1)); // Add one? Why?
+    charArr[j] = toChar(tmp % 10); //Take the 1's place,   || because this + 1 >= ten we need the mod
+    tmp = toInt(charArr[j-1] + 1); //Carry the 10's place. || so 11 becomes 1, because we are carrying the one
+    j--; //Go to the next index of the array ||  in order to check if that one is >= 10 when 1 is added
+    addTen(charArr, j, tmp); //Continue the operation. Hang on, what's tmp? tmp is now 
+  } else { //Else if it's just 1 digit, IE we don't have to worry about carrying a one 
+    charArr[j-1] = toChar(toInt(charArr[j-1] + 1)); // Add one? Why? because we are carrying a one. so we have to do that to the digit before the current pos in the array this method is only used 
+                                                    // when what we are adding is >= 10
     //Okay, so the last index is the character of the integer of the itself, plus 1?
-    charArr[j] = toChar(tmp % 10); //Take the 1's place. This might be marginally overcomplicated.
-  } 
+    charArr[j] = toChar(tmp % 10); //Take the 1's place. This might be marginally overcomplicated. || I don't think so
+                                   //EXPLANATION
+                                   //Because the place before it is not >= ten, so we are able to carry the one
+                                   //so the current index needs to be mod ten because we carried the one
+                                   //EX we have  a tmp of 12 and need to carry the one to the index before
+                                   //so because we are carrying a one, 12 should become 2, hence 12 % 2
+                                   //this also terminates the recursive function
+    } 
+
   return charArr;
 }
 
