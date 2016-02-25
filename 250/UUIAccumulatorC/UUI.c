@@ -1,4 +1,4 @@
-#define TRUE 0
+#define TRUE 1
 #define FALSE 0
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,12 +27,13 @@ void die(const char *message)
 }
 char *makeArray(char *str, int size)
 {
-  //we are assuming here that we never have to add a number greater than 32,767
+  //we are assuming here that we never have to add a number with a 
+  //greater amount of characters than 32,767
   //that would be a bit crazy
   //char is one so division here is a bit redundant
   int strSize = sizeof(str) / sizeof(char);
-  //dont forget the nullbyte
-  char *charArr = (char *)malloc(2+size);
+  
+  char *charArr = (char *)malloc(size);
   if(charArr){
   }else{
     die("Memory allocation unsuccessful");
@@ -43,8 +44,11 @@ char *makeArray(char *str, int size)
   for(int i = 1; i < (size-strSize); i++){
     charArr[i]='0';
   }
+
+  //add the rest of the string
+  
   int j = 0;
-  int i = (size-strSize + 1);
+  int i = (size-strSize);
   while(charArr[i] != '\0')
   {
     char tmp = str[j];
@@ -53,24 +57,26 @@ char *makeArray(char *str, int size)
     i++;
   }
 
+  printf("%s%s", " CharArr is: ", charArr);
   return charArr;
 }
+//ignoring this method for now
 char * parseString(char *str, int size)
 {
   char *result = str;
-  int resultLength = sizeof(result) / sizeof(int);
+  int resultSize = sizeof(result) / sizeof(int);
 
-  //let's assume the best case for now, and no numerals are being entered
   //make sure every element is a digit
-  //for(int i=0; i < resultLength; i++){
-  //  if(result[i] >= '0' && result[i] <= '9')
-  //  {
-  //    
-  //  }else{
-  //    //if it's not a digit remove it and make the string smaller
-  //    //don't do nothing yet I will develop this later
-  //  }
-  //
+  for(int i=0; i < resultSize; i++){
+    if(result[i] >= '0' && result[i] <= '9')
+    {
+      
+    }else{
+      //if it's not a digit remove it and make the string smaller
+     //don't do nothing yet I will develop this later
+    }
+  }
+  
   char *charArr = makeArray(result, size);
 
   return charArr;
@@ -114,20 +120,40 @@ char * readUUI()
   return str;
 }
 
-int NE(char *val0, char *val1){
-  if(strcmp(val1, val0) == 0)
-  {
-    return FALSE;
-  }else{
-    return TRUE;
-  }
-   
-    return 1;
-}
-
 int toInt(char c){ return c - '0'; }
 
 char toChar(int i){ return i + '0'; }
+
+int checkEquality(char *charA, char *charB){
+  for(int i = 0; i < sizeof(charA); i++)
+  {
+    int a, b;
+    a = toInt(charA[i]);
+    b = toInt(charB[i]);
+    if(a == b){
+    } else {
+      return FALSE;
+    }
+  
+  }
+  return TRUE;
+}
+
+
+int NE(char *val0, char *val1){
+  
+  if(sizeof(val0) == sizeof(val1)){
+    if(checkEquality(val0, val1) == TRUE){
+      return FALSE;
+    } else {
+      return TRUE;
+    }
+  } else {
+    return TRUE;
+  }
+
+}
+
 
 char * addTen(char *charArr, int j, int tmp)
 {
@@ -184,12 +210,12 @@ char * sum(char *val0, char *val1)
   } else {
     size = val1Size;
   }
-
-  //malloc with some rudimentery checking if the mem actually allocated 
-  char *numArr = (char *)malloc(sizeof(parseString(val0, size)));
-  if(numArr){}else{die("malloc unsuccessful");}
-  char *valArr = (char *)malloc(sizeof(parseString(val1, size))); 
-  if(valArr){}else{die("malloc unsuccessful");}
+  //account for an extra zero at the beginning
+  size += 1;
+  printf("%s%s", " this is val 0: ", val0); 
+  char *numArr = makeArray(val0, size);
+  char *valArr = makeArray(val1, size); 
+  printf("%s%s", " this is val 1: ", val1);
 
   int i = sizeof(valArr) / sizeof(char) - 1;
   for (i; i >=0; i--)
@@ -207,13 +233,12 @@ char * sum(char *val0, char *val1)
   //val0 = endCalc(numArr);
   val0 = numArr;  
   
-  free(numArr);
-  free(valArr);
+  //free(numArr);
+  //free(valArr);
  
   return val0;
 
 }
-
 
 
 
