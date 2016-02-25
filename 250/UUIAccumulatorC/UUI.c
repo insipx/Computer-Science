@@ -218,11 +218,12 @@ char * addTen(char *charArr, int j, int tmp)
   {
     charArr[j] = toChar(tmp % 10); //Take the 1's place,   || because this + 1 >= ten we need the mod
     tmp = toInt(charArr[j-1] + 1); //Carry the 10's place. || so 11 becomes 1, because we are carrying the one
-    j--; //Go to the next index of the array ||  in order to check if that one is >= 10 when 1 is added
-    addTen(charArr, j, tmp); //Continue the operation. Hang on, what's tmp? tmp is now 
-  } else { //Else if it's just 1 digit, IE we don't have to worry about carrying a one 
-    charArr[j-1] = toChar(toInt(charArr[j-1] + 1)); // Add one? Why? because we are carrying a one. so we have to do that to the digit before the current pos in the array this method is only used 
-                                                    // when what we are adding is >= 10
+    j--;                           //Go to the next index of the array ||  in order to check if that one is >= 10 when 1 is added
+    addTen(charArr, j, tmp);            //Continue the operation. Hang on, what's tmp? tmp is now 
+  } else {                              //Else if it's just 1 digit, IE we don't have to worry about carrying a one anymore
+                                        //this terminates the recursion as well
+    charArr[j-1] = toChar(toInt(charArr[j-1] + 1)); // Add one? Why?--> because we are carrying a one. so we have to do that to the digit before the current pos in the array this method is only used 
+                                                    // when what we are adding is not >= 10
     //Okay, so the last index is the character of the integer of the itself, plus 1?
     charArr[j] = toChar(tmp % 10); //Take the 1's place. This might be marginally overcomplicated. || I don't think so
                                    //EXPLANATION
