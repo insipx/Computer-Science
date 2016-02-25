@@ -25,46 +25,66 @@ void die(const char *message)
   }
   exit(1);
 }
+int getSize(char *str){
+  char c = str[0];
+  int i = 0;
+  while(c != '\0'){
+    i++;
+    c = str[i]; 
+  }
+  //because somehow the nullbyte is still there
+  
+  return i - 1;
+}
+
 char *makeArray(char *str, int size)
 {
+  //printf("%s%d%s", "the size passed: ", size, "\n");
   //we are assuming here that we never have to add a number with a 
   //greater amount of characters than 32,767
   //that would be a bit crazy
   //char is one so division here is a bit redundant
-  int strSize = sizeof(str) / sizeof(char);
-  
+  size_t strSize = getSize(str);
+  //printf("%s%s%s", "this is the string: ", str, "\n"); 
+
+  //printf("%s%d%s", " this is the strSize: ", strSize, "\n"); 
+  //for the extra 0
+  size++; 
   char *charArr = (char *)malloc(size);
   if(charArr){
   }else{
     die("Memory allocation unsuccessful");
   }
+   
   charArr[0] = '0';
 
   //add zeroes at the beginning of the array
   for(int i = 1; i < (size-strSize); i++){
     charArr[i]='0';
   }
-
+  //printf("%s%s%s", "there should be only zeroes: ", charArr, "\n"); 
   //add the rest of the string
   
+  
+  //printf("%s%d%s", "this is size-strSize: ", size-strSize, "\n");
+
   int j = 0;
   int i = (size-strSize);
-  while(charArr[i] != '\0')
+  for (i; i< size; i++ )
   {
     char tmp = str[j];
     charArr[i] = tmp;
     j++;
-    i++;
   }
 
-  printf("%s%s", " CharArr is: ", charArr);
+  //printf("%s%s%s", " CharArr ends up being: ", charArr, "\n");
   return charArr;
 }
 //ignoring this method for now
 char * parseString(char *str, int size)
 {
   char *result = str;
-  int resultSize = sizeof(result) / sizeof(int);
+  int resultSize = getSize(result);
 
   //make sure every element is a digit
   for(int i=0; i < resultSize; i++){
@@ -116,8 +136,8 @@ char * readUUI()
     }
   
   }while(1);
-  printf("%s%s", " This is the Readline String: ", str); 
-  printf("%s%d%s", " and this is the size ", size, "\n");
+  //printf("%s%s", " This is the Readline String: ", str); 
+  //printf("%s%d%s", " and this is the size ", size, "\n");
   return str;
 }
 
@@ -126,20 +146,10 @@ int toInt(char c){ return c - '0'; }
 char toChar(int i){ return i + '0'; }
 
 //because sizeof returns the size of the pointer -_-
-int getSize(char *str){
-  char c = str[0];
-  int i = 0;
-  while(c != '\0'){
-    i++;
-    c = str[i]; 
-  }
-  //because somehow the nullbyte is still there
-  
-  return i - 1;
-}
+
 
 int checkEquality(char *charA, char *charB){
-  for(int i = 0; i < sizeof(charA); i++)
+  for(int i = 0; i < getSize(charA); i++)
   {
     int a, b;
     a = toInt(charA[i]);
@@ -153,10 +163,11 @@ int checkEquality(char *charA, char *charB){
   return TRUE;
 }
 
-
 int NE(char *val0, char *val1){
-  
-  if(sizeof(val0) == sizeof(val1)){
+  int val0Size = getSize(val0);
+  int val1Size = getSize(val1); 
+
+  if(val0Size == val1Size){
     if(checkEquality(val0, val1) == TRUE){
       return FALSE;
     } else {
@@ -167,7 +178,6 @@ int NE(char *val0, char *val1){
   }
 
 }
-
 
 char * addTen(char *charArr, int j, int tmp)
 {
@@ -216,8 +226,9 @@ char * sum(char *val0, char *val1)
   int val0Size = getSize(val0);
   int val1Size = getSize(val1);
   
-  printf("%s%d%s", " || This is val0 ", val0Size, " || \n"); 
-  printf("%s%d%s", " || This is val1 ", val1Size, " || \n"); 
+  //debug stuff 
+  //printf("%s%d%s", " || This is val0 ", val0Size, " || \n"); 
+  //printf("%s%d%s", " || This is val1 ", val1Size, " || \n"); 
 
   if (val0Size > val1Size){
     size = val0Size;
@@ -228,18 +239,17 @@ char * sum(char *val0, char *val1)
     size = val1Size;
   }
   //account for an extra zero at the beginning
-  size += 1;
-  printf("%s%s", " this is val 0: ", val0); 
   char *numArr = makeArray(val0, size);
   char *valArr = makeArray(val1, size); 
-  printf("%s%s", " this is val 1: ", val1);
+  //printf("%s%s%s", " this is numArr: ", numArr, "\n");
+  //printf("%s%s%s", " this is valArr: ", valArr, "\n"); 
 
   int i = getSize(valArr);
   printf("%s%d%s", " || This Is i: ", i, " ||\n");
   for (i; i >=0; i--)
   {
     int tmp = toInt(numArr[i] + toInt(valArr[i]));
-    printf("%s%d%s", " || this is tmp ", tmp, " ||\n");
+    //printf("%s%d%s", " || this is tmp ", tmp, " ||\n");
     if(tmp >= 10){
       numArr = addTen(numArr, i, tmp);
       valArr[i] = '0';
