@@ -90,7 +90,7 @@ char * parseString(char *str, int size)
 char * readUUI()
 {
   //allocate 64bytes for usage
-  size_t size = 64;
+  size_t size = 0;
   char *str = (char*)malloc(size);
   if(str){
   }else{
@@ -117,13 +117,26 @@ char * readUUI()
   
   }while(1);
   printf("%s%s", " This is the Readline String: ", str); 
-  printf("%s%d%s", " and this is the size ", sizeof(str)/sizeof(char), "\n");
+  printf("%s%d%s", " and this is the size ", size, "\n");
   return str;
 }
 
 int toInt(char c){ return c - '0'; }
 
 char toChar(int i){ return i + '0'; }
+
+//because sizeof returns the size of the pointer -_-
+int getSize(char *str){
+  char c = str[0];
+  int i = 0;
+  while(c != '\0'){
+    i++;
+    c = str[i]; 
+  }
+  //because somehow the nullbyte is still there
+  
+  return i - 1;
+}
 
 int checkEquality(char *charA, char *charB){
   for(int i = 0; i < sizeof(charA); i++)
@@ -200,8 +213,8 @@ char * sum(char *val0, char *val1)
   int size;
   
   // -1 because nullbyte 
-  int val0Size = sizeof(val0) -1;
-  int val1Size = sizeof(val1) -1;
+  int val0Size = getSize(val0);
+  int val1Size = getSize(val1);
   
   printf("%s%d%s", " || This is val0 ", val0Size, " || \n"); 
   printf("%s%d%s", " || This is val1 ", val1Size, " || \n"); 
@@ -221,7 +234,7 @@ char * sum(char *val0, char *val1)
   char *valArr = makeArray(val1, size); 
   printf("%s%s", " this is val 1: ", val1);
 
-  int i = (sizeof(valArr) / sizeof(char)) - 1;
+  int i = getSize(valArr);
   printf("%s%d%s", " || This Is i: ", i, " ||\n");
   for (i; i >=0; i--)
   {
