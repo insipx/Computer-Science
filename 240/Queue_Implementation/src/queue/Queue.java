@@ -33,7 +33,7 @@ public class Queue<T> implements QueueInterface<T> {
 			//and we have to keep track of the size
 			size++;
 		}else{
-			//make anotehr temp node
+			//make another temp node
 			Node<T> qNode = new Node<T>();
 			//the end will point to this
 			end.ref = qNode;
