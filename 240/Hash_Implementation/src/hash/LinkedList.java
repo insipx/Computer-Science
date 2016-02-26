@@ -1,7 +1,6 @@
 package hash;
 
 public class LinkedList<T> implements LinkedList_Interface<T>{
-    Node<T> firstVal;
 	Node<T> current;
 	Node<T> front;
 
@@ -15,24 +14,14 @@ public class LinkedList<T> implements LinkedList_Interface<T>{
 	@Override
 	public void insert(T val) {
 		if(size == 0){
-			firstVal = new Node<T>();
-			firstVal.value = val;
-            current = firstVal;
-            front = firstVal;
-            current.ref = null;
-			size++;
+			Node<T> lNode = new Node<T>();
+			lNode.value = val;
+			lNode.ref = null;
+			current = lNode;
+			front = lNode;
 		} else {
-            if(size == 1){
-                Node<T> lNode = new Node<T>();
-                current.ref = lNode;
-                lNode.ref = null;
-                current = lNode;
-                current.value = val;
-                size++;
-            }
-            Node<T> lNode = new Node<T>();
+           	Node<T> lNode = new Node<T>();
             current.ref = lNode;
-            lNode.ref = null;
             current = lNode;
             current.value = val;
             size++;
@@ -42,13 +31,15 @@ public class LinkedList<T> implements LinkedList_Interface<T>{
 	public void delete(T val){
         Node tmp = new Node<T>();
         Node beforeT = new Node<T>();
-        beforeT = front;
-        tmp = front;
-            while(tmp.value != val){
-                beforeT = tmp;
-                tmp = tmp.ref;
-            }
-        beforeT.ref = tmp.ref;
+		tmp = front;
+		beforeT = tmp;
+		while(tmp.value != val){
+			beforeT = tmp;
+			tmp = tmp.ref;
+		}
+		beforeT.ref = tmp.ref;
+		tmp.ref = null;
+		size--;
 
 		//garbage collection now takes care of tmp because nothing is pointing to it
 		//and nothin points to ref
