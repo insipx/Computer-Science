@@ -260,14 +260,8 @@ char * sum(char *val0, char *val1)
   char *numArr = makeArray(val0, size);
 //  printf("%s%s%s", "This is numARR AFTER: ", numArr, "\n");
   char *valArr = makeArray(val1, size); 
-  //printf("%s%s%s", "This is valARR AFTER: ", valArr, "\n");
 
   int i =size ;
-  printf("%s%d%s", " || This Is i: ", i, " ||\n");
-  //printf("%s%d%s", " || This Is the size of valArr: ", getSize(valArr), " ||\n");
-  //
-  printf("%s%s%s%d%s", "This is valArr: ", valArr, "This is the size of it: ", getSize(valArr), "\n");
-  printf("%s%s%s%d%s", "This is numArr: ", numArr, "This is the size of it: ", getSize(numArr), "\n"); 
 
   for (i; i >=0; i--)
   {
@@ -275,7 +269,6 @@ char * sum(char *val0, char *val1)
     int valArrTmp = toInt(valArr[i]);
     int tmp = numArrTmp + valArrTmp;
 
-   // printf("%s%d%s", "THIS IS TEMP MOFO: ", tmp, "\n");
     
     if(tmp >= 10){
       numArr = addTen(numArr, i, tmp);
