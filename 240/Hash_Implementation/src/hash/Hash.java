@@ -11,18 +11,36 @@ public class Hash<T> implements Hash_Interface<T>{
 	
 	public void insert(int val) {
 		int idx = val % ENTRY_SIZE;
-		entries[idx].insert(val);
+        if (entries[idx] == null) {
+            entries[idx] = new LinkedList();
+            entries[idx].insert(val);
+        } else {
+     	    entries[idx].insert(val);
+        }
+
 	}
 	public void delete(int val) {
 		int idx = val % ENTRY_SIZE;
-		entries[idx].delete(val);
+        if(entries[idx] == null){
+            //if the index is null that means it was never anything inserted at that index
+            System.out.println("------▼------");
+            System.out.println("WARNING: There is nothing to delete");
+            System.out.println("------▲------");
+        }else {
+            entries[idx].delete(val);
+        }
 	}
 	public void dumpHash() {
 		for(int i = 0; i < ENTRY_SIZE; i++){
 			System.out.println("=======================");
 			System.out.println("Index " + i + " of Hash");
+            if(entries[i] != null){
 			entries[i].dumpList();
-			System.out.println("=======================");
+                System.out.println("\n");
+            } else{
+                System.out.println("No entries in index " + i );
+            }
+            System.out.println("=======================");
 		}
 	}
 }
