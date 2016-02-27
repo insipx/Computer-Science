@@ -31,4 +31,5 @@ Help/metadata/mylyn
 *.tasks.xml.zip
 *.log
 *.lock
+*.class
 
