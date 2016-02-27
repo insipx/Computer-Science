@@ -59,7 +59,7 @@ char *makeArray(char *str, int size)
 
   //add zeroes at the beginning of the array
 int i = 1;  
-for(i; i < (size-strSize); i++){
+for(; i < (size-strSize); i++){
     charArr[i]='0';
   }
   //add the rest of the str to our new modified str pointer
