@@ -1,6 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+/*
+ *\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+ *                              Header
+ *\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+ * 
+ *I, Andrew Plaza, am the developer of this work. This is a solution to Asignment I Part II in CMPS 250 for 2016. I collaborated with Sean Batzel in creating this solution.
+ *
+ *\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+ *                              Flaws
+ *\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+ * 
+ *Memory leaks, never sure how to free the memory
+ *Couldn't figure out the printf format method with commas in the C version 
+ *valgrind is saying that we lost 17 bytes in 5 blocks,
+ *none of that memory being reachable
+ *with 19 allocs and only 14 frees
+ *so we are missing frees somewhere
+ *but I'm not sure how to add them
+ * 
+ *the NE function isn't a true Equal/Not Equal method, rather it checks if both are exactly zero
+ */
 
 //Pseudo-constructor that just sends the program back exactly what it
 //receives as a parameter.
@@ -251,17 +271,4 @@ char * sum(char *val0, char *val1)
 //  free(numArr);
   
   return endCalc(numArr);
-  //valgrind is saying that we lost 17 bytes in 5 blocks,
-  //none of that memory being reachable
-  //with 19 allocs and only 14 frees
-  //I called it twice
-  //so we are missing two frees somewhere
-  //but I'm not sure how to add them
-  //maybe memcpy val0, numarr valarr into 
-  //another pointer?
-  //idk
-  //i'm not sure how to do this, this a definite weakness in this code
-  //maybe freeing it in main would do it
-  //not sure if i can touch that, though
 }
-
