@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 
 //Pseudo-constructor that just sends the program back exactly what it
@@ -146,13 +145,13 @@ char toChar(int i){ return i + '0'; }
 
 // This kind of works. We have to check the size of both char *str though.
 int NE(char *one, char *two){
-  if (*one == '0' && *two == '0'){
+  
+  if (*one == '0' && *two == '0' && getSize(one) == getSize(two)){
     return 0;
   } else {
     return 1;
   }
   
-  return strcmp(one,two);
 }
 
 //a recursive subroutine to carry a one. this is only called when tmp (in sum method) is >= 10)
