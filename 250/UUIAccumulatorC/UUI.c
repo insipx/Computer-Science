@@ -170,11 +170,12 @@ char * addTen(char *charArr, int j, int tmp)
 
   return charArr;
 }
-  //look at alll thooooose zeroooooos :P
-  //I don't know why, but C somehow removes zeroes from the beginning for us
-  //unlike my Java implementation
-  //so we just have to remove the first zero, I guess
 
+
+//look at alll thooooose zeroooooos :P
+//I don't know why, but C somehow removes zeroes from the beginning for us
+//unlike my Java implementation
+//so we just have to remove the first zero, I guess
 char * endCalc(char *charArr)
 {
   int i = 0;
@@ -235,10 +236,11 @@ char * sum(char *val0, char *val1)
     int valArrTmp = toInt(valArr[i]);
     int tmp = numArrTmp + valArrTmp;
 
-    
+    //if tmp >= 10 we need to carry a 1 
     if(tmp >= 10){
       numArr = addTen(numArr, i, tmp);
     //  valArr[i] = '0';
+    //  otherwise we don't
     } else {
       numArr[i] = toChar(tmp);
   //    valArr[i] = '0';
