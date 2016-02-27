@@ -2,12 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-//Alright I'm up to like 750 mb of memory used.
-//there is alot of memory problems
-//but it works
-//that's what counts
-//now we just have to free the memory properly
-//
 
 //Pseudo-constructor that just sends the program back exactly what it
 //receives as a parameter.
@@ -22,6 +16,7 @@ void printUUIf(char *str){
   
   printf("%s", str);
 }
+
 //my n00b error message function
 //Basically just a primitive exception-type thing.
 void die(const char *message)
@@ -34,36 +29,28 @@ void die(const char *message)
 }
 
 int getSize(char *str){
+//just walk through the string until we come accross the nullbyte or \n and increment i
   char c;
   int i = 0;
   do{
     c=str[i];
     i++;
   }while(c != '\0' && c!= '\n');
-
-  //because somehow the nullbyte is still there
-  //printf("%s%s", "==================================", "\n");
-  //printf("%s%s%s", "GETSIZE: this is the str: ", str, "\n" );
-  //printf("%s%d%s", "GETSIZE: this is the size of str: ", i-1, "\n" );
-  //printf("%s%s", "==================================", "\n");
-
+  //i - 1 because....i'm not really sure. but in my debug statements it was returning a size that was 1 more than what it should be
+  //nullbyte maybe?
   return i - 1;
 }
 
 char *makeArray(char *str, int size)
 {
-  //printf("%s%d%s", "the size passed: ", size, "\n");
-  //we are assuming here that we never have to add a number with a 
-  //greater amount of characters than 32,767
-  //that would be a bit crazy
+  //size_t because..unsigned int so we can add a number /w ALOT of characters
   size_t strSize = getSize(str);
-  //printf("%s%s%s", "this is the string: ", str, "\n"); 
-
-  //printf("%s%d%s", " this is the strSize: ", strSize, "\n"); 
-  //for the extra 0
+  //add one to size to have a zero at the beginning
   size++; 
+  //malloc that memory
   char *charArr = (char *)malloc(size);
-  
+ 
+  //make sure it was malloced 
   if(charArr){
   }else{
     die("Memory allocation unsuccessful");
@@ -76,12 +63,9 @@ int i = 1;
 for(i; i < (size-strSize); i++){
     charArr[i]='0';
   }
-  //printf("%s%s%s", "there should be only zeroes: ", charArr, "\n"); 
-  //add the rest of the string
   
   
-  //printf("%s%d%s", "this is size-strSize: ", size-strSize, "\n");
-
+  //add the rest of the str to our new modified str pointer
   int j = 0;
   i = (size-strSize);
   for (i; i< size; i++ )
@@ -91,10 +75,11 @@ for(i; i < (size-strSize); i++){
     j++;
   }
 
-  //printf("%s%s%s", " CharArr ends up being: ", charArr, "\n");
   return charArr;
 }
-//ignoring this method for now
+// didn't finish this yet
+// to parse and make sure that all digits are acually digits 
+// i think alot of memcpy would be used here
 char * parseString(char *str, int size)
 {
   char *result = str;
@@ -115,14 +100,11 @@ for(i=0; i < resultSize; i++){
   char *charArr = makeArray(result, size);
 
   return charArr;
-
 }
 
 //this needs to be dynamic, we have no idea what the user will input
 //so our best bet is to use fgetc
 //dynamically allocates memory so we only use exactly what we need
-//I KNOW THIS METHOD WORkS FOR FACT DON'T TOUCH IT
-//Does it really, though?
 char * readUUI()
 {
   //allocate 64bytes for usage
@@ -157,6 +139,7 @@ char * readUUI()
   return str;
 }
 
+//to int and char function so it's nicely human-readable
 int toInt(char c){ return c - '0'; }
 
 char toChar(int i){ return i + '0'; }
@@ -172,46 +155,32 @@ int NE(char *one, char *two){
   return strcmp(one,two);
 }
 
-//What's the idea behind this sub?
+//a recursive subroutine to carry a one. this is only called when tmp (in sum method) is >= 10)
+//it recursively walks through the number until it finds a digit which adds to ten but is not greater than 9
 char * addTen(char *charArr, int j, int tmp)
 {
-  if(toInt(charArr[j-1] + 1) >= 10) //If the last digit is greater than 1 digit
-                                    //this actually takes the digit before the digit passed so if
-                                    //099+099
-                                    // ^
-                                    // this is checking if that one is >= ten and if it is that means that
-                                    // we need to carry the one to the next place, so
-                                    // recursively do that
-                                    // the next one that it will check is
-                                    // 099+099
-                                    // ^
-                                    // that one
-  {
-    charArr[j] = toChar(tmp % 10); //Take the 1's place,   || because this + 1 >= ten we need the mod
-    tmp = toInt(charArr[j-1] + 1); //Carry the 10's place. || so 11 becomes 1, because we are carrying the one
-    j--;                           //Go to the next index of the array ||  in order to check if that one is >= 10 when 1 is added
-    addTen(charArr, j, tmp);            //Continue the operation. Hang on, what's tmp? tmp is now 
-  } else {                              //Else if it's just 1 digit, IE we don't have to worry about carrying a one anymore
-                                        //this terminates the recursion as well
-    charArr[j-1] = toChar(toInt(charArr[j-1] + 1)); // Add one? Why?--> because we are carrying a one. so we have to do that to the digit before the current pos in the array this method is only used 
-                                                    // when what we are adding is not >= 10
-    //Okay, so the last index is the character of the integer of the itself, plus 1?
-    charArr[j] = toChar(tmp % 10); //Take the 1's place. This might be marginally overcomplicated. || I don't think so
-                                   //EXPLANATION
-                                   //Because the place before it is not >= ten, so we are able to carry the one
-                                   //so the current index needs to be mod ten because we carried the one
-                                   //EX we have  a tmp of 12 and need to carry the one to the index before
-                                   //so because we are carrying a one, 12 should become 2, hence 12 % 2
-                                   //this also terminates the recursive function
-    } 
+  if(toInt(charArr[j-1] + 1) >= 10)   {
+    //if the digit BEFORE the digit that was called also adds up to or greater than 10
+    charArr[j] = toChar(tmp % 10); 
+    //set the current digit to mod 10 so that we get rid of the 1
+    tmp = toInt(charArr[j-1] + 1);  //tmp is now the digit before this one + 1
+    j--; //decrement J 
+    addTen(charArr, j, tmp);//recursively do it again 
+  } else { 
+    // if it is not >= 10 all is swell in this world 
+    charArr[j-1] = toChar(toInt(charArr[j-1] + 1));  
+    charArr[j] = toChar(tmp % 10); 
+  } 
 
   return charArr;
 }
+  //look at alll thooooose zeroooooos :P
+  //I don't know why, but C somehow removes zeroes from the beginning for us
+  //unlike my Java implementation
+  //so we just have to remove the first zero, I guess
 
 char * endCalc(char *charArr)
 {
-  //look at alll thooooose zeroooooos :P
-  //what does this even do?
   int i = 0;
   while(charArr[i] == '0'){
     charArr += 1;
@@ -225,9 +194,11 @@ char * endCalc(char *charArr)
 char * sum(char *val0, char *val1)
 {
   int size;
-  
-  // -1 because nullbyte I actually don't think so
-  //Okay, here we're just getting the sizes of the variables we need?
+  //getting the sizes of the passed char *str
+  //so that we can find the largest one
+  //and also because C doesn't have anykind of .length method
+  //and sizeof returns the sizeof a pointer 
+  //so we have to explicitly keep track of size
   int val0Size = getSize(val0);
   int val1Size = getSize(val1);
   
@@ -245,6 +216,8 @@ char * sum(char *val0, char *val1)
   } else {
     size = val1Size;
   }
+  //this is probably not how to debug C
+  //but without these I'm probably never going to finish
   //printf("%s%s%s", "This is numArr before: ", val0, "\n");
   //printf("%s%s", "++++++++++++++++++++++++ ", "\n");
   //printf("%s%s%s", "This is valArr before: ", val1, "\n");
@@ -253,15 +226,13 @@ char * sum(char *val0, char *val1)
   //printf("%s%d%s", "This is the val1Size ", val1Size, "\n");
    //printf("%s%s", "++++++++++++++++++++++++ ", "\n");
 
-  //I'm sitting here watching my memory usage slowly climb... 
-  //Something on my Mint system has a huge leak and I think this might be it.
-  //account for an extra zero at the beginning
-  //probably is, haven't worked with freeing memory yet
+   //account for an extra zero at the beginning
   char *numArr = makeArray(val0, size);
-//  printf("%s%s%s", "This is numARR AFTER: ", numArr, "\n");
   char *valArr = makeArray(val1, size); 
 
-  int i =size ;
+  //  printf("%s%s%s", "This is numARR AFTER: ", numArr, "\n");
+
+  int i = size;
 
   for (i; i >=0; i--)
   {
@@ -279,11 +250,18 @@ char * sum(char *val0, char *val1)
     }
   }
 
-  val0 = numArr;  
-
-  free(val1);
+  free(valArr); 
+//  free(numArr);
   
-  return endCalc(val0);
-
+  return endCalc(numArr);
+  //valgrind is saying that we lost 17 bytes in 5 blocks,
+  //none of that memory being reachable
+  //with 19 allocs and only 14 frees
+  //I called it twice
+  //so we are missing two frees somewhere
+  //but I'm not sure how to add them
+  //maybe memcpy val0, numarr valarr into 
+  //another pointer?
+  //idk
 }
 
