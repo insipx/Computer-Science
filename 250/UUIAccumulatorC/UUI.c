@@ -62,8 +62,6 @@ int i = 1;
 for(i; i < (size-strSize); i++){
     charArr[i]='0';
   }
-  
-  
   //add the rest of the str to our new modified str pointer
   int j = 0;
   i = (size-strSize);
@@ -144,14 +142,13 @@ int toInt(char c){ return c - '0'; }
 char toChar(int i){ return i + '0'; }
 
 // This kind of works. We have to check the size of both char *str though.
+// it will ignore leading zeros and only terminate when one zero is entered though
 int NE(char *one, char *two){
-  
   if (*one == '0' && *two == '0' && getSize(one) == getSize(two)){
     return 0;
   } else {
     return 1;
   }
-  
 }
 
 //a recursive subroutine to carry a one. this is only called when tmp (in sum method) is >= 10)
@@ -185,9 +182,7 @@ char * endCalc(char *charArr)
     charArr += 1;
   } 
   return charArr;
- 
 }
-
 
 //This is where the fun part is...
 char * sum(char *val0, char *val1)
@@ -215,6 +210,7 @@ char * sum(char *val0, char *val1)
   } else {
     size = val1Size;
   }
+
   //this is probably not how to debug C
   //but without these I'm probably never going to finish
   //printf("%s%s%s", "This is numArr before: ", val0, "\n");
@@ -262,5 +258,8 @@ char * sum(char *val0, char *val1)
   //maybe memcpy val0, numarr valarr into 
   //another pointer?
   //idk
+  //i'm not sure how to do this, this a definite weakness in this code
+  //maybe freeing it in main would do it
+  //not sure if i can touch that, though
 }
 
