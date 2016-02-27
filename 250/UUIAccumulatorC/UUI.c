@@ -65,7 +65,7 @@ for(; i < (size-strSize); i++){
   //add the rest of the str to our new modified str pointer
   int j = 0;
   i = (size-strSize);
-  for (i; i< size; i++ )
+  for (; i< size; i++ )
   {
     char tmp = str[j];
     charArr[i] = tmp;
@@ -230,7 +230,7 @@ char * sum(char *val0, char *val1)
 
   int i = size;
 
-  for (i; i >=0; i--)
+  for (; i >=0; i--)
   {
     int numArrTmp = toInt(numArr[i]);
     int valArrTmp = toInt(valArr[i]);
