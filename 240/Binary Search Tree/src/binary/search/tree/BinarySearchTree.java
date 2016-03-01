@@ -33,22 +33,23 @@ public class BinarySearchTree implements BinaryTreeInterface {
 
     @Override
     public void delete(Node node, int value) {
-        if (node.value == value && node.right == null && node.left == null) {
-            if (node.value > node.parent.value) {
-                node.parent.right = null;
-            } else if (node.value < node.parent.value) {
-                node.parent.left = null;
+        if (node.right == null && node.left == null && node.value == value) {
+            if (node.value > value) {
+                node.parent.left = node.left;
+            } else if (node.value < value) {
+                node.parent.right = node.right;
             }
-        } else if (node.left != null && node.right == null) {
-            node.parent.left = node.left;
-        } else if (node.left == null && node.right != null) {
+        } else if (node.right != null && node.left == null && node.value == value) {
             node.parent.right = node.right;
-        } else if (node.left != null && node.right != null) {
-            Node successor = minValue(node.right);
-            node.value = successor.value;
-            delete(successor, successor.value);
-        } else {
-            pass("Element not found.");
+        } else if (node.right == null && node.left != null && node.value == value) {
+            node.parent.left = node.left;
+        } else if (node.right != null && node.left != null && node.value == value) {
+            node.parent.left = node.left;
+            node.parent.right = node.right;
+        } else if (node.value > value && node.left != null) {
+            delete(node.left, value);
+        } else if (node.value < value && node.right != null) {
+            delete(node.right, value);
         }
     }
 

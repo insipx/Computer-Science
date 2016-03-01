@@ -9,5 +9,6 @@ public class Node {
     public Node(){
         this.right = null;
         this.left = null;
+        this.parent = null;
     }
 }
