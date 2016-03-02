@@ -9,9 +9,9 @@ import java.util.Scanner;
 **
 **  This is a variation of the similarly-named program found in
 **  Chapter 2 of the Reges & Stepp textbook.
-*/
+**/
 
-public class BMICalculator3 {
+class SecondsCalculator {
 
    // Create a Scanner object that can read input entered on the keyboard.
    private static Scanner keyboard = new Scanner(System.in);
@@ -35,13 +35,13 @@ public class BMICalculator3 {
       // Prompt user to enter weight and assign response to input variable
       hours = getIntFromUser("Enter # of Hours: ");
 
-       minutes = getIntFromUser("Enter the Minutes");
+      minutes = getIntFromUser("Enter the Minutes");
 
 
      
       // Calculate seconds
       double seconds_in_days = days * HOURS_PER_DAY * MINUTES_PER_HOUR * MINUTES_PER_HOUR;
-      double seconds_in_days2
+
 
 
 
