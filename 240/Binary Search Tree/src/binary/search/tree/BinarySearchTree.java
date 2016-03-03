@@ -34,16 +34,23 @@ public class BinarySearchTree implements BinaryTreeInterface {
     @Override
     public void delete(Node node, int value) {
         if (node.value == value) {
-            if (node.right == null & node.left == null) {
-                if (node.value < value) {
-                    node.parent.right = null;
-                } else if (node.value > value) {
-                    node.parent.left = null;
+            if(node.left == null && node.right == null ) { //its a leaf node
+                node.parent = null;
+            }else{
+                if(node.left!= null){
+                    Node tmp = node.left;
+                    while(tmp.right != null){
+                        tmp = tmp.right;
+                    }
+                    tmp.right = node.right;
+                    node.parent = node.left;
+                }else{
+                    node.parent = node.right;
                 }
             }
-        } else if (node.value < value) {
+        } else if (node.value < value && node.right != null) {
             delete(node.right, value);
-        } else if (node.value > value) {
+        } else if (node.value > value && node.left != null) {
             delete(node.left, value);
         } else {
             pass("Specified node does not exist - " + value);
