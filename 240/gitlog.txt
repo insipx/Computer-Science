@@ -1,0 +1,572 @@
+commit da21f435fcce4d111ea962e7d5c2b5f9a3c4833f
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Mar 4 11:15:16 2016 -0500
+
+    fixed stuff
+
+commit 5401e091e70d3970dc209ab8ba2d8418b4dd0d2b
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Mar 4 02:07:57 2016 -0500
+
+    somehow it works
+
+commit b4d7332b40e80bc8c7bb1a7bc77b7a1e8758a211
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Mar 4 01:24:00 2016 -0500
+
+    going places
+
+commit eaaa0fa45aa19479099eda22450e0d8fa580d2da
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Mar 3 19:47:07 2016 -0500
+
+    more help stuff
+
+commit 7ef39776da7c4289d1f777030cc66bdfb9b280a6
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Mar 3 19:46:55 2016 -0500
+
+    python code
+
+commit 7e222d73300b9dbc3f133059651d3c0011146410
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Mar 3 19:46:35 2016 -0500
+
+    ignores
+
+commit 6d633e0c3e908163328762e5f7b81a4b4b74fc9e
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Mar 3 19:44:38 2016 -0500
+
+    more ignores
+
+commit cf3b7d037d94d95e2babf98095dafeb11361e417
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Mar 3 19:42:25 2016 -0500
+
+    annoying ingore files
+
+commit 5ebda34c22416a922d73a3248f00659ddd0e7b4c
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Mar 3 19:39:17 2016 -0500
+
+    pesky pesky pesky
+
+commit c7ff796a423a25d699cb5f564d051e07bf210754
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Mar 3 19:35:28 2016 -0500
+
+    modified gitingore to ignore pesky ide files
+
+commit a161677b31968ea3afa4614010d79851ee957046
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Mar 3 17:45:16 2016 -0500
+
+    no null errors
+
+commit 847605d83571533efe1346991b1c6265d51be3d0
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Wed Mar 2 23:35:01 2016 -0500
+
+    untitled
+
+commit f06de39ab0b245f19f0a6f5eb590dc7db258d80c
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Wed Mar 2 13:06:42 2016 -0500
+
+    tutor stuff
+
+commit 9a3a3b0d9e0d3e9692e11d27ccc642cbb372724e
+Author: Sean Batzel <stbatzel@gmail.com>
+Date:   Mon Feb 29 23:13:38 2016 -0500
+
+    stuff
+
+commit f1d4fe22334c1e434999013fea0db175081745be
+Author: sbatzel <stbatzel@gmail.com>
+Date:   Mon Feb 29 23:04:28 2016 -0500
+
+    Nope.
+
+commit f5c1ad838828acd6153914cf567c4702e0ce72d6
+Author: sbatzel <stbatzel@gmail.com>
+Date:   Mon Feb 29 22:18:54 2016 -0500
+
+    Way too many null pointer exceptions.
+
+commit 5ae9b12d26fd54cdfab779860d71f718030e619f
+Author: sbatzel <stbatzel@gmail.com>
+Date:   Mon Feb 29 12:04:44 2016 -0500
+
+    Did some more stuff.
+
+commit 0af36c1c00cc840bfa24090daff5c6d30ae9032d
+Author: sbatzel <stbatzel@gmail.com>
+Date:   Sat Feb 27 18:22:46 2016 -0500
+
+    Lots of tree stuff.
+
+commit 9c47b1f1565e84d7fc5235f8c0a7876a76619cb2
+Author: sbatzel <stbatzel@gmail.com>
+Date:   Sat Feb 27 14:45:26 2016 -0500
+
+    Made some progress I think. Really doesn't work.
+
+commit 5eec70c183c9c87e40499268f527bfed6e5f4717
+Author: sbatzel <stbatzel@gmail.com>
+Date:   Sat Feb 27 01:29:37 2016 -0500
+
+    Did some more work on the search tree.
+
+commit cb2340ec04736142554cc821f34b326cd4637dbd
+Author: sbatzel <stbatzel@gmail.com>
+Date:   Sat Feb 27 00:42:09 2016 -0500
+
+    Just fixing some stuff.
+
+commit b6421f6525b4d7b4522887bd611471c7ffea2f6d
+Author: sbatzel <stbatzel@gmail.com>
+Date:   Sat Feb 27 00:40:07 2016 -0500
+
+    Started the binary tree.
+
+commit aa216f3d08892d22393795898bfa9f4350f7bafd
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 21:08:55 2016 -0500
+
+    finished
+
+commit ba4a7817c9b24e4955a3cb694bcdff4784577a56
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 20:58:06 2016 -0500
+
+    will definitely run
+
+commit f1df6005e9d2e64694981c03d28a4307fd17fde2
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 20:56:47 2016 -0500
+
+    should run on server fine now
+
+commit 4018c199301d644159fe82a7a4a8a8ca9fe9b6a1
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 20:51:47 2016 -0500
+
+    submit this commit
+
+commit dee4c390dec74eb39afb08f141822d3bf0b2ecdb
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 19:41:59 2016 -0500
+
+    latest commit
+
+commit 7140819c41750c4ae0c3eb819b6ae51ef1724954
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 19:32:53 2016 -0500
+
+    lol
+
+commit f93107e515ffca47c1d139610ca2f90011628adb
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 19:28:13 2016 -0500
+
+    added stuff not added yet
+
+commit 62ec7493d3d712bf1a25da728d2f00b0c96e5ad2
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 18:49:38 2016 -0500
+
+    meh
+
+commit fe7e2a379cd50ebc41cf0a2cd3589ec12514bed4
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 18:47:15 2016 -0500
+
+    fixed the '99 plus 1' bug
+
+commit 4f418941b3c9c7a39cfc4a90afb40e7012450d96
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 08:54:06 2016 -0800
+
+    hash update
+
+commit 729e0894a233b116cf63f076f4644e74f69ac0c3
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 11:22:01 2016 -0500
+
+    hash update
+
+commit 3b4441a8acb072074ec5e3ed5cc521d7813ea6a3
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 02:06:17 2016 -0500
+
+    hash project almost finished
+
+commit 14fb5c65b9212dc082792c453043b90dccbd897a
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 26 02:05:59 2016 -0500
+
+    hash project almost done
+
+commit d54f15f4bf25162cf3fc57b3b0671d43b367a917
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 19:30:15 2016 -0500
+
+    new project hash implementation
+
+commit 0f9586a001ded508b532200964798227173a9d3d
+Merge: a7243c4 8ad0167
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 17:41:27 2016 -0500
+
+    fixed merge
+
+commit a7243c4ade227bfe81d0099367bbd5995280b9d2
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 17:33:26 2016 -0500
+
+    hopefully this works
+
+commit 8ad016701f23755fd9b916bc5982a655a99513c1
+Author: sbatzel <stbatzel@gmail.com>
+Date:   Thu Feb 25 17:08:16 2016 -0500
+
+    Did some stuff. Broke some things.
+
+commit f82955789ef4c92090d5cc099c6ea67464616869
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 15:38:46 2016 -0500
+
+    going to eat lunch
+
+commit 86bfbfa2428f4dd15522f8c881aaa8873cef135e
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 15:30:19 2016 -0500
+
+    IT FUCKING WORKS WE FUCKING DID IT HOLY FUCK YO I CAn'T BELIVE THIS SHIT
+
+commit 209243ed7cbb3ed4a0437fc540e1606ffac3d8c9
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 15:01:25 2016 -0500
+
+    more edits
+
+commit b6c54228563c4e353bb20bc2a5fac078253b0690
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 14:59:22 2016 -0500
+
+    explanation for addTen
+
+commit 594e113778c9a1256ca9b9c0bb8e48b546c4730a
+Author: sbatzel <stbatzel@gmail.com>
+Date:   Thu Feb 25 14:00:03 2016 -0500
+
+    Basically just commented the stuffing out of everything and made some suggestions. Few changes- I did make one and it didn't do diddly squat.
+
+commit a19a0b222eac695a7ecf05cf5b44592183dc45c6
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 12:44:52 2016 -0500
+
+    I live I die and I LIVE AGAIN .. jk I couldn't get it to work. Some shit is messed up with how it increments trying to debug it to see what goes wrong
+
+commit 01ec5d83303feb36780e6585af2f9a2805731bc0
+Merge: ebb57e3 a4a8510
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 11:37:31 2016 -0500
+
+    more rm
+
+commit ebb57e3d11d5fcbd53a8035ab34d04acdca4e9c9
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 11:34:23 2016 -0500
+
+    changes
+
+commit a4a851033efaeff57881a1b25c729af142efdaea
+Author: Romulus10 <stbatzel@gmail.com>
+Date:   Thu Feb 25 11:34:17 2016 -0500
+
+    Fixed some things. Kind of.
+
+commit d7dabb411b86c57bc93c729035d2e09c80bf755c
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 04:00:09 2016 -0500
+
+    makeArray method works
+
+commit ddf6f4f096332facc6463acfe4525ff626e15537
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 03:16:12 2016 -0500
+
+    getting somewhere
+
+commit 0072b7480f8a4b2f46edc8cad21d868a065528e3
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 02:52:36 2016 -0500
+
+    modified
+
+commit 142c055294b906debe6f60a98b2caa233ec95d9b
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 02:20:26 2016 -0500
+
+    it runs more but I get unicode question marks
+
+commit 58c3b5f52e097412f6b79cf82e601690cd88b322
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 25 01:23:25 2016 -0500
+
+    debuggin UUI.c
+
+commit da6f09a88ebb7277dbc6cd21762a6878f51e0b72
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Tue Feb 23 23:49:59 2016 -0500
+
+    I FUCKING DID IT
+
+commit c66717e3eb64505801d678a58ac65fd7cf8478f6
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Tue Feb 23 22:21:12 2016 -0500
+
+    lots of new stuff including Makefile
+
+commit ca1958f2921985bbc6962de0ae72590f792fafd3
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Sun Feb 21 14:43:08 2016 -0500
+
+    added .h for UUI
+
+commit 8ef7d6417470dd250dad2c8c1d308fb4bac5e8d8
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Sun Feb 21 14:28:45 2016 -0500
+
+    added binary and makefile
+
+commit 59b1c4f9f99989d95fb7cd3cf0727a61db4a3d89
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Sun Feb 21 12:51:22 2016 -0500
+
+    trying to make this makefile
+
+commit 84e0269514ea64659e1fedf2768ff1a6f1211a28
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Sat Feb 20 02:09:25 2016 -0500
+
+    more modifications
+
+commit ddad75d7118abdeba56d7300e92d21f76f04e320
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 22:32:43 2016 -0500
+
+    finished UUI
+
+commit e68cee90073e0629c5b9ca26abf122ee2bfd52e3
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 16:22:35 2016 -0800
+
+    help is now ignored
+
+commit a614fa6950ff3e43462734198d59ca74d8a5e920
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 16:20:26 2016 -0800
+
+    really hoping this works
+
+commit 6c1f8e71319375969dd0e6f7defae522017c197d
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 16:18:33 2016 -0800
+
+    more ignore
+
+commit 5faf2acf130d7d522aeec98e4df2709fe00ea1ce
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 16:17:28 2016 -0800
+
+    now ignore mylyn whatever that it
+
+commit 1fb224d067aafc46a3f6d1f8021aacd8be73c1e9
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 16:15:53 2016 -0800
+
+    jeez so much to remove and ignore
+
+commit 3fbb529ad546221d79bbc6a8ec07b7422edb05d1
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 16:14:02 2016 -0800
+
+    more ignores
+
+commit 0f5de587d70e21c590154609089306226ad0b9af
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 16:08:45 2016 -0800
+
+    it worked
+
+commit a913fbff17834bac2ee071686bd4ce61c219e161
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 16:05:50 2016 -0800
+
+    the ignore
+
+commit d722af189444b694c7cd283c6ec9a1cfa2c4ed8b
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 16:04:56 2016 -0800
+
+    I think it worked
+
+commit 28ce719571e01ef4c1c7eff9238e8fa2c11f29e8
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 16:04:31 2016 -0800
+
+    git ignore
+
+commit 8da571a7aafec5bea17a6ce48ff3c3a1082be053
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 15:54:18 2016 -0800
+
+    finished queue implementation
+
+commit 609f9bd47d74e8fc8c4eb3c9a550d0a8dedd4fac
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 13:15:10 2016 -0800
+
+    queue implementation finished
+
+commit 110006b114eb290311c720c4b73ca204855f9c03
+Merge: 856f61c d87dfcd
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 13:14:04 2016 -0800
+
+    idk fuck this
+
+commit 856f61c991366df2a0cc7c0f20bf3b737610144f
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 13:12:29 2016 -0800
+
+    merge commit
+
+commit d87dfcd4378137eb34d31774dc3ff283cd1b0af7
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 12:04:11 2016 -0500
+
+    new C example
+
+commit a32b0d76e6110941f1460cdd21c4c481bdeced0b
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 19 01:47:49 2016 -0500
+
+    added ignore
+
+commit 466a5084aca6d2a55b74446f5219b22a21bc25f5
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 18 21:40:09 2016 -0800
+
+    look at all those zeros
+
+commit e8be69911353bce6d2ae2c2ada0cdbf240971cb0
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 18 21:33:41 2016 -0800
+
+    DID IT
+
+commit df2475b680ed320659b620d6052739a8fdd9bc9c
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 18 19:05:30 2016 -0800
+
+    getting there in 250
+
+commit 981e8e31101ef3addfeaacc1aa763b52d67e331c
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Wed Feb 17 21:39:16 2016 -0800
+
+    fixed output
+
+commit 17dda0996f3be2e60c1a496437121cb281a3e3bf
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Wed Feb 17 21:28:41 2016 -0800
+
+    getting closer
+
+commit abbe2bbc256404dca78191f42b77dbd46bb753b1
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Wed Feb 17 11:43:24 2016 -0800
+
+    more 250 stuff
+
+commit 4c57208522bd82413851ae4607aa586ca1545e0a
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Tue Feb 16 22:56:15 2016 -0800
+
+    hoping this works
+
+commit 48bba67d85d3584a3f241c4d13293fc11bc40474
+Author: Andrew Plaza <Andrew Plaza>
+Date:   Tue Feb 16 22:53:11 2016 -0800
+
+    finished equality NE method in UUI accum
+
+commit f43551039d4e4078e05ce0eba50778424f0f371e
+Author: Andrew Plaza <Andrew Plaza>
+Date:   Tue Feb 16 22:14:01 2016 -0800
+
+    getting UUI done
+
+commit 4e62df6c7805da047dba229a2376830ae2fdcadc
+Author: Andrew Plaza <Andrew Plaza>
+Date:   Tue Feb 16 19:14:24 2016 -0800
+
+    new Project from 250
+
+commit 1576780e2dc6d5963601486ae1a5f96294ee794c
+Author: Andrew Plaza <Andrew Plaza>
+Date:   Tue Feb 16 18:23:02 2016 -0800
+
+    new stuff
+
+commit 39f072817a8ac50212d5e66b2c57864a3849f046
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Fri Feb 12 00:19:47 2016 -0500
+
+    added output.txt
+
+commit 374b55e784b0fb5571aaaa14bd1a076ef4df2351
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 11 23:35:32 2016 -0500
+
+    modified readmes to markdown
+
+commit 23d3a2ca4ff64f67e56cbf91e33de431418adf8b
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 11 23:34:45 2016 -0500
+
+    added a readme to MORG
+
+commit fa2464d30f616f8e79ec5804083cf3d1b5bd1a2c
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 11 23:33:42 2016 -0500
+
+    added a readme and modified existing readme in 240
+
+commit 466bf38c974523756649737e0b0c58d273325591
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 11 23:32:45 2016 -0500
+
+    modified readme in 240
+
+commit 095b9148de24d306d3dc4d36f45c8d7a71ed324b
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 11 23:31:40 2016 -0500
+
+    organization more
+
+commit 6ba3a41c45f30ab5499eb2bc1ab4d70f753a1512
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 11 23:27:51 2016 -0500
+
+    organization is Key
+
+commit 47894593af0b31504ab1f5e0ad4221f1ecf920bd
+Author: Andrew Plaza <andrew.plaza15@gmail.com>
+Date:   Thu Feb 11 23:26:12 2016 -0500
+
+    first project, first commit, LETS GO
