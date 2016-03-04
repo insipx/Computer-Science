@@ -6,18 +6,20 @@ public class BinarySearchTree implements BinaryTreeInterface {
 
     public BinarySearchTree() {
         head = new Node();
+        head.value = 0;
     }
 
     @Override
     public void insert(Node node, int value) {
         if (node.value == 0) {
             node.value = value;
+            node.root = true;
         } else if (node.value == value) {
             pass("Element already exists.");
         } else if (node.value < value) {
             if (node.right != null) {
                 insert(node.right, value);
-            } else {
+            } else { //else it's gotta be null
                 node.right = new Node();
                 node.right.value = value;
             }
@@ -32,29 +34,50 @@ public class BinarySearchTree implements BinaryTreeInterface {
     }
 
     @Override
-    public void delete(Node node, int value) {
-        if (node.value == value) {
-            if(node.left == null && node.right == null ) { //its a leaf node
-                node.parent = null;
+    public void delete(Node parent, int value) {
+        if(parent.value == value && parent.root == true){
+            Node tmp = parent.right;
+            while(tmp.left != null){
+                tmp = tmp.left;
+            }
+            tmp.left = parent.left;
+            parent = parent.right;
+            parent.root = true;
+        }
+        else if ((parent.right != null && parent.right.value == value)
+                || //OR
+            (parent.left != null && parent.left.value == value)) {
+            Node node;
+            if (parent.right != null && parent.right.value == value) node = parent.right; else node = parent.left;
+            if(node.left == null && node.right == null ){//its a leaf node
+               if (parent.value > value){
+                   parent.left = null;
+               }else{
+                  parent.right = null;
+               }
             }else{
-                if(node.left!= null){
-                    Node tmp = node.left;
-                    while(tmp.right != null){
-                        tmp = tmp.right;
+                if(node.right != null){
+                    Node tmp  = node.right;
+                    while(tmp.left != null){
+                        tmp = tmp.left;
                     }
-                    tmp.right = node.right;
-                    node.parent = node.left;
+                    parent.left = tmp;
+                    if(parent.value > value){
+                        parent.left = node.right;
+                    }else{
+                        parent.right = node.right;
+                    }
                 }else{
-                    node.parent = node.right;
+                    parent.right = node.right;
                 }
             }
 
-        } else if (node.value < value && node.right != null) {
-            delete(node.right, value);
-        } else if (node.value > value && node.left != null) {
-            delete(node.left, value);
+        } else if (parent.value < value && parent.right != null) {
+            delete(parent.right, value);
+        } else if (parent.value > value && parent.left != null) {
+            delete(parent.left, value);
         } else {
-            pass("Specified node does not exist - " + value);
+            pass("Specified value does not exist - " + value);
         }
     }
 
@@ -77,9 +100,7 @@ public class BinarySearchTree implements BinaryTreeInterface {
             return;
         }
         dumptree(node.left);
-        System.out.println("----------------------------");
         pass(Integer.toString(node.value));
-        System.out.println("----------------------------");
         dumptree(node.right);
     }
 }
