@@ -5,4 +5,5 @@ public interface BinaryTreeInterface {
     void delete(Node node, int value);
     void dumptree(Node node);
     void pass(String msg);
+    void passln(String msg);
 }

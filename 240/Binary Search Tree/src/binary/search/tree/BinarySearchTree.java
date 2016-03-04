@@ -62,12 +62,9 @@ public class BinarySearchTree implements BinaryTreeInterface {
                     while(tmp.left != null){
                         tmp = tmp.left;
                     }
-                    parent.left = tmp;
-                    if(parent.value > value){
-                        parent.left = node.right;
-                    }else{
-                        parent.right = node.right;
-                    }
+                    tmp.left = node.left;
+                    parent.left = node.right;
+
                 }else{
                     parent.left = node.left;
                 }
@@ -91,17 +88,30 @@ public class BinarySearchTree implements BinaryTreeInterface {
     }
 
     @Override
-    public void pass(String msg) {
+    public void passln(String msg) {
         System.out.println(msg);
+    }
+    public void pass(String msg){
+        System.out.print(msg);
     }
 
     @Override
     public void dumptree(Node node) {
-        if (node == null) {
-            return;
-        }
-        dumptree(node.left);
-        pass(Integer.toString(node.value));
-        dumptree(node.right);
+
+
+        passln("===");
+        pass("Root Level: ");
+        passln(Integer.toString(node.value));
+        dumptreer(node);
+        passln("");
+        passln("====");
     }
+    private void dumptreer(Node node){
+        
+        dumptreer(node.left);
+        dumptreer(node.right);
+
+
+    }
+
 }

@@ -10,10 +10,14 @@ public class BinarySearchTreeDriver {
         t.insert(t.head, 5);
         t.insert(t.head, 7);
         t.insert(t.head, 21);
+        t.insert(t.head, 25);
+        t.insert(t.head, 26);
+        t.insert(t.head, 27);
+        t.insert(t.head, 23);
         t.dumptree(t.head);
         t.delete(t.head, 20);
         t.delete(t.head, 21);
-        t.dumptree(t.head);
-        t.delete(t.head, 35);
+        //t.dumptree(t.head);
+      //  t.delete(t.head, 35);
     }
 }
