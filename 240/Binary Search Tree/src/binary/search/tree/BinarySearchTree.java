@@ -13,7 +13,6 @@ public class BinarySearchTree implements BinaryTreeInterface {
     public void insert(Node node, int value) {
         if (node.value == 0) {
             node.value = value;
-            node.root = true;
         } else if (node.value == value) {
             pass("Element already exists.");
         } else if (node.value < value) {
@@ -35,20 +34,22 @@ public class BinarySearchTree implements BinaryTreeInterface {
 
     @Override
     public void delete(Node parent, int value) {
-        if(parent.value == value && parent.root == true){
-            Node tmp = parent.right;
+        if(head.value == value){ // because we dealing with head
+            Node tmp = head.right;
             while(tmp.left != null){
                 tmp = tmp.left;
             }
-            tmp.left = parent.left;
-            parent = parent.right;
-            parent.root = true;
+            tmp.left = head.left;
+            head = parent.right;
+            parent.right = null;
+            parent.left = null;
         }
         else if ((parent.right != null && parent.right.value == value)
                 || //OR
             (parent.left != null && parent.left.value == value)) {
             Node node;
             if (parent.right != null && parent.right.value == value) node = parent.right; else node = parent.left;
+
             if(node.left == null && node.right == null ){//its a leaf node
                if (parent.value > value){
                    parent.left = null;
@@ -68,7 +69,7 @@ public class BinarySearchTree implements BinaryTreeInterface {
                         parent.right = node.right;
                     }
                 }else{
-                    parent.right = node.right;
+                    parent.left = node.left;
                 }
             }
 
