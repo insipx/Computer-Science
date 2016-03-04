@@ -1,0 +1,25 @@
+/usr/lib/jvm/java-8-openjdk/bin/java -Didea.launcher.port=7532 -Didea.launcher.bin.path=/usr/share/intellijidea-ce/bin -Dfile.encoding=UTF-8 -classpath "/usr/lib/jvm/java-8-openjdk/jre/lib/charsets.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/ext/cldrdata.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/ext/dnsns.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/ext/jaccess.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/ext/localedata.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/ext/nashorn.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/ext/sunec.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/ext/sunjce_provider.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/ext/sunpkcs11.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/ext/zipfs.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/jce.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/jsse.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/management-agent.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/resources.jar:/usr/lib/jvm/java-8-openjdk/jre/lib/rt.jar:/home/insidious/Spring Semester/Computer-Science/240/Binary Search Tree/out/production/Binary Search Tree:/usr/share/intellijidea-ce/lib/idea_rt.jar" com.intellij.rt.execution.application.AppMain bst.BST_Main
+
+/\/\/\/\/\/\/\/\/\/\/\/ Commence DumpTree  /\/\/\/\/\/\/\/\/\/\/\/ 
+Level: 0  = 20,
+Level: 1 = 10,30,
+Level: 2 = 5,21,
+Level: 3 = 7,
+Level: 4 = 
+Level: 5 = 
+/\/\/\/\/\/\/\/\/\/\/\/ End DumpTree  /\/\/\/\/\/\/\/\/\/\/\/ 
+
+
+/\/\/\/\/\/\/\/\/\/\/\/ Commence DumpTree  /\/\/\/\/\/\/\/\/\/\/\/ 
+Level: 0  = 30,
+Level: 1 = 10,
+Level: 2 = 5,
+Level: 3 = 7,
+Level: 4 = 
+Level: 5 = 
+/\/\/\/\/\/\/\/\/\/\/\/ End DumpTree  /\/\/\/\/\/\/\/\/\/\/\/ 
+
+
+*WARNING ↓ Value Does not exist*
+        35
+*WARNING ↑ Value Does not exist*
