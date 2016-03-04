@@ -2,92 +2,96 @@ package binary.search.tree;
 
 public class BinarySearchTree implements BinaryTreeInterface {
 
-    Node head;
+    TreeNode head;
 
     public BinarySearchTree() {
-        head = new Node();
+        head = new TreeNode();
         head.value = 0;
     }
 
     @Override
-    public void insert(Node node, int value) {
+    public void insert(TreeNode node, int value) {
         if (node.value == 0) {
             node.value = value;
         } else if (node.value == value) {
-            pass("Element already exists.");
+            System.out.println(value + " is already in this tree.");
         } else if (node.value < value) {
             if (node.right != null) {
                 insert(node.right, value);
-            } else { //else it's gotta be null
-                node.right = new Node();
+            } else {
+                node.right = new TreeNode();
                 node.right.value = value;
             }
         } else {
             if (node.left != null) {
                 insert(node.left, value);
             } else {
-                node.left = new Node();
+                node.left = new TreeNode();
                 node.left.value = value;
             }
         }
     }
 
     @Override
-    public void delete(Node parent, int value) {
-        if(head.value == value){ // because we dealing with head
-            Node tmp = head.right;
-            while(tmp.left != null){
-                tmp = tmp.left;
+    public void delete(TreeNode node, int value) {
+        if (head.value == value) {
+            TreeNode tmp1 = head.right;
+            while (tmp1.left != null) {
+                tmp1 = tmp1.left;
             }
-            tmp.left = head.left;
-            head = parent.right;
-            parent.right = null;
-            parent.left = null;
-        }
-        else if ((parent.right != null && parent.right.value == value)
-                || //OR
-            (parent.left != null && parent.left.value == value)) {
-            Node node;
-            if (parent.right != null && parent.right.value == value) node = parent.right; else node = parent.left;
-
-            if(node.left == null && node.right == null ){//its a leaf node
-               if (parent.value > value){
-                   parent.left = null;
-               }else{
-                  parent.right = null;
-               }
-            }else{
-                if(node.right != null){
-                    Node tmp  = node.right;
-                    while(tmp.left != null){
-                        tmp = tmp.left;
+            tmp1.left = head.left;
+            head = node.right;
+            node.right = null;
+            node.left = null;
+        } else if ((node.right != null && node.right.value == value) || (node.left != null && node.left.value == value)) {
+            TreeNode tmp2;
+            if (node.right != null && node.right.value == value) {
+                tmp2 = node.right;
+            } else {
+                tmp2 = node.left;
+            }
+            if (tmp2.left == null && tmp2.right == null) {
+                if (node.value > value) {
+                    node.left = null;
+                } else {
+                    node.right = null;
+                }
+            } else {
+                if (tmp2.right != null) {
+                    TreeNode tmp1 = tmp2.right;
+                    while (tmp1.left != null) {
+                        tmp1 = tmp1.left;
                     }
+<<<<<<< HEAD
                     tmp.left = node.left;
                     parent.left = node.right;
 
                 }else{
                     parent.left = node.left;
+=======
+                    node.left = tmp1;
+                    if (node.value > value) {
+                        node.left = tmp2.right;
+                    } else {
+                        node.right = tmp2.right;
+                    }
+                } else {
+                    node.left = tmp2.left;
+>>>>>>> 98a08526812a5a654a553761ccc1d90999da1049
                 }
             }
 
-        } else if (parent.value < value && parent.right != null) {
-            delete(parent.right, value);
-        } else if (parent.value > value && parent.left != null) {
-            delete(parent.left, value);
+        } else if (node.value < value && node.right != null) {
+            delete(node.right, value);
+        } else if (node.value > value && node.left != null) {
+            delete(node.left, value);
         } else {
-            pass("Specified value does not exist - " + value);
-        }
-    }
-
-    public Node minValue(Node node) {
-        if (node.left == null) {
-            return node.left;
-        } else {
-            return minValue(node.left);
+            System.out.println("Delete failed: " + value + " is not in this tree.");
         }
     }
 
     @Override
+<<<<<<< HEAD
     public void passln(String msg) {
         System.out.println(msg);
     }
@@ -105,6 +109,29 @@ public class BinarySearchTree implements BinaryTreeInterface {
         dumptreer(node);
         passln("");
         passln("====");
+=======
+    public void dumptree(TreeNode node) {
+        //The internet says it might be my best bet is to use a queue,
+        //so I just dug up the queue I wrote earlier in the semester.
+        //This just prints by levels.
+        if (node == null) return;
+        Queue<TreeNode> currentLevel = new Queue<>();
+        Queue<TreeNode> nextLevel = new Queue<>();
+        currentLevel.enqueue(node);
+        while (currentLevel.size != 0) {
+            TreeNode currNode = currentLevel.dequeue();
+            if (currNode != null) {
+                System.out.print(currNode.value + " ");
+                nextLevel.enqueue(currNode.left);
+                nextLevel.enqueue(currNode.right);
+            }
+            if (currentLevel.size == 0) {
+                System.out.println();
+                currentLevel = nextLevel;
+                nextLevel = new Queue<>();
+            }
+        }
+>>>>>>> 98a08526812a5a654a553761ccc1d90999da1049
     }
     private void dumptreer(Node node){
         
