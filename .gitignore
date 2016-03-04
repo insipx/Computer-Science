@@ -34,6 +34,18 @@ nbproject/private/*
 .plugins/*
 .settings/*
 .settings/
+240/Binary Search Tree/.idea/
+240/Binary Search Tree/.idea/*
+240/Binary Search Tree/dist/
+240/Binary Search Tree/dist/*
+240/Binary Search Tree/nbproject/
+240/Binary Search Tree/nbproject/*
+
+
+
+
+
+
 
 *.iml
 *.classpath
