@@ -12,6 +12,17 @@ import java.util.Scanner;
 *  Known flaws: ...
 */
 
+
+
+for (int i = 1; i <= 4; i++){
+        for(int j = 0; j<= )
+
+        }
+
+
+
+
+
 public class DrawVariableSizeBuilding {
 
     // Establish a Scanner object that can read data entered at the keyboard.
