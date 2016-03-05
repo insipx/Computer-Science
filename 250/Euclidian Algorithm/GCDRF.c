@@ -1,12 +1,15 @@
 void DumpS(int n);
 
 int gcd(int p, int q) {
+
   int result;
   DumpS(64);
-  if(p == q) result = p;
-  else result = gcd(q, p % q);
+
+  if(p == 0) result = q;
+  else result = gcd(q % p, p);
 
   DumpS(64);
+
   return result;
 
 } 

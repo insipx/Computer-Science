@@ -15,20 +15,19 @@ gcd:
 	pushl	$64
 	call	DumpS
 	addl	$16, %esp
-	movl	8(%ebp), %eax
-	cmpl	12(%ebp), %eax
+	cmpl	$0, 8(%ebp)
 	jne	.L2
-	movl	8(%ebp), %eax
+	movl	12(%ebp), %eax
 	movl	%eax, -12(%ebp)
 	jmp	.L3
 .L2:
-	movl	8(%ebp), %eax
+	movl	12(%ebp), %eax
 	cltd
-	idivl	12(%ebp)
+	idivl	8(%ebp)
 	movl	%edx, %eax
 	subl	$8, %esp
+	pushl	8(%ebp)
 	pushl	%eax
-	pushl	12(%ebp)
 	call	gcd
 	addl	$16, %esp
 	movl	%eax, -12(%ebp)

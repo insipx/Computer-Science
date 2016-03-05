@@ -1,11 +1,11 @@
 	.file	"GCDRM.c"
 	.section	.rodata
 .LC0:
-	.string	"Enter an Integer"
+	.string	"Enter an Integer: "
 .LC1:
 	.string	"%d"
 .LC2:
-	.string	"Enter another Integer"
+	.string	"Enter another Integer: "
 .LC3:
 	.string	"the GCD of %d and %d is %d\n"
 	.text
