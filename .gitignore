@@ -17,6 +17,8 @@ Help/.recommenders/
 Help/.recommenders/*
 Help/.metadata/.mylyn
 Help/metadata/mylyn
+Help/.idea/*
+Help/.idea
 build/
 build/*
 build/built-jar.properties
