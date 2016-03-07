@@ -1,4 +1,6 @@
-package com.company;
+/**
+ * Created by insidious on 3/6/16.
+ */
 import java.util.Scanner;
 
 /* Java program that "draws" a building having a size specified by three user
@@ -12,17 +14,6 @@ import java.util.Scanner;
 *  Known flaws: ...
 */
 
-
-
-for (int i = 1; i <= 4; i++){
-        for(int j = 0; j<= )
-
-        }
-
-
-
-
-
 public class DrawVariableSizeBuilding {
 
     // Establish a Scanner object that can read data entered at the keyboard.
@@ -32,6 +23,7 @@ public class DrawVariableSizeBuilding {
     /* Prompts the user for each of the three inputs, reads them, and draws
     ** a building with the specified dimensions.
     */
+
     public static void main(String[] args)
     {
         // Get input data from the user.
@@ -50,7 +42,15 @@ public class DrawVariableSizeBuilding {
                                      int storyCount,
                                      int storyHeight)
     {
-        drawRoof(buildingWidth);
+         drawRoof(buildingWidth);
+
+
+
+
+        /*for(int i = 0; i < storyCount; i++) {
+            drawStory(buildingWidth, storyHeight);
+        }
+         drawFoundation(buildingWidth);*/
     }
 
 
@@ -58,16 +58,19 @@ public class DrawVariableSizeBuilding {
     */
     private static void drawRoof(int width)
     {
-       printChars('-', width );
 
-        }
+
+        printChars('-', width - 2);
+        printChars('/', 1);
+        printChars(' ', width-2);
+
+    }
 
     /* Draws a story (with the specified height) of a building having the
     ** specified width.
     */
     private static void drawStory(int width, int height)
     {
-        // STUB!!
     }
 
 
@@ -81,11 +84,9 @@ public class DrawVariableSizeBuilding {
 
     /* Prints the specified character (ch) the specified number (k) of times.
     */
-    private static void printChars(int ch, )
+    private static void printChars(char ch, int k)
     {
-        for (int i=1; i <= 1; i=i+1) {
-            System.out.print(ch);
-        }
+        for (int i=1; i <= k; i=i+1) { System.out.print(ch); }
     }
 
     /* Returns the integer value entered at the keyboard in response to the
