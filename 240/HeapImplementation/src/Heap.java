@@ -28,9 +28,14 @@ public class Heap implements HeapInterface {
     }
 
     public void sortHeap() {
-        int x = 1;
+        int x = 0;
+        int y = 0;
         while (x < this.size) {
+            while (y < this.size) {
 
+                y++;
+            }
+            x++;
         }
     }
 
