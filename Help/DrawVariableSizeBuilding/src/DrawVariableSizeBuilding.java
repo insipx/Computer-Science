@@ -47,10 +47,6 @@ public class DrawVariableSizeBuilding {
 
 
 
-        /*for(int i = 0; i < storyCount; i++) {
-            drawStory(buildingWidth, storyHeight);
-        }
-         drawFoundation(buildingWidth);*/
     }
 
 
@@ -59,10 +55,13 @@ public class DrawVariableSizeBuilding {
     private static void drawRoof(int width)
     {
 
+        //Layer One
+        printChars(' ', 3);
+        printChars('-', width-2);;
 
-        printChars('-', width - 2);
-        printChars('/', 1);
-        printChars(' ', width-2);
+        //Layer two
+
+
 
     }
 
@@ -70,7 +69,19 @@ public class DrawVariableSizeBuilding {
     ** specified width.
     */
     private static void drawStory(int width, int height)
+
     {
+
+        for(int i = 1; i <= height; i = i + 1) {
+            printChars(' ', 1);
+            printChars('|', 1);
+            printChars(' ', width);
+            printChars('|', 1);
+            System.out.println();
+
+
+        }
+
     }
 
 
