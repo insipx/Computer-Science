@@ -10,7 +10,7 @@ public class Heap<T> implements HeapInterface<T> {
     int[] heap;
     //heap pointer
     int HP;
-    public void Heap<T>{
+    public void Heap{
 
        this.size = 0;
        this.maxSize = 8;
@@ -33,21 +33,17 @@ public class Heap<T> implements HeapInterface<T> {
                 int tmpHP = HP;
                 heap[tmpHP] = val;
                 int parent = findParent(tmpHP);
-
-                while(parent != ROOT){
-                        if(heap[tmpHP] > heap[parent]) {
-                            //swap HP with parent
-                            swap(heap, HP, parent);
-                        }
-                    parent = findParent(parent);
-
+                if(heap[tmpHP] > heap[parent]) {
+                    exchange(heap, parent, tmpHP);
                 }
+                this.size++;
+                this.HP++;
             }
         }
 
     }
     public T extract_max(){
-
+        int max = heap[ROOT-1];
         return null;
     }
     public void dumpheap(){
@@ -57,6 +53,15 @@ public class Heap<T> implements HeapInterface<T> {
     private void swap(int[] arr, int i, int j){
 
 
+    }
+    private void exchange(int[] heap, int parent, int HP){
+        while(parent != ROOT){
+            if(heap[HP] > heap[parent]) {
+                //swap HP with parent
+                swap(heap, HP, parent);
+            }
+            parent = findParent(parent);
+        }
     }
     private int[] copyArr(int[] arr1, int[] arr2){
         for(int i = 0; i < arr1.length; i ++){
@@ -73,7 +78,12 @@ public class Heap<T> implements HeapInterface<T> {
         }
     return parent;
     }
+    private int findChild(int parent, boolean right){
+        if (right) {
+            return (parent*2) + 1;
+        }else{
+            return (parent*2);
+        }
 
-
-
+    }
 }

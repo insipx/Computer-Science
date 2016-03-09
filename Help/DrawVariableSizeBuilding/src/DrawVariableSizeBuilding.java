@@ -42,7 +42,7 @@ public class DrawVariableSizeBuilding {
                                      int storyCount,
                                      int storyHeight)
     {
-         drawRoof(buildingWidth);
+        drawRoof(buildingWidth);
 
 
 
@@ -69,21 +69,15 @@ public class DrawVariableSizeBuilding {
     ** specified width.
     */
     private static void drawStory(int width, int height)
-
     {
-
         for(int i = 1; i <= height; i = i + 1) {
             printChars(' ', 1);
             printChars('|', 1);
             printChars(' ', width);
             printChars('|', 1);
             System.out.println();
-
-
         }
-
     }
-
 
     /* Draws the foundation of a building having the specified width.
     */
@@ -95,9 +89,12 @@ public class DrawVariableSizeBuilding {
 
     /* Prints the specified character (ch) the specified number (k) of times.
     */
+
     private static void printChars(char ch, int k)
     {
-        for (int i=1; i <= k; i=i+1) { System.out.print(ch); }
+        for (int i=1; i <= k; i=i+1) {
+            System.out.print(ch);
+        }
     }
 
     /* Returns the integer value entered at the keyboard in response to the
