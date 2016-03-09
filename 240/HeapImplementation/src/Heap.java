@@ -9,7 +9,7 @@ public class Heap implements HeapInterface {
 
     public Heap() {
         this.size = 0;
-        this.max = 5;
+        this.max = 25;
         this.heap = new int[this.max];
     }
 
@@ -24,18 +24,18 @@ public class Heap implements HeapInterface {
             this.heap = tmp;
         }
         this.heap[this.size - 1] = x;
-        //this.sortHeap();
+        this.sortHeap();
     }
 
     public void sortHeap() {
-        int x = 0;
-        int y = 0;
-        while (x < this.size) {
-            while (y < this.size) {
-
-                y++;
+        for(int x = 0; x < this.size; x++) {
+            for(int y = 0; y < this.size; y++) {
+		if (this.heap[y] > this.heap[this.findParent(y)]){
+			int tmp = this.heap[y];
+			this.heap[y] = this.heap[this.findParent(y)];
+			this.heap[this.findParent(y)] = tmp;		
+		}
             }
-            x++;
         }
     }
 
@@ -44,7 +44,7 @@ public class Heap implements HeapInterface {
     }
 
     public int findLeft(int i) {
-        return (i * 2);
+        return (i * 2);  
     }
 
     public int findRight(int i) {
@@ -53,22 +53,24 @@ public class Heap implements HeapInterface {
 
     public int extractMax() {
         int x = this.heap[0];
+	this.sortHeap();
         return x;
     }
 
     public void dumpHeap() {
-        System.out.println("Dumpin' the heap.");
-        int counter = 1;
-        int x = 0;
-        for (int i = 0; i < this.size; i++) {
-            while (x <= counter) {
-                if (x >= size) break;
-                System.out.print(this.heap[x] + " ");
-                x++;
-                if (x == counter) break;
-            }
-            counter *= 2;
-            System.out.println();
-        }
+	tree(0, 0);
+    }
+
+    private void format(String ch, int n){
+	for (int i = 0; i < n; i++){
+	    System.out.print(ch);
+	}
+    }
+
+    private void tree(int root, int level){
+	tree(this.findRight(root), level+1);
+	format("  ", level);
+	System.out.println(this.heap[root]);
+	tree(this.findLeft(root), level+1);
     }
 }
