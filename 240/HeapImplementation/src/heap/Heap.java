@@ -4,21 +4,20 @@ package heap;
  * Created by insidious on 3/6/16.
  */
 public class Heap<T> implements HeapInterface<T> {
-    final int ROOT = 1;
+    //final int ROOT = 1;
     int size;
     int maxSize;
     int[] heap;
     //heap pointer
-    int HP;
-    public void Heap{
-
+    //int HP;
+    public Heap(){
        this.size = 0;
        this.maxSize = 8;
-        heap = new int[maxSize -1];
-        HP = ROOT;
+       heap = new int[maxSize];
+     //  HP = ROOT;
     }
     public void insert(int val){
-        //first parent
+        //root case
         if(this.size == 0){
             heap[0] = val;
             this.size++;
@@ -37,13 +36,12 @@ public class Heap<T> implements HeapInterface<T> {
                     exchange(heap, parent, tmpHP);
                 }
                 this.size++;
-                this.HP++;
+                //this.HP++;
             }
         }
 
     }
     public T extract_max(){
-        int max = heap[ROOT-1];
         return null;
     }
     public void dumpheap(){
