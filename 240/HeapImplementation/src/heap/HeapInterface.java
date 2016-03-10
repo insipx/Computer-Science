@@ -6,7 +6,7 @@ package heap;
 public interface HeapInterface<T> {
 
     public void insert(int val);
-    public T extract_max();
+    public int extract_max();
     public void dumpheap();
 
 }

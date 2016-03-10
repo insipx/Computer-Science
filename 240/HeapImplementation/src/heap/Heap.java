@@ -48,8 +48,18 @@ public class Heap<T> implements HeapInterface<T> {
         }
 
     }
-    public T extract_max(){
-        return null;
+    public int extract_max(){
+        int tmp = heap[ROOT];
+        int newRoot = size;
+        while(heap[newRoot] == 0){
+            newRoot--;
+        }
+        swap(heap, 1, newRoot);
+        heap[newRoot] = 0;
+        //repair the heap
+        repairHeap();
+
+        return tmp;
     }
     public void dumpheap()
     {
@@ -63,22 +73,17 @@ public class Heap<T> implements HeapInterface<T> {
         arr[i] = arr[j];
         arr[j] = tmp;
     }
-    private void exchange(int[] heap, int parent, int curr){
-        while(parent != ROOT){
-            if(heap[curr] > heap[parent]) {
-                //swap HP with parent
-                swap(heap, curr, parent);
-            }
-            curr = parent;
-            parent = findParent(parent);
-        }
-    }
+
+    //System.copyarr works too but I like my methods
     private int[] copyArr(int[] arr1, int[] arr2){
-        for(int i = 0; i < arr1.length; i ++){
+
+        for (int i = 0; i < arr1.length; i ++){
             arr2[i] = arr1[i];
         }
         return arr2;
     }
+
+    //a find parent method is useful, O(1);
     private int findParent(int parent){
         if(parent % 2 != 0){
             parent--;
@@ -87,11 +92,31 @@ public class Heap<T> implements HeapInterface<T> {
             return parent/2;
         }
     }
+    //opposite of above method, O(1)
     private int findChild(int parent, boolean right){
         if (right) {
             return (parent*2) + 1;
         }else{
             return (parent*2);
+        }
+    }
+    //look through the levels and make sure the parent nodes are always > than children
+    private void repairHeap(){
+        int level = 1;
+        int lastParent = size;
+        while (heap[lastParent] == 0){
+           lastParent --;
+        }
+        lastParent = findParent(lastParent);
+        while(level <= lastParent){
+                                //leftchild                                 right child
+            if(heap[level] < heap[findChild(level, false)] || heap[level] < heap[findChild(level, true)]){
+                //set parent to the larger of the childs
+                int newParent = (heap[findChild(level,false)] > heap[findChild(level, true)]) ? findChild(level, false) : findChild(level,true);
+                //swap the newparent with level
+                swap(heap, newParent, level);
+            }
+            level++;
         }
 
     }

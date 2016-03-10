@@ -18,6 +18,8 @@ public class Heap_Main {
         heap.insert(5);
         heap.insert(21);
         heap.insert(32);
+        //heap.dumpheap();
+        heap.extract_max();
         heap.dumpheap();
 
 
