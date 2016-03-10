@@ -6,11 +6,13 @@ public class Heap implements HeapInterface {
     int[] heap;
     int max;
     int size;
+    int recur;
 
     public Heap() {
         this.size = 0;
         this.max = 25;
         this.heap = new int[this.max];
+	this.recur = 0;
     }
 
     public void insert(int x) {
@@ -58,19 +60,23 @@ public class Heap implements HeapInterface {
     }
 
     public void dumpHeap() {
-	tree(0, 0);
-    }
-
-    private void format(String ch, int n){
-	for (int i = 0; i < n; i++){
-	    System.out.print(ch);
+	int level = 2;
+	int i = 0;
+	int j = 0;
+	System.out.println(this.heap[i]);
+	i++;
+	while(i < this.size){
+	    while(j <= level){
+		System.out.print(this.heap[i] + " ");
+		j++;
+		//System.out.print(" This is j: " + j + " ");
+		i++;
+		//System.out.print(" This is i: " + i + " ");
+	    }
+	    System.out.println();
+	    level *= 2;
+	    //System.out.println("Number of nodes in this level: " + level);
+	    j = 0;
 	}
-    }
-
-    private void tree(int root, int level){
-	tree(this.findRight(root), level+1);
-	format("  ", level);
-	System.out.println(this.heap[root]);
-	tree(this.findLeft(root), level+1);
     }
 }
