@@ -8,13 +8,10 @@ public class Heap<T> implements HeapInterface<T> {
     int size;
     int maxSize;
     int[] heap;
-    //heap pointer
-    //int HP;
     public Heap(){
        this.size = 1;
        this.maxSize = 10;
        heap = new int[maxSize];
-     //  HP = ROOT;
     }
     public void insert(int val){
         //root case
@@ -49,17 +46,23 @@ public class Heap<T> implements HeapInterface<T> {
 
     }
     public int extract_max(){
-        int tmp = heap[ROOT];
-        int newRoot = size;
-        while(heap[newRoot] == 0){
-            newRoot--;
-        }
-        swap(heap, 1, newRoot);
-        heap[newRoot] = 0;
-        //repair the heap
-        repairHeap();
 
-        return tmp;
+        if(heap[ROOT] == 0){
+            return 0;
+        }else{
+            int tmp = heap[ROOT];
+            int newRoot = size;
+            while(heap[newRoot] == 0){
+                newRoot--;
+            }
+            swap(heap, 1, newRoot);
+            heap[newRoot] = 0;
+            //repair the heap
+            repairHeap();
+            size--;
+            return tmp;
+        }
+
     }
     public void dumpheap()
     {
