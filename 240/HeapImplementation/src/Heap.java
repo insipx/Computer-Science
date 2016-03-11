@@ -4,7 +4,7 @@ import static java.lang.System.out;
 /**
  * Sean Batzel
  */
-public class Heap {
+class Heap {
     private final int root = 1;
     private int size;
     @SuppressWarnings("CanBeFinal")
@@ -47,6 +47,7 @@ public class Heap {
         }
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public int extractMax() {
         if (heap[root] == 0) {
             out.println("Empty heap.");
@@ -86,7 +87,7 @@ public class Heap {
             levelSize = nextSize(levelSize);
             while (queue.size != 0) {
                 Integer tmp = queue.dequeue();
-                out.print(" " + tmp + " ");
+                out.print(tmp + " ");
             }
             out.println();
         }
@@ -121,7 +122,7 @@ public class Heap {
         }
     }
 
-    public void sortHeap() {
+    private void sortHeap() {
         int level = 1;
         int lastParent = size - 1;
         lastParent = findParent(lastParent);

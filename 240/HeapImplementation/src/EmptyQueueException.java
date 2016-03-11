@@ -24,6 +24,7 @@ class EmptyQueueException extends Exception {
      *
      * @param msg the detail message.
      */
+    @SuppressWarnings("unused")
     public EmptyQueueException(String msg) {
         super(msg);
     }
