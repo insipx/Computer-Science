@@ -26,12 +26,17 @@ public class Heap_Main {
         i = 0;
         int[] sorted = new int[12];
         tmp = heap.extract_max();
+        heap.dumpheap();
         while(tmp != 0){
             sorted[i] = tmp;
             i++;
             tmp = heap.extract_max();
+            heap.dumpheap();
         }
-
+        System.out.println("Sorted Array");
+        for(int j =0; j < sorted.length; j++){
+            System.out.print( " "+sorted[j]+",");
+        }
 
 
     }

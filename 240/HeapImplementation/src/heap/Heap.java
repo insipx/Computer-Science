@@ -64,13 +64,17 @@ public class Heap<T> implements HeapInterface<T> {
     private int getNextLvlSize(int currLvlSize){
         return currLvlSize * 2;
     }
-    private int getPrevLvlSize(int currLvlSize){
-        return currLvlSize /2 ;
+    private void makeSpaces(int spaceCount){
+       for(int i =0; i < spaceCount; i ++){
+            System.out.print(" ");
+        }
     }
     public void dumpheap()
     {
+        System.out.println("><><><><><><><><><><><><><><>Commence Heap Dump ><><><><><><><><><><><><><><>");
 
         int currLvlSize, count;
+        int spaceCount = 32;
         Queue<Integer> current = new Queue();
         currLvlSize = 1;
         count = 0;
@@ -89,21 +93,33 @@ public class Heap<T> implements HeapInterface<T> {
 
             count += currLvlSize;
 
-
            //get ready for the next queue
             currLvlSize = getNextLvlSize(currLvlSize);
 
-            int treeCount = current.size;
+
+            //Print formatting....:(
+
+            int dashCount = 0;
+            for(int i = 0; i < spaceCount; i ++){
+                System.out.print(' ');
+            }
             while(current.size != 0){
                 Integer tmp = current.dequeue();
-                System.out.print(" " + tmp + " ");
+                if(tmp != 0) {
+                    System.out.print( " " + tmp + " ");
+                    dashCount ++;
+                }else{
+                }
             }
             System.out.println();
-            for(int i = 0; i < treeCount; i ++){
-                System.out.print(" / \\ ");
+            makeSpaces(spaceCount);
+            for(int i = 0; i < dashCount; i ++){
+                System.out.print("/ \\ ");
             }
+            spaceCount = spaceCount - 2;
             System.out.println();
         }
+        System.out.println("><><><><><><><><><><><><><><>End Heap Dump ><><><><><><><><><><><><><><>");
     }
     //swap array value in index i with array value in index j
     private void swap(int[] arr, int i, int j){
