@@ -70,9 +70,8 @@ public class Heap<T> implements HeapInterface<T> {
     public void dumpheap()
     {
 
-        int currLvlSize, prevLvlSize, count;
+        int currLvlSize, count;
         Queue<Integer> current = new Queue();
-        Queue<Integer> next = new Queue();
         currLvlSize = 1;
         count = 0;
         while(count <= size) {
@@ -88,10 +87,6 @@ public class Heap<T> implements HeapInterface<T> {
                 }
             }
 
-           // nextLvlSize = getNextLvlSize(currLvlSize);
-           /* for (int i = currLvlSize + 1; i <= nextLvlSize; i++) {
-                next.enqueue(heap[i]);
-            }*/
             count += currLvlSize;
 
 
@@ -109,13 +104,6 @@ public class Heap<T> implements HeapInterface<T> {
             }
             System.out.println();
         }
-
-
-
-
-/*        for(int i = 0; i < heap.length; i ++){
-            System.out.print(heap[i] + " , ");
-        }*/
     }
     //swap array value in index i with array value in index j
     private void swap(int[] arr, int i, int j){
