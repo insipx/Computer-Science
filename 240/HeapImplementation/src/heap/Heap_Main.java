@@ -22,6 +22,8 @@ public class Heap_Main {
         heap.extract_max();
         heap.dumpheap();
 
+
+        //HeapSort
         int tmp, i;
         i = 0;
         int[] sorted = new int[12];
