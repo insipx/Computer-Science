@@ -3,7 +3,7 @@
 # Python test script
 # Sean Batzel
 
-class Heap (object): # class Heap implememts HeapInterface()
+class Heap (object): # class Heap implements HeapInterface()
 	def __init__(self): # public Heap()
 		self.heap = [] # int[] heap = new int[20];
 		

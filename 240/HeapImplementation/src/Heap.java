@@ -1,149 +1,136 @@
+import static java.lang.System.arraycopy;
+import static java.lang.System.out;
+
 /**
- * Created by insidious on 3/6/16.
+ * Sean Batzel
  */
-public class Heap implements HeapInterface {
-    final int ROOT = 1;
-    int size;
-    int maxSize;
-    int[] heap;
-    public Heap(){
-       this.size = 1;
-       this.maxSize = 8;
-       heap = new int[maxSize];
+public class Heap {
+    private final int root = 1;
+    private int size;
+    @SuppressWarnings("CanBeFinal")
+    private
+    int max;
+    private int[] heap;
+
+    public Heap() {
+        this.size = 1;
+        this.max = 8;
+        heap = new int[max];
     }
-    public void insert(int val){
-        //root case
-        if(this.size == 1){
-            heap[ROOT] = val;
+
+    public void insert(int val) {
+        if (this.size == 1) {
+            heap[root] = val;
             this.size++;
-        }else{
-            if(this.size >= this.maxSize ){
-                //multiplying by two ensures a full (no null array out of bounds) next level of the heap
-                int increment = maxSize * 2;
-                int[] tmp = new int[maxSize + increment];
-                copyArr(heap, tmp);
+        } else {
+            if (this.size >= this.max) {
+                int level = max * 2;
+                int[] tmp = new int[max + level];
+                arraycopy(heap, 0, tmp, 0, heap.length);
                 heap = tmp;
-            }
-            else{
+            } else {
                 heap[size] = val;
                 int parent = findParent(size);
-                if(heap[size] > heap[parent]) {
-                    int curr = size;
-                    swap(heap, curr, parent);
-                    while(parent != ROOT){
-                        curr = parent;
+                if (heap[size] > heap[parent]) {
+                    int current = size;
+                    swap(current, parent);
+                    while (parent != root) {
+                        current = parent;
                         parent = findParent(parent);
-                        if(heap[curr] > heap[parent]) {
-                            swap(heap, curr, parent);
+                        if (heap[current] > heap[parent]) {
+                            swap(current, parent);
                         }
                     }
                 }
                 this.size++;
-                //this.HP++;
             }
         }
     }
-    public int extractMax(){
 
-        if(heap[ROOT] == 0){
+    public int extractMax() {
+        if (heap[root] == 0) {
+            out.println("Empty heap.");
             return 0;
-        }else{
-            int tmp = heap[ROOT];
+        } else {
+            int tmp = heap[root];
             int newRoot = size - 1;
-            swap(heap, 1, newRoot);
+            swap(1, newRoot);
             heap[newRoot] = 0;
-            //repair the heap
             size--;
             sortHeap();
             return tmp;
         }
+    }
 
+    private int nextSize(int levelSize) {
+        return levelSize * 2;
     }
-    private int getNextLvlSize(int currLvlSize){
-        return currLvlSize * 2;
-    }
-    private int getPrevLvlSize(int currLvlSize){
-        return currLvlSize /2 ;
-    }
-    public void dumpHeap()
-    {
 
-        int currLvlSize, count;
-        Queue<Integer> current = new Queue();
-        currLvlSize = 1;
+    public void dumpHeap() {
+        int levelSize, count;
+        //noinspection unchecked
+        Queue<Integer> queue = new Queue();
+        levelSize = 1;
         count = 0;
-        while(count <= size) {
-
-            //enqueue all the values
-            if(currLvlSize == 1){
-                current.enqueue(heap[currLvlSize]);
-            }else{
+        while (count <= size) {
+            if (levelSize == 1) {
+                queue.enqueue(heap[levelSize]);
+            } else {
                 int j = count + 1;
-                for(int i = 0; i < currLvlSize; i++){
-                    current.enqueue(heap[j]);
+                for (int i = 0; i < levelSize; i++) {
+                    queue.enqueue(heap[j]);
                     j++;
                 }
             }
-
-            count += currLvlSize;
-
-
-           //get ready for the next queue
-            currLvlSize = getNextLvlSize(currLvlSize);
-
-            int treeCount = current.size;
-            while(current.size != 0){
-                Integer tmp = current.dequeue();
-                System.out.print(" " + tmp + " ");
+            count += levelSize;
+            levelSize = nextSize(levelSize);
+            while (queue.size != 0) {
+                Integer tmp = queue.dequeue();
+                out.print(" " + tmp + " ");
             }
-            System.out.println();
-            for(int i = 0; i < treeCount; i ++){
-                System.out.print(" / \\ ");
-            }
-            System.out.println();
+            out.println();
+        }
+        out.println();
+    }
+
+    private void swap(int y, int z) {
+        int tmp = this.heap[y];
+        this.heap[y] = this.heap[z];
+        this.heap[z] = tmp;
+    }
+
+    private int findParent(int parent) {
+        return parent / 2;
+    }
+
+    private int findRightChild(int parent) {
+        parent = (parent * 2) + 1;
+        if (parent > size) {
+            return 0;
+        } else {
+            return parent;
         }
     }
-    //swap array value in index i with array value in index j
-    private void swap(int[] arr, int i, int j){
-        int tmp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = tmp;
-    }
-    //System.copyarr works too but I like my methods
-    private int[] copyArr(int[] arr1, int[] arr2){
-        for (int i = 0; i < arr1.length; i ++){
-            arr2[i] = arr1[i];
+
+    private int findLeftChild(int parent) {
+        parent = (parent * 2);
+        if (parent > size) {
+            return 0;
+        } else {
+            return parent;
         }
-        return arr2;
     }
-    //a find parent method is useful, O(1);
-    private int findParent(int parent){
-        //just the operations for findParent from class
-        if(parent % 2 != 0) return ((parent-1)/2);
-        else return parent/2;
-    }
-    //opposite of above method, O(1)
-    private int findChild(int parent, boolean right){
-        if (right) parent = (parent*2) + 1;
-        else parent = (parent*2);
-        if(parent > size) return 0;
-        else{return parent;}
-    }
-    //look through the levels and make sure the parent nodes are always > than children
-    public void sortHeap(){
+
+    public void sortHeap() {
         int level = 1;
-        int lastParent = size-1;
+        int lastParent = size - 1;
         lastParent = findParent(lastParent);
-        while(level <= lastParent){
-                                //leftchild                                 right child
-            if(heap[level] < heap[findChild(level, false)] || heap[level] < heap[findChild(level, true)]){
-                //set parent to the larger of the childs
-                int newParent = (heap[findChild(level,false)] > heap[findChild(level, true)]) ? findChild(level, false) : findChild(level,true);
-                //swap the newparent with level
-                swap(heap, newParent, level);
+        while (level <= lastParent) {
+            if (heap[level] < heap[findLeftChild(level)] || heap[level] < heap[findRightChild(level)]) {
+                int newParent = (heap[findLeftChild(level)] > heap[findRightChild(level)]) ? findLeftChild(level) : findRightChild(level);
+                swap(newParent, level);
             }
             level++;
         }
-
     }
 }
