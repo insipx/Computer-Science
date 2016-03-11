@@ -20,7 +20,6 @@ public class Heap_Main {
         heap.insert(32);
         //heap.dumpheap();
         heap.extract_max();
-        heap.extract_max();
         heap.dumpheap();
 
         int tmp, i;
@@ -30,11 +29,9 @@ public class Heap_Main {
         while(tmp != 0){
             sorted[i] = tmp;
             i++;
+            tmp = heap.extract_max();
         }
-        System.out.println("Should be sorted");
-        for(int j = 0; j < sorted.length; j++ ){
-            System.out.println(sorted[j]);
-        }
+
 
 
     }
