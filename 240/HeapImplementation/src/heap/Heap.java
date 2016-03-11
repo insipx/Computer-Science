@@ -100,13 +100,15 @@ public class Heap<T> implements HeapInterface<T> {
             //Print formatting....:(
 
             int dashCount = 0;
-            for(int i = 0; i < spaceCount; i ++){
-                System.out.print(' ');
-            }
+            makeSpaces(spaceCount);
             while(current.size != 0){
                 Integer tmp = current.dequeue();
                 if(tmp != 0) {
-                    System.out.print( tmp + " " + " ");
+                    if(current.size % 2 != 0){
+                        System.out.print( tmp + "  ");
+                    }else{
+                         System.out.print( tmp + " ");
+                    }
                     dashCount ++;
                 }else{
                 }
@@ -114,7 +116,11 @@ public class Heap<T> implements HeapInterface<T> {
             System.out.println();
             makeSpaces(spaceCount);
             for(int i = 0; i < dashCount; i ++){
-                System.out.print( "/\\  ");
+                if(dashCount % 2 != 0){
+                   System.out.print("/\\ ");
+                }else {
+                    System.out.print("/\\  ");
+                }
             }
             spaceCount = spaceCount - 2;
             System.out.println();
