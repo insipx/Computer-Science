@@ -106,7 +106,7 @@ public class Heap<T> implements HeapInterface<T> {
             while(current.size != 0){
                 Integer tmp = current.dequeue();
                 if(tmp != 0) {
-                    System.out.print( " " + tmp + " ");
+                    System.out.print( tmp + " " + " ");
                     dashCount ++;
                 }else{
                 }
@@ -114,7 +114,7 @@ public class Heap<T> implements HeapInterface<T> {
             System.out.println();
             makeSpaces(spaceCount);
             for(int i = 0; i < dashCount; i ++){
-                System.out.print("/ \\ ");
+                System.out.print( "/\\  ");
             }
             spaceCount = spaceCount - 2;
             System.out.println();
