@@ -42,7 +42,10 @@ nbproject/private/*
 240/Binary Search Tree/dist/*
 240/Binary Search Tree/nbproject/
 240/Binary Search Tree/nbproject/*
-
+240/HeapImplementation/out/*
+240/HeapImplementation/out
+240/HeapImplementation/src/heap/.idea/*
+240/HeapImplementation/src/heap/.idea/
 
 
 *.iml
