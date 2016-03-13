@@ -19,14 +19,13 @@ public class Heap<T> implements HeapInterface<T> {
             heap[ROOT] = val;
             this.size++;
         }else{
-            if(this.size >= this.maxSize ){
-                //multiplying by two ensures a full (no null array out of bounds) next level of the heap
-                int increment = maxSize * 2;
-                int[] tmp = new int[maxSize + increment];
-                copyArr(heap, tmp);
-                heap = tmp;
-            }
-            else{
+               if(this.size >= this.maxSize){
+                     //multiplying by two ensures a full (no null array out of bounds) next level of the heap
+                    int increment = maxSize * 2;
+                    int[] tmp = new int[maxSize + increment];
+                    copyArr(heap, tmp);
+                    heap = tmp;
+                }
                 heap[size] = val;
                 int parent = findParent(size);
                 if(heap[size] > heap[parent]) {
@@ -42,7 +41,6 @@ public class Heap<T> implements HeapInterface<T> {
                 }
                 this.size++;
                 //this.HP++;
-            }
         }
     }
     public int extract_max(){
