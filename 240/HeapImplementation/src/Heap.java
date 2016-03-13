@@ -1,69 +1,137 @@
-/**
- * Sean Batzel 3/6/2016.
- */
-public class Heap implements HeapInterface {
+import static java.lang.System.arraycopy;
+import static java.lang.System.out;
 
-    int[] heap;
+/**
+ * Sean Batzel
+ */
+class Heap {
+    private final int root = 1;
+    private int size;
+    @SuppressWarnings("CanBeFinal")
+    private
     int max;
-    int size;
+    private int[] heap;
 
     public Heap() {
-        this.size = 0;
-        this.max = 5;
-        this.heap = new int[this.max];
+        this.size = 1;
+        this.max = 8;
+        heap = new int[max];
     }
 
-    public void insert(int x) {
-        this.size++;
-        if (this.size > this.max) {
-            this.max++;
-            int[] tmp = new int[max];
-            for (int i = 0; i < max; i++) {
-                tmp[i] = this.heap[i];
+    public void insert(int val) {
+        if (this.size == 1) {
+            heap[root] = val;
+            this.size++;
+        } else {
+            if (this.size >= this.max) {
+                int level = max * 2;
+                int[] tmp = new int[max + level];
+                arraycopy(heap, 0, tmp, 0, heap.length);
+                heap = tmp;
+            } else {
+                heap[size] = val;
+                int parent = findParent(size);
+                if (heap[size] > heap[parent]) {
+                    int current = size;
+                    swap(current, parent);
+                    while (parent != root) {
+                        current = parent;
+                        parent = findParent(parent);
+                        if (heap[current] > heap[parent]) {
+                            swap(current, parent);
+                        }
+                    }
+                }
+                this.size++;
             }
-            this.heap = tmp;
-        }
-        this.heap[this.size - 1] = x;
-        //this.sortHeap();
-    }
-
-    public void sortHeap() {
-        int x = 1;
-        while (x < this.size) {
-
         }
     }
 
-    public int findParent(int i) {
-        return (i / 2);
-    }
-
-    public int findLeft(int i) {
-        return (i * 2);
-    }
-
-    public int findRight(int i) {
-        return ((2 * i) + 1);
-    }
-
+    @SuppressWarnings("UnusedReturnValue")
     public int extractMax() {
-        int x = this.heap[0];
-        return x;
+        if (heap[root] == 0) {
+            out.println("Empty heap.");
+            return 0;
+        } else {
+            int tmp = heap[root];
+            int newRoot = size - 1;
+            swap(1, newRoot);
+            heap[newRoot] = 0;
+            size--;
+            sortHeap();
+            return tmp;
+        }
+    }
+
+    private int nextSize(int levelSize) {
+        return levelSize * 2;
     }
 
     public void dumpHeap() {
-        System.out.println("Dumpin' the heap.");
-        int counter = 1;
-        int x = 0;
-        for (int i = 0; i < this.size; i++) {
-            while (x <= counter) {
-                if (x >= size) break;
-                System.out.print(this.heap[x] + " ");
-                x++;
-                if (x == counter) break;
+        int levelSize, count;
+        //noinspection unchecked
+        Queue<Integer> queue = new Queue();
+        levelSize = 1;
+        count = 0;
+        while (count <= size) {
+            if (levelSize == 1) {
+                queue.enqueue(heap[levelSize]);
+            } else {
+                int j = count + 1;
+                for (int i = 0; i < levelSize; i++) {
+                    queue.enqueue(heap[j]);
+                    j++;
+                }
             }
-            counter *= 2;
-            System.out.println();
+            count += levelSize;
+            levelSize = nextSize(levelSize);
+            while (queue.size != 0) {
+                Integer tmp = queue.dequeue();
+                out.print(tmp + " ");
+            }
+            out.println();
+        }
+        out.println();
+    }
+
+    private void swap(int y, int z) {
+        int tmp = this.heap[y];
+        this.heap[y] = this.heap[z];
+        this.heap[z] = tmp;
+    }
+
+    private int findParent(int parent) {
+        return parent / 2;
+    }
+
+    private int findRightChild(int parent) {
+        parent = (parent * 2) + 1;
+        if (parent > size) {
+            return 0;
+        } else {
+            return parent;
+        }
+    }
+
+    private int findLeftChild(int parent) {
+        parent = (parent * 2);
+        if (parent > size) {
+            return 0;
+        } else {
+            return parent;
+        }
+    }
+
+    private void sortHeap() {
+        int level = 1;
+        int lastParent = size - 1;
+        lastParent = findParent(lastParent);
+        while (level <= lastParent) {
+            if (heap[level] < heap[findLeftChild(level)] || heap[level] < heap[findRightChild(level)]) {
+                int newParent = (heap[findLeftChild(level)] > heap[findRightChild(level)]) ? findLeftChild(level) : findRightChild(level);
+                swap(newParent, level);
+            }
+            level++;
         }
     }
 }
