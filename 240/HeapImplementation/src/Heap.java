@@ -6,7 +6,7 @@ import static java.lang.System.out;
  */
 class Heap {
     private final int root = 1;
-    private int size;
+    public int size;
     @SuppressWarnings("CanBeFinal")
     private
     int max;
@@ -28,6 +28,21 @@ class Heap {
                 int[] tmp = new int[max + level];
                 arraycopy(heap, 0, tmp, 0, heap.length);
                 heap = tmp;
+                max = max + level;
+                heap[size] = val;
+                int parent = findParent(size);
+                if (heap[size] > heap[parent]) {
+                    int current = size;
+                    swap(current, parent);
+                    while (parent != root) {
+                        current = parent;
+                        parent = findParent(parent);
+                        if (heap[current] > heap[parent]) {
+                            swap(current, parent);
+                        }
+                    }
+                }
+                this.size++;
             } else {
                 heap[size] = val;
                 int parent = findParent(size);
