@@ -33,11 +33,15 @@ public class DrawVariableSizeBuilding {
 
         // Draw a building of the size specified by the three inputs.
         drawBuilding(width, numStories, storyHeight);
+
+
     }
 
 
     /* Draws a building of the size specified by the three parameters.
     */
+
+
     private static void drawBuilding(int buildingWidth,
                                      int storyCount,
                                      int storyHeight)

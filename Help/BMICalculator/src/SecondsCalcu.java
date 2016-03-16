@@ -16,19 +16,31 @@ class SecondsCalculator {
    // Create a Scanner object that can read input entered on the keyboard.
    private static Scanner keyboard = new Scanner(System.in);
 
+   final int test = 30;
+
+
+
    public static void main(String[] args) {
 
       // symbolic constant declarations:
       final double HOURS_PER_DAY = 24;
       final int MINUTES_PER_HOUR = 60;
 
+
       // variable declarations:
-      int days;    // measured in inches (input)
       int hours;    // measured in pounds (input)
       int minutes; // measured in minutes (input)
-      double seconds;    // body mass index    (output)
- 
-       
+
+      double seconds = 8263;
+
+      int days = 32;
+
+      int result = days + (int) seconds;
+
+
+
+
+
       // Prompt user to enter height and assign response to input variable
       days = getIntFromUser("Enter # of Days: ");
 
