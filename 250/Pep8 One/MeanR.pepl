@@ -1,0 +1,106 @@
+-------------------------------------------------------------------------------
+      Object
+Addr  code   Symbol   Mnemon  Operand     Comment
+-------------------------------------------------------------------------------
+             ;The "Mean" Program
+             ;CMPS 250 - Spring 2016
+             ;P.M.J.
+             ;Updated to the MEANR version by Sean Batzel
+             ;A lean, "mean", averagin' machine.
+             ;This solution was developed solely by myself.
+             ;
+             ;------------------------------------------------------------------------------------------------------------------------------
+             ;KNOWN ISSUES
+             ;Floating-point arithmetic doesn't work.
+             ;Because we're working with 16-bit integers, the overflow happens after 65,535.
+             ;Can we declare blocks for integers larger than 2 bytes?
+             ;------------------------------------------------------------------------------------------------------------------------------
+             ;
+0000  04002E          BR      main        ;Skip over the declarations during execution.
+             ;------------------------------------------------------------------------------------------------------------------------------
+             ; String declarations-
+             ;------------------------------------------------------------------------------------------------------------------------------
+0003  546F74 tmsg:    .ASCII  "Total is \x00";So far as I can tell, \x00 is an endline. String terminator? Yeah, null character.
+      616C20 
+      697320 
+      00     
+000D  436F75 cmsg:    .ASCII  "Count is \x00";Labels are just like declaring variables or subroutines maybe? Yeah, identifiers basically.
+      6E7420 
+      697320 
+      00     
+0017  546865 mmsg:    .ASCII  "The mean is \x00";.ASCII tells the assembler to set aside a block of memory and read it as a string.
+      206D65 
+      616E20 
+      697320 
+      00     
+             ;------------------------------------------------------------------------------------------------------------------------------
+             ; Memory allocations.
+             ;------------------------------------------------------------------------------------------------------------------------------
+0024  0000   value:   .BLOCK  2           ;2 byte block?
+0026  0000   total:   .BLOCK  2           ;Must be.
+0028  0000   count:   .BLOCK  2           ;I'm pretty sure pep/8 is a 16-bit architecture.
+002A  0000   mean:    .BLOCK  2           ;That works for an integer.
+002C  0000   check:   .BLOCK  2           ;Another integer block for tracking how many times we've subtracted.
+             ;------------------------------------------------------------------------------------------------------------------------------
+002E  24     main:    NOP0                ;No OPerator - or as I like to call it, Nope. Basically just hands execution off to the next line.
+             ;------------------------------------------------------------------------------------------------------------------------------
+             ; Loop to read and accumulate integer input values
+             ;------------------------------------------------------------------------------------------------------------------------------
+002F  310024 loop:    DECI    value,d     ;Take a number.
+0032  C10024          LDA     value,d     ;Load it into A.
+0035  B00000          CPA     0,i         ;What is A compared to 0?
+0038  0A0050          BREQ    done        ;If it's 0, we're done here.
+003B  C10026          LDA     total,d     ;Load total into A.
+003E  710024          ADDA    value,d     ;Add value to A.
+0041  E10026          STA     total,d     ;Store A as total.
+0044  C10028          LDA     count,d     ;Load count into A.
+0047  700001          ADDA    1,i         ;Increment.
+004A  E10028          STA     count,d     ;Store A as count.
+004D  04002F          BR      loop        ;Repeat the MAIN loop.
+0050  24     done:    NOP0                ;Nope.
+0051  C10026          LDA     total,d     ;Load total into the accumulator.
+0054  E1002A          STA     mean,d      ;Copy total into mean.
+             ;------------------------------------------------------------------------------------------------------------------------------
+             ; Report the total and count - and now the mean.
+             ;------------------------------------------------------------------------------------------------------------------------------
+             ;Weird pseudodivision operation. What we're going to do is subtract the COUNT variable (the number
+             ;of objects in the list) from the accumulator register (currently populted by MEAN) until it's
+             ;less than or equal to 0. If that works, the value of mean when the loop terminates SHOULD be the
+             ;average. This doesn't want to execute continuously, if we try doing it in the middle of the main
+             ;loop it'll just confuse the program.
+0057  C1002A divide:  LDA     mean,d      ;Load mean into the accumulator.
+005A  810028          SUBA    count,d     ;Subtract the count from A.
+005D  E1002A          STA     mean,d      ;Put the accumulator back into the memory address associated with mean.
+0060  C1002C          LDA     check,d     ;Load CHECK into the accumulator.
+0063  700001          ADDA    1,i         ;Increment the counter.
+0066  E1002C          STA     check,d     ;Store it back into check.
+0069  C1002A          LDA     mean,d      ;Load mean into the accumulator.
+006C  B00000          CPA     0,i         ;How does this compare to 0?
+006F  100057          BRGT    divide      ;If it's not less than or equal to, we can keep on loopin' on.
+             ;Wow, it worked.
+             ;Once that whole thing is done, we just move right along.
+0072  410003          STRO    tmsg,d      ;String Output - prints a string.
+0075  390026          DECO    total,d     ;Decimal Output - Hands stdin a number.
+0078  50000A          CHARO   '\n',i      ;This little guy wraps up the line and hands it a carriage return.
+007B  41000D          STRO    cmsg,d      ;Print a thing.
+007E  390028          DECO    count,d     ;Print another thing.
+0081  50000A          CHARO   '\n',i      ;Ding. (Carriage return. "Ding" because typewriters used to go "ding")
+0084  410017          STRO    mmsg,d      ;Shouldn't need to print much more.
+0087  39002C          DECO    check,d     ;I could be wrong.
+008A  50000A          CHARO   '\n',i      ;Next line.
+008D  00              STOP                ;Stop execution.
+008E                  .END                  ;Pseudo-operator to tell the assembler to take a minute for itself.
+-------------------------------------------------------------------------------
+
+
+Symbol table
+--------------------------------------
+Symbol    Value        Symbol    Value
+--------------------------------------
+check     002C         cmsg      000D
+count     0028         divide    0057
+done      0050         loop      002F
+main      002E         mean      002A
+mmsg      0017         tmsg      0003
+total     0026         value     0024
+--------------------------------------
