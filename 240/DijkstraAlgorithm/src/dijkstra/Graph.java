@@ -9,11 +9,13 @@ public class Graph<T> {
     int[][] distances;
     // """ Infinity """
     private final int INFINITY = 2147483647;
+
     Graph(){
         size = 0;
         graph = null;
         distances = null;
-
+        graph = null;
+        distances = null;
     }
 
     Graph(Node[] graph, int[][] distances, int size){
@@ -22,21 +24,18 @@ public class Graph<T> {
         this.size = size;
     }
 
-    public void insert(Node newNode, int[] newDists){
-
-
-    }
-
-    public void delete(T Node){
-
-    }
-
     public void dumpGraph(){
-
+        for(int i = 0; i < size; i++){
+            System.out.print( " | " + "LABEL: " + graph[i].label + " DISTANCE: "+ graph[i].distance + " | ");
+        }
+        System.out.println();
     }
+
+    //djisktras!
     public void findDjikstrasPath(){
 
         initToInfinity();
+        //setNodesToUnfinished();
         int start = 0;
         //find the start node
         for(int i =0; i < size; i++) if (graph[i].start) start = i;
@@ -103,4 +102,10 @@ public class Graph<T> {
             u.finished = true;
         }
     }
+    private void setNodesToUnfinished(){
+        for(int i = 0; i < size; i++){
+            graph[i].finished = false;
+        }
+    }
+    //end of djisktras main function and associated functions
 }

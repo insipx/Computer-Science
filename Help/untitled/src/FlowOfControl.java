@@ -9,29 +9,10 @@
 public class FlowOfControl {
 
     public static void main(String[] args) {
+        int a = 0xFFFFFF20;
+        int b = 0x00000020;
+        System.out.println("A: " + a);
+        System.out.println("B: " + b);
 
-        int height = 10;
-        int val = 0;
-
-        for(int i = 1; i <= height; i++ ){
-            val = val + 1
-            System.out.println(val * height);
-        }
-
-
-
-    }
-
-    private static void method1() {
-        System.out.println("Inside method1().");
-    }
-
-    private static void method2() {
-        System.out.println("Inside method2(); about to call method1().");
-        method1();
-        System.out.println("Inside method2(); back from method1().");
-        System.out.println("About to call method1() a second time!.");
-        method1();
-        System.out.println("Inside method2(); back from method1() again.");
     }
 }

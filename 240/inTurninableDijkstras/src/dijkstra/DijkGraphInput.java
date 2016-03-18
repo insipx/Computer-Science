@@ -25,7 +25,8 @@ public class DijkGraphInput {
         createGraph();
 
         System.out.println("What do you want to do with the Graph?");
-        System.out.println("'s' to show the graph, 'fd' to find Dijkstras Shortest Path and ':q' to quit");
+        System.out.println("a to add a node to the graph, d to delete, s to show the graph, fd to find Dijkstras Shortest Path and :q to quit \n" +
+                "c is needed as the first option in order to initialize the graph");
         System.out.print("Enter Input: ");
 
         while (exit != true) {
@@ -34,15 +35,58 @@ public class DijkGraphInput {
             option = option.toLowerCase();
 
             //ADD
-            if (option.equals("s")) {
+            if (option.equals("a")) {
+                int[] newDists;
+                Node tmp = new Node();
+                System.out.print("Enter data for new Node: ");
+                String newNode = keyboard.nextLine();
+                String[] newData = newNode.split("\\s+");
+                newDists = new int[newData.length / 2];
+                int j = 0;
+                for(int i = 0; i < newData.length /2; i = i + 2){
+                    newDists[j] = Integer.parseInt(newData[i]);
+                    j++;
+                }
+                //set the refs for the new node
+                tmp.refs = new Node[newData.length/2];
+                j = 0;
+                for(int i = 1; i < newData.length/2; i = i + 2){
+                    tmp.refs[j] = graph.graph[Integer.valueOf(newData[i])];
+                }
+                if(startFromNode()){
+                    startNode();
+                }else{
+
+                }
+               graph.insert(tmp, newDists);
+
+
+            //DELETE
+            }else if(option.equals("d")){
+                System.out.println("What Node do you want to delete?: ");
+                String del = keyboard.nextLine();
+                String[] delNode = del.split("\\s+");
+                if(delNode.length > 1){
+                    System.out.print("Enter only one node. Nothing deleted.");
+                    endOfInput();
+                }else{
+                    graph.delete(graph.graph[Integer.parseInt(delNode[0])]);
+                    endOfInput();
+                }
+
+
+            //SHOW GRAPH
+            } else if (option.equals("s")) {
                 graph.dumpGraph();
                 endOfInput();
+
 
             //FIND DIJKSTRAS PATH
             } else if(option.equals("fd")){
                 graph.findDjikstrasPath();
                 System.out.println("Djikstras Shortest Path is Found. Press 's' to show the Graph");
                 endOfInput();
+
 
             //EXIT
             } else if (option.equals(":q")) {
@@ -57,7 +101,7 @@ public class DijkGraphInput {
         return graph;
     }
     private void endOfInput(){
-        System.out.println("s to show the graph, fd to show Dijkstras Path and :q to quit");
+        System.out.println("a to add a node to the graph, d to delete, s to show the graph, fd to show Dijkstras Path and :q to quit");
         System.out.print("Input: ");
     }
     private void createGraph(){
@@ -100,11 +144,6 @@ public class DijkGraphInput {
                     k++;
                 }
                 //get the distances, too
-                //instead of storing all the distances like this
-                //it would be better for the Node to have something like node.distances[][] where the first [index] would be of nodes (node) is
-                //pointing to, and for the next [index] to be the distance  to that node
-                //however, i realized this AFTER I finished my code ;(
-                //this comment is here for if, for some reason, i need to revisit this project
                 k = 0;
                 distList[i] = new int[dataList.length / 2];
                 for (int j = 0; j < dataList.length; j = j + 2) {
@@ -121,17 +160,28 @@ public class DijkGraphInput {
         //end of input
         endOfInput();
     }
+    private boolean startFromNode(){
+        System.out.println("Did you want to start from a new node?");
+        String output = keyboard.nextLine();
+        output = output.toLowerCase();
 
+        if(output.equals("y")){
+            return true;
+        }else if (output.equals("n")){
+            return false;
+        }else{
+            System.out.println("Sorry, I didn't understand what you said");
+            startFromNode();
+        }
+        return false;
+    }
     private void startNode(){
-        //just parsing to make sure we have the right start node
         System.out.print("Which node is the start node?");
         String start = keyboard.nextLine();
-        String[] startL = start.split("\\s+");
-        if( 0 <= Integer.parseInt(startL[0]) && Integer.parseInt(startL[0]) < graph.size && isInteger(startL[0])) {
+        if( 0 < Integer.parseInt(start) && Integer.parseInt(start) < graph.size && isInteger(start)) {
             graph.graph[Integer.parseInt(start)].start = true;
         }else{
             System.out.println("Sorry, I did not understand what you typed.");
-            startNode();
         }
     }
 
