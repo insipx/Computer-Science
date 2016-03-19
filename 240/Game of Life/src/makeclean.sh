@@ -1,2 +1,0 @@
-rm *.class
-javac *.java
