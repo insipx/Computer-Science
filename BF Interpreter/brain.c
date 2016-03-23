@@ -2,6 +2,6 @@
 
 #include <stdio.h>
 
-int main(){ //How do I do file operations in C??
+int main(char *filename){
 	
 }
