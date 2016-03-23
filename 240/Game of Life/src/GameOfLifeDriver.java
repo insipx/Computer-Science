@@ -75,7 +75,7 @@ public class GameOfLifeDriver {
 
     private static final boolean[][] world3 = new boolean[][]{
             {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
-            {false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
             {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
             {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
             {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
@@ -96,14 +96,38 @@ public class GameOfLifeDriver {
             {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
     };
 
+    private static final boolean[][] world4 = new boolean[][]{
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,true,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+            {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false},
+    };
+
     public static void main(String[] args){
         GameOfLifeTests tests = new GameOfLifeTests();
         //tests.continuousTest(world1);
         //tests.oneTest(world1);
         //tests.oneTest(world2);
         //tests.fiveTests(world2);
-        tests.fiveTests(world3);
+        //tests.fiveTests(world3);
         //tests.continuousTest(world3);
         //tests.neighborhoodTest(world3);
+        tests.threeTests(world3);
     }
 }

@@ -19,7 +19,7 @@ public class GameOfLife {
         this.one = this.two;
     }
 
-    private boolean life(int i, int j) { //And then, life happens. This method's name is a joke.
+    private boolean life(int i, int j) { //And then, life happens.
         boolean live;
         int neighbors = this.neighborHoodOf(i, j);
         if (this.one[i][j]) { //If we're currently alive.

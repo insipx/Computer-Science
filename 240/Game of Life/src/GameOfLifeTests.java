@@ -2,6 +2,8 @@
  * Sean Batzel 3/18/2016.
  */
 
+//A class for holding various testing methods.
+
 public class GameOfLifeTests {
     public void continuousTest(boolean[][] world){
         GameOfLife game = new GameOfLife(world);
@@ -33,6 +35,16 @@ public class GameOfLifeTests {
         GameOfLife game = new GameOfLife(world);
         int i = 0;
         while(i < 100){
+            game.theGameOfLife();
+            i++;
+        }
+    }
+
+    public void threeTests(boolean[][] world){
+        GameOfLife game = new GameOfLife(world);
+        int i = 0;
+        while(i < 3){
+            game.printTheWorld();
             game.theGameOfLife();
             i++;
         }
