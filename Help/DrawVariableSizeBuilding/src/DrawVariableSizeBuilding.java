@@ -33,24 +33,24 @@ public class DrawVariableSizeBuilding {
 
         // Draw a building of the size specified by the three inputs.
         drawBuilding(width, numStories, storyHeight);
+
+
     }
 
 
     /* Draws a building of the size specified by the three parameters.
     */
+
+
     private static void drawBuilding(int buildingWidth,
                                      int storyCount,
                                      int storyHeight)
     {
-         drawRoof(buildingWidth);
+        drawRoof(buildingWidth);
 
 
 
 
-        /*for(int i = 0; i < storyCount; i++) {
-            drawStory(buildingWidth, storyHeight);
-        }
-         drawFoundation(buildingWidth);*/
     }
 
 
@@ -59,10 +59,13 @@ public class DrawVariableSizeBuilding {
     private static void drawRoof(int width)
     {
 
+        //Layer One
+        printChars(' ', 3);
+        printChars('-', width-2);;
 
-        printChars('-', width - 2);
-        printChars('/', 1);
-        printChars(' ', width-2);
+        //Layer two
+
+
 
     }
 
@@ -71,8 +74,14 @@ public class DrawVariableSizeBuilding {
     */
     private static void drawStory(int width, int height)
     {
+        for(int i = 1; i <= height; i = i + 1) {
+            printChars(' ', 1);
+            printChars('|', 1);
+            printChars(' ', width);
+            printChars('|', 1);
+            System.out.println();
+        }
     }
-
 
     /* Draws the foundation of a building having the specified width.
     */
@@ -84,9 +93,12 @@ public class DrawVariableSizeBuilding {
 
     /* Prints the specified character (ch) the specified number (k) of times.
     */
+
     private static void printChars(char ch, int k)
     {
-        for (int i=1; i <= k; i=i+1) { System.out.print(ch); }
+        for (int i=1; i <= k; i=i+1) {
+            System.out.print(ch);
+        }
     }
 
     /* Returns the integer value entered at the keyboard in response to the

@@ -22,6 +22,7 @@ public class BMICalculator3 {
       final double HOURS_PER_DAY = 24;
       final int MINUTES_PER_HOUR = 60;
 
+
       // variable declarations:
       int days;    // measured in inches (input)
       int hours;    // measured in pounds (input)
