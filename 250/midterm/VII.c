@@ -39,6 +39,7 @@ void removeAll(char *array, char c) {
  }
 
  strcpy(array, result); 
+ free(result);
 
 }
 
