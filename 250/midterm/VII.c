@@ -7,6 +7,13 @@
 #define OLD 'a'
 #define NEW 'X'
 
+/*
+ * This is a Solution to problem VII on the Midterm in CMPS 250 for Spring 2016
+ * I, Andrew Plaza, am the sole developer of this work
+ * I worked Alone
+ * No flaws of which I am aware
+*/
+
 void replaceAll(char *array, char c, char replacement) {
   int index = 0;
   while(array[index] != NC) {

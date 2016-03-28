@@ -1,6 +1,12 @@
 ;P.M.J. (Spring 2016)
 ;A program to determine the sum of integers in an inclusive interval
 ;   
+; This is a Solution to problem VIII on the Midterm in CMPS 250 for Spring 2016
+; I, Andrew Plaza, am the sole developer of this work
+; I worked Alone
+; There are no flaws of which I am aware
+;
+
          BR         main
 message: .ASCII     " is the sum.\n"
          .BYTE      0x00
