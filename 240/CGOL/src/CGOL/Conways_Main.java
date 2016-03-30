@@ -7,11 +7,11 @@ public class Conways_Main {
     public static void main(String[] args) {
         Conways life = new Conways(1);
 
-        int i = 0;
-       while(i < 2){
-            System.out.println("Iteration: " + i);
+        int i = 1;
+       while(i <= 3){
+            System.out.println("Step: " + i);
             life.step();
-            life.dumpGraph();
+            life.dumpWorld();
             i++;
         }
 

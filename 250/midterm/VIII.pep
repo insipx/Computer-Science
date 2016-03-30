@@ -5,7 +5,6 @@
 ; I, Andrew Plaza, am the sole developer of this work
 ; I worked Alone
 ; There are no flaws of which I am aware
-;
 
          BR         main
 message: .ASCII     " is the sum.\n"

@@ -38,8 +38,8 @@ public class Conways implements Conways_Interface {
          board1[12][9] = ALIVE;
          board1[12][10] = ALIVE;
          board1[12][11] = ALIVE;
-         System.out.println("Here is the Glider Pattern: ");
-         dumpGraph();
+        // System.out.println("Here is the Glider Pattern: ");
+         //dumpWorld();
       }else{
 
       }
@@ -159,25 +159,26 @@ public class Conways implements Conways_Interface {
    }
 
 
-   public void dumpGraph(){
+   public void dumpWorld(){
       boolean[][] board;
       if(board1Active){
          board = board1;
       }else{
          board = board2;
       }
-      System.out.println("=============================================");
-      for(int i = 0; i < board.length; i++){
-         for(int j = 0; j < board[i].length; j++){
+
+      System.out.println("===========================================================");
+      for(int i = 1; i < board.length-1; i++){
+         for(int j = 1; j < board[i].length-1; j++){
             if(board[i][j]){
                System.out.print(" X ");
             }else{
-               System.out.print(" 0 ");
+               System.out.print(" o ");
             }
          }
          System.out.println();
       }
-      System.out.println("+++++++++++++++++++++++++++++++++++++++++++++");
+      System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
    }
 
 

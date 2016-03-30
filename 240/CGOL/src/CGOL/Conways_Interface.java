@@ -6,7 +6,7 @@ package CGOL;
 public interface Conways_Interface {
     public void initPattern(int pattern);
     public void step();
-    public void dumpGraph();
+    public void dumpWorld();
 
 
 
