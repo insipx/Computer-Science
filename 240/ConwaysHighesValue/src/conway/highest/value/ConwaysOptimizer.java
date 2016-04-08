@@ -208,6 +208,7 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
             endLiveCells = getLiveCells(tmp.getLifeForm());
         }
         double denominator = 2*startLiveCells;
+
         return endLiveCells / denominator;
     }
 

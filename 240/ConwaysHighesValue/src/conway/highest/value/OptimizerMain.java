@@ -14,8 +14,14 @@ public class OptimizerMain{
 
 
         ConwaysOptimizer algorithm = new ConwaysOptimizer(lifeForms, 1000);
+        double startFitness = algorithm.getFitness();
+        System.out.println("Fitness is.." + startFitness);
         for(int i = 0; i < 1000; i++){
             algorithm.run();
+            if(algorithm.getFitness() > startFitness){
+                startFitness = algorithm.getFitness();
+                System.out.println("Fitness is..." + startFitness);
+            }
         }
 
 
