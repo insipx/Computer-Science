@@ -1,5 +1,4 @@
 package conway.highest.value;
-import org.apache.commons.lang3.time.StopWatch;
 import CGOL.Conways;
 
 /**
@@ -7,21 +6,23 @@ import CGOL.Conways;
  */
 public class OptimizerMain{
     public static void main(String[] args) {
+        //seeds
         Conways[] lifeForms = new Conways[3];
-
-        lifeForms[0] = new Conways(Conways.EXPLODER);
+        lifeForms[0] = new Conways(Conways.INF_5X5);
         lifeForms[1] = new Conways(Conways.TEN_CELL_LINE);
-        lifeForms[2] = new Conways(Conways.PUFFER_2);
+        lifeForms[2] = new Conways(Conways.INF_2X12);
+
+
         ConwaysOptimizer algorithm = new ConwaysOptimizer(lifeForms, 1000);
-        StopWatch watch = new StopWatch();
-        watch.start();
-        for(int i = 0; i < 1000; i++) {
+        for(int i = 0; i < 1000; i++){
             algorithm.run();
         }
-        algorithm.dumpSuperiorLife(true);
-        watch.stop();
-        System.out.println(" time is: " + watch.getTime() ) ;
+
+        algorithm.dumpSuperiorLife(false);
         System.out.println("The Fitness Is: " + algorithm.getFitness());
+
+        /*ConwaysOptimizer algorithm = new ConwaysOptimizer(1000);
+        algorithm.test(1000, Conways.TEST);*/
 
     }
 }

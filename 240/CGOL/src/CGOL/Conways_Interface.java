@@ -11,4 +11,6 @@ public interface Conways_Interface {
     public boolean[][] getLifeForm();
     public String toBitString();
     public boolean[][] toBoolArr(String str);
+    public boolean[][] copyArr(boolean[][] source);
+    public void printBoard(boolean[][] board);
 }

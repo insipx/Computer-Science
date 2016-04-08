@@ -1,6 +1,5 @@
 package conway.highest.value;
 
-import org.apache.commons.lang3.time.StopWatch;
 import CGOL.Conways;
 
 import java.util.Random;
@@ -14,88 +13,91 @@ import static CGOL.Conways.*;
  * of Conways Game of life
  */
 
-public class ConwaysOptimizer implements OptimizerInterface {
+public class ConwaysOptimizer extends Conways implements OptimizerInterface {
 
     //constructors
-    final static boolean ALIVE = true;
-    final static boolean DEAD = false;
-    int iterations;
-    int bestFitnessIdx = 0;
-    int bestFitness = 0;
+    private final static boolean ALIVE = true;
+    private final static boolean DEAD = false;
+    private int iterations;
+    private int bestFitnessIdx;
+    private double bestFitness;
+    private int secondBestFitIdx;
+    private int worstFitIdx;
     private Conways[] lifeForms;
 
+    //default
     public ConwaysOptimizer() {
         lifeForms = new Conways[3];
-        lifeForms[0] = new Conways(EXPLODER);
-        lifeForms[1] = new Conways(TEN_CELL_LINE);
-        lifeForms[2] = new Conways(GLIDER);
+        lifeForms[0] = new Conways(EMPTY);
+        lifeForms[1] = new Conways(EMPTY);
+        lifeForms[2] = new Conways(EMPTY);
         iterations = 1000;
-    }
-    //default seeds
-    public ConwaysOptimizer(int iterations) {
-        lifeForms = new Conways[3];
-        lifeForms[0] = new Conways(EXPLODER);
-        lifeForms[1] = new Conways(TEN_CELL_LINE);
-        lifeForms[2] = new Conways(GLIDER);
-        this.iterations = iterations;
+        initFitness();
     }
 
-    //custom seeded constructor
+    //default with iterations
+    public ConwaysOptimizer(int iterations) {
+        lifeForms = new Conways[3];
+        lifeForms[0] = new Conways(EMPTY);
+        lifeForms[1] = new Conways(EMPTY);
+        lifeForms[2] = new Conways(EMPTY);
+        this.iterations = iterations;
+        initFitness();
+    }
+
+    //custom seeded constructors
     public ConwaysOptimizer(Conways[] lifeForms) {
         this.lifeForms = lifeForms;
         iterations = 1000;
+        initFitness();
     }
+
     public ConwaysOptimizer(Conways[] lifeForms, int iterations) {
         this.lifeForms = lifeForms;
         this.iterations = iterations;
+        initFitness();
     }
 
 
     public void run(){
-        for(int i = 0; i < lifeForms.length; i ++){
-            lifeForms[i] = mutate(lifeForms[i]);
-        }
+
+        //only mutate the worst lifeForms using the best
+        //elitist selection
+        //Only mutate inferior lifeForms
+        //because the nature of conways is unpredictable, so we don't want to throw out the best solution
+
+        //highly selective algorithm, 1/1000 chance of being mutated
+        lifeForms[secondBestFitIdx] = mutate(lifeForms[secondBestFitIdx], 500);
+        lifeForms[worstFitIdx] = mutate(lifeForms[worstFitIdx], 500);
+
+
         nextGeneration();
     }
 
     private void nextGeneration() {
-        int worstFitness = 999999999;
-        int worstFitnessIdx = 0;
-        int secondBestFitness = 0;
-        int secondBestFitnessIdx = 0;
-        int fitness;
-        //hope this works
-        for(int i = 0; i < lifeForms.length; i++){
-            fitness = fitness(lifeForms[i], iterations);
-            if(worstFitness > fitness){ worstFitnessIdx = i; worstFitness = fitness;}
-            if (bestFitnessIdx < fitness){ bestFitnessIdx = i; bestFitness = fitness;}
-            if(fitness <= bestFitnessIdx && fitness >= worstFitness) secondBestFitnessIdx = i; secondBestFitness = fitness;
-        }
+        initFitness();
 
-        Conways[] children = new Conways[2];
-        children = doublePointCrossover(lifeForms[bestFitnessIdx],lifeForms[secondBestFitnessIdx]);
-
-        lifeForms[worstFitnessIdx] = children[0];
-        lifeForms[secondBestFitnessIdx] = children[1];
+        Conways[] children;
+        children = singlePointCrossover(lifeForms[bestFitnessIdx], lifeForms[secondBestFitIdx] );
+        lifeForms[worstFitIdx] = children[0];
+        lifeForms[secondBestFitIdx] = children[1];
     }
 
-    //randomly change one thing
-    //this can be called multiple times to call multiple things
-    private Conways mutate(Conways lifeForm) {
+    //randomly change something returns a new lifeForm object
+    private Conways mutate(Conways lifeForm, int probability) {
         //performs one mutation
         Random rand = new Random();
-
+        //string builder because Strings are immutable
         StringBuilder bitString = new StringBuilder(lifeForm.toBitString());
 
         for (int i = 0; i < bitString.length(); i++) {
-            if (rand.nextInt(20) == 0) {
+            if (rand.nextInt(probability) == 0) {
+                //toggle
                 if (bitString.charAt(i) == '1') {
                     bitString.setCharAt(i, '0');
                 } else {
                     bitString.setCharAt(i, '1');
                 }
-            } else {
-
             }
         }
         String result = bitString.toString();
@@ -103,6 +105,22 @@ public class ConwaysOptimizer implements OptimizerInterface {
         return new Conways(lifeForm.toBoolArr(result));
     }
 
+
+    private void initFitness(){
+        double worstFitness = 999999999.99;
+        double fitness;
+        //hope this works
+
+        for(int i = 0; i < lifeForms.length; i++){
+            fitness = fitness(lifeForms[i], iterations);
+
+            if(worstFitness > fitness){ worstFitIdx = i; worstFitness = fitness;}
+
+            if (bestFitness < fitness){ bestFitnessIdx = i; bestFitness = fitness;}
+
+            if(fitness <= bestFitness && fitness >= worstFitness) secondBestFitIdx = i;
+        }
+    }
 
 
     private Conways[] singlePointCrossover(Conways parent, Conways parent2){
@@ -135,71 +153,41 @@ public class ConwaysOptimizer implements OptimizerInterface {
 
         return children;
     }
-/*
-    //two methods for deciding crossover methods: Union or Intersection?
-    //because of the nature and unpredictability of Conways
-    //I believe only testing will solve this problem
 
-    private boolean[][] unionGeneCrossover(boolean[][] lifeForm1,
-                                           boolean[][] lifeForm2) {
-
-        boolean[][] superiorLifeForm = new boolean[20][20];
-
-        for (int i = 0; i < lifeForm1.length; i++) {
-            for (int j = 0; j < lifeForm1.length; j++) {
-                superiorLifeForm[i][j] = lifeForm1[i][j];
-                superiorLifeForm[i][j] = lifeForm2[i][j];
-            }
-        }
-
-        return superiorLifeForm;
-    }
-
-    private boolean[][] intersectGeneCrossover(boolean[][] lifeForm1,
-                                               boolean[][] lifeForm2) {
-        boolean[][] superiorLifeForm = new boolean[20][20];
-
-        for (int i = 0; i < lifeForm1.length; i++) {
-            for (int j = 0; j < lifeForm1.length; j++) {
-                if (lifeForm1[i][j] == ALIVE && lifeForm2[i][j] == ALIVE) {
-                    superiorLifeForm[i][j] = ALIVE;
-                } else {
-                    superiorLifeForm[i][j] = DEAD;
-                }
-            }
-        }
-        return superiorLifeForm;
-    }
-*/
     //evaluates fitness
-    private int fitness(Conways life, int iterations) {
+    //this is the bottleneck so I use it sparsly as possible
+    //I.E only once to evaluate fitness for each lifeForm
+    private double fitness(Conways life, int iterations) {
 
-        boolean[][] lifeForm = life.getLifeForm();
 
-        int endLiveCells = 0;
-        int startLiveCells = 0;
+        Conways tmp = new Conways(life.getLifeForm());
 
-        startLiveCells = getLiveCells(lifeForm);
 
+        double endLiveCells = 0;
+        double startLiveCells = 0;
+
+        startLiveCells = getLiveCells(tmp.getLifeForm());
+
+        //a simple optimization
         if(startLiveCells == 0){
             return 0;
         }else {
             int count = 0;
             //find the end iterations
             while (count < iterations) {
-                life.evolve();
+                tmp.evolve();
                 count++;
             }
-            endLiveCells = getLiveCells(lifeForm);
+            endLiveCells = getLiveCells(tmp.getLifeForm());
         }
-
-        return endLiveCells / (2 * startLiveCells);
+        double denominator = 2*startLiveCells;
+        return endLiveCells / denominator;
     }
-    private int getLiveCells(boolean[][] lifeForm){
-        int count = 0;
+    private double getLiveCells(boolean[][] lifeForm){
+        double count = 0;
         for(int i = 0; i < lifeForm.length; i++){
             for(int j = 0; j < lifeForm[i].length;j++){
-                if(lifeForm[i][j]) count++;
+                if(lifeForm[i][j]){ count++;}
             }
         }
         return count;
@@ -207,31 +195,28 @@ public class ConwaysOptimizer implements OptimizerInterface {
 
     @Override
     public void dumpSuperiorLife(boolean printable) {
-        lifeForms[bestFitnessIdx].dumpWorld(false, false);
-        if(printable) lifeForms[bestFitnessIdx].dumpWorld(false,true);
+        if(printable){ lifeForms[bestFitnessIdx].dumpWorld(true,true);
+
+        }else{
+            lifeForms[bestFitnessIdx].dumpWorld(true, false);
+        }
     }
-    public int getFitness(){
+    public double getFitness(){
         return bestFitness;
     }
 
     //a generic test method for abitrary things
-    public void test(int iterations) {
+    public void test(int iterations, int pattern) {
+        System.out.println(";';';';';';';';';';';'====START TEST====;';';';';");
+            Conways life = new Conways(pattern);
 
-        Conways life = new Conways(PUFFER_2);
-        //this is just for testing/debugging
+            System.out.println("the fitness is: " + fitness(life, iterations));
 
-        StopWatch time = new StopWatch();
-        time.start();
-        int i = 0;
-        while (i != iterations) {
-            life.evolve();
-            i++;
-            life.dumpWorld(false,false);
-        }
-        time.stop();
-        long endTime = time.getTime();
-        System.out.println("the time is: " + endTime);
-
+            System.out.println("is the fitness of this pattern: ");
+            life.dumpWorld(true,true);
+            System.out.println("Which looks like this after 1000 iterations: ");
+            life.dumpWorld(true, false);
+        System.out.println(";';';';';';';';';';';'====END TEST====;';';';';");
     }
 
 

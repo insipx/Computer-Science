@@ -11,6 +11,9 @@ public class Conways implements Conways_Interface {
     public static final int EXPLODER = 2;
     public static final int TEN_CELL_LINE = 3;
     public static final int PUFFER_2 = 4;
+    public static final int TEST = 5;
+    public static final int INF_5X5=6;
+    public static final int INF_2X12=7;
 
     //prefix for root of project
     private static final String PREFIX = "/home/insidious/Spring Semester/Computer-Science/240/CGOL/src/CGOL/";
@@ -94,15 +97,30 @@ public class Conways implements Conways_Interface {
           board1[5][11] = ALIVE;
           board1[5][12] = ALIVE;
           board1[5][13] = ALIVE;
-      }else if(pattern == PUFFER_2){
+      }else if(pattern == PUFFER_2) {
 //            x1 , 5
            String file = PREFIX + "puffer2.txt";
            readPattern(file, 1, 5);
            //System.out.println("here is the puffer");
-           //dumpWorld(false);
+           //dumpWorld(true, true);
 
-
-      }else{
+       }else if(pattern == TEST){
+           String file = PREFIX + "test.txt";
+           readPattern(file,0,0);
+           System.out.println("here is test");
+            dumpWorld(false, true);
+           dumpWorld(false, true);
+       }else if (pattern == INF_5X5) {
+           String file = PREFIX + "infinite5x5.txt";
+           readPattern(file, 2, 7);
+          // System.out.println("here is infinite5x5");
+          // dumpWorld(false, true);
+       }else if(pattern == INF_2X12){
+           String file = PREFIX + "infinite2x12.txt";
+           readPattern(file, 2,5);
+           //System.out.println("here is infinite12x2");
+           //dumpWorld(false,true);
+       }else{
            //formless void
        }
    }
@@ -129,14 +147,14 @@ public class Conways implements Conways_Interface {
                if (c == 'O') {
                    board1[starty][startx] = ALIVE;
                    if (startx == 19) {
-                       startx = 1;
+                       startx = 0;
                        starty++;
                    }
                    startx++;
 
                } else {
                    if (startx == 19) {
-                       startx = 1;
+                       startx = 0;
                        starty++;
                    } else startx++;
                }
@@ -175,9 +193,10 @@ public class Conways implements Conways_Interface {
       }else{
          board = board2;
       }
+
       //init a board for the results
-      boolean[][] resultBoard = new boolean[20][20];
-      resultBoard = copyArr(board, resultBoard);
+      boolean[][] resultBoard = copyArr(board);
+
 
       for(int i = 1; i < board.length - 1; i ++){
          for( int j = 1; j < board[i].length - 1; j++ ){
@@ -203,17 +222,17 @@ public class Conways implements Conways_Interface {
       }
       return resultBoard;
    }
-   //copy arr1 into arr2
-   private boolean[][] copyArr(boolean[][] arr1, boolean[][] arr2){
-      for(int i = 0; i < arr1.length; i ++){
-         for(int j = 0; j < arr1[i].length; j++){
-            boolean temp;
-            temp = arr1[i][j];
-            arr2[i][j] = temp;
-         }
-      }
+   //returns a copy of the array
+   public boolean[][] copyArr(boolean[][] arr1){
 
-      return arr2;
+      //hope this works
+       boolean[][] tmp = new boolean[arr1.length][];
+
+       for(int i = 0; i < arr1.length; i++){
+           tmp[i] = arr1[i].clone();
+       }
+
+      return tmp;
    }
 
    private boolean liveOrDie(int x, int y, boolean alreadyAlive) {
@@ -268,13 +287,16 @@ public class Conways implements Conways_Interface {
    }
 
 
-   public void dumpWorld(boolean deadBorder, boolean printable){
-      if(!deadBorder){
+   public void dumpWorld(boolean showDeadBorder, boolean printable){
+
+       //show deadborder
+       if(showDeadBorder){
           if(printable){
               printWorld(0,0,0,0,true);
           }else{
               printWorld(0,0,0,0,false);
           }
+      //don't show dead border
       }else {
           if(printable){
               printWorld(1,1,1,1, true);
@@ -284,18 +306,34 @@ public class Conways implements Conways_Interface {
       }
    }
     public boolean[][] getLifeForm(){
-        return board1Active ? board1 : board2;
+        boolean[][] board;
+        if(board1Active){
+            board = copyArr(board1);
+            return board;
+        }else{
+            board = copyArr(board2);
+            return board;
+        }
+    }
+    public void printBoard(boolean[][] board){
+
+        System.out.println("This is the lifeform that is being annoying");
+        for(int i = 0; i < board.length; i++){
+            for(int j = 0; j < board[i].length; j ++){
+                if(board[i][j]){ System.out.print(" O ");}
+                else{ System.out.print(" . ");}
+            }
+            System.out.println();
+        }
     }
 
 
    //prints the world from a starting value, and ending at a specific value
    private void printWorld(int startI, int endI, int startJ, int endJ, boolean printable){
          boolean[][] board;
-         if (board1Active) {
-            board = board1;
-         } else {
-            board = board2;
-         }
+       if (board1Active) board = board1;
+       else board = board2;
+
          System.out.println("===========================================================");
          for (int i = startI; i < board.length - endI; i++) {
             for (int j = startJ; j < board[i].length - endJ; j++) {
@@ -322,9 +360,9 @@ public class Conways implements Conways_Interface {
        String bitString = "";
        boolean[][] tmpBoard = new boolean[20][20];
        if (board1Active) {
-           tmpBoard = copyArr(board1, tmpBoard);
+           tmpBoard = copyArr(board1);
        } else {
-           tmpBoard = copyArr(board2, tmpBoard);
+           tmpBoard = copyArr(board2);
        }
 
        for (int i = 0; i < tmpBoard.length; i++) {
