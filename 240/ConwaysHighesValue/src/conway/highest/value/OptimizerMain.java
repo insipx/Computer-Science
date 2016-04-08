@@ -16,7 +16,7 @@ public class OptimizerMain{
 
         //get the best fitness out of the custom seeds
         double startFitness = algorithm.getFitness();
-        System.out.println("Fitness is.." + startFitness);
+        System.out.println("Fitness is.." + startFitness + " before iterations");
         for(int i = 0; i < 1000; i++){
             algorithm.run();
             //print out everytime a better solution is discovered
