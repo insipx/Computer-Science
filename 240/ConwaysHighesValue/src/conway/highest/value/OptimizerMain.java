@@ -13,13 +13,16 @@ public class OptimizerMain{
         lifeForms[2] = new Conways(Conways.INF_2X12);
 
         ConwaysOptimizer algorithm = new ConwaysOptimizer(lifeForms, 1000);
+
+        //get the best fitness out of the custom seeds
         double startFitness = algorithm.getFitness();
         System.out.println("Fitness is.." + startFitness);
         for(int i = 0; i < 1000; i++){
             algorithm.run();
+            //print out everytime a better solution is discovered
             if(algorithm.getFitness() > startFitness){
                 startFitness = algorithm.getFitness();
-                System.out.println("Fitness is..." + startFitness);
+                System.out.println("Fitness is..." + startFitness + " on iteration " + i);
             }
         }
 
