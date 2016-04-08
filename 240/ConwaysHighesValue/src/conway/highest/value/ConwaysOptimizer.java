@@ -63,7 +63,7 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
         initFitness();
     }
 
-    public double getFitness(){
+    private double getFitness(){
         return bestFitness;
     }
 
