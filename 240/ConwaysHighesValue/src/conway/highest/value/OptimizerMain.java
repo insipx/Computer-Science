@@ -18,8 +18,8 @@ public class OptimizerMain{
             algorithm.run();
         }
 
+
         algorithm.dumpSuperiorLife(false);
-        System.out.println("The Fitness Is: " + algorithm.getFitness());
 
         /*ConwaysOptimizer algorithm = new ConwaysOptimizer(1000);
         algorithm.test(1000, Conways.TEST);*/
