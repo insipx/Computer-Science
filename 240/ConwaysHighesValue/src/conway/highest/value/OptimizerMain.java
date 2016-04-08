@@ -12,7 +12,6 @@ public class OptimizerMain{
         lifeForms[1] = new Conways(Conways.TEN_CELL_LINE);
         lifeForms[2] = new Conways(Conways.INF_2X12);
 
-
         ConwaysOptimizer algorithm = new ConwaysOptimizer(lifeForms, 1000);
         double startFitness = algorithm.getFitness();
         System.out.println("Fitness is.." + startFitness);
@@ -23,6 +22,7 @@ public class OptimizerMain{
                 System.out.println("Fitness is..." + startFitness);
             }
         }
+
 
 
         algorithm.dumpSuperiorLife(false);

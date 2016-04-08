@@ -182,7 +182,7 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
     //evaluates fitness
     //this is the bottleneck so I use it as sparsly as possible
     //I.E only once to evaluate fitness for each lifeForm
-    private double fitness(Conways life, int iterations) {
+    public double fitness(Conways life, int iterations) {
 
         //create a tmp because we don't want to evolve our pop of lifeForms
         Conways tmp = new Conways(life.getLifeForm());
