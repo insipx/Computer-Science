@@ -67,6 +67,13 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
         return bestFitness;
     }
 
+    public void dumpEndGrid(){
+        Conways tmp = new Conways(lifeForms[bestFitnessIdx].getLifeForm());
+        for(int i = 0; i < 1000; i++){
+            tmp.evolve();
+        }
+        tmp.dumpWorld(true,false);
+    }
     public void run(){
 
         //only mutate the worst lifeForms using the best

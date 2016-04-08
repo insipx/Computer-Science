@@ -26,9 +26,11 @@ public class OptimizerMain{
             }
         }
 
-
-
+        System.out.println("Start Grid:");
         algorithm.dumpSuperiorLife(false);
+        System.out.println();
+        System.out.println("End Grid:");
+        algorithm.dumpEndGrid();
 
         /*ConwaysOptimizer algorithm = new ConwaysOptimizer(1000);
         algorithm.test(1000, Conways.TEST);*/
