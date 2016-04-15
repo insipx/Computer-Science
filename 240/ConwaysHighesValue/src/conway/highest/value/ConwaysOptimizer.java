@@ -23,11 +23,16 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
 
     //Global Variables
     private int iterations;
-    private int bestFitnessIdx;
     private double bestFitness;
+
+    private int bestFitIdx;
     private int secondBestFitIdx;
     private int worstFitIdx;
+
     private Conways[] lifeForms;
+
+    //constructors, initFitness() will always be at the end to catch the fitness of any
+    //seeds
 
     //default
     public ConwaysOptimizer() {
@@ -63,24 +68,11 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
         initFitness();
     }
 
+    //get functions (only one)
     public double getFitness(){
         return bestFitness;
     }
 
-    public void dumpEndGrid(boolean printable){
-
-
-        Conways tmp = new Conways(lifeForms[bestFitnessIdx].getLifeForm());
-        for(int i = 0; i < 1000; i++){
-            tmp.evolve();
-        }
-
-        if(printable){
-            tmp.dumpWorld(true, true);
-        }else{
-            tmp.dumpWorld(true,false);
-        }
-    }
     public void run(){
 
         //only mutate the worst lifeForms using the best
@@ -90,20 +82,13 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
 
         //highly selective algorithm, 1/500 chance of being mutated
         //found this selectiveness returns best fitness
-        lifeForms[secondBestFitIdx] = mutate(lifeForms[secondBestFitIdx], 50);
-        lifeForms[worstFitIdx] = mutate(lifeForms[worstFitIdx], 50);
+        //lifeForm (boolean[][]) and probability (1/x, ie 1/20)
+
+        lifeForms[secondBestFitIdx] = mutate(lifeForms[secondBestFitIdx], 20);
+        lifeForms[worstFitIdx] = mutate(lifeForms[worstFitIdx], 20);
 
 
         nextGeneration();
-    }
-    @Override
-    public void dumpSuperiorLife(boolean printable) {
-        if(printable){ lifeForms[bestFitnessIdx].dumpWorld(true,true);
-
-        }else{
-            lifeForms[bestFitnessIdx].dumpWorld(true, false);
-        }
-        System.out.println("The fitness is: " +  getFitness());
     }
 
     private void nextGeneration() {
@@ -115,12 +100,14 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
         //found that a singlePointCrossover works much better than doublePoint
         //probably because it preserves symmetry better than doublePoint
         //doublePoint obliterates any pattern it created so far
-        children = singlePointCrossover(lifeForms[bestFitnessIdx], lifeForms[secondBestFitIdx] );
+        children = singlePointCrossover(lifeForms[bestFitIdx], lifeForms[secondBestFitIdx] );
         lifeForms[worstFitIdx] = children[0];
         lifeForms[secondBestFitIdx] = children[1];
     }
 
     //randomly change something returns a new lifeForm object
+    //uses StringBuilder java b/c Strings are immutable and
+    //creating a workaround for that would be pointless...
     private Conways mutate(Conways lifeForm, int probability) {
         //performs one mutation
         Random rand = new Random();
@@ -142,7 +129,7 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
         return new Conways(lifeForm.toBoolArr(result));
     }
 
-
+    //finds the fitness of all the lifeForms, putting them in their respective vars
     private void initFitness(){
         double worstFitness = 999999999.99;
 
@@ -158,16 +145,13 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
                 worstFitness = fitX[i];
                 worstFitIdx = i;
             }
-
             if(bestFitness < fitX[i]){
                 bestFitness = fitX[i];
-                bestFitnessIdx = i;
+                bestFitIdx = i;
             }
-
         }
-
         int i = 0;
-        while(i == bestFitnessIdx || i == worstFitIdx){
+        while(i == bestFitIdx || i == worstFitIdx){
             i++;
         }
         secondBestFitIdx = i;
@@ -195,6 +179,7 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
     }
 
     //this performs worse than singlepoint
+    //keeping for reference
     private Conways[] doublePointCrossover(Conways parent, Conways parent2){
         Conways[] children = new Conways[2];
         String pStr = parent.toBitString();
@@ -211,14 +196,13 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
 
     //evaluates fitness
     //this is the bottleneck so I use it as sparsly as possible
-    //I.E only once to evaluate fitness for each lifeForm
     private double fitness(Conways life, int iterations) {
 
         //create a tmp because we don't want to evolve our pop of lifeForms
         Conways tmp = new Conways(life.getLifeForm());
 
-        tmp.dumpWorld(false,true);
-        life.dumpWorld(false,true);
+        //uncomment this line for a cool representation of fitness
+        //tmp.dumpWorld(false,true);
 
         double endLiveCells = 0;
         double startLiveCells = 0;
@@ -254,8 +238,38 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
         return count;
     }
 
-    public void test(int lifeType, int iterations){
 
+
+    //Dump Functions
+    //EndGrid and StartGrids
+    //printable is for testing,
+    //ie putting into a text file so CGOL can parse it and
+    //evolve it to see if the algorithm actually worked
+    @Override
+    public void dumpSuperiorLife(boolean printable) {
+        if(printable){ lifeForms[bestFitIdx].dumpWorld(true,true);
+
+        }else{
+            lifeForms[bestFitIdx].dumpWorld(true, false);
+        }
+    }
+    //dumps the grid after the global iterations count
+    public void dumpEndGrid(boolean printable){
+
+        Conways tmp = new Conways(lifeForms[bestFitIdx].getLifeForm());
+        for(int i = 0; i < iterations; i++){
+            tmp.evolve();
+        }
+
+        if(printable){
+            tmp.dumpWorld(true, true);
+        }else{
+            tmp.dumpWorld(true,false);
+        }
+    }
+
+    //for general testing of the algorithm
+    public void test(int lifeType, int iterations){
 
         Conways test = new Conways(lifeType);
         fitness(test, iterations);
