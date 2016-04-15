@@ -85,8 +85,8 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
         //found this selectiveness returns best fitness
         //lifeForm (boolean[][]) and probability (1/x, ie 1/20)
 
-        lifeForms[secondBestFitIdx] = mutate(lifeForms[secondBestFitIdx], 20);
-        lifeForms[worstFitIdx] = mutate(lifeForms[worstFitIdx], 20);
+        lifeForms[secondBestFitIdx] = mutate(lifeForms[secondBestFitIdx], 50);
+        lifeForms[worstFitIdx] = mutate(lifeForms[worstFitIdx], 50);
 
 
         nextGeneration();

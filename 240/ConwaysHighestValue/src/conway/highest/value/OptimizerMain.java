@@ -12,6 +12,9 @@ public class OptimizerMain{
         lifeForms[1] = new Conways(Conways.TEN_CELL_LINE);
         lifeForms[2] = new Conways(Conways.INF_2X12);
 
+        //the lifeForm seeds and the iterations we want to check
+        //the lifeforms at for Conways
+        //defaults  to EMPTY lifeforms and 1000 iterations if empty constructor
         ConwaysOptimizer algorithm = new ConwaysOptimizer(lifeForms, 1000);
 
         //get the best fitness out of the custom seeds
