@@ -84,6 +84,9 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
         //highly selective algorithm, 1/500 chance of being mutated
         //found this selectiveness returns best fitness
         //lifeForm (boolean[][]) and probability (1/x, ie 1/20)
+        //experimenting with different probabilities greatly
+        //helps getting a better fitnes (EX: 1/20th probability rarely returns anything over 2 fitness)
+        //50-100 seems like the sweetspot
 
         lifeForms[secondBestFitIdx] = mutate(lifeForms[secondBestFitIdx], 50);
         lifeForms[worstFitIdx] = mutate(lifeForms[worstFitIdx], 50);

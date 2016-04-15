@@ -21,7 +21,7 @@ public class OptimizerMain{
         double startFitness = algorithm.getFitness();
         System.out.println("The Best Fitness is.." + startFitness + " before iterations");
 
-        for(int i = 0; i < 1000; i++){
+        for(int i = 0; i < 10000; i++){
             algorithm.run();
             //print out everytime a better solution is discovered
             if(algorithm.getFitness() > startFitness){
