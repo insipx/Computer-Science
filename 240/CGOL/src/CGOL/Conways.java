@@ -108,8 +108,8 @@ public class Conways implements Conways_Interface {
            String file = PREFIX + "test.txt";
            readPattern(file,0,0);
            System.out.println("here is test");
-            dumpWorld(false, true);
-           dumpWorld(false, true);
+           //dumpWorld(false, true);
+           //dumpWorld(false, true);
        }else if (pattern == INF_5X5) {
            String file = PREFIX + "infinite5x5.txt";
            readPattern(file, 2, 7);

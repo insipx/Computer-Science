@@ -67,12 +67,19 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
         return bestFitness;
     }
 
-    public void dumpEndGrid(){
+    public void dumpEndGrid(boolean printable){
+
+
         Conways tmp = new Conways(lifeForms[bestFitnessIdx].getLifeForm());
         for(int i = 0; i < 1000; i++){
             tmp.evolve();
         }
-        tmp.dumpWorld(true,false);
+
+        if(printable){
+            tmp.dumpWorld(true, true);
+        }else{
+            tmp.dumpWorld(true,false);
+        }
     }
     public void run(){
 
@@ -83,8 +90,8 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
 
         //highly selective algorithm, 1/500 chance of being mutated
         //found this selectiveness returns best fitness
-        lifeForms[secondBestFitIdx] = mutate(lifeForms[secondBestFitIdx], 500);
-        lifeForms[worstFitIdx] = mutate(lifeForms[worstFitIdx], 500);
+        lifeForms[secondBestFitIdx] = mutate(lifeForms[secondBestFitIdx], 50);
+        lifeForms[worstFitIdx] = mutate(lifeForms[worstFitIdx], 50);
 
 
         nextGeneration();
@@ -138,17 +145,33 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
 
     private void initFitness(){
         double worstFitness = 999999999.99;
-        double fitness;
 
-        for(int i = 0; i < lifeForms.length; i++){
-            fitness = fitness(lifeForms[i], iterations);
+        //this does not work at all
+        double[] fitX = new double[3];
+        fitX[0] = fitness(lifeForms[0],iterations);
+        fitX[1] = fitness(lifeForms[1],iterations);
+        fitX[2] = fitness(lifeForms[2],iterations);
 
-            if(worstFitness > fitness){ worstFitIdx = i; worstFitness = fitness;}
+        for(int i = 0; i < fitX.length; i++){
 
-            if (bestFitness < fitness){ bestFitnessIdx = i; bestFitness = fitness;}
+            if(worstFitness > fitX[i]){
+                worstFitness = fitX[i];
+                worstFitIdx = i;
+            }
 
-            if(fitness <= bestFitness && fitness >= worstFitness) secondBestFitIdx = i;
+            if(bestFitness < fitX[i]){
+                bestFitness = fitX[i];
+                bestFitnessIdx = i;
+            }
+
         }
+
+        int i = 0;
+        while(i == bestFitnessIdx || i == worstFitIdx){
+            i++;
+        }
+        secondBestFitIdx = i;
+
     }
 
 
@@ -194,6 +217,8 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
         //create a tmp because we don't want to evolve our pop of lifeForms
         Conways tmp = new Conways(life.getLifeForm());
 
+        tmp.dumpWorld(false,true);
+        life.dumpWorld(false,true);
 
         double endLiveCells = 0;
         double startLiveCells = 0;
@@ -227,5 +252,16 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
             }
         }
         return count;
+    }
+
+    public void test(int lifeType, int iterations){
+
+
+        Conways test = new Conways(lifeType);
+        fitness(test, iterations);
+        System.out.println(fitness(test,1000));
+
+
+
     }
 }

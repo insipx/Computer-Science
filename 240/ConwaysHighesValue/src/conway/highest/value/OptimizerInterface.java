@@ -9,5 +9,5 @@ public interface OptimizerInterface {
     public void dumpSuperiorLife(boolean printable);
     public void run();
     public double getFitness();
-    public void dumpEndGrid();
+    public void dumpEndGrid(boolean printable);
 }
