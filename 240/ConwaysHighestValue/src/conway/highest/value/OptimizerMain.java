@@ -9,7 +9,7 @@ public class OptimizerMain{
         //seeds
         Conways[] lifeForms = new Conways[3];
         lifeForms[0] = new Conways(Conways.INF_5X5);
-        lifeForms[1] = new Conways(Conways.PUFFER_2);
+        lifeForms[1] = new Conways(Conways.TEN_CELL_LINE);
         lifeForms[2] = new Conways(Conways.INF_2X12);
 
         ConwaysOptimizer algorithm = new ConwaysOptimizer(lifeForms, 1000);

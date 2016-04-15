@@ -21,6 +21,7 @@ import java.util.Random;
 
 public class ConwaysOptimizer extends Conways implements OptimizerInterface {
 
+    public static String PREFIX = "../CGOL/src/conways/resources/";
     //Global Variables
     private int iterations;
     private double bestFitness;
