@@ -1,7 +1,5 @@
 package conway.highest.value;
 
-import CGOL.Conways;
-
 /**
  * Created by insidious on 4/5/16.
  */

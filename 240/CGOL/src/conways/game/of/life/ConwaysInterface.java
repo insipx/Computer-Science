@@ -1,9 +1,9 @@
-package CGOL;
+package conways;
 
 /**
  * Created by insidious on 3/23/16.
  */
-public interface Conways_Interface {
+public interface ConwaysInterface {
     public void initPattern(int pattern);
     public void evolve();
     public void dumpWorld(boolean deadBorder, boolean printable);

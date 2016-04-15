@@ -1,9 +1,9 @@
-package CGOL;
+package conways;
 
 /**
  * Created by insidious on 3/23/16.
  */
-public class Conways_Main {
+public class ConwaysMain {
     public static void main(String[] args) {
 
 

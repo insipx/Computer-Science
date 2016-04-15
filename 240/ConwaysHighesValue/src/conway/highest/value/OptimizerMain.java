@@ -1,5 +1,5 @@
 package conway.highest.value;
-import CGOL.Conways;
+import conways.Conways;
 
 /**
  * Created by insidious on 4/5/16.
@@ -18,7 +18,7 @@ public class OptimizerMain{
         double startFitness = algorithm.getFitness();
         System.out.println("The Best Fitness is.." + startFitness + " before iterations");
 
-        for(int i = 0; i < 10000; i++){
+        for(int i = 0; i < 1000; i++){
             algorithm.run();
             //print out everytime a better solution is discovered
             if(algorithm.getFitness() > startFitness){
@@ -39,7 +39,7 @@ public class OptimizerMain{
 
 
        /* ConwaysOptimizer algorithm = new ConwaysOptimizer();
-        algorithm.test(Conways.TEST,1000);*/
+        algorithm.test(conways.TEST,1000);*/
 
 
 

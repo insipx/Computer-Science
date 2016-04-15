@@ -1,6 +1,6 @@
 package conway.highest.value;
 
-import CGOL.Conways;
+import conways.Conways;
 
 import java.util.Random;
 
@@ -9,7 +9,7 @@ import java.util.Random;
  * Created by insidious on 4/5/16.
  * <p>
  * Optimizer uses the Gene Algorithm to compute best fitness(EndLiveCells/2*StartLiveCells)
- * of Conways Game of life
+ * of conways Game of life
  *
  * uses bitStrings to store Game of Life Representation for Mutation
  *
@@ -78,7 +78,7 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
         //only mutate the worst lifeForms using the best
         //elitist selection
         //Only mutate inferior lifeForms
-        //because the nature of Conways is unpredictable, so we don't want to throw out the best solution
+        //because the nature of conways is unpredictable, so we don't want to throw out the best solution
 
         //highly selective algorithm, 1/500 chance of being mutated
         //found this selectiveness returns best fitness
@@ -243,7 +243,7 @@ public class ConwaysOptimizer extends Conways implements OptimizerInterface {
     //Dump Functions
     //EndGrid and StartGrids
     //printable is for testing,
-    //ie putting into a text file so CGOL can parse it and
+    //ie putting into a text file so conways can parse it and
     //evolve it to see if the algorithm actually worked
     @Override
     public void dumpSuperiorLife(boolean printable) {

@@ -1,11 +1,11 @@
-package CGOL;
+package conways;
 
 import java.io.*;
 
 /**
  * Created by insidious on 3/23/16.
  */
-public class Conways implements Conways_Interface {
+public class Conways implements ConwaysInterface {
     public static final int EMPTY = 0;
     public static final int GLIDER = 1;
     public static final int EXPLODER = 2;
@@ -16,8 +16,8 @@ public class Conways implements Conways_Interface {
     public static final int INF_2X12=7;
 
     //prefix for root of project
-    private static final String PREFIX = "/home/insidious/Spring Semester/Computer-Science/240/CGOL/src/CGOL/";
-
+    //private static final String PREFIX = "/home/insidious/Spring Semester/Computer-Science/240/conways/src/conways/";
+    private static final String PREFIX = "../CGOL/src/conways/resources/";
     private final boolean ALIVE = true;
     private final boolean DEAD = false;
 
@@ -109,7 +109,7 @@ public class Conways implements Conways_Interface {
            readPattern(file,0,0);
            System.out.println("here is test");
            //dumpWorld(false, true);
-           //dumpWorld(false, true);
+           dumpWorld(false, true);
        }else if (pattern == INF_5X5) {
            String file = PREFIX + "infinite5x5.txt";
            readPattern(file, 2, 7);
