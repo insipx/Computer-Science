@@ -1,0 +1,17 @@
+;-----------------------------------------------------------
+; int sortStgs(address p[], int n);
+;-----------------------------------------------------------
+p:         .EQUATE  8
+n:         .EQUATE  10
+;----------
+dmax:      .EQUATE  0
+pmax:      .EQUATE  2
+temp:      .EQUATE  4
+;----------
+           .GLOBAL  sortStgs
+sortStgs:  SUBSP    6,i            ;   Reserve Space
+;---------
+; S t u b b e d
+;---------
+done:      ADDSP    6,i            ;+ return
+           RET0                    ;+

@@ -1,0 +1,57 @@
+;SortStrings.pep2 - read, print and sort an array of strings
+;
+; P.M.J., April 2016
+;---------------------------------------------------------------
+           BR        main
+           .INCLUDE  "PEP2.pep1"
+           .APPEND   "readStgs.pep2"
+           .APPEND   "prntStgs.pep2"
+           .APPEND   "sortStgs.pep2"
+           .APPEND   "memcpy.pep2"
+           .APPEND   "Slength.pep2"
+           .APPEND   "ScompTo.pep2"
+;---------------------------------------------------------------
+prompt:    .ASCII   "Enter:\x00"
+msgunord:  .ASCII   "Unordered...\n\x00"
+msgord:    .ASCII   "Ordered...\n\x00"
+;--------
+LENGTH:    .EQUATE   31            ; Expresses the maximum length of a string
+LIMIT:     .EQUATE   24            ; Expresses the capacity of the array
+           .ASCII    "<<<<<<<<"    ; Just a marker for visual inspection
+p:         .BLOCK    48            ; The array of pointers; LIMIT * 2
+           .ASCII    "--------"    ; Just a marker for visual inspection
+a:         .BLOCK    768           ; The array of strings; (1+LENGTH) * LIMIT
+           .ASCII    ">>>>>>>>"    ; Just a marker for visual inspection
+count:     .BLOCK    2             ; The number of strings read and stored
+;--------
+;---------------------------------------------------------------
+main:      NOP0
+           PUSH      LENGTH,i
+           PUSH      LIMIT,i
+           PUSH      a,i
+           PUSH      p,i
+           CALL      readStgs
+           ADDSP     8,i
+           STA       count,d
+;--------
+           DECO      count,d
+           CHARO     '\n',i
+;--------
+           STRO      msgunord,d
+           PUSH      count,d
+           PUSH      p,i
+           CALL      prntStgs
+           ADDSP     4,i
+;--------
+           PUSH      count,d
+           PUSH      p,i
+           CALL      sortStgs
+           ADDSP     4,i
+;--------
+           STRO      msgord,d
+           PUSH      count,d
+           PUSH      p,i
+           CALL      prntStgs
+           ADDSP     4,i
+done:      STOP
+           .END

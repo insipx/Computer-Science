@@ -1,0 +1,64 @@
+;---------------------------------------------------------------
+;  int readStgs(address p[], byte a[], int length, int limit)
+;---------------------------------------------------------------
+p:         .EQUATE  2
+a:         .EQUATE  4
+length:    .EQUATE  6
+limit:     .EQUATE  8
+;--------
+           .BYTE     31
+value:     .BLOCK    31
+index:     .BLOCK    2
+disp:      .BLOCK    2
+;---------------------------------------------------------------
+msgtrunc:  .ASCII   "WARNING: input truncation \x00"
+msgfull:   .ASCII   "WARNING: string array full\n\x00"
+;---------------------------------------------------------------
+           .GLOBAL   readStgs
+readStgs:  NOP0
+           CLR       index,d
+loop:      CPM       index,d,limit,s
+           BRGE      full
+           STRI      value,i
+           TSTA
+           BREQ      move
+           STRO      msgtrunc,d
+           DECOA
+           CHARO     '\n',i
+move:      PUSH      value,i
+           CALL      Slength
+           ADDSP     2,i
+           TSTA
+           BREQ      done
+;---------
+           LDA       length,s
+           INCA
+           STA       -2,s
+           LDX       index,d
+           ASLX
+           ASLX
+           ASLX
+           ASLX
+           ASLX
+           STX       disp,d
+           ADD       disp,d,a,s
+           MOVE      disp,d,-4,s
+           LDA       value,i
+           DECA
+           STA       -6,s
+           SUBSP     6,i
+           CALL      memcpy
+           ADDSP     6,i
+;---------
+           INC       disp,d
+           LDX       index,d
+           ASLX
+           MOVE      disp,d,p,sxf
+;---------
+           INC       index,d
+           BR loop
+;--------
+full:      STRO      msgfull,d
+;--------
+done:      LDA       index,d
+           RET0

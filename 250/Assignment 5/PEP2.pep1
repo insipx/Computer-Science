@@ -1,0 +1,401 @@
+;-------------------------------------------------------------------
+; Global "low memory" locations used for temporary static storage
+          .GLOBAL    TEMP
+TEMP:     .BLOCK     4
+          .GLOBAL    JUNK
+JUNK:  .BLOCK     2
+          .GLOBAL    SAVED
+SAVED:    .BLOCK     2
+          .GLOBAL    SAVEA
+SAVEA:    .BLOCK     2        ;where A is saved statically
+          .GLOBAL    SAVEX
+SAVEX:    .BLOCK     2        ;where X is saved statically
+          .GLOBAL    SAVEPP
+SAVEPP:   .BLOCK     2
+
+;============================================================
+          .MACRO     SAVEA
+;------------------------------------------------------------CC Safe
+; Macro to statically save the A register.
+          STA        SAVEA,d
+          .MACROEND
+
+          .MACRO     SAVEX
+;------------------------------------------------------------CC Safe
+; Macro to statically save the X register.
+          STX        SAVEX,d
+          .MACROEND
+
+          .MACRO     SAVE
+;------------------------------------------------------------CC Safe
+; Macro to statically save the A and X registers.
+          SAVEA
+          SAVEX
+          .MACROEND
+
+          .MACRO     RESTOREA
+;------------------------------------------------------------CC Corruption
+; Macro to statically restore the previously saved A register.
+          LDA        SAVEA,d
+          .MACROEND
+
+          .MACRO     RESTOREX
+;------------------------------------------------------------CC Corruption
+; Macro to statically restore the previously saved X register.
+          LDX        SAVEX,d
+          .MACROEND
+
+          .MACRO     RESTORE
+;------------------------------------------------------------CC Corruption
+; Macro to statically restore the previously saved A and X registers.
+          RESTOREX
+          RESTOREA
+          .MACROEND
+
+;============================================================
+          .MACRO     BRNV     label',ml#
+;------------------------------------------------------------CC Safe
+; Macro to branch conditionally if NOT V;  oVerflow not set
+          BRV        ml#
+          BR         label'
+ml#:      NOP0
+          .MACROEND
+
+          .MACRO     BRNC     label',ml#
+;------------------------------------------------------------CC Safe
+; Macro to branch conditionally if NOT C;  Carry not set
+          BRC        ml#
+          BR         label'
+ml#:      NOP0
+
+          .MACROEND
+
+;============================================================
+          .MACRO     CLRA
+;------------------------------------------------------------CC Safe
+; Macro to clear (load zero into) the A register.
+          LDA        0,i
+          .MACROEND
+
+          .MACRO     CLRX
+;------------------------------------------------------------CC Safe
+; Macro to clear (load zero into) the X register.
+          LDX        0,i
+          .MACROEND
+
+          .MACRO     CLR       arg',ams'
+;------------------------------------------------------------CC Corruption
+; Macro to clear (load zero into) the memory cell specified.
+          STA        SAVEA,d
+          CLRA
+          STA        arg',ams'
+          LDA        SAVEA,d
+          .MACROEND
+
+          .MACRO     INCA
+;------------------------------------------------------------CC Safe
+; Macro to "increment" the contents of the A register.
+          ADDA       1,i
+          .MACROEND
+
+          .MACRO     INCX
+;------------------------------------------------------------CC Safe
+; Macro to "increment" the contents of the X register.
+          ADDX       1,i
+          .MACROEND
+
+          .MACRO     INC        arg',ams'
+;------------------------------------------------------------CC Corruption
+; Macro to "increment" the contents of a word in memory addressed
+; as specified.
+          SAVEA      
+          LDA        arg',ams'
+          ADDA       1,i
+          STA        arg',ams'
+          RESTOREA
+          .MACROEND
+
+          .MACRO     DECA
+;------------------------------------------------------------CC Safe
+; Macro to "decrement" the contents of the A register.
+          SUBA       1,i
+          .MACROEND
+
+          .MACRO     DECX
+;------------------------------------------------------------CC Safe
+; Macro to "decrement" the contents of the X register.
+          SUBX       1,i
+          .MACROEND
+
+          .MACRO     DEC        arg',ams'
+;------------------------------------------------------------CC Corruption
+; Macro to "decrement" the contents of a word in memory addressed
+; as specified.
+          SAVEA
+          LDA        arg',ams'
+          SUBA       1,i
+          STA        arg',ams'
+          RESTOREA
+          .MACROEND
+
+          .MACRO     NOT       arg',ams'
+;------------------------------------------------------------CC Corruption
+; Macro to complement the bits in a word addressed as specified.
+          SAVEA
+          LDA        arg',ams'
+          NOTA
+          STA        arg',ams'
+          RESTOREA
+          .MACROEND
+
+          .MACRO     NEG       arg',ams'
+;------------------------------------------------------------CC Corruption
+; Macro to negate the contents of a word addressed as specified.
+          SAVEA
+          LDA        arg',ams'
+          NEGA
+          STA        arg',ams'
+          RESTOREA
+          .MACROEND
+
+          .MACRO     ADD        Sum',ams1',Addend',ams2'
+;------------------------------------------------------------CC Corruption
+; Macro to accomplish the addition of an two operands storing the
+; result in the first operand.
+          SAVEA
+          LDA        Sum',ams1'
+          ADDA       Addend',ams2'
+          STA        Sum',ams1'
+          RESTOREA
+          .MACROEND
+
+          .MACRO     SUB        Minuend',ams1',Subtrnd',ams2'
+;------------------------------------------------------------CC Corruption
+; Macro to accomplish the subtraction of a second operand from a the
+; first operand, storing the result in the first operand.
+          SAVEA
+          LDA        Minuend',ams1'
+          SUBA       Subtrnd',ams2'
+          STA        Minuend',ams1'
+          RESTOREA
+          .MACROEND
+
+          .MACRO     MOVE      arg1',ams1',arg2',ams2'
+;------------------------------------------------------------CC Corruption
+; Macro that moves the contents of one memory cell to another cell.
+          SAVEA
+          LDA        arg1',ams1'
+          STA        arg2',ams2'
+          RESTOREA
+          .MACROEND
+
+          .MACRO     TSTA
+;------------------------------------------------------------CC Safe
+; Macro to "test" the accumulator;  that is, it sets the condition
+; codes after comparing the accumulator to zero.
+          CPA        0,i
+          .MACROEND
+
+          .MACRO     TSTX
+;------------------------------------------------------------CC Safe
+; Macro to "test" the index register;  that is, it sets the condition
+; codes after comparing the index register to zero.
+          CPX        0,i
+          .MACROEND
+
+          .MACRO     TEST        arg',ams'
+;-------------------------------------------------CC Safe, Corrupts A
+; Macro to "test" the contents of a memory location;  that is, it
+; sets the condition codes after comparing to zero.  The A register
+; is polluted and will contain the value of the argument.
+          LDA        arg',ams'
+          TSTA
+          .MACROEND
+
+          .MACRO     CPM        arg1',ams1',arg2',ams2'
+;-------------------------------------------------CC Safe, Corrupts A
+; Macro to compare two items in memory.  It sets the condition
+; codes by comparing arg1 to arg2.  Pollutes the A register such
+; that A will contain the value of the first argument.
+          LDA        arg1',ams1'
+          CPA        arg2',ams2'
+          .MACROEND
+
+          .MACRO     PUSHA
+;------------------------------------------------------------CC Corruption
+; Macro to "push" the contents of the accumulator onto the stack.
+          STA        -2,s
+          SUBSP      2,i
+          .MACROEND
+
+          .MACRO     PUSHX
+;------------------------------------------------------------CC Corruption
+; Macro to "push" the contents of the index register onto the stack.
+          STX        -2,s
+          SUBSP      2,i
+          .MACROEND
+
+          .MACRO     POPA
+;------------------------------------------------------------CC Corruption
+; Macro to "pop" the contents of the accumulator off of the stack.
+          LDA        0,s
+          ADDSP      2,i
+          .MACROEND
+
+          .MACRO     POPX
+;------------------------------------------------------------CC Corruption
+; Macro to "pop" the contents of the index register off of the stack.
+          LDX        0,s
+          ADDSP      2,i
+          .MACROEND
+
+          .MACRO     PUSH       arg',ams'
+;------------------------------------------------------------CC Corruption
+; Macro to "push" the contents of a word in memory addressed as
+; specified.
+          STA        SAVEPP,d
+          LDA        arg',ams'
+          PUSHA
+          LDA        SAVEPP,d
+          .MACROEND
+
+          .MACRO     POP        arg',ams'
+;------------------------------------------------------------CC Corruption
+; Macro to "pop" the contents of a word to memory addressed as
+; specified.
+          STA        SAVEPP,d
+          POPA
+          STA        arg',ams'
+          LDA        SAVEPP,d
+          .MACROEND
+
+          .APPEND    "STRInput.pep1"
+          .MACRO     STRI     arg',ams'
+;------------------------------------------------------------CC Corruption
+; Macro to input a line of input as a "string object".  Note that A
+; is corrupted such that it contains the count of the number of 
+; characters read but truncated from the object's result due to
+; unavailable capacity.  Thus, a zero value returned in A indicates
+; that the entire input has been stored in the string.
+          PUSH       arg',ams'
+          CALL       STRInput
+          ADDSP      2,i
+          .MACROEND
+
+          .MACRO     DECIA
+;------------------------------------------------------------CC Corruption
+; Macro to read a decimal value as input and load it into A.
+          DECI       TEMP,d
+          LDA        TEMP,d
+          .MACROEND
+
+          .MACRO     DECIX
+;------------------------------------------------------------CC Corruption
+; Macro to read a decimal value as input and load it into X.
+          DECI       TEMP,d
+          LDX        TEMP,d
+          .MACROEND
+
+          .MACRO     DECOA
+;------------------------------------------------------------CC Safe
+; Macro to write the decimal value currently in A.
+          STA        TEMP,d
+          DECO       TEMP,d
+          .MACROEND
+
+          .MACRO     DECOX
+;------------------------------------------------------------CC Safe
+; Macro to write the decimal value currently in X.
+          STX        TEMP,d
+          DECO       TEMP,d
+          .MACROEND
+
+          .MACRO     BINOA
+;------------------------------------------------------------CC Corruption
+; Macro to output the value in A in binary
+          PUSHX
+          STA        TEMP,d
+          BINO       TEMP,d
+          POPX
+          LDA        TEMP,d
+          .MACROEND
+
+          .MACRO     BINOX
+;------------------------------------------------------------CC Corruption
+; Macro to output the value in X in binary
+          PUSHA
+          STX        TEMP,d
+          BINO       TEMP,d
+          POPA
+          LDX        TEMP,d
+          .MACROEND
+
+          .APPEND    "BINOutpt.pep1"
+          .MACRO     BINO     arg',ams'
+;------------------------------------------------------------CC Corruption
+; Macro to output the contents of a memory cell in binary
+          PUSH       arg',ams'
+          CALL       BINOutpt
+          ADDSP      2,i
+          .MACROEND
+
+          .MACRO     HEXOA
+;------------------------------------------------------------CC Corruption
+; Macro to output the value in A in hex
+          PUSHX
+          STA        TEMP,d
+          HEXO       TEMP,d
+          POPX
+          LDA        TEMP,d
+          .MACROEND
+
+          .MACRO     HEXOX
+;------------------------------------------------------------CC Corruption
+; Macro to output the value in X in hex
+          PUSHA
+          STX        TEMP,d
+          HEXO       TEMP,d
+          POPA
+          LDX        TEMP,d
+          .MACROEND
+
+          .APPEND    "HEXOutpt.pep1"
+          .MACRO     HEXO     arg',ams'
+;------------------------------------------------------------CC Corruption
+; Macro to output the contents of a memory cell in hex
+          PUSH       arg',ams'
+          CALL       HEXOutpt
+          ADDSP      2,i
+          .MACROEND
+
+          .APPEND    "DUMPS.pep1"
+;-------------------------------------------------------------CC Corruption
+; Macro to dump the top portion of the stack
+          .MACRO     DUMPS    arg',ams'
+          STA        JUNK,d
+          LDA        arg',ams'
+          PUSHA
+          LDA        JUNK,d
+          CALL       DumpS
+          STA        JUNK,d
+          POPA
+          LDA        JUNK,d
+          .MACROEND
+
+;============================================================
+          .MACRO     LDBYTEAC   arg',ams'
+;------------------------------------------------------------CC Safe
+; Macro to clear the high-order byte along with loading the low-order byte of A
+          CLRA
+          LDBYTEA    arg',ams'
+          .MACROEND
+
+          .MACRO     LDBYTEXC   arg',ams'
+;------------------------------------------------------------CC Safe
+; Macro to clear the high-order byte along with loading the low-order byte of X
+          CLRX
+          LDBYTEX    arg',ams'
+          .MACROEND
+
+
+
