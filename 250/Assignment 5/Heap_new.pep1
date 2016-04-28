@@ -1,0 +1,32 @@
+;===================================================================================
+           .GLOBAL  new
+;---------------------------------------------------------------------------------------
+; address new(int length)
+;---------------------------------------------------------------------------------------
+result:    .EQUATE  0
+length:    .EQUATE  4
+;---------------------------------------------------------------------------------------
+new:       SUBSP    2,i        ;
+           LDA      length,s   ;+ if(length <=  255) {
+           CPA      0,i        ;|
+           BRLT     error      ;|
+           CPA      255,i      ;|
+           BRGT     error      ;|
+           ADDA     1,i        ;| + A = malloc((length+1));
+           SUBSP    2,i        ;| |
+           STA      0,s        ;| |
+           CALL     malloc     ;| |
+           ADDSP    2,i        ;| +
+           CPA      0,i        ;| + if(A != 0) {
+           BRLE     error      ;| |
+           STA      result,s   ;| | + set "before byte" to (length-1)
+           SUBX     1,i        ;| | |
+           STX      length,s   ;| | |
+           LDA      length,s   ;| | |
+           LDX      0,i        ;| | |
+           STBYTEA  result,sxf ;| | +
+           LDA      result,s   ;| | }
+           ADDA     1,i        ;| + A = A + 1;
+           BR       return     ;+ }
+error:     LDA      0,i        ;
+return:    RET2                ;

@@ -1,11 +1,8 @@
 ;PMJ's MPP ver2012.0 ...
-;Name:  Andrew Plaza
-;CMPS 250 Spring 2016
-;The following is a solution to Assignment 5
-;I worked a bit with Sean Batzel, mostly worked alone.
+;SortStrings.pep2 - read, print and sort an array of strings
 ;
 ; P.M.J., April 2016
-;--------Includes-----------------------------------------------
+;---------------------------------------------------------------
 BR        main
 ;                                                                        
 ;{ PEP2.pep1 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -30,56 +27,109 @@ SAVEPP:   .BLOCK     2
 ; Macro to dump the top portion of the stack
 ;============================================================
 ;} PEP2.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;------------local vars-----------------------------------------
-.BYTE     16      ;beforebyte
-Name1:    .BLOCK    31      ;the name
-aName1:   .ADDRSS   Name1   ;address
-.BYTE     16      ;same as above
-Name2:    .BLOCK    31
-aName2:   .ADDRSS   Name2
-result:   .BLOCK    2
-;;CLRA  ; 
-LDA        0,i;< CLRA >
-;;CLRX  ; 
-LDX        0,i;< CLRX >
-;------------------
-main:    NOP0
-;;loop:STRI      aName1,d ; 
-loop: NOP0 ;< STRI >
-;;PUSH      aName1,d ;< STRI > 
-STA        SAVEPP,d;< PUSH,STRI >
-LDA        aName1,d;< PUSH,STRI >
-;;PUSHA  ;< PUSH,STRI > 
-STA        -2,s;< PUSHA,PUSH,STRI >
-SUBSP      2,i;< PUSHA,PUSH,STRI >
-LDA        SAVEPP,d;< PUSH,STRI >
-CALL       STRInput;< STRI >
-ADDSP      2,i;< STRI >
-;;STRI      aName2,d ; 
-;;PUSH      aName2,d ;< STRI > 
-STA        SAVEPP,d;< PUSH,STRI >
-LDA        aName2,d;< PUSH,STRI >
-;;PUSHA  ;< PUSH,STRI > 
-STA        -2,s;< PUSHA,PUSH,STRI >
-SUBSP      2,i;< PUSHA,PUSH,STRI >
-LDA        SAVEPP,d;< PUSH,STRI >
-CALL       STRInput;< STRI >
-ADDSP      2,i;< STRI >
-LDBYTEA    Name1,d
-CPA        0,i
-BREQ       done
-LDA        aName2,d
-;;PUSHA  ; 
-STA        -2,s;< PUSHA >
-SUBSP      2,i;< PUSHA >
-LDA        aName1,d
-;;PUSHA  ; 
-STA        -2,s;< PUSHA >
-SUBSP      2,i;< PUSHA >
-CALL       ScompTo
-ADDSP      4,i
-BR         loop
-done:    STOP
+;---------------------------------------------------------------
+prompt:    .ASCII   "Enter:\x00"
+msgunord:  .ASCII   "Unordered...\n\x00"
+msgord:    .ASCII   "Ordered...\n\x00"
+;--------
+LENGTH:    .EQUATE   31            ; Expresses the maximum length of a string
+LIMIT:     .EQUATE   24            ; Expresses the capacity of the array
+.ASCII    "<<<<<<<<"    ; Just a marker for visual inspection
+p:         .BLOCK    48            ; The array of pointers; LIMIT * 2
+.ASCII    "--------"    ; Just a marker for visual inspection
+a:         .BLOCK    768           ; The array of strings; (1+LENGTH) * LIMIT
+.ASCII    ">>>>>>>>"    ; Just a marker for visual inspection
+count:     .BLOCK    2             ; The number of strings read and stored
+;---------------------------------------------------------------
+main:      NOP0
+;;PUSH     LIMIT,i ; 
+STA        SAVEPP,d;< PUSH >
+LDA        LIMIT,i;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+;;PUSH     LENGTH,i ; 
+STA        SAVEPP,d;< PUSH >
+LDA        LENGTH,i;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+;;PUSH     a,i ; 
+STA        SAVEPP,d;< PUSH >
+LDA        a,i;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+;;PUSH     p,i ; 
+STA        SAVEPP,d;< PUSH >
+LDA        p,i;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+CALL      readStgs
+ADDSP     8,i
+STA       count,d
+;--------
+DECO      count,d
+CHARO     '\n',i
+;--------
+STRO      msgunord,d
+;;PUSH     count,d ; 
+STA        SAVEPP,d;< PUSH >
+LDA        count,d;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+;;PUSH     p,i ; 
+STA        SAVEPP,d;< PUSH >
+LDA        p,i;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+CALL      prntStgs
+ADDSP     4,i
+;--------
+;;PUSH     count,d ; 
+STA        SAVEPP,d;< PUSH >
+LDA        count,d;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+;;PUSH     p,i ; 
+STA        SAVEPP,d;< PUSH >
+LDA        p,i;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+CALL      sortStgs
+ADDSP     4,i
+;--------
+STRO      msgord,d
+;;PUSH     count,d ; 
+STA        SAVEPP,d;< PUSH >
+LDA        count,d;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+;;PUSH     p,i ; 
+STA        SAVEPP,d;< PUSH >
+LDA        p,i;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+CALL      prntStgs
+ADDSP     4,i
+done:      STOP
 BR STOPEND
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;                                                                        
@@ -411,6 +461,142 @@ done:      LDA       index,d
 RET0
 ;} readStgs.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
+;{ prntStgs.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;---------------------------------------------------------------
+;  int prntStgs(address p[], int n)
+;---------------------------------------------------------------
+p:         .EQUATE  2
+n:         .EQUATE  4
+;--------
+count:     .BLOCK    2
+ptemp:     .BLOCK    2
+;---------------------------------------------------------------
+;.GLOBAL   prntStgs
+prntStgs:  NOP0
+;;SAVEA    ; 
+STA        SAVEA,d;< SAVEA >
+;;SAVEX    ; 
+STX        SAVEX,d;< SAVEX >
+;;CLRA  ; 
+LDA        0,i;< CLRA >
+STA      count,d
+;;CLRX  ; 
+LDX        0,i;< CLRX >
+;------------------------------------------
+loop:      CPA      n,s
+BRGE     done
+LDA      p,sxf
+STA      ptemp,d
+STRO     ptemp,n
+CHARO    '\n',i
+ADDX      2,i
+LDA      count,d
+;;INCA  ; 
+ADDA       1,i;< INCA >
+STA      count,d
+BR       loop
+;--------
+;;RESTOREA ; 
+LDA        SAVEA,d;< RESTOREA >
+;;RESTOREX ; 
+LDX        SAVEX,d;< RESTOREX >
+done:      RET0
+;} prntStgs.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;                                                                        
+;{ sortStgs.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;Andrew Plaza
+;CMPS 250 Spring 2016
+;The following is a solution to Assignment 5
+;I worked alone
+;No flaws of which I am aware
+;-----------------------------------------------------------
+; int sortStgs(address p[], int n);
+;-----------------------------------------------------------
+p:         .EQUATE   8
+n:         .EQUATE   10
+;----------
+dmax:      .EQUATE   0
+pmax:      .EQUATE   2
+temp:      .EQUATE   4
+save:      .BLOCK    2
+oloopCo:   .WORD     0          ;n-1 (condition) in for(count=0 count < n - 1; count++)
+iloopCo:   .WORD     0          ;n-c -1 (condition)
+oloopc:    .WORD     0          ;outer loop count
+iloopc:    .WORD     0          ;inner loop count
+;----------
+;.GLOBAL   sortStgs
+sortStgs:  SUBSP     6,i        ;   Reserve Space
+;;SAVEA               ;   Save everything, just in case ; 
+STA        SAVEA,d;< SAVEA >
+;;SAVEX    ; 
+STX        SAVEX,d;< SAVEX >
+;;CLRA                ; a clean slate ; 
+LDA        0,i;< CLRA >
+;;CLRX  ; 
+LDX        0,i;< CLRX >
+LDA       n,s        ; load the count
+SUBA      1,i        ; subtract one
+STA       oloopCo,d  ; store it in the outer-loop Condition var
+;---------
+oloop:     NOP0
+;;CLRA  ; 
+LDA        0,i;< CLRA >
+STA       iloopc,d   ;set the inner loop Co back to 0 for a new loop
+LDA       oloopc,d   ;load outer-loop-count into A for outer loop
+CPA       oloopCo,d  ;Compare it with outer-loop condition
+BRGE      done       ; we are done when the count is greater || = to condition
+LDA       n,s        ;load count into A
+SUBA      oloopc,d   ;subtract outerloopcount from count (n,s)
+SUBA      1,i        ; subtract 1
+STA       iloopCo,d  ; now we have our inner-loop condition
+;;CLRX  ; 
+LDX        0,i;< CLRX >
+iloop:     NOP0
+LDA       iloopc,d   ;load innerloop count into A
+CPA       iloopCo,d  ; compare inner-loop count with the inner-loop Condition
+BRGE      incCnt     ; increment the outer-loop count if it's >=
+LDA       p,sxf      ;load the first address in the p[]
+STA       dmax,s     ;store it 0 from the SP
+ADDX      2,i        ;increment X for the next ele in p[]
+LDA       p,sxf      ;load it into A
+STA       pmax,s     ;store it 2 from the SP
+CALL      ScompTo    ;call ScompTo to compare them (a.compareTo(b))
+CPA       0,i        ;compare it against 0
+BRGE      swap       ;if greater, then the second Str is lexicographically
+out:       NOP0                 ;greater than the first
+LDA      iloopc,d    ;load the innerloop count into A
+;;INCA                ;increment it ; 
+ADDA       1,i;< INCA >
+STA      iloopc,d    ;store it back into the var (iloopc)
+BR       iloop
+incCnt:    NOP0                 ; a private method to increment the count
+LDA       oloopc,d
+;;INCA  ; 
+ADDA       1,i;< INCA >
+STA       oloopc,d
+BR        oloop
+swap:      NOP0                 ;swaps two addresses in p[]
+SUBX      2,i
+LDA       p,sxf      ;load the one before into A
+STA       save,d     ;save it for later use
+ADDX      2,i        ;get the next ele
+LDA       p,sxf
+SUBX      2,i        ;store it in the previous place
+STA       p,sxf
+LDA       save,d     ;get our saved addr
+ADDX      2,i        ;get back to original position
+STA       p,sxf      ;store our saved addr in the next position
+BR        out        ;and we have swapped addrs'
+;---------
+;;done:RESTOREA            ;restore A and X ; 
+done: NOP0 ;< RESTOREA >
+LDA        SAVEA,d;< RESTOREA >
+;;RESTOREX ; 
+LDX        SAVEX,d;< RESTOREX >
+ADDSP     6,i        ;+ return
+RET0                 ;+
+;} sortStgs.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;                                                                        
 ;{ memcpy.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;-----------------------------------------------------------
 ; void memcpy(byte *from, byte *to, int n);
@@ -512,7 +698,8 @@ LDA        0,i;< CLRA >
 ;;CLRX  ; 
 LDX        0,i;< CLRX >
 ;---------
-loop:       LDBYTEA     Sobject2,sxf
+loop:       NOP0
+LDBYTEA     Sobject2,sxf
 STA         hold2,d
 LDBYTEA     Sobject1,sxf
 CPA         hold2,d

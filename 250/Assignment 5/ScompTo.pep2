@@ -18,7 +18,6 @@ Sobject1:  .EQUATE  2             ;formal parameter; address of Sobject
 Sobject2:  .EQUATE  4             ;formal parameter; address of Sobject
 ;-- Local Data ----------------------------------------------------------
 hold2:    .BLOCK    2
-
 ;-- Entry Point ---------------------------------------------------------
           .GLOBAL   ScompTo
 ScompTo:   SAVEX
@@ -31,7 +30,8 @@ ScompTo:   SAVEX
            CLRA                   ;  A = 0;
            CLRX
 ;---------
-loop:       LDBYTEA     Sobject2,sxf
+loop:       NOP0
+            LDBYTEA     Sobject2,sxf
             STA         hold2,d
             LDBYTEA     Sobject1,sxf
             CPA         hold2,d

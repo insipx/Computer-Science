@@ -1,0 +1,70 @@
+;---------------------------------------------------------------
+;  int readStgs(address p[], int limit)
+;---------------------------------------------------------------
+p:         .EQUATE  2  
+limit:     .EQUATE  4
+;--------
+           .BYTE     63
+value:     .BLOCK    63
+;--------
+index:     .BLOCK    2
+length:    .BLOCK    2
+ref:       .BLOCK    2
+;---------------------------------------------------------------
+msgtrunc:  .ASCII   "WARNING: input truncation \x00"
+msgfull:   .ASCII   "WARNING: string array full\n\x00"
+;---------------------------------------------------------------
+           .GLOBAL   readStgs
+readStgs:  NOP0
+           CLR       index,d          ;  index = 0;
+loop:      CPM       index,d,limit,s  ;+ while(index < limit) {
+           BRGE      full             ;| 
+           STRI      value,i          ;|   value = nextLine();
+           TSTA                       ;| + if(A > 0) {
+           BREQ      move             ;| |  
+           STRO      msgtrunc,d       ;| |   print(msgtrunc);
+           DECOA                      ;| |   print(A);
+           CHARO     '\n',i           ;| |   println();
+           NOP0                       ;| + }
+move:      PUSH      value,i          ;| + length = Slength(value);
+           CALL      Slength          ;| |
+           ADDSP     2,i              ;| |
+           STA       length,d         ;| +
+           TSTA                       ;| + if(length != 0) {
+           BREQ      done             ;| |
+;---------                            ;| |
+           LDA       length,d         ;| | + ref = new(length+2);
+           ADDA      2,i              ;| | |
+           STA       -2,s             ;| | |
+           SUBSP     2,i              ;| | |
+           CALL      new              ;| | |
+           ADDSP     2,i              ;| | |
+           STA       ref,d            ;| | +
+;---------                            ;| |
+           LDA       length,d         ;| | + *ref = (length++);
+           INCA                       ;| | |
+           STA       length,d         ;| | |
+           STBYTEA   ref,n            ;| | +
+           INC       ref,d            ;| |   ref = ref + 1;
+;---------                            ;| |
+           LDX       index,d          ;| | + p[index] = ref;
+           ASLX                       ;| | |
+           MOVE      ref,d,p,sxf      ;| | +
+;---------                            ;| |
+           LDA       length,d         ;| | + memcpy(&value,ref,length);
+           STA       -2,s             ;| | |
+           LDA       ref,d            ;| | |
+           STA       -4,s             ;| | |
+           LDA       value,i          ;| | |
+           STA       -6,s             ;| | |
+           SUBSP     6,i              ;| | |
+           CALL      memcpy           ;| | |
+           ADDSP     6,i              ;| | +
+;---------                            ;| |
+           INC       index,d          ;| |   index = index + 1;
+           BR loop                    ;+ }
+;--------                             ; 
+full:      STRO      msgfull,d        ;   println(msgfull);
+;--------                             ;
+done:      LDA       index,d          ;  A = index;
+           RET0

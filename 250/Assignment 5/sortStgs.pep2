@@ -1,17 +1,90 @@
+;Andrew Plaza
+;CMPS 250 Spring 2016
+;The following is a solution to Assignment 5
+;I worked alone
+;No flaws of which I am aware
+
 ;-----------------------------------------------------------
 ; int sortStgs(address p[], int n);
 ;-----------------------------------------------------------
-p:         .EQUATE  8
-n:         .EQUATE  10
+
+p:         .EQUATE   8
+n:         .EQUATE   10
 ;----------
-dmax:      .EQUATE  0
-pmax:      .EQUATE  2
-temp:      .EQUATE  4
+dmax:      .EQUATE   0
+pmax:      .EQUATE   2
+temp:      .EQUATE   4
+
+
+save:      .BLOCK    2
+
+oloopCo:   .WORD     0          ;n-1 (condition) in for(count=0 count < n - 1; count++)
+iloopCo:   .WORD     0          ;n-c -1 (condition)
+oloopc:    .WORD     0          ;outer loop count
+iloopc:    .WORD     0          ;inner loop count
+
 ;----------
-           .GLOBAL  sortStgs
-sortStgs:  SUBSP    6,i            ;   Reserve Space
+           .GLOBAL   sortStgs
+sortStgs:  SUBSP     6,i        ;   Reserve Space
+           SAVEA                ;   Save everything, just in case
+           SAVEX
+           CLRA                 ; a clean slate
+           CLRX
+           LDA       n,s        ; load the count
+           SUBA      1,i        ; subtract one
+           STA       oloopCo,d  ; store it in the outer-loop Condition var
 ;---------
-; S t u b b e d
+oloop:     NOP0
+           CLRA
+           STA       iloopc,d   ;set the inner loop Co back to 0 for a new loop
+           LDA       oloopc,d   ;load outer-loop-count into A for outer loop
+           CPA       oloopCo,d  ;Compare it with outer-loop condition
+           BRGE      done       ; we are done when the count is greater || = to condition
+           LDA       n,s        ;load count into A
+           SUBA      oloopc,d   ;subtract outerloopcount from count (n,s)
+           SUBA      1,i        ; subtract 1
+           STA       iloopCo,d  ; now we have our inner-loop condition
+           CLRX
+
+iloop:     NOP0
+           LDA       iloopc,d   ;load innerloop count into A
+           CPA       iloopCo,d  ; compare inner-loop count with the inner-loop Condition
+           BRGE      incCnt     ; increment the outer-loop count if it's >=
+           LDA       p,sxf      ;load the first address in the p[]
+           STA       dmax,s     ;store it 0 from the SP
+           ADDX      2,i        ;increment X for the next ele in p[]
+           LDA       p,sxf      ;load it into A
+           STA       pmax,s     ;store it 2 from the SP
+           CALL      ScompTo    ;call ScompTo to compare them (a.compareTo(b))
+           CPA       0,i        ;compare it against 0
+           BRGE      swap       ;if greater, then the second Str is lexicographically
+out:       NOP0                 ;greater than the first
+           LDA      iloopc,d    ;load the innerloop count into A
+           INCA                 ;increment it
+           STA      iloopc,d    ;store it back into the var (iloopc)
+           BR       iloop
+
+incCnt:    NOP0                 ; a private method to increment the count
+           LDA       oloopc,d
+           INCA
+           STA       oloopc,d
+           BR        oloop
+
+swap:      NOP0                 ;swaps two addresses in p[]
+           SUBX      2,i
+           LDA       p,sxf      ;load the one before into A
+           STA       save,d     ;save it for later use
+           ADDX      2,i        ;get the next ele
+           LDA       p,sxf
+           SUBX      2,i        ;store it in the previous place
+           STA       p,sxf
+           LDA       save,d     ;get our saved addr
+           ADDX      2,i        ;get back to original position
+           STA       p,sxf      ;store our saved addr in the next position
+           BR        out        ;and we have swapped addrs'
+
 ;---------
-done:      ADDSP    6,i            ;+ return
-           RET0                    ;+
+done:      RESTOREA             ;restore A and X
+           RESTOREX
+           ADDSP     6,i        ;+ return
+           RET0                 ;+
