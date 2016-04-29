@@ -100,7 +100,7 @@ public class PrimeNumbers {
         }
     }
 
-    //stole this from a machine org assignment I did earlier in the year
+    //took this from a machine org assignment I did earlier in the year
     //never thought it would come in handy
     private static String formatCommas(String str) {
         //if the string is less than four than no commas need to be added anymore, cause, no commas in 333
