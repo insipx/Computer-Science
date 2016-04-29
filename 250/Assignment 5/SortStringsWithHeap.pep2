@@ -1,0 +1,54 @@
+;SortStringsWithHeap.pep2 - read, print and sort an array of strings
+;
+; P.M.J., April 2016
+;---------------------------------------------------------------
+           .INCLUDE "HeapInit.pep1"
+           BR        main
+           .INCLUDE  "PEP2.pep1"
+           .APPEND   "readStgs.pep2"
+           .APPEND   "prntStgs.pep2"
+           .APPEND   "sortStgs.pep2"
+           .APPEND   "memcpy.pep2"
+           .APPEND   "Slength.pep2"
+           .APPEND   "ScompTo.pep2"
+;---------------------------------------------------------------
+prompt:    .ASCII   "Enter:\x00"
+msgunord:  .ASCII   "Unordered...\n\x00"
+msgord:    .ASCII   "Ordered...\n\x00"
+;--------
+LIMIT:     .EQUATE   24            ; Expresses the capacity of the array
+           .ASCII    "<<<<<<<<"    ; Just a marker for visual inspection
+p:         .BLOCK    48            ; The array of pointers; LIMIT * 2
+           .ASCII    ">>>>>>>>"    ; Just a marker for visual inspection
+count:     .BLOCK    2             ; The number of strings read and stored
+;--------
+;---------------------------------------------------------------
+main:      NOP0
+           PUSH      LIMIT,i       ;+ count = readStgs(p,LIMIT);
+           PUSH      p,i           ;|
+           CALL      readStgs      ;|
+           ADDSP     4,i           ;|
+           STA       count,d       ;+
+;--------
+           DECO      count,d       ;+ println(count);
+           CHARO     '\n',i        ;+
+;--------
+           STRO      msgunord,d    ;  println(msgunord);
+           PUSH      count,d       ;+ prntStgs(p,count);
+           PUSH      p,i           ;|
+           CALL      prntStgs      ;|
+           ADDSP     4,i           ;+
+;--------
+           PUSH      count,d       ;+ sortStgs(p,count);
+           PUSH      p,i           ;|
+           CALL      sortStgs      ;|
+           ADDSP     4,i           ;+
+;--------
+           STRO      msgord,d      ;  println(msgord);
+           PUSH      count,d       ;+ prntStgs(p,count);
+           PUSH      p,i           ;|
+           CALL      prntStgs      ;|
+           ADDSP     4,i           ;+
+done:      STOP
+           .APPEND  "Heap.pep1"
+           .END

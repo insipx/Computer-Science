@@ -1,0 +1,30 @@
+           .GLOBAL  BINOutpt
+m:         .EQUATE  4
+BINOutpt:  NOP0
+           SUBSP    0,i
+           STA      SAVED,d
+           LDA      0,i
+           STA      -2,s
+           SUBSP    2,i
+           LDA      SAVED,d
+           STA      SAVEA,d
+           STX      SAVEX,d
+           LDA      m,s
+           LDX      16,i
+BINOloop:  NOP0
+           CPX      0,i
+           BREQ     BINOdone
+           ROLA
+           BRC      BINO1
+BINO0:     CHARO    '0',i
+           BR       BINOnext
+BINO1:     CHARO    '1',i
+BINOnext:  NOP0
+           SUBX     1,i
+           BR       BINOloop
+BINOdone:  NOP0
+           LDX      SAVEX,d
+           LDA      SAVEA,d
+           ADDSP    0,s
+           ADDSP    2,i
+           RET0

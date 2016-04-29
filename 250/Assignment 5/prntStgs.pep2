@@ -1,0 +1,38 @@
+;Andrew Plaza
+;CMPS 250 Spring 2016
+;The following is a solution to Assignment 5
+;I worked alone
+;No flaws of which I am aware
+
+;---------------------------------------------------------------
+;  int prntStgs(address p[], int n)
+;---------------------------------------------------------------
+p:         .EQUATE  2
+n:         .EQUATE  4
+;--------
+count:     .BLOCK    2
+ptemp:     .BLOCK    2
+;---------------------------------------------------------------
+           .GLOBAL   prntStgs
+prntStgs:  NOP0
+           SAVEA        ;save A and X and clear them for a clean slate
+           SAVEX
+           CLRA
+           STA      count,d ;count is set to 0 at first
+           CLRX
+;------------------------------------------
+loop:      CPA      n,s     ;compare the count (loaded into A) with n(amount of str we have)
+           BRGE     done    ;if it's Greater than or Equal to, we are done
+           LDA      p,sxf   ;load the next addr of the p[] into A
+           STA      ptemp,d ;store a in ptempt
+           STRO     ptemp,n ;print the String using indirect addr mode (n)
+           CHARO    '\n',i
+           ADDX      2,i    ;add 2 to X to get to next addr
+           LDA      count,d ;load count into A, increment it, and loop back until all str are printed
+           INCA
+           STA      count,d
+           BR       loop
+;--------
+           RESTOREA
+           RESTOREX
+done:      RET0

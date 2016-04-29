@@ -1,0 +1,35 @@
+;HelloName.pep2 - Illustrates use of STRI instruciton
+;
+; P.M.J., April 2016
+;---------------------------------------------------------------
+           BR        main
+           .INCLUDE  "PEP2.pep1"
+;---------------------------------------------------------------
+prompt:    .ASCII   "Enter Name:\x00"
+hello:     .ASCII   "Hello \x00"
+;--------
+           .BYTE     16            ;+ The "before-byte" for Name
+Name:      .BLOCK    16            ;+ The block of 16 bytes
+aName:     .ADDRSS  Name           ;  Holds the address of Name
+;--------
+prompt2:   .ASCII   "Enter:\x00"
+goodbye:   .ASCII   "Good-bye \x00"
+;--------
+           .BYTE     16            ;+ The "before-byte" for Name2
+Name2:     .BLOCK    16            ;+ The block of 16 bytes
+;--------
+;---------------------------------------------------------------
+main:      STRO      prompt,d
+           STRI      aName,d       ;  Note aName is used "directly"
+           STRO      hello,d
+           STRO      Name,d        ;  Name is used "directly"
+           CHARO     '\n',i
+;-------- What follows is an alternative example
+           STRO      prompt2,d
+           STRI      Name2,i       ;  Note Name2 is used "immediately"
+           STRO      goodbye,d
+           STRO      Name2,d       ;  Name2 is used directly
+           CHARO     '\n',i
+;--------
+           STOP
+           .END

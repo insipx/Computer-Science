@@ -1,0 +1,20 @@
+;-----------------------------------------------------------
+; void memcpy(byte *from, byte *to, int n);
+;-----------------------------------------------------------
+from:      .EQUATE  2
+to:        .EQUATE  4
+n:         .EQUATE  6
+;-----------------------------------------------------------
+;-----------------------------------------------------------
+           .GLOBAL  memcpy
+memcpy:    SAVE
+           CLRA
+           CLRX
+loop:      CPX      n,s
+           BRGE     done
+           LDBYTEA  from,sxf
+           STBYTEA  to,sxf
+           INCX
+           BR       loop
+done:      RESTORE
+           RET0

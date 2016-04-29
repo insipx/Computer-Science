@@ -1,0 +1,42 @@
+;Name:  Andrew Plaza
+;CMPS 250 Spring 2016
+;The following is a solution to Assignment 5
+;I worked a bit with Sean Batzel, mostly worked alone.
+;
+; P.M.J., April 2016
+;--------Includes-----------------------------------------------
+         BR        main
+         .INCLUDE  "PEP2.pep1"
+         .APPEND   "readStgs.pep2"
+         .APPEND   "memcpy.pep2"
+         .APPEND   "Slength.pep2"
+         .APPEND   "ScompTo.pep2"
+;------------local vars-----------------------------------------
+          .BYTE     16      ;beforebyte
+Name1:    .BLOCK    31      ;the name
+aName1:   .ADDRSS   Name1   ;address
+          .BYTE     16      ;same as above
+Name2:    .BLOCK    31
+aName2:   .ADDRSS   Name2
+result:   .BLOCK    2
+         CLRA
+         CLRX
+;------------------
+
+main:    NOP0
+loop:    STRI       aName1,d
+         STRI       aName2,d
+         LDBYTEA    Name1,d
+         CPA        0,i
+         BREQ       done
+         LDA        aName2,d
+         PUSHA
+         LDA        aName1,d
+         PUSHA
+         CALL       ScompTo
+         ADDSP      4,i
+         BR         loop
+
+
+done:    STOP
+         .END
