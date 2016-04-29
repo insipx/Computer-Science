@@ -8,6 +8,7 @@ public class PrimeNumbers {
     //prime numbers using a modified Sieve of Erastothenes.
     // it's modified, because it skips any even number
     //because even numbers will never be prime
+    //this cuts the problem size in half
 
 
     public static void findPrimes(int start, int end){
@@ -23,26 +24,29 @@ public class PrimeNumbers {
         for(int i = 0; i < intList.length; i++){
            intList[i] = true;
         }
-
+        //split the work of finding multiples to four processes
         int splitMax = (int)maxPrime / 4;
         int[] splits = new int[4];
         splits[0] = 3;
         splits[1] = splitMax;
         splits[2] = splitMax * 2;
         splits[3] = splitMax * 3;
-        //max prime won't work if the beginning number is even
+
+        //this Algorithm won't work if the beginning number of finding multiples is even
         //it also totally undermines the point of skipping over even numbers
         for(int i = 0; i < splits.length; i ++){
             if(splits[i] % 2 == 0){
                 splits[i] = splits[i]-1;
             }
         }
+
         //threading is splitting up the work of finding multiples, ergo finding primes
         //thr0 finds the multiples of 3-splitMax, thr1 from splitMax - splitMax*2 etc
         primeThread thr0 = new primeThread(intList,splits[0],splitMax,maxInt,start);
         primeThread thr1 = new primeThread(intList,splits[1],splitMax*2,maxInt,start);
         primeThread thr2 = new primeThread(intList,splits[2],splitMax*3,maxInt,start);
         primeThread thr3 = new primeThread(intList,splits[3],maxPrime,maxInt,start);
+
         thr0.start();
         thr1.start();
         thr2.start();
@@ -53,13 +57,14 @@ public class PrimeNumbers {
             thr1.join();
             thr2.join();
             thr3.join();
+
         }catch(Exception e){
             System.out.println("Interrupted");
         }
 
 
 
-        ArrayList<Integer> primeList = new ArrayList<Integer>();
+        ArrayList<Integer> primeList = new ArrayList();
         //adding two because we skip even numbers, but 2 is skipped and it's
         //prime, so if start is < 2 we have to prepend it
 
