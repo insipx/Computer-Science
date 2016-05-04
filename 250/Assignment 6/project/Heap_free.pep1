@@ -1,0 +1,67 @@
+;===================================================================================
+          .GLOBAL  free
+;---------------------------------------------------------------------------------------
+; address free(address addr, int size)
+;---------------------------------------------------------------------------------------
+addr:     .EQUATE  6         ;an address obtainted from a call to malloc
+size:     .EQUATE  8         ;the corresponding "need" used when allocating
+;---------------------------------------------------------------------------------------
+fprev:    .EQUATE  0         ;pointer to previous free element
+fcurr:    .EQUATE  2         ;pointer to current free element
+;---------------------------------------------------------------------------------------
+free:     SUBSP    4,i       ;  Room for 2 local variables
+;----------------------------;
+          LDA      size,s    ;+ if((size >= 4) && ((size%2) == 0)) {
+          CPA      4,i       ;|
+          BRLT     ferror    ;|
+          RORA               ;|
+          BRC      ferror    ;|
+;----------------------------;|
+fstart:   LDA      Hhead,d   ;| + if(Hhead < addr) {  
+          CPA      addr,s    ;| |
+          BRGE     ferror    ;| | 
+          STA      fcurr,s   ;| |   fcurr = Hhead;
+floop:    CPA      0,i       ;| | + while((fcurr != null) &&
+          BREQ     ffound    ;| | |
+          CPA      addr,s    ;| | |       (fcurr < addr) ) {
+          BRGE     ffound    ;| | |
+          LDA      fcurr,s   ;| | | + fprev = fcurr;
+          STA      fprev,s   ;| | | +
+          LDA      fcurr,sf  ;| | | + fcurr = fcurr->flink;
+          STA      fcurr,s   ;| | | +
+          BR       floop     ;| | |
+ffound:   NOP0               ;| | + }
+          LDA      addr,s    ;| | + if((addr+size) <= fcurr) {
+          ADDA     size,s    ;| | |
+          CPA      fcurr,s   ;| | |
+          BRGT     ferror    ;| | |
+          LDA      fcurr,s   ;| | | + addr->flink = fcurr;
+          STA      addr,sf   ;| | | +
+          LDA      addr,s    ;| | | + fprev->flink = addr;
+          STA      fprev,sf  ;| | | +
+          ADDA     2,i       ;| | | + addr->size = size;
+          STA      HEA,d     ;| | | |
+          LDA      size,s    ;| | | |
+          STA      HEA,n     ;| | | +
+          NOP0               ;| | + }
+          NOP0               ;| + }
+;fdofill:  NOP0
+;++++++++++++++++++++++++++++++++++++  TEMPORARY CODE TO FILL DEALLOCATION
+          LDA      fcode,d   ;| + hfill((addr+4),(size-4),fcode);
+          STA      -2,s      ;| |
+          LDA      size,s    ;| |
+          SUBA     4,i       ;| |   //(size-4),
+          STA      -4,s      ;| |
+          LDA      addr,s    ;| |
+          ADDA     4,i       ;| |   //(addr+4)
+          STA      -6,s      ;| |
+          SUBSP    6,i       ;| |
+          CALL     hfill     ;| |
+          ADDSP    6,i       ;| +
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+          LDA      0,i       ;   A = 0;  //indicates success
+          BR       freturn
+ferror:   LDA      addr,s
+freturn:  RET4
+fcode:    .WORD    0x2a2a    ;  a code value
+;===================================================================================

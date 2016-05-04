@@ -1,0 +1,100 @@
+;===================================================================================
+          .GLOBAL  malloc
+;---------------------------------------------------------------------------------------
+; address malloc(int need)
+;---------------------------------------------------------------------------------------
+need:     .EQUATE  8
+;---------------------------------------------------------------------------------------
+prev:     .EQUATE  0         ;pointer to previous free element
+curr:     .EQUATE  2         ;pointer to current free element
+next:     .EQUATE  4         ;pointer to next free element
+;---------------------------------------------------------------------------------------
+malloc:   SUBSP    6,i       ;  Room for 3 local variables
+          LDA      need,s    ;+ if(need < 4) {
+          CPA      4,i       ;|
+          BRGE     mchkodd   ;|
+          LDA      4,i       ;|   need = 4;
+          STA      need,s    ;|
+          BR       mstart    ;+ } else
+;----------------------------
+mchkodd:  RORA               ;+ if((need%2) == 1) {
+          BRC      madd1     ;|
+          BR       mstart    ;|
+madd1:    ROLA               ;|
+          ADDA     1,i       ;|   need = need + 1;
+          STA      need,s    ;+ }
+;----------------------------
+mstart:   LDA      Hhead,d   ;+ curr = Hhead
+          STA      curr,s    ;+
+;----------------------------
+mloop:    CPA      0,i       ;+ while((curr != null) &&
+          BREQ     mERROR    ;|       (curr->size < need) {
+          ADDA     2,i       ;|
+          STA      HEA,d     ;|
+          LDA      HEA,n     ;|   // A = curr->size;
+          CPA      need,s    ;|
+          BRGE     mdo       ;|
+          LDA      curr,s    ;|   + prev = curr;
+          STA      prev,s    ;|   +
+          LDA      curr,sf   ;|   + curr = curr->flink;
+          STA      curr,s    ;|   +
+          BR       mloop     ;+ }
+;----------------------------
+mdo:      SUBA     need,s    ;+ if((curr->size - need) < 4) {
+          CPA      4,i       ;|
+          BRGE     mok       ;|
+          LDA      HEA,n     ;|  + need = curr->size;
+          STA      need,s    ;|  +
+          LDX      curr,s    ;|  + prev->flink = curr->flink;
+          STX      HEA,d     ;|  |
+          LDA      HEA,n     ;|  |
+          STA      prev,sf   ;|  +
+          BR       mfill     ;| } else {
+mok:      NOP0               ;|  + 
+          LDA      curr,s    ;|  + next = curr + need;
+          ADDA     need,s    ;|  |
+          STA      next,s    ;|  +
+;----------------------------;|
+          STA      prev,sf   ;|    prev->flink = next
+;----------------------------;|
+          LDA      curr,sf   ;|  + next->flink = curr->flink
+          STA      next,sf   ;|  +
+;----------------------------;|
+          LDX      curr,s    ;|  + X = (curr->size - need);
+          ADDX     2,i       ;|  |
+          STX      HEA,d     ;|  |
+          LDX      HEA,n     ;|  |
+          SUBX     need,s    ;|  +
+;----------------------------;|
+          LDA      next,s    ;|  + next->size = X
+          ADDA     2,i       ;|  |
+          STA      HEA,d     ;|  |
+          STX      HEA,n     ;|  +
+;----------------------------;+ }
+mfill:    NOP0               ;
+;++++++++++++++++++++++++++++  TEMPORARY CODE TO FILL ALLOCATION
+          LDA      mcode,d   ;+ hfill(curr,need,mcode);
+          STA      -2,s      ;|
+          LDA      need,s    ;|
+          STA      -4,s      ;|
+          LDA      curr,s    ;|
+          STA      -6,s      ;|
+          SUBSP    6,i       ;|
+          CALL     hfill     ;|
+          ADDSP    6,i       ;+
+          LDA      mcode,d   ;+ if(mcode != "ZZ") {
+          CPA      0x5a5a,i  ;|
+          BREQ     AtLimit   ;|
+          ADDA     0x0101,i  ;|   mcode =  mcode + 0x0101; //next character
+          STA      mcode,d   ;|
+AtLimit:  NOP0               ;+ }
+;++++++++++++++++++++++++++++
+          LDA      curr,s    ;  A = curr;
+          LDX      need,s    ;  X = need;
+          BR       mreturn   ;
+;----------------------------
+mERROR:   LDA      0,i       ;  A = null
+;----------------------------
+mreturn:  RET6               ;  Remove 3 local variables
+mcode:    .WORD    0x4141    ;  a code value
+;-------------------------------------------------------------------

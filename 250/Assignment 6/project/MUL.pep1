@@ -1,0 +1,88 @@
+           .GLOBAL    MUL
+;*******************************
+;***Multiplication Subprogram***
+;*******************************
+;**Parameters
+t1:        .EQUATE    6
+t2:        .EQUATE    8
+;**Local Variables
+sign:      .EQUATE    0
+n:         .EQUATE    2
+;*******************************
+MUL:       LDA        16,i
+           STA        -2,s
+           SUBSP      2,i
+           LDA        1,i
+           STA        -2,s
+           SUBSP      2,i
+TestT1:    NOP0
+           LDA        t1,s
+           CPA        0,i
+           BRGE       TestT2
+           STA        SAVEA,d
+           LDA        sign,s
+           SUBA       1,i
+           STA        sign,s
+           LDA        SAVEA,d
+TestT2:    NOP0
+           LDA        t2,s
+           CPA        0,i
+           BRGE       InitMul
+           STA        SAVEA,d
+           LDA        sign,s
+           SUBA       1,i
+           STA        sign,s
+           LDA        SAVEA,d
+InitMul:   LDA        0,i
+           LDX        t2,s
+MulLoop:   STA        -2,s
+           LDA        n,s
+           BREQ       Fin
+           LDA        -2,s
+           RORX
+           BRC        ml0
+           BR         MulShftP
+ml0:       NOP0
+           ROLX
+           ADDA       t1,s
+           BR         MulShft
+MulShftP:  ROLX
+MulShft:   ASRX
+           RORA
+           BRC        LAB1
+           ROLA
+           ANDX       0x7FFF,i
+           BR         LAB2
+LAB1:      ROLA
+           ORX        0x8000,i
+LAB2:      ASRA
+MulLoop3:  STA        -2,s
+           STA        SAVEA,d
+           LDA        n,s
+           SUBA       1,i
+           STA        n,s
+           LDA        SAVEA,d
+           LDA        -2,s
+           BR         MulLoop
+Fin:       STX        -2,s
+           LDA        -2,s
+           LDX        sign,s
+           STA        -2,s
+oVrTest1:  NOP0
+           LDA        sign,s
+           CPA        0,i
+           BRNE       oVrTest2
+           LDA        -2,s
+           CPA        0,i
+           BRGT       OverErr
+           BR         Fin2
+oVrTest2:  LDA        -2,s
+           CPA        0,i
+           BRLT       OverErr
+           BR         Fin2
+OverErr:   ADDSP      4,i
+           LDA        0x7FFF,i
+           ADDA       1,i
+           BR         RetMul
+Fin2:      ADDSP      4,i
+RetMul:    RET0

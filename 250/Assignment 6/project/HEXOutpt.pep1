@@ -1,0 +1,38 @@
+           .GLOBAL  HEXOutpt
+Hm:        .EQUATE  4
+HEXtext:   .block   4
+           .word    0
+HEXOutpt:  NOP0
+           SUBSP    0,i
+           STA      SAVED,d
+           LDA      0,i
+           STA      -2,s
+           SUBSP    2,i
+           LDA      SAVED,d
+           STA      SAVEA,d
+           STX      SAVEX,d
+           LDA      Hm,s
+           LDX      3,i
+HEXOloop:  NOP0
+           CPX      0,i
+           BRLT     HEXOdone
+           ANDA     0x000F,i
+           CPA      10,i
+           BRLT     HEX1
+           ADDA     0x0007,i
+HEX1:      ADDA     0x0030,i
+           STBYTEA  HEXtext,x
+           LDA      Hm,s
+           RORA
+           RORA
+           RORA
+           RORA
+           STA      Hm,s
+           SUBX     1,i
+           BR       HEXOloop
+HEXOdone:  STRO     HEXtext,d
+           LDX      SAVEX,d
+           LDA      SAVEA,d
+           ADDSP    0,s
+           ADDSP    2,i
+           RET0

@@ -1,0 +1,36 @@
+;===================================================================================
+          .GLOBAL  hfill
+hfaddr:   .EQUATE  2
+hfsize:   .EQUATE  4
+hfcode:   .EQUATE  6
+;===================================================================================
+;  void hfill(address hfaddr, int hfsize, int hfcode)
+;===================================================================================
+hfill:    NOP0
+          LDX      hfaddr,s
+          ADDX     hfsize,s
+hfloop:   NOP0
+          SUBX     2,i
+          STX      HEA,d
+          LDA      hfcode,s
+          STA      HEA,n
+          CPX      hfaddr,s
+          BRGT     hfloop
+          RET0
+;===================================================================================
+          .GLOBAL  Heap
+          .GLOBAL  Hhead
+          .GLOBAL  HEA
+;===================================================================================
+; H E A P   D A T A
+;===================================================================================
+          .ASCII   "<<<<<<<<"  ;just a visible marker for the start of the heap
+Hhead:    .WORD    0           ;head of the free list
+Heap:     .WORD    0           ;flink to next element
+          .WORD    0           ;empty size of the first element
+Hsecond:  .WORD    0           ;flink to next element; null
+          .WORD    1024        ;size of this second element
+          .BLOCK   1024        ;the actual heap space
+HEA:      .BLOCK   2           ;temporary static used by the Heap subprograms
+Hmarker:  .ASCII   ">>>>>>>>"  ;just a visible marker for the end of the heap
+;===================================================================================
