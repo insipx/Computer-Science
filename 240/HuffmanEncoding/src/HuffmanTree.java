@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.*;
 /**
  * Created by insidious on 5/5/16.
@@ -7,22 +6,22 @@ import java.util.*;
 //Objective: compress some String using Huffman Trees
 
 public class HuffmanTree implements HuffmanTreeInterface{
-    private ArrayList<Node> treeList;
     private Node<Integer> root;
-    HashMap<Character,Integer> freqMap;
+    private HashMap<Character,Integer> freqMap;
     private String str;
+
+    //constructor requires a string, always.
     public HuffmanTree(String str){
         this.str = str;
-        treeList = new ArrayList<Node>();
-        root = new Node<Integer>();
+        root = new Node();
         initFrequency();
         initTree();
 
     }
+
     @Override
     public String getEncodedSymbol(char c) {
         //count because we don't want to count the root node into encoding
-        int count = 0;
         Node temp = root;
         String result = "";
         while(temp.isParentNode){
@@ -33,7 +32,6 @@ public class HuffmanTree implements HuffmanTreeInterface{
                 temp = temp.leftRef;
                 result+="0";
             }
-            count++;
         }
 
         return result;
@@ -41,14 +39,15 @@ public class HuffmanTree implements HuffmanTreeInterface{
 
     private void initTree(){
 
-        ArrayList<Node> nodeList = new ArrayList<Node>();
-
+        ArrayList<Node> nodeList = new ArrayList();
+        //make a node out of every entry in the hashmap
         for(Map.Entry<Character, Integer> entry : freqMap.entrySet()){
             char c = entry.getKey();
             int freq = entry.getValue();
             Node temp = new Node(c, freq);
             nodeList.add(temp);
         }
+
         nodeList = getSortedList(nodeList);
 
 
@@ -63,25 +62,30 @@ public class HuffmanTree implements HuffmanTreeInterface{
                 root.isParentNode = true;
                 root.freq = nodeList.get(0).freq + nodeList.get(1).freq;
                 root.label = nodeList.get(0).label + nodeList.get(1).label;
+                //remove the two least frequent
                 nodeList.remove(0);
                 nodeList.remove(0);
+                //add the parent node
                 nodeList.add(root);
                 nodeList = getSortedList(nodeList);
             //root has already been inserted
             }else{
+                //make a temp node
                 Node temp = new Node();
+                //set the references, frequencies and labels
                 temp.leftRef = nodeList.get(0);
                 temp.rightRef = nodeList.get(1);
                 temp.freq = nodeList.get(0).freq + nodeList.get(1).freq;
-
                 temp.label = nodeList.get(0).label + nodeList.get(1).label;
                 temp.isParentNode = true;
                 root = temp;
+                //remove the two least frequent
                 nodeList.remove(0);
                 nodeList.remove(0);
+                //add combined root parent
                 nodeList.add(root);
+                //make sure to sort the list again
                 nodeList = getSortedList(nodeList);
-                //may be a reference problem
             }
         }
     }
@@ -159,7 +163,7 @@ public class HuffmanTree implements HuffmanTreeInterface{
             char c = str.charAt(i);
             Integer freq = freqMap.get(new Character(c));
             if(freq != null){
-                freqMap.put(c, new Integer(freq+1));
+                freqMap.put(c, freq + 1);
             }else{
                 freqMap.put(c,1);
             }

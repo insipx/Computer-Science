@@ -4,6 +4,5 @@
 public interface HuffmanCompressionInterface {
 
     public String compress(String str);
-    public String decompress(String str);
-    public int getBinarySize(String str);
+    public int getSize(String str);
 }
