@@ -35,11 +35,6 @@ public class HuffmanTree implements HuffmanTreeInterface{
             }
             count++;
         }
-/*        if(temp.c == c){
-            result+="1";
-        }else{
-            result+="0";
-        }*/
 
         return result;
     }
@@ -47,17 +42,14 @@ public class HuffmanTree implements HuffmanTreeInterface{
     private void initTree(){
 
         ArrayList<Node> nodeList = new ArrayList<Node>();
-        Object[] freqVals = freqMap.entrySet().toArray();
-        //some good ol' functional lambdas
-        Arrays.sort(freqVals, (Comparator<Object>) (o1, o2) -> ((Map.Entry<Character, Integer>) o1).getValue().compareTo(
-                ((Map.Entry<Character, Integer>) o2).getValue()));
 
-        for(Object e : freqVals){
-                char c = ((Map.Entry<Character,Integer>)e).getKey();
-                int freq = ((Map.Entry<Character,Integer>)e).getValue();
-                Node temp = new Node(c,freq);
-                nodeList.add(temp);
+        for(Map.Entry<Character, Integer> entry : freqMap.entrySet()){
+            char c = entry.getKey();
+            int freq = entry.getValue();
+            Node temp = new Node(c, freq);
+            nodeList.add(temp);
         }
+        nodeList = getSortedList(nodeList);
 
 
         //create the tree
@@ -94,7 +86,8 @@ public class HuffmanTree implements HuffmanTreeInterface{
         }
     }
 
-
+    //this method just converts between array and arraylist, calling on sortList and sortChars
+    //for sort algorithms
     private ArrayList<Node> getSortedList(ArrayList<Node> list){
         Node[] nodeArr = new Node[list.size()];
         ArrayList<Node> temp = new ArrayList<Node>();
@@ -144,6 +137,7 @@ public class HuffmanTree implements HuffmanTreeInterface{
     //in order to favor lesser letters
     //just bubble sort this time
     //probably could have included this in quikSort, though
+    //just a rudimentary bubble sort
     private void sortChars(Node[] arr){
         for(int i = 0; i < arr.length; i++){
             for(int j = i+1; j < arr.length;j++){
@@ -155,20 +149,6 @@ public class HuffmanTree implements HuffmanTreeInterface{
             }
         }
 
-    }
-    //of the sorted HashMap (by values)
-    private Integer getFreqOfKey(Character c){
-        Object[] freqVals = freqMap.entrySet().toArray();
-        //some good ol' functional lambdas
-        Arrays.sort(freqVals, (Comparator<Object>) (o1, o2) -> ((Map.Entry<Character, Integer>) o1).getValue().compareTo(
-                ((Map.Entry<Character, Integer>) o2).getValue()));
-
-        for(Object e : freqVals){
-            if(((Map.Entry<Character,Integer>)e).getKey() == c){
-                return ((Map.Entry<Character,Integer>)e).getValue();
-            }
-        }
-        return null;
     }
 
     //puts the frequency of every character in a HashMap
