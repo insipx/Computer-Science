@@ -8,6 +8,8 @@ public class HuffmanMain {
         String str2 = "someone is sitting in the shade today because someone planted a tree a long time ago";
         String compStr1 = hcomp.compress(str1);
         String compStr2 = hcomp.compress(str2);
+        System.out.println();
+        System.out.println();
         System.out.println(compStr1);
         System.out.println("The Size Is: " + hcomp.getSize(compStr1));
         System.out.println();

@@ -3,6 +3,6 @@
  */
 public interface HuffmanTreeInterface {
 
-    public String getEncodedSymbol(char c);
+    String getEncodedSymbol(char c);
 
 }
