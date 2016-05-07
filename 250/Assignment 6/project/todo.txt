@@ -1,0 +1,32 @@
+Notes
+
+readSo:
+
+buildLst: refactored version of readStgs which will read input and build the
+Linked List, returning the address to the first node in the list
+
+prntLst: accepts the reference to the first node in a linked list of string
+objects and prints out the values in the list
+
+to test prntLst:
+
+
+head: .ADDRSS first ;Reference to the first node in the list
+;----------------------------------------------------------------------
+first: .ADDRSS second ;First Node – reference to next node
+ .ADDRSS two ;First Node – reference to string object
+second: .ADDRSS third ;Second Node – reference to next node
+ .ADDRSS three ;Second Node – reference to string object
+third: .ADDRSS fourth ;Third Node - reference to next node
+ .ADDRSS four ;Third Node - reference to string object
+fourth: .ADDRSS 0 ;Fourth Node – reference to next node (null in this case)
+ .ADDRSS one ;Fourth Node – reference to string object
+;-------------------------------------------- (String Objects follow)
+one: .BYTE 20
+ .ASCII “Washington, George\x00"
+two: .BYTE 12
+ .ASCII “Adams, John\x00"
+three: .BYTE 18
+ .ASCII “Jefferson, Thomas\x00"
+four: .BYTE 15
+ .ASCII “Madison, James\x00"
