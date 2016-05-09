@@ -13,7 +13,11 @@
          .APPEND   "readSO.pep2"
          .APPEND    "Heap.pep1"
 ;------------local vars----------------------------------------
-name:   .BLOCK  31
+name:   .BLOCK  2
+name2:  .BLOCK  2
+        .BYTE   16
+comp:   .ASCII  ""
+aComp:  .ADDRSS comp
 ;------------main----------------------------
 main:   NOP0
         LDA     Heap,d
@@ -21,11 +25,22 @@ main:   NOP0
         STA     Hhead,d
         ADDA    4,i
         STA     Hhead,n
+
+loop:   CALL    readSO
+        STA     name,d
         CALL    readSO
+        STA     name2,d
+        STRO    name,n
+        CHARO   '\n',i
+        STRO    name2,n
+        CHARO   'n',i
         DECOA
         CHARO   '\n',i
-        STA     name,d
-        STRO    name,n
-
+        LDBYTEA name,n
+        CPA     0,i
+        BREQ    done
+        BR      loop
+;--------------------------
+done:   NOP0
         STOP
         .END

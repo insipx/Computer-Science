@@ -1,7 +1,12 @@
+;Name:  Andrew Plaza
+;CMPS 250 Spring 2016
+;The following is a solution to Assignment 5
+;I worked with a bit with Sean Batzel, mostly alone
+;
 ;************************************************************************
-; String subprogram that compares two strings (Sobjects) and 
+; String subprogram that compares two strings (Sobjects) and
 ; returns a number less than zero if the first object is lexiographicall
-; before (i.e. less than) the second, zero if they are equivalent, and a 
+; before (i.e. less than) the second, zero if they are equivalent, and a
 ; positive number otherwise.
 ;
 ;********  int ScompTo (char[] Sobject1, char[] Sobject2)
@@ -18,15 +23,64 @@ ScompTo:   SAVEX
            STRO     Sobject1,sf
            CHARO    '-',i
            STRO     Sobject2,sf
+           CHARO    '\n',d
 ;>>>>>>>>>
            CLRA                   ;  A = 0;
+           CLRX
 ;---------
-; S t u b b e d
+loop:       NOP0
+            LDBYTEA     Sobject2,sxf
+            STA         hold2,d
+            LDBYTEA     Sobject1,sxf
+            CPA         hold2,d
+            BRNE        done1
+            CPA         0,i
+            BREQ        equal
+            INCX
+            BR          loop
 ;---------
-done:      RESTOREX
+done1:      SUBA        hold2,d
+            CPA         0,i
+            BRGT        greater
+            BRLT        less
+
+greater:    NOP0
+            LDA         1,i
+            BR          done
+
+less:       NOP0
+            LDA         -1,i
+            BR          done
+
+equal:      NOP0
+            LDA         0,i
+            BR          done
+
+done:       RESTOREX
+
 ;<<<<<<<<< Instrumentation
            CHARO    ',',i
            DECOA
            CHARO    '\n',i
 ;>>>>>>>>>
            RET0                   ;
+
+;here's some code i was using to guide me
+;int compareString(char *firstString, char *secondString){
+;    if(firstString == NULL && secondString == NULL)
+;        return 0;
+;    int counter = 0;
+;    while(firstString[counter] == secondString[counter]){
+;        if(firstString[counter] == '\0' && secondString[counter] == '\0')
+;            return 0;
+;        counter++;
+;    }
+;    return firstString[counter] - secondString[counter];
+;}
+;
+;
+;
+;
+;
+;
+;
