@@ -1,6 +1,19 @@
 Notes
 
-readSo:
+readSo:  needs to read a single string value from the buffer and return the
+reference to the dynamically allocated string object that represent the value
+read.
+Reads one String value and only returns ONE reference
+well, all you have to do is load length into the a register, add 3 to that,
+then store that on the stack and call new. I say 3 because you need one for
+the byte with the null and the two for the address
+actually wait that is wrong
+he told me in his office yesterday that readSO is basically readstgs
+so when we call readSO it uses a defined .BLOCK space(with the before byte)
+and calls STRI on that. then calls new and carves out space on the heap and
+transfers the contents of the .BLOCK string object into the space in the heap
+at the end it returns the address of that area in the heap with the string in
+it and that is what you use in buildLst
 
 buildLst: refactored version of readStgs which will read input and build the
 Linked List, returning the address to the first node in the list
@@ -30,3 +43,29 @@ three: .BYTE 18
  .ASCII “Jefferson, Thomas\x00"
 four: .BYTE 15
  .ASCII “Madison, James\x00"
+
+index = 0
+while(index < limit){
+    value = nextLine();
+    if(A>0){
+        print(msgtrunc);
+        print(A);
+        println();
+    }
+    length = Slength(value);
+    if(length != 0){
+        ref = new(length+2);
+        *ref = length++;
+        ref++;
+        p[index] = ref;
+        memcpy(&value,ref,length);
+        index++;
+    }
+
+
+
+
+
+    }
+
+}

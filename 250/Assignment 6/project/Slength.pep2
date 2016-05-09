@@ -1,0 +1,23 @@
+;************************************************************************
+; String length subprogram that returns the count of the number of
+; characters in the string.
+;
+;********  int Slength (char[] Sobject)
+;
+;-- Arguments -----------------------------------------------------------
+Sobjectl:  .EQUATE  2             ;formal parameter; address of Sobject
+;-- Local Data ----------------------------------------------------------
+;-- Entry Point ---------------------------------------------------------
+Slength:   NOP0
+           SAVEX
+           CLRA                   ;  A = 0;
+           CLRX                   ;  X = 0;
+loopl:     LDBYTEA  Sobjectl,sxf  ;+ while(Sobjectl[X] != 0x00) {
+           CPA      0,i           ;|
+           BREQ     donel         ;|
+           ADDX     1,i           ;|   X = x + 1;
+           BR       loopl         ;+ }
+donel:     STX      -2,s          ;+ A = X;
+           RESTOREX
+           LDA      -2,s          ;+
+           RET0                   ;

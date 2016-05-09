@@ -1,0 +1,31 @@
+;Name:  Andrew Plaza
+;CMPS 250 Spring 2016
+;The following is a solution to Assignment 5
+;I worked a bit with Sean Batzel, mostly worked alone.
+;
+; P.M.J., April 2016
+;--------Includes-----------------------------------------------
+         BR        main
+         .INCLUDE  "PEP2.pep1"
+         .APPEND   "memcpy.pep2"
+         .APPEND   "Slength.pep2"
+         .APPEND   "ScompTo.pep2"
+         .APPEND   "readSO.pep2"
+         .APPEND    "Heap.pep1"
+;------------local vars----------------------------------------
+name:   .BLOCK  31
+;------------main----------------------------
+main:   NOP0
+        LDA     Heap,d
+        LDA     1,d
+        STA     Hhead,d
+        ADDA    4,i
+        STA     Hhead,n
+        CALL    readSO
+        DECOA
+        CHARO   '\n',i
+        STA     name,d
+        STRO    name,n
+
+        STOP
+        .END
