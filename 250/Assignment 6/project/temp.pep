@@ -6,6 +6,18 @@
 ;
 ; P.M.J., April 2016
 ;--------Includes-----------------------------------------------
+;                                                                        
+;{ HeapInit.pep1 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;===================================================================================
+; H E A P   I N I T I A L I Z A T I O N
+;===================================================================================
+LDA      Heap,d    ;+ Hhead = @Heap
+LDA      1,d       ;|
+STA      Hhead,d   ;+
+ADDA     4,i       ;+ Heap->flink = Hsecond
+STA      Hhead,n   ;+
+;===================================================================================
+;} HeapInit.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 BR        main
 ;                                                                        
 ;{ PEP2.pep1 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -38,27 +50,12 @@ comp:   .ASCII  ""
 aComp:  .ADDRSS comp
 ;------------main----------------------------
 main:   NOP0
-LDA     Heap,d
-LDA     1,d
-STA     Hhead,d
-ADDA    4,i
-STA     Hhead,n
-loop:   CALL    readSO
-STA     name,d
-CALL    readSO
-STA     name2,d
-STRO    name,n
-CHARO   '\n',i
-STRO    name2,n
-CHARO   'n',i
-;;DECOA  ; 
-STA        TEMP,d;< DECOA >
-DECO       TEMP,d;< DECOA >
-CHARO   '\n',i
-LDBYTEA name,n
-CPA     0,i
-BREQ    done
-BR      loop
+CALL  buildLst
+;;PUSHA  ; 
+STA        -2,s;< PUSHA >
+SUBSP      2,i;< PUSHA >
+CALL  prntStgs
+ADDSP 2,i
 ;--------------------------
 done:   NOP0
 STOP
@@ -263,6 +260,146 @@ LDA      Acopy,d
 RET0
 ;} DUMPS.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
+;{ readSO.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;---------------------------------------------------------------
+;  address readSO()
+;---------------------------------------------------------------
+.BYTE     63
+value:     .BLOCK    63
+;--------
+length:    .BLOCK    2
+ref:       .BLOCK    2
+;---------------------------------------------------------------
+msgtrunc:  .ASCII   "WARNING: input truncation \x00"
+;---------------------------------------------------------------
+;.GLOBAL   readSO
+readSO:    NOP0
+;;CLR      ref,d ; 
+STA        SAVEA,d;< CLR >
+;;CLRA  ;< CLR > 
+LDA        0,i;< CLRA,CLR >
+STA        ref,d;< CLR >
+LDA        SAVEA,d;< CLR >
+;;STRI     value,i          ;|   value = nextLine(); ; 
+;;PUSH      value,i ;< STRI > 
+STA        SAVEPP,d;< PUSH,STRI >
+LDA        value,i;< PUSH,STRI >
+;;PUSHA  ;< PUSH,STRI > 
+STA        -2,s;< PUSHA,PUSH,STRI >
+SUBSP      2,i;< PUSHA,PUSH,STRI >
+LDA        SAVEPP,d;< PUSH,STRI >
+CALL       STRInput;< STRI >
+ADDSP      2,i;< STRI >
+;;TSTA                      ;| + if(A > 0) { ; 
+CPA        0,i;< TSTA >
+BREQ      move             ;| |
+STRO      msgtrunc,d       ;| |   print(msgtrunc);
+;;DECOA                     ;| |   print(A); ; 
+STA        TEMP,d;< DECOA >
+DECO       TEMP,d;< DECOA >
+CHARO     '\n',i           ;| |   println();
+NOP0                       ;| + }
+;;move:PUSH     value,i          ;| + length = Slength(value); ; 
+move: NOP0 ;< PUSH >
+STA        SAVEPP,d;< PUSH >
+LDA        value,i;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+CALL      Slength          ;| |
+ADDSP     2,i              ;| |
+STA       length,d         ;| +
+;;TSTA                      ;| + if(length != 0) { ; 
+CPA        0,i;< TSTA >
+BREQ      done             ;| |
+;---------                            ;| |
+LDA       length,d         ;| | + ref = new(length+2);
+ADDA      2,i              ;| | |
+STA       -2,s             ;| | |
+SUBSP     2,i              ;| | |
+CALL      new              ;| | |
+ADDSP     2,i              ;| | |
+STA       ref,d            ;| | +
+;---------                            ;| |
+LDA       length,d         ;| | + *ref = (length++);
+;;INCA                      ;| | | ; 
+ADDA       1,i;< INCA >
+STA       length,d         ;| | |
+STBYTEA   ref,n            ;| | +
+;;INC      ref,d            ;| |   ref = ref + 1; ; 
+;;SAVEA    ;< INC > 
+STA        SAVEA,d;< SAVEA,INC >
+LDA        ref,d;< INC >
+ADDA       1,i;< INC >
+STA        ref,d;< INC >
+;;RESTOREA ;< INC > 
+LDA        SAVEA,d;< RESTOREA,INC >
+;---------
+;Took out code here from readStrgs
+;---------                            ;| |
+LDA       length,d         ;| | + memcpy(&value,ref,length);
+STA       -2,s             ;| | |
+LDA       ref,d            ;| | |
+STA       -4,s             ;| | |
+LDA       value,i          ;| | |
+STA       -6,s             ;| | |
+SUBSP     6,i              ;| | |
+CALL      memcpy           ;| | |
+ADDSP     6,i              ;| | +
+;---------                            ;| |
+;---------
+done:      LDA       ref,d
+RET0
+;} readSO.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;                                                                        
+;{ prntStgs.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;Andrew Plaza
+;CMPS 250 Spring 2016
+;The following is a solution to Assignment 5
+;I worked alone
+;No flaws of which I am aware
+;---------------------------------------------------------------
+;  int prntStgs(address p[], int n)
+;---------------------------------------------------------------
+p:         .EQUATE  2
+n:         .EQUATE  4
+;--------
+count:     .BLOCK    2
+ptemp:     .BLOCK    2
+;---------------------------------------------------------------
+;.GLOBAL   prntStgs
+prntStgs:  NOP0
+;;SAVEA       ;save A and X and clear them for a clean slate ; 
+STA        SAVEA,d;< SAVEA >
+;;SAVEX    ; 
+STX        SAVEX,d;< SAVEX >
+;;CLRA  ; 
+LDA        0,i;< CLRA >
+STA      count,d ;count is set to 0 at first
+;;CLRX  ; 
+LDX        0,i;< CLRX >
+;------------------------------------------
+loop:      CPA      n,s     ;compare the count (loaded into A) with n(amount of str we have)
+BRGE     done    ;if it's Greater than or Equal to, we are done
+LDA      p,sxf   ;load the next addr of the p[] into A
+STA      ptemp,d ;store a in ptempt
+STRO     ptemp,n ;print the String using indirect addr mode (n)
+CHARO    '\n',i
+ADDX      2,i    ;add 2 to X to get to next addr
+LDA      count,d ;load count into A, increment it, and loop back until all str are printed
+;;INCA  ; 
+ADDA       1,i;< INCA >
+STA      count,d
+BR       loop
+;--------
+;;RESTOREA ; 
+LDA        SAVEA,d;< RESTOREA >
+;;RESTOREX ; 
+LDX        SAVEX,d;< RESTOREX >
+done:      RET0
+;} prntStgs.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;                                                                        
 ;{ memcpy.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;-----------------------------------------------------------
 ; void memcpy(byte *from, byte *to, int n);
@@ -421,98 +558,51 @@ RET0                   ;
 ;
 ;} ScompTo.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
-;{ readSO.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-;---------------------------------------------------------------
-;  address readSO()
-;---------------------------------------------------------------
-.BYTE     63
-value:     .BLOCK    63
-;--------
-length:    .BLOCK    2
-ref:       .BLOCK    2
-;---------------------------------------------------------------
-msgtrunc:  .ASCII   "WARNING: input truncation \x00"
-;---------------------------------------------------------------
-;.GLOBAL   readSO
-readSO:    NOP0
-;;CLR      ref,d ; 
-STA        SAVEA,d;< CLR >
-;;CLRA  ;< CLR > 
-LDA        0,i;< CLRA,CLR >
-STA        ref,d;< CLR >
-LDA        SAVEA,d;< CLR >
-;;STRI     value,i          ;|   value = nextLine(); ; 
-;;PUSH      value,i ;< STRI > 
-STA        SAVEPP,d;< PUSH,STRI >
-LDA        value,i;< PUSH,STRI >
-;;PUSHA  ;< PUSH,STRI > 
-STA        -2,s;< PUSHA,PUSH,STRI >
-SUBSP      2,i;< PUSHA,PUSH,STRI >
-LDA        SAVEPP,d;< PUSH,STRI >
-CALL       STRInput;< STRI >
-ADDSP      2,i;< STRI >
-;;TSTA                      ;| + if(A > 0) { ; 
-CPA        0,i;< TSTA >
-BREQ      move             ;| |
-STRO      msgtrunc,d       ;| |   print(msgtrunc);
-;;DECOA                     ;| |   print(A); ; 
-STA        TEMP,d;< DECOA >
-DECO       TEMP,d;< DECOA >
-CHARO     '\n',i           ;| |   println();
-NOP0                       ;| + }
-;;move:PUSH     value,i          ;| + length = Slength(value); ; 
-move: NOP0 ;< PUSH >
-STA        SAVEPP,d;< PUSH >
-LDA        value,i;< PUSH >
-;;PUSHA  ;< PUSH > 
-STA        -2,s;< PUSHA,PUSH >
-SUBSP      2,i;< PUSHA,PUSH >
-LDA        SAVEPP,d;< PUSH >
-CALL      Slength          ;| |
-ADDSP     2,i              ;| |
-STA       length,d         ;| +
-;;TSTA                      ;| + if(length != 0) { ; 
-CPA        0,i;< TSTA >
-BREQ      done             ;| |
-;---------                            ;| |
-LDA       length,d         ;| | + ref = new(length+2);
-ADDA      2,i              ;| | |
-STA       -2,s             ;| | |
-SUBSP     2,i              ;| | |
-CALL      new              ;| | |
-ADDSP     2,i              ;| | |
-STA       ref,d            ;| | +
-;---------                            ;| |
-LDA       length,d         ;| | + *ref = (length++);
-;;INCA                      ;| | | ; 
-ADDA       1,i;< INCA >
-STA       length,d         ;| | |
-STBYTEA   ref,n            ;| | +
-;;INC      ref,d            ;| |   ref = ref + 1; ; 
-;;SAVEA    ;< INC > 
-STA        SAVEA,d;< SAVEA,INC >
-LDA        ref,d;< INC >
-ADDA       1,i;< INC >
-STA        ref,d;< INC >
-;;RESTOREA ;< INC > 
-LDA        SAVEA,d;< RESTOREA,INC >
-;---------
-;Took out code here from readStrgs
-;---------                            ;| |
-LDA       length,d         ;| | + memcpy(&value,ref,length);
-STA       -2,s             ;| | |
-LDA       ref,d            ;| | |
-STA       -4,s             ;| | |
-LDA       value,i          ;| | |
-STA       -6,s             ;| | |
-SUBSP     6,i              ;| | |
-CALL      memcpy           ;| | |
-ADDSP     6,i              ;| | +
-;---------                            ;| |
-;---------
-done:      LDA       ref,d
+;{ buildLst.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;-------------------------
+;BuildLst()
+;------------------------
+;---Local Variables----
+size:   .EQUATE     0     ; size
+curr:  .BLOCK      2     ;front of the list (head, first element)
+next:    .BLOCK      2     ;end of the list
+currN:  .BLOCK      2
+;----------------------
+buildLst:   NOP0
+;;SAVEA    ; 
+STA        SAVEA,d;< SAVEA >
+;;SAVEX    ; 
+STX        SAVEX,d;< SAVEX >
+;;CLRA  ; 
+LDA        0,i;< CLRA >
+;;CLRX  ; 
+LDX        0,i;< CLRX >
+loop:       NOP0
+LDA       4,i
+STA       -2,s
+CALL      new
+ADDSP     2,i
+STA       curr,d
+CALL      readSO
+STA       currN,d
+LDX       0,i
+STX       p,x
+LDX       2,i
+LDA       next,d
+STA       curr,x
+STRO      currN,n
+CHARO     '\n',i
+LDBYTEA   currN,n
+CPA       0,i
+BREQ      done
+BR        loop
+;;done:RESTOREA ; 
+done: NOP0 ;< RESTOREA >
+LDA        SAVEA,d;< RESTOREA >
+;;RESTOREX ; 
+LDX        SAVEX,d;< RESTOREX >
 RET0
-;} readSO.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;} buildLst.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
 ;{ Heap.pep1 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;} Heap.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

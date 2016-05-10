@@ -1,0 +1,41 @@
+;Name:  Andrew Plaza
+;CMPS 250 Spring 2016
+;The following is a solution to Assignment 5
+;I worked a bit with Sean Batzel, mostly worked alone.
+;
+; P.M.J., April 2016
+;--------Includes-----------------------------------------------
+         BR        main
+         .INCLUDE  "Heap.pep1"
+         .INCLUDE  "PEP2.pep1"
+         .APPEND   "memcpy.pep2"
+         .APPEND   "Slength.pep2"
+         .APPEND   "ScompTo.pep2"
+         .APPEND   "readSO.pep2"
+         .APPEND   "buildLst.pep2"
+         .APPEND   "readStgs.pep2"
+;------------local vars----------------------------------------
+;--------
+LENGTH:    .EQUATE   31            ; Expresses the maximum length of a string
+LIMIT:     .EQUATE   24            ; Expresses the capacity of the array
+           .ASCII    "<<<<<<<<"    ; Just a marker for visual inspection
+p:         .BLOCK    48            ; The array of pointers; LIMIT * 2
+           .ASCII    "--------"    ; Just a marker for visual inspection
+a:         .BLOCK    768           ; The array of strings; (1+LENGTH) * LIMIT
+           .ASCII    ">>>>>>>>"    ; Just a marker for visual inspection
+count:     .BLOCK    2             ; The number of strings read and stored
+;--------;-------------------------
+temp:      .BLOCK    2
+main:   NOP0
+        PUSH    LIMIT,i
+        PUSH    p,i
+        CALL    readStgs
+        ADDSP   4,i
+        BR      done
+        LDA     p,sxf
+        STA     temp,d
+        STRO    temp,n
+
+done:   NOP0
+        STOP
+        .END

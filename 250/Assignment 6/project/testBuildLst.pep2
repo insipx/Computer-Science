@@ -5,13 +5,17 @@
 ;
 ; P.M.J., April 2016
 ;--------Includes-----------------------------------------------
+
+         .INCLUDE  "HeapInit.pep1"
          BR        main
          .INCLUDE  "PEP2.pep1"
+         .APPEND   "readSO.pep2"
+         .APPEND   "prntStgs.pep2"
          .APPEND   "memcpy.pep2"
          .APPEND   "Slength.pep2"
          .APPEND   "ScompTo.pep2"
-         .APPEND   "readSO.pep2"
-         .APPEND    "Heap.pep1"
+         .APPEND   "buildLst.pep2"
+
 ;------------local vars----------------------------------------
 name:   .BLOCK  2
 name2:  .BLOCK  2
@@ -20,27 +24,13 @@ comp:   .ASCII  ""
 aComp:  .ADDRSS comp
 ;------------main----------------------------
 main:   NOP0
-        LDA     Heap,d
-        LDA     1,d
-        STA     Hhead,d
-        ADDA    4,i
-        STA     Hhead,n
+        CALL  buildLst
+        PUSHA
+        CALL  prntStgs
+        ADDSP 2,i
 
-loop:   CALL    readSO
-        STA     name,d
-        CALL    readSO
-        STA     name2,d
-        STRO    name,n
-        CHARO   '\n',i
-        STRO    name2,n
-        CHARO   'n',i
-        DECOA
-        CHARO   '\n',i
-        LDBYTEA name,n
-        CPA     0,i
-        BREQ    done
-        BR      loop
 ;--------------------------
 done:   NOP0
         STOP
+        .APPEND "Heap.pep1"
         .END

@@ -1,0 +1,48 @@
+;TESTED & WORKS
+;---------------------------------------------------------------
+;  void prntLst(address head);
+;---------------------------------------------------------------
+p:         .EQUATE  2
+n:         .EQUATE  4
+;--------
+index:     .BLOCK    2
+ptemp:     .BLOCK    2
+;---------------------------------------------------------------
+           .GLOBAL   prntLst
+prntLst:   NOP0
+           CLR       index,d
+loop:      CPM       index,d,n,s
+           BRGE      done
+           LDX       index,d
+           ASLX
+           MOVE      p,sxf,ptemp,d
+           STRO      ptemp,n
+           CHARO     '\n',i
+;---------
+           INC       index,d
+           BR loop
+;--------
+done:      RET0
+
+
+
+;TEST CODE FROM PDF
+;head:      .ADDRSS  first   ;Reference to the first node in the list
+;----------------------------------------------------------------------
+;first:     .ADDRSS  second  ;First Node – reference to next node
+;           .ADDRSS  two     ;First Node – reference to string object
+;second:    .ADDRSS  third   ;Second Node – reference to next node
+;           .ADDRSS  three   ;Second Node – reference to string object
+;third:     .ADDRSS  fourth  ;Third Node - reference to next node
+;           .ADDRSS  four    ;Third Node - reference to string object
+;fourth:    .ADDRSS  0       ;Fourth Node – reference to next node (null in this case)
+;           .ADDRSS  one     ;Fourth Node – reference to string object
+;-------------------------------------------- (String Objects follow)
+;           .BYTE    20
+;one:       .ASCII   “Washington, George\x00"
+;           .BYTE    12
+;two:       .ASCII   “Adams, John\x00"
+;           .BYTE    18
+;three:     .ASCII   “Jefferson, Thomas\x00"
+;           .BYTE    15
+;four:      .ASCII   “Madison, James\x00"

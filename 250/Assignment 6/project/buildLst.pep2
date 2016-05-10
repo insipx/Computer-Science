@@ -1,0 +1,50 @@
+;-------------------------
+;BuildLst()
+;------------------------
+;---Local Variables----
+size:   .EQUATE    0     ; size
+head:   .BLOCK     2
+curr:   .BLOCK     2     ;front of the list (head, first element)
+next:   .BLOCK     2     ;end of the list
+currN:  .BLOCK     2
+temp:   .BLOCK     2
+;----------------------
+
+
+buildLst:   NOP0
+            SAVEA
+            SAVEX
+            CLRA
+            CLRX
+loop:       NOP0
+            LDA       4,i
+            STA       -2,s
+            CALL      new
+            ADDSP     2,i
+            STA       curr,d
+            CALL      readSO
+            STA       temp,d
+            LDA       size,d
+            TSTA
+            BREQ      first
+            LDX       0,i
+            STX       p,x
+            LDX       2,i
+            LDA       next,d
+            STA       curr,x
+            STRO      currN,n
+            CHARO     '\n',i
+            LDBYTEA   currN,n
+            CPA       0,i
+            BREQ      done
+            BR        loop
+
+first:      LDA       0,i
+            STA       head,d
+            LDA       temp,d
+            STA       head,d
+            
+
+done:       RESTOREA
+            RESTOREX
+            RET0
