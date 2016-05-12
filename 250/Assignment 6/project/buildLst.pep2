@@ -70,7 +70,7 @@ iNodeNx:    .BLOCK   2
 sRfTemp:    .BLOCK   2
 currSr:     .BLOCK   2
 nexSr:      .BLOCK   2
-prev:       .BLOCk   2
+prev:       .BLOCK   2
 ;-----------------------------
 insert:    MOVE   node,d,iNode,d    ;next node of curr node
            MOVE   node,d,iNodeNx,d
