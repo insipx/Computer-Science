@@ -42,19 +42,14 @@ SAVEPP:    .BLOCK    2
 ; Macro to dump the top portion of the stack
 ;============================================================
 ;} PEP2.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;------------local vars----------------------------------------
-name:      .BLOCK    2
-name2:     .BLOCK    2
-           .BYTE     16
-comp:      .ASCII    ""
-aComp:     .ADDRSS   comp
+wtf:       .ASCII    "wtf"
 ;------------main----------------------------
 main:      NOP0
            CALL      buildLst
 ;;;;;;;;;; PUSHA                                                    ;
            STA       -2,s                                           ;< PUSHA >
            SUBSP     2,i                                            ;< PUSHA >
-           CALL      prntStgs
+           CALL      prntLst
            ADDSP     2,i
 ;--------------------------
 done:      NOP0
@@ -260,74 +255,155 @@ DumpDone:  LDX       Xcopy,d
            RET0
 ;} DUMPS.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;
+;{ buildLst.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;-------------------------
+;BuildLst()
+;------------------------
+;---Local Variables----
+size:      .BLOCK    2                                              ; size
+head:      .BLOCK    2
+stringrf:  .BLOCK    2                                              ;the addr of the str from readSo
+next:      .BLOCK    2                                              ;the addr where we can start putting stuff in the heap
+node:      .BLOCK    2
+;----------------------
+buildLst:  NOP0
+;;;;;;;;;; SAVEA                                                    ;
+           STA       SAVEA,d                                        ;< SAVEA >
+;;;;;;;;;; SAVEX                                                    ;
+           STX       SAVEX,d                                        ;< SAVEX >
+;;;;;;;;;; CLRA                                                     ;
+           LDA       0,i                                            ;< CLRA >
+;;;;;;;;;; CLRX                                                     ;
+           LDX       0,i                                            ;< CLRX >
+           STA       size,d
+LL1:       NOP0
+;;;;;;;;;; CLRA                                                     ;
+           LDA       0,i                                            ;< CLRA >
+           CALL      readSO                                         ; calling readSO to read the string
+           STA       stringrf,d                                     ;storing the reference to the String into temp
+;------------------------------
+           CPA       0,i                                            ; if readSo returns 0 we are LL2
+           BREQ      LL2
+;-------------------------------
+           LDA       4,i                                            ;length of 4 bytes
+           STA       -2,s
+           SUBSP     2,i
+           CALL      new
+           ADDSP     2,i
+           STA       node,d                                         ; storing the ref from new into node
+;-----------------------------; this is the place in the stack we will be using
+           LDA       size,d                                         ;Loading size into A
+;;;;;;;;;; TSTA                                                     ;testing against 0 ;
+           CPA       0,i                                            ;< TSTA >
+           BREQ      first                                          ;if it's the first element, branch to first
+           LDA       node,d
+           STA       next,n                                         ;store the ref to current node in next for the prev node
+;-----------------------------
+back:      LDA       stringrf,d                                     ;store string in first node cell
+           STA       node,n
+;-----------------------------          ;make ref cell just 0
+;;;;;;;;;; MOVE      node,d,next,d                                  ;LDA    node,d  STA next,d ;
+;;;;;;;;;; SAVEA                                                    ;< MOVE >
+           STA       SAVEA,d                                        ;< SAVEA,MOVE >
+           LDA       node,d                                         ;< MOVE >
+           STA       next,d                                         ;< MOVE >
+;;;;;;;;;; RESTOREA                                                 ;< MOVE >
+           LDA       SAVEA,d                                        ;< RESTOREA,MOVE >
+;;;;;;;;;; ADD       next,d,2,i                                     ;
+;;;;;;;;;; SAVEA                                                    ;< ADD >
+           STA       SAVEA,d                                        ;< SAVEA,ADD >
+           LDA       next,d                                         ;< ADD >
+           ADDA      2,i                                            ;< ADD >
+           STA       next,d                                         ;< ADD >
+;;;;;;;;;; RESTOREA                                                 ;< ADD >
+           LDA       SAVEA,d                                        ;< RESTOREA,ADD >
+           LDA       0,i
+           STA       next,n
+;;;;;;;;;; INC       size,d                                         ;
+;;;;;;;;;; SAVEA                                                    ;< INC >
+           STA       SAVEA,d                                        ;< SAVEA,INC >
+           LDA       size,d                                         ;< INC >
+           ADDA      1,i                                            ;< INC >
+           STA       size,d                                         ;< INC >
+;;;;;;;;;; RESTOREA                                                 ;< INC >
+           LDA       SAVEA,d                                        ;< RESTOREA,INC >
+;-----------------------------
+           BR        LL1
+first:     LDA       node,d                                         ;store the node ref in head, b/c this is the first node
+           STA       head,d
+;------------------------------
+           BR        back
+LL2:       LDA       head,d
+           RET0
+;} buildLst.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;
 ;{ readSO.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-;---------------------------------------------------------------
-;  address readSO()
-;---------------------------------------------------------------
-           .BYTE     63
-value:     .BLOCK    63
-;--------
-length:    .BLOCK    2
+;------------------------------------------------------------------
+;  int readSO()
+;------------------------------------------------------------------
+;------------------
+           .BYTE     16
+string:    .BLOCK    31
+length:    .BLOCK    2                                              ;length of the string
 ref:       .BLOCK    2
+thing:     .ASCII    "this"
 ;---------------------------------------------------------------
 msgtrunc:  .ASCII    "WARNING: input truncation \x00"
-;---------------------------------------------------------------
-;.GLOBAL   readSO
+msgfull:   .ASCII    "WARNING: string array full\n\x00"
+;.GLOBAL  readSO
 readSO:    NOP0
-;;;;;;;;;; CLR       ref,d                                          ;
-           STA       SAVEA,d                                        ;< CLR >
-;;;;;;;;;; CLRA                                                     ;< CLR >
-           LDA       0,i                                            ;< CLRA,CLR >
-           STA       ref,d                                          ;< CLR >
-           LDA       SAVEA,d                                        ;< CLR >
-;;;;;;;;;; STRI      value,i                                        ;|   value = nextLine(); ;
-;;;;;;;;;; PUSH      value,i                                        ;< STRI >
+;;;;;;;;;; CLRA                                                     ;
+           LDA       0,i                                            ;< CLRA >
+;;;;;;;;;; CLRX                                                     ;
+           LDX       0,i                                            ;< CLRX >
+           STA       ref,d
+;;;;;;;;;; STRI      string,i                                       ;
+;;;;;;;;;; PUSH      string,i                                       ;< STRI >
            STA       SAVEPP,d                                       ;< PUSH,STRI >
-           LDA       value,i                                        ;< PUSH,STRI >
+           LDA       string,i                                       ;< PUSH,STRI >
 ;;;;;;;;;; PUSHA                                                    ;< PUSH,STRI >
            STA       -2,s                                           ;< PUSHA,PUSH,STRI >
            SUBSP     2,i                                            ;< PUSHA,PUSH,STRI >
            LDA       SAVEPP,d                                       ;< PUSH,STRI >
            CALL      STRInput                                       ;< STRI >
            ADDSP     2,i                                            ;< STRI >
-;;;;;;;;;; TSTA                                                     ;| + if(A > 0) { ;
-           CPA       0,i                                            ;< TSTA >
-           BREQ      move                                           ;| |
-           STRO      msgtrunc,d                                     ;| |   print(msgtrunc);
-;;;;;;;;;; DECOA                                                    ;| |   print(A); ;
+           CPA       0,i
+           BREQ      move                                           ;if A == 0 we good
+           STRO      msgtrunc,d                                     ; else branch
+;;;;;;;;;; DECOA                                                    ;
            STA       TEMP,d                                         ;< DECOA >
            DECO      TEMP,d                                         ;< DECOA >
-           CHARO     '\n',i                                         ;| |   println();
-           NOP0                                                     ;| + }
-;move:;;;; PUSH      value,i                                        ;| + length = Slength(value); ;
+           CHARO     '\n',i
+           NOP0
+;---------------------------------     length= Slength(value)
+;move:;;;; PUSH      string,i                                       ;
 move:      NOP0                                                     ;< PUSH >
            STA       SAVEPP,d                                       ;< PUSH >
-           LDA       value,i                                        ;< PUSH >
+           LDA       string,i                                       ;< PUSH >
 ;;;;;;;;;; PUSHA                                                    ;< PUSH >
            STA       -2,s                                           ;< PUSHA,PUSH >
            SUBSP     2,i                                            ;< PUSHA,PUSH >
            LDA       SAVEPP,d                                       ;< PUSH >
-           CALL      Slength                                        ;| |
-           ADDSP     2,i                                            ;| |
-           STA       length,d                                       ;| +
-;;;;;;;;;; TSTA                                                     ;| + if(length != 0) { ;
-           CPA       0,i                                            ;< TSTA >
-           BREQ      LL1                                            ;| |
-;---------                            ;| |
-           LDA       length,d                                       ;| | + ref = new(length+2);
-           ADDA      2,i                                            ;| | |
-           STA       -2,s                                           ;| | |
-           SUBSP     2,i                                            ;| | |
-           CALL      new                                            ;| | |
-           ADDSP     2,i                                            ;| | |
-           STA       ref,d                                          ;| | +
-;---------                            ;| |
-           LDA       length,d                                       ;| | + *ref = (length++);
-;;;;;;;;;; INCA                                                     ;| | | ;
+           CALL      Slength
+           ADDSP     2,i
+           STA       length,d
+           CPA       0,i                                            ; if(length!=0)
+           BREQ      LL3
+;----------------------------------
+           LDA       length,d                                       ; ref = new(length+2)
+           ADDA      2,i
+           STA       -2,s
+           SUBSP     2,i
+           CALL      new                                            ;heap init new
+           ADDSP     2,i
+           STA       ref,d
+;----------------------------------
+           LDA       length,d                                       ;*ref = length++
+;;;;;;;;;; INCA                                                     ;
            ADDA      1,i                                            ;< INCA >
-           STA       length,d                                       ;| | |
-           STBYTEA   ref,n                                          ;| | +
-;;;;;;;;;; INC       ref,d                                          ;| |   ref = ref + 1; ;
+           STA       length,d
+           STBYTEA   ref,n
+;;;;;;;;;; INC       ref,d                                          ;ref++ ;
 ;;;;;;;;;; SAVEA                                                    ;< INC >
            STA       SAVEA,d                                        ;< SAVEA,INC >
            LDA       ref,d                                          ;< INC >
@@ -335,70 +411,118 @@ move:      NOP0                                                     ;< PUSH >
            STA       ref,d                                          ;< INC >
 ;;;;;;;;;; RESTOREA                                                 ;< INC >
            LDA       SAVEA,d                                        ;< RESTOREA,INC >
-;---------
-;Took out code here from readStrgs
-;---------                            ;| |
-           LDA       length,d                                       ;| | + memcpy(&value,ref,length);
-           STA       -2,s                                           ;| | |
-           LDA       ref,d                                          ;| | |
-           STA       -4,s                                           ;| | |
-           LDA       value,i                                        ;| | |
-           STA       -6,s                                           ;| | |
-           SUBSP     6,i                                            ;| | |
-           CALL      memcpy                                         ;| | |
-           ADDSP     6,i                                            ;| | +
-;---------                            ;| |
-;---------
-LL1:       LDA       ref,d
+;----------------------------------
+           LDA       length,d
+           STA       -2,s
+           LDA       ref,d
+           STA       -4,s
+           LDA       string,i
+           STA       -6,s
+           SUBSP     6,i
+           CALL      memcpy
+           ADDSP     6,i
+LL3:       LDA       ref,d
+           RET0
+LL4:       STRO      msgfull,d
+           LDA       ref,d
            RET0
 ;} readSO.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;
-;{ prntStgs.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-;Andrew Plaza
-;CMPS 250 Spring 2016
-;The following is a solution to Assignment 5
-;I worked alone
-;No flaws of which I am aware
+;{ prntLst.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;TESTED & WORKS
 ;---------------------------------------------------------------
-;  int prntStgs(address p[], int n)
+;  void prntLst(address head);
 ;---------------------------------------------------------------
 p:         .EQUATE   2
-n:         .EQUATE   4
 ;--------
-count:     .BLOCK    2
 ptemp:     .BLOCK    2
+LL5:       .BLOCK    2
 ;---------------------------------------------------------------
-;.GLOBAL   prntStgs
-prntStgs:  NOP0
-;;;;;;;;;; SAVEA                                                    ;save A and X and clear them for a clean slate ;
-           STA       SAVEA,d                                        ;< SAVEA >
-;;;;;;;;;; SAVEX                                                    ;
-           STX       SAVEX,d                                        ;< SAVEX >
-;;;;;;;;;; CLRA                                                     ;
-           LDA       0,i                                            ;< CLRA >
-           STA       count,d                                        ;count is set to 0 at first
-;;;;;;;;;; CLRX                                                     ;
-           LDX       0,i                                            ;< CLRX >
-;------------------------------------------
-LL2:       CPA       n,s                                            ;compare the count (loaded into A) with n(amount of str we have)
-           BRGE      LL3                                            ;if it's Greater than or Equal to, we are LL3
-           LDA       p,sxf                                          ;load the next addr of the p[] into A
-           STA       ptemp,d                                        ;store a in ptempt
-           STRO      ptemp,n                                        ;print the String using indirect addr mode (n)
+;.GLOBAL   prntLst
+prntLst:   NOP0
+;;;;;;;;;; MOVE      p,s,ptemp,d                                    ;
+;;;;;;;;;; SAVEA                                                    ;< MOVE >
+           STA       SAVEA,d                                        ;< SAVEA,MOVE >
+           LDA       p,s                                            ;< MOVE >
+           STA       ptemp,d                                        ;< MOVE >
+;;;;;;;;;; RESTOREA                                                 ;< MOVE >
+           LDA       SAVEA,d                                        ;< RESTOREA,MOVE >
+;;;;;;;;;; MOVE      ptemp,d,LL5,d                                  ;
+;;;;;;;;;; SAVEA                                                    ;< MOVE >
+           STA       SAVEA,d                                        ;< SAVEA,MOVE >
+           LDA       ptemp,d                                        ;< MOVE >
+           STA       LL5,d                                          ;< MOVE >
+;;;;;;;;;; RESTOREA                                                 ;< MOVE >
+           LDA       SAVEA,d                                        ;< RESTOREA,MOVE >
+;;;;;;;;;; ADD       LL5,d,2,i                                      ;
+;;;;;;;;;; SAVEA                                                    ;< ADD >
+           STA       SAVEA,d                                        ;< SAVEA,ADD >
+           LDA       LL5,d                                          ;< ADD >
+           ADDA      2,i                                            ;< ADD >
+           STA       LL5,d                                          ;< ADD >
+;;;;;;;;;; RESTOREA                                                 ;< ADD >
+           LDA       SAVEA,d                                        ;< RESTOREA,ADD >
+LL6:       NOP0
+;;;;;;;;;; MOVE      ptemp,n,ptemp,d                                ;
+;;;;;;;;;; SAVEA                                                    ;< MOVE >
+           STA       SAVEA,d                                        ;< SAVEA,MOVE >
+           LDA       ptemp,n                                        ;< MOVE >
+           STA       ptemp,d                                        ;< MOVE >
+;;;;;;;;;; RESTOREA                                                 ;< MOVE >
+           LDA       SAVEA,d                                        ;< RESTOREA,MOVE >
+           STRO      ptemp,n
            CHARO     '\n',i
-           ADDX      2,i                                            ;add 2 to X to get to next addr
-           LDA       count,d                                        ;load count into A, increment it, and LL2 back until all str are printed
-;;;;;;;;;; INCA                                                     ;
-           ADDA      1,i                                            ;< INCA >
-           STA       count,d
-           BR        LL2
+;---------------------------
+           LDA       0,i
+           CPA       LL5,n
+           BREQ      LL7
+;---------------------------
+;;;;;;;;;; MOVE      LL5,n,ptemp,d                                  ;
+;;;;;;;;;; SAVEA                                                    ;< MOVE >
+           STA       SAVEA,d                                        ;< SAVEA,MOVE >
+           LDA       LL5,n                                          ;< MOVE >
+           STA       ptemp,d                                        ;< MOVE >
+;;;;;;;;;; RESTOREA                                                 ;< MOVE >
+           LDA       SAVEA,d                                        ;< RESTOREA,MOVE >
+;;;;;;;;;; MOVE      ptemp,d,LL5,d                                  ;
+;;;;;;;;;; SAVEA                                                    ;< MOVE >
+           STA       SAVEA,d                                        ;< SAVEA,MOVE >
+           LDA       ptemp,d                                        ;< MOVE >
+           STA       LL5,d                                          ;< MOVE >
+;;;;;;;;;; RESTOREA                                                 ;< MOVE >
+           LDA       SAVEA,d                                        ;< RESTOREA,MOVE >
+;;;;;;;;;; ADD       LL5,d,2,i                                      ;
+;;;;;;;;;; SAVEA                                                    ;< ADD >
+           STA       SAVEA,d                                        ;< SAVEA,ADD >
+           LDA       LL5,d                                          ;< ADD >
+           ADDA      2,i                                            ;< ADD >
+           STA       LL5,d                                          ;< ADD >
+;;;;;;;;;; RESTOREA                                                 ;< ADD >
+           LDA       SAVEA,d                                        ;< RESTOREA,ADD >
+           BR        LL6
 ;--------
-;;;;;;;;;; RESTOREA                                                 ;
-           LDA       SAVEA,d                                        ;< RESTOREA >
-;;;;;;;;;; RESTOREX                                                 ;
-           LDX       SAVEX,d                                        ;< RESTOREX >
-LL3:       RET0
-;} prntStgs.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+LL7:       RET0
+;TEST CODE FROM PDF
+;head:      .ADDRSS  first   ;Reference to the first node in the list
+;----------------------------------------------------------------------
+;first:     .ADDRSS  second  ;First Node – reference to LL5 node
+;           .ADDRSS  two     ;First Node – reference to string object
+;second:    .ADDRSS  third   ;Second Node – reference to LL5 node
+;           .ADDRSS  three   ;Second Node – reference to string object
+;third:     .ADDRSS  fourth  ;Third Node - reference to LL5 node
+;           .ADDRSS  four    ;Third Node - reference to string object
+;fourth:    .ADDRSS  0       ;Fourth Node – reference to LL5 node (null in this case)
+;           .ADDRSS  one     ;Fourth Node – reference to string object
+;-------------------------------------------- (String Objects follow)
+;           .BYTE    20
+;one:       .ASCII   “Washington, George\x00"
+;           .BYTE    12
+;two:       .ASCII   “Adams, John\x00"
+;           .BYTE    18
+;three:     .ASCII   “Jefferson, Thomas\x00"
+;           .BYTE    15
+;four:      .ASCII   “Madison, James\x00"
+;} prntLst.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;
 ;{ memcpy.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;-----------------------------------------------------------
@@ -406,7 +530,7 @@ LL3:       RET0
 ;-----------------------------------------------------------
 from:      .EQUATE   2
 to:        .EQUATE   4
-LL4:       .EQUATE   6
+n:         .EQUATE   6
 ;-----------------------------------------------------------
 ;-----------------------------------------------------------
 ;.GLOBAL  memcpy
@@ -420,15 +544,15 @@ memcpy:    NOP0                                                     ;< SAVE >
            LDA       0,i                                            ;< CLRA >
 ;;;;;;;;;; CLRX                                                     ;
            LDX       0,i                                            ;< CLRX >
-LL5:       CPX       LL4,s
-           BRGE      LL6
+LL8:       CPX       n,s
+           BRGE      LL9
            LDBYTEA   from,sxf
            STBYTEA   to,sxf
 ;;;;;;;;;; INCX                                                     ;
            ADDX      1,i                                            ;< INCX >
-           BR        LL5
+           BR        LL8
 ;done:;;;; RESTORE                                                  ;
-LL6:       NOP0                                                     ;< RESTORE >
+LL9:       NOP0                                                     ;< RESTORE >
 ;;;;;;;;;; RESTOREX                                                 ;< RESTORE >
            LDX       SAVEX,d                                        ;< RESTOREX,RESTORE >
 ;;;;;;;;;; RESTOREA                                                 ;< RESTORE >
@@ -501,7 +625,7 @@ ScompTo:   NOP0                                                     ;< SAVEX >
 ;;;;;;;;;; CLRX                                                     ;
            LDX       0,i                                            ;< CLRX >
 ;---------
-LL7:       NOP0
+LL10:      NOP0
            LDBYTEA   Sobject2,sxf
            STA       hold2,d
            LDBYTEA   Sobject1,sxf
@@ -511,7 +635,7 @@ LL7:       NOP0
            BREQ      equal
 ;;;;;;;;;; INCX                                                     ;
            ADDX      1,i                                            ;< INCX >
-           BR        LL7
+           BR        LL10
 ;---------
 done1:     SUBA      hold2,d
            CPA       0,i
@@ -519,15 +643,15 @@ done1:     SUBA      hold2,d
            BRLT      less
 greater:   NOP0
            LDA       1,i
-           BR        LL8
+           BR        LL11
 less:      NOP0
            LDA       -1,i
-           BR        LL8
+           BR        LL11
 equal:     NOP0
            LDA       0,i
-           BR        LL8
+           BR        LL11
 ;done:;;;; RESTOREX                                                 ;
-LL8:       NOP0                                                     ;< RESTOREX >
+LL11:      NOP0                                                     ;< RESTOREX >
            LDX       SAVEX,d                                        ;< RESTOREX >
 ;<<<<<<<<< Instrumentation
            CHARO     ',',i
@@ -558,52 +682,6 @@ LL8:       NOP0                                                     ;< RESTOREX 
 ;
 ;} ScompTo.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;
-;{ buildLst.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-;-------------------------
-;BuildLst()
-;------------------------
-;---Local Variables----
-size:      .EQUATE   0                                              ; size
-curr:      .BLOCK    2                                              ;front of the list (head, first element)
-next:      .BLOCK    2                                              ;end of the list
-currN:     .BLOCK    2
-;----------------------
-buildLst:  NOP0
-;;;;;;;;;; SAVEA                                                    ;
-           STA       SAVEA,d                                        ;< SAVEA >
-;;;;;;;;;; SAVEX                                                    ;
-           STX       SAVEX,d                                        ;< SAVEX >
-;;;;;;;;;; CLRA                                                     ;
-           LDA       0,i                                            ;< CLRA >
-;;;;;;;;;; CLRX                                                     ;
-           LDX       0,i                                            ;< CLRX >
-LL9:       NOP0
-           LDA       4,i
-           STA       -2,s
-           CALL      new
-           ADDSP     2,i
-           STA       curr,d
-           CALL      readSO
-           STA       currN,d
-           LDX       0,i
-           STX       p,x
-           LDX       2,i
-           LDA       next,d
-           STA       curr,x
-           STRO      currN,n
-           CHARO     '\n',i
-           LDBYTEA   currN,n
-           CPA       0,i
-           BREQ      LL10
-           BR        LL9
-;done:;;;; RESTOREA                                                 ;
-LL10:      NOP0                                                     ;< RESTOREA >
-           LDA       SAVEA,d                                        ;< RESTOREA >
-;;;;;;;;;; RESTOREX                                                 ;
-           LDX       SAVEX,d                                        ;< RESTOREX >
-           RET0
-;} buildLst.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;
 ;{ Heap.pep1 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;} Heap.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;
@@ -614,32 +692,32 @@ LL10:      NOP0                                                     ;< RESTOREA 
 ; address new(int length)
 ;---------------------------------------------------------------------------------------
 result:    .EQUATE   0
-LL11:      .EQUATE   4
+LL12:      .EQUATE   4
 ;---------------------------------------------------------------------------------------
 new:       SUBSP     2,i                                            ;
-           LDA       LL11,s                                         ;+ if(length <=  255) {
+           LDA       LL12,s                                         ;+ if(length <=  255) {
            CPA       0,i                                            ;|
-           BRLT      LL12                                           ;|
+           BRLT      LL13                                           ;|
            CPA       255,i                                          ;|
-           BRGT      LL12                                           ;|
+           BRGT      LL13                                           ;|
            ADDA      1,i                                            ;| + A = malloc((length+1));
            SUBSP     2,i                                            ;| |
            STA       0,s                                            ;| |
            CALL      malloc                                         ;| |
            ADDSP     2,i                                            ;| +
            CPA       0,i                                            ;| + if(A != 0) {
-           BRLE      LL12                                           ;| |
+           BRLE      LL13                                           ;| |
            STA       result,s                                       ;| | + set "before byte" to (length-1)
            SUBX      1,i                                            ;| | |
-           STX       LL11,s                                         ;| | |
-           LDA       LL11,s                                         ;| | |
+           STX       LL12,s                                         ;| | |
+           LDA       LL12,s                                         ;| | |
            LDX       0,i                                            ;| | |
            STBYTEA   result,sxf                                     ;| | +
            LDA       result,s                                       ;| | }
            ADDA      1,i                                            ;| + A = A + 1;
-           BR        LL13                                           ;+ }
-LL12:      LDA       0,i                                            ;
-LL13:      RET2                                                     ;
+           BR        LL14                                           ;+ }
+LL13:      LDA       0,i                                            ;
+LL14:      RET2                                                     ;
 ;} Heap_new.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;
 ;{ Heap_recycle.pep1 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -648,15 +726,15 @@ LL13:      RET2                                                     ;
 ;---------------------------------------------------------------------------------------
 ; address recycle(address ref)
 ;---------------------------------------------------------------------------------------
-LL14:      .EQUATE   2
+LL15:      .EQUATE   2
 ;---------------------------------------------------------------------------------------
 recycle:   NOP0
-           LDX       -1,i                                           ;+ A = "before byte" value at LL14
+           LDX       -1,i                                           ;+ A = "before byte" value at LL15
            LDA       0,i                                            ;|
-           LDBYTEA   LL14,sxf                                       ;+
+           LDBYTEA   LL15,sxf                                       ;+
            ADDA      1,i                                            ;+ free((ref-1),(A+1));
            STA       -2,s                                           ;|
-           LDA       LL14,s                                         ;|
+           LDA       LL15,s                                         ;|
            SUBA      1,i                                            ;|
            STA       -4,s                                           ;|
            SUBSP     4,i                                            ;|
@@ -674,7 +752,7 @@ recycle:   NOP0
 need:      .EQUATE   8
 ;---------------------------------------------------------------------------------------
 prev:      .EQUATE   0                                              ;pointer to previous free element
-LL15:      .EQUATE   2                                              ;pointer to current free element
+curr:      .EQUATE   2                                              ;pointer to current free element
 LL16:      .EQUATE   4                                              ;pointer to LL16 free element
 ;---------------------------------------------------------------------------------------
 malloc:    SUBSP     6,i                                            ;  Room for 3 local variables
@@ -692,8 +770,8 @@ madd1:     ROLA                                                     ;|
            ADDA      1,i                                            ;|   need = need + 1;
            STA       need,s                                         ;+ }
 ;----------------------------
-mstart:    LDA       Hhead,d                                        ;+ LL15 = Hhead
-           STA       LL15,s                                         ;+
+mstart:    LDA       Hhead,d                                        ;+ curr = Hhead
+           STA       curr,s                                         ;+
 ;----------------------------
 mloop:     CPA       0,i                                            ;+ while((curr != null) &&
            BREQ      mERROR                                         ;|       (curr->size < need) {
@@ -702,10 +780,10 @@ mloop:     CPA       0,i                                            ;+ while((cu
            LDA       HEA,n                                          ;|   // A = curr->size;
            CPA       need,s                                         ;|
            BRGE      mdo                                            ;|
-           LDA       LL15,s                                         ;|   + prev = LL15;
+           LDA       curr,s                                         ;|   + prev = curr;
            STA       prev,s                                         ;|   +
-           LDA       LL15,sf                                        ;|   + LL15 = curr->flink;
-           STA       LL15,s                                         ;|   +
+           LDA       curr,sf                                        ;|   + curr = curr->flink;
+           STA       curr,s                                         ;|   +
            BR        mloop                                          ;+ }
 ;----------------------------
 mdo:       SUBA      need,s                                         ;+ if((curr->size - need) < 4) {
@@ -713,22 +791,22 @@ mdo:       SUBA      need,s                                         ;+ if((curr-
            BRGE      mok                                            ;|
            LDA       HEA,n                                          ;|  + need = curr->size;
            STA       need,s                                         ;|  +
-           LDX       LL15,s                                         ;|  + prev->flink = curr->flink;
+           LDX       curr,s                                         ;|  + prev->flink = curr->flink;
            STX       HEA,d                                          ;|  |
            LDA       HEA,n                                          ;|  |
            STA       prev,sf                                        ;|  +
            BR        mfill                                          ;| } else {
 mok:       NOP0                                                     ;|  +
-           LDA       LL15,s                                         ;|  + LL16 = LL15 + need;
+           LDA       curr,s                                         ;|  + LL16 = curr + need;
            ADDA      need,s                                         ;|  |
            STA       LL16,s                                         ;|  +
 ;----------------------------;|
            STA       prev,sf                                        ;|    prev->flink = LL16
 ;----------------------------;|
-           LDA       LL15,sf                                        ;|  + next->flink = curr->flink
+           LDA       curr,sf                                        ;|  + next->flink = curr->flink
            STA       LL16,sf                                        ;|  +
 ;----------------------------;|
-           LDX       LL15,s                                         ;|  + X = (curr->size - need);
+           LDX       curr,s                                         ;|  + X = (curr->size - need);
            ADDX      2,i                                            ;|  |
            STX       HEA,d                                          ;|  |
            LDX       HEA,n                                          ;|  |
@@ -745,7 +823,7 @@ mfill:     NOP0                                                     ;
            STA       -2,s                                           ;|
            LDA       need,s                                         ;|
            STA       -4,s                                           ;|
-           LDA       LL15,s                                         ;|
+           LDA       curr,s                                         ;|
            STA       -6,s                                           ;|
            SUBSP     6,i                                            ;|
            CALL      hfill                                          ;|
@@ -757,7 +835,7 @@ mfill:     NOP0                                                     ;
            STA       mcode,d                                        ;|
 AtLimit:   NOP0                                                     ;+ }
 ;++++++++++++++++++++++++++++
-           LDA       LL15,s                                         ;  A = LL15;
+           LDA       curr,s                                         ;  A = curr;
            LDX       need,s                                         ;  X = need;
            BR        mreturn                                        ;
 ;----------------------------
@@ -881,20 +959,20 @@ STOPEND:   STOP
            .END
 ;Resolver Report:
 ; done --> LL0
-; done --> LL1
-; loop --> LL2
+; loop --> LL1
+; done --> LL2
 ; done --> LL3
-; n --> LL4
-; loop --> LL5
-; done --> LL6
-; loop --> LL7
-; done --> LL8
-; loop --> LL9
-; done --> LL10
-; length --> LL11
-; error --> LL12
-; return --> LL13
-; ref --> LL14
-; curr --> LL15
+; full --> LL4
+; next --> LL5
+; loop --> LL6
+; done --> LL7
+; loop --> LL8
+; done --> LL9
+; loop --> LL10
+; done --> LL11
+; length --> LL12
+; error --> LL13
+; return --> LL14
+; ref --> LL15
 ; next --> LL16
 ; size --> LL17

@@ -14,7 +14,7 @@ msgfull:   .ASCII   "WARNING: string array full\n\x00"
           .GLOBAL  readSO
 readSO:    NOP0
            STRI     string,i
-           TSTA
+           CPA      0,i
            BREQ     move        ;if A == 0 we good
            STRO     msgtrunc,d  ; else branch
            DECOA
@@ -25,7 +25,7 @@ move:      PUSH     string,i
            CALL     Slength
            ADDSP    2,i
            STA      length,d
-           TSTA                     ; if(length!=0)
+           CPA      0,i       ; if(length!=0)
            BREQ     done
 ;----------------------------------
            LDA      length,d        ; ref = new(length+2)

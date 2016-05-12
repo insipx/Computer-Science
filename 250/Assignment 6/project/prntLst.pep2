@@ -3,24 +3,30 @@
 ;  void prntLst(address head);
 ;---------------------------------------------------------------
 p:         .EQUATE  2
-n:         .EQUATE  4
 ;--------
-index:     .BLOCK    2
+
 ptemp:     .BLOCK    2
+next:      .BLOCK    2
 ;---------------------------------------------------------------
            .GLOBAL   prntLst
 prntLst:   NOP0
-           CLR       index,d
-loop:      CPM       index,d,n,s
-           BRGE      done
-           LDX       index,d
-           ASLX
-           MOVE      p,sxf,ptemp,d
-           STRO      ptemp,n
+           MOVE      p,s,ptemp,d        ;start by moving p off the stack into ptemp
+           MOVE      ptemp,d,next,d     ;and also getting the second cell by adding 2
+           ADD       next,d,2,i         ;to the address
+
+loop:      NOP0
+           MOVE      ptemp,n,ptemp,d    ;move the address stored in the ptemp addr
+           STRO      ptemp,n             ;into ptemp, and print it out
            CHARO     '\n',i
-;---------
-           INC       index,d
-           BR loop
+;---------------------------    ;check if the next node is null
+           LDA       0,i         ; if it is, exit
+           CPA       next,n
+           BREQ      done
+;---------------------------    ;move the addr hold in the 'next' cell into ptemp
+           MOVE      next,n,ptemp,d ;this will become our current addr cell
+           MOVE      ptemp,d,next,d ;add two to the addr for the next cell
+           ADD       next,d,2,i
+           BR        loop
 ;--------
 done:      RET0
 

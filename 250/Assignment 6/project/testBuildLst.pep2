@@ -9,26 +9,20 @@
          .INCLUDE  "HeapInit.pep1"
          BR        main
          .INCLUDE  "PEP2.pep1"
+         .APPEND   "buildLst.pep2"
          .APPEND   "readSO.pep2"
-         .APPEND   "prntStgs.pep2"
+         .APPEND   "prntLst.pep2"
          .APPEND   "memcpy.pep2"
          .APPEND   "Slength.pep2"
          .APPEND   "ScompTo.pep2"
-         .APPEND   "buildLst.pep2"
 
-;------------local vars----------------------------------------
-name:   .BLOCK  2
-name2:  .BLOCK  2
-        .BYTE   16
-comp:   .ASCII  ""
-aComp:  .ADDRSS comp
+wtf:     .ASCII     "wtf"
 ;------------main----------------------------
 main:   NOP0
         CALL  buildLst
         PUSHA
-        CALL  prntStgs
+        CALL  prntLst
         ADDSP 2,i
-
 ;--------------------------
 done:   NOP0
         STOP

@@ -2,49 +2,56 @@
 ;BuildLst()
 ;------------------------
 ;---Local Variables----
-size:   .EQUATE    0     ; size
-head:   .BLOCK     2
-curr:   .BLOCK     2     ;front of the list (head, first element)
-next:   .BLOCK     2     ;end of the list
-currN:  .BLOCK     2
-temp:   .BLOCK     2
+size:      .BLOCK    2         ; size
+head:      .BLOCK    2
+stringrf:  .BLOCK    2         ;the addr of the str from readSo
+next:      .BLOCK    2         ;the addr where we can start putting stuff in the heap
+node:      .BLOCK    2
 ;----------------------
 
 
-buildLst:   NOP0
-            SAVEA
-            SAVEX
-            CLRA
-            CLRX
-loop:       NOP0
-            LDA       4,i
-            STA       -2,s
-            CALL      new
-            ADDSP     2,i
-            STA       curr,d
-            CALL      readSO
-            STA       temp,d
-            LDA       size,d
-            TSTA
-            BREQ      first
-            LDX       0,i
-            STX       p,x
-            LDX       2,i
-            LDA       next,d
-            STA       curr,x
-            STRO      currN,n
-            CHARO     '\n',i
-            LDBYTEA   currN,n
-            CPA       0,i
-            BREQ      done
-            BR        loop
+buildLst:  NOP0
+           SAVEA
+           SAVEX
+           CLRA
+           CLRX
+           STA       size,d
 
-first:      LDA       0,i
-            STA       head,d
-            LDA       temp,d
-            STA       head,d
-            
+loop:      NOP0
+           CLRA
+           CALL      readSO    ; calling readSO to read the string
+           STA       stringrf,d  ;storing the reference to the String into temp
+;------------------------------
+           CPA       0,i        ; if readSo returns 0 we are done
+           BREQ      done
+;-------------------------------
+           LDA       4,i    ;length of 4 bytes
+           STA       -2,s
+           SUBSP     2,i
+           CALL      new
+           ADDSP     2,i
+           STA       node,d  ; storing the ref from new into node
+;-----------------------------; this is the place in the stack we will be using
+           LDA       size,d    ;Loading size into A
+           TSTA                ;testing against 0
+           BREQ      first     ;if it's the first element, branch to first
+           LDA       node,d
+           STA       next,n    ;store the ref to current node in next for the prev node
+;-----------------------------
+back:      LDA       stringrf,d  ;store string in first node cell
+           STA       node,n
+;-----------------------------          ;make ref cell just 0
+           MOVE      node,d,next,d      ;LDA    node,d  STA next,d
+           ADD       next,d,2,i
+           LDA       0,i
+           STA       next,n
+           INC       size,d
+;-----------------------------
+           BR        loop
 
-done:       RESTOREA
-            RESTOREX
-            RET0
+first:     LDA       node,d    ;store the node ref in head, b/c this is the first node
+           STA       head,d
+;------------------------------
+           BR        back
+done:      LDA       head,d
+           RET0
