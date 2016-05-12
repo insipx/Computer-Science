@@ -1,54 +1,30 @@
-;TESTED & WORKS
 ;---------------------------------------------------------------
 ;  void prntLst(address head);
 ;---------------------------------------------------------------
-p:         .EQUATE  2
+head:         .EQUATE  2
 ;--------
 
-ptemp:     .BLOCK    2
+htemp:     .BLOCK    2
 next:      .BLOCK    2
 ;---------------------------------------------------------------
            .GLOBAL   prntLst
 prntLst:   NOP0
-           MOVE      p,s,ptemp,d        ;start by moving p off the stack into ptemp
-           MOVE      ptemp,d,next,d     ;and also getting the second cell by adding 2
+           MOVE      head,s,htemp,d        ;start by moving p off the stack into ptemp
+           MOVE      htemp,d,next,d     ;and also getting the second cell by adding 2
            ADD       next,d,2,i         ;to the address
 
 loop:      NOP0
-           MOVE      ptemp,n,ptemp,d    ;move the address stored in the ptemp addr
-           STRO      ptemp,n             ;into ptemp, and print it out
+           MOVE      htemp,n,htemp,d    ;move the address stored in the ptemp addr
+           STRO      htemp,n             ;into ptemp, and print it out
            CHARO     '\n',i
 ;---------------------------    ;check if the next node is null
            LDA       0,i         ; if it is, exit
            CPA       next,n
            BREQ      done
 ;---------------------------    ;move the addr hold in the 'next' cell into ptemp
-           MOVE      next,n,ptemp,d ;this will become our current addr cell
-           MOVE      ptemp,d,next,d ;add two to the addr for the next cell
+           MOVE      next,n,htemp,d ;this will become our current addr cell
+           MOVE      htemp,d,next,d ;add two to the addr for the next cell
            ADD       next,d,2,i
            BR        loop
 ;--------
 done:      RET0
-
-
-
-;TEST CODE FROM PDF
-;head:      .ADDRSS  first   ;Reference to the first node in the list
-;----------------------------------------------------------------------
-;first:     .ADDRSS  second  ;First Node – reference to next node
-;           .ADDRSS  two     ;First Node – reference to string object
-;second:    .ADDRSS  third   ;Second Node – reference to next node
-;           .ADDRSS  three   ;Second Node – reference to string object
-;third:     .ADDRSS  fourth  ;Third Node - reference to next node
-;           .ADDRSS  four    ;Third Node - reference to string object
-;fourth:    .ADDRSS  0       ;Fourth Node – reference to next node (null in this case)
-;           .ADDRSS  one     ;Fourth Node – reference to string object
-;-------------------------------------------- (String Objects follow)
-;           .BYTE    20
-;one:       .ASCII   “Washington, George\x00"
-;           .BYTE    12
-;two:       .ASCII   “Adams, John\x00"
-;           .BYTE    18
-;three:     .ASCII   “Jefferson, Thomas\x00"
-;           .BYTE    15
-;four:      .ASCII   “Madison, James\x00"

@@ -16,7 +16,6 @@
          .APPEND   "Slength.pep2"
          .APPEND   "ScompTo.pep2"
 
-wtf:     .ASCII     "wtf"
 ;------------main----------------------------
 main:   NOP0
         CALL  buildLst

@@ -37,6 +37,11 @@ loop:      NOP0
            BREQ      first     ;if it's the first element, branch to first
            LDA       node,d
            STA       next,n    ;store the ref to current node in next for the prev node
+           MOVE      node,d,next,d
+           ADD       next,d,2,i
+           LDA       0,i
+           STA       next,n
+           BR        insert
 ;-----------------------------
 back:      LDA       stringrf,d  ;store string in first node cell
            STA       node,n
@@ -49,9 +54,88 @@ back:      LDA       stringrf,d  ;store string in first node cell
 ;-----------------------------
            BR        loop
 
-first:     LDA       node,d    ;store the node ref in head, b/c this is the first node
-           STA       head,d
-;------------------------------
+first:     MOVE     node,d,head,d
            BR        back
+
+
+;--------------------------------------------------------
+;-------Insertion Sort-----------------------------------
+;--------------------------------------------------------
+;Local Vars
+;-----------------------------
+htemp:      .BLOCK   2
+htnext:     .BLOCK   2
+iNode:      .BLOCK   2
+iNodeNx:    .BLOCK   2
+sRfTemp:    .BLOCK   2
+currSr:     .BLOCK   2
+nexSr:      .BLOCK   2
+prev:       .BLOCk   2
+;-----------------------------
+insert:    MOVE   node,d,iNode,d    ;next node of curr node
+           MOVE   node,d,iNodeNx,d
+           ADD    iNodeNx,d,2,i
+           MOVE   head,d,htemp,d    ;>
+;------------------------------ getting the addresses
+           MOVE   htemp,d,htnext,d    ;>     ;next node of head
+           ADD    htnext,d,2,i        ;>
+;--------------------------------
+           MOVE   htemp,n,currSr,d  ;must do first element first
+
+           CLRA
+           PUSH   stringrf,d        ;>
+           PUSH   currSr,d          ;>
+           CALL   ScompTo
+           ADDSP  4,i
+           CPA    0,i
+           BREQ   equal
+           BRLT   less
+           BRGT   greatr2
+
+;-------------------------------
+iloop:     LDA    htnext,n           ;?
+           CPA    0,i               ;>
+           BREQ   back              ;>
+;------------------------------------checks if next addr is null
+           MOVE   htnext,n,nexSr,d
+           PUSH   currSr,d          ;>
+           PUSH   nexSr,n          ;>
+           CALL   ScompTo           ;>
+           ADDSP  4,i
+           CPA    0,i               ;>
+           BRLT   less              ;>
+           BRGT   egreater           ;>
+
+less:      NOP0
+           MOVE   htemp,d,prev,d    ;move curr into prev
+           MOVE   htnext,n,htemp,d   ;>
+           MOVE   htemp,d,htnext,d   ;>
+           ADD    htnext,d,2,i       ;>
+           LDA    htnext,n
+           CPA    0,i
+           BREQ   mv2Org
+           MOVE   htemp,n,currSr,d
+           BR     iloop
+
+egreater:   NOP0
+           MOVE     stringrf,d,iNode,n
+           MOVE     htemp,d,iNodeNx,n
+           LDA      prev,d
+           ADD      prev,d,2,i
+           MOVE     iNode,d,prev,n  ;move current into previous
+           BR       loop
+
+greatr2:   NOP0
+           LDA      stringrf,d
+           STA      iNode,n
+           MOVE     htemp,d,iNodeNx,n
+           MOVE     htemp,d,head,d
+           BR       loop
+
+mv2Org:    NOP0
+           MOVE     htemp,d,node,d
+           MOVE     htnext,d,next,d
+           BR       back
+
 done:      LDA       head,d
            RET0

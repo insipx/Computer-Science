@@ -42,7 +42,6 @@ SAVEPP:   .BLOCK     2
 ; Macro to dump the top portion of the stack
 ;============================================================
 ;} PEP2.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-wtf:     .ASCII     "wtf"
 ;------------main----------------------------
 main:   NOP0
 CALL  buildLst
@@ -298,6 +297,24 @@ CPA        0,i;< TSTA >
 BREQ      first     ;if it's the first element, branch to first
 LDA       node,d
 STA       next,n    ;store the ref to current node in next for the prev node
+;;MOVE     node,d,next,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        node,d;< MOVE >
+STA        next,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD      next,d,2,i ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        next,d;< ADD >
+ADDA       2,i;< ADD >
+STA        next,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+LDA       0,i
+STA       next,n
+BR        insert
 ;-----------------------------
 back:      LDA       stringrf,d  ;store string in first node cell
 STA       node,n
@@ -333,6 +350,234 @@ first:     LDA       node,d    ;store the node ref in head, b/c this is the firs
 STA       head,d
 ;------------------------------
 BR        back
+;--------------------------------------------------------
+;-------Insertion Sort-----------------------------------
+;--------------------------------------------------------
+;Local Vars
+;-----------------------------
+htemp:      .BLOCK   2
+htnext:     .BLOCK   2
+iNode:      .BLOCK   2
+iNodeNx:    .BLOCK   2
+sRfTemp:    .BLOCK   2
+currSr:     .BLOCK   2
+nexSr:      .BLOCK   2
+prev:       .BLOCk   2
+;-----------------------------
+;;insert:MOVE  node,d,iNode,d    ;next node of curr node ; 
+insert: NOP0 ;< MOVE >
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        node,d;< MOVE >
+STA        iNode,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE  node,d,iNodeNx,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        node,d;< MOVE >
+STA        iNodeNx,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD   iNodeNx,d,2,i ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        iNodeNx,d;< ADD >
+ADDA       2,i;< ADD >
+STA        iNodeNx,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+;;MOVE  head,d,htemp,d    ;> ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        head,d;< MOVE >
+STA        htemp,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;------------------------------ getting the addresses
+;;MOVE  htemp,d,htnext,d    ;>     ;next node of head ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        htnext,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD   htnext,d,2,i        ;> ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        htnext,d;< ADD >
+ADDA       2,i;< ADD >
+STA        htnext,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+;--------------------------------
+;;MOVE  htemp,n,currSr,d  ;must do first element first ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,n;< MOVE >
+STA        currSr,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;CLRA  ; 
+LDA        0,i;< CLRA >
+;;PUSH  stringrf,d        ;> ; 
+STA        SAVEPP,d;< PUSH >
+LDA        stringrf,d;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+;;PUSH  currSr,d          ;> ; 
+STA        SAVEPP,d;< PUSH >
+LDA        currSr,d;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+CALL   ScompTo
+ADDSP  4,i
+CPA    0,i
+BREQ   equal
+BRLT   less
+BRGT   greatr2
+;-------------------------------
+iloop:     LDA    htnext,n           ;?
+CPA    0,i               ;>
+BREQ   back              ;>
+;------------------------------------checks if next addr is null
+;;MOVE  htnext,n,nexSr,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htnext,n;< MOVE >
+STA        nexSr,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;PUSH  currSr,d          ;> ; 
+STA        SAVEPP,d;< PUSH >
+LDA        currSr,d;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+;;PUSH  nexSr,n          ;> ; 
+STA        SAVEPP,d;< PUSH >
+LDA        nexSr,n;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+CALL   ScompTo           ;>
+ADDSP  4,i
+CPA    0,i               ;>
+BRLT   less              ;>
+BRGT   egreater           ;>
+less:      NOP0
+;;MOVE  htemp,d,prev,d    ;move curr into prev ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        prev,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE  htnext,n,htemp,d   ;> ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htnext,n;< MOVE >
+STA        htemp,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE  htemp,d,htnext,d   ;> ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        htnext,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD   htnext,d,2,i       ;> ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        htnext,d;< ADD >
+ADDA       2,i;< ADD >
+STA        htnext,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+LDA    htnext,n
+CPA    0,i
+BREQ   mv2Org
+;;MOVE  htemp,n,currSr,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,n;< MOVE >
+STA        currSr,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+BR     iloop
+egreater:   NOP0
+;;MOVE    stringrf,d,iNode,n ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        stringrf,d;< MOVE >
+STA        iNode,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE    htemp,d,iNodeNx,n ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        iNodeNx,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+LDA      prev,d
+;;ADD     prev,d,2,i ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        prev,d;< ADD >
+ADDA       2,i;< ADD >
+STA        prev,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+;;MOVE    iNode,d,prev,n  ;move current into previous ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        iNode,d;< MOVE >
+STA        prev,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+BR       LL1
+greatr2:   NOP0
+LDA      stringrf,d
+STA      iNode,n
+;;MOVE    htemp,d,iNodeNx,n ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        iNodeNx,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE    htemp,d,head,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        head,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+BR       LL1
+mv2Org:    NOP0
+;;MOVE    htemp,d,node,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        node,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE    htnext,d,next,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htnext,d;< MOVE >
+STA        next,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+BR       back
 LL2:      LDA       head,d
 RET0
 ;} buildLst.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -429,99 +674,78 @@ RET0
 ;} readSO.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
 ;{ prntLst.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-;TESTED & WORKS
 ;---------------------------------------------------------------
 ;  void prntLst(address head);
 ;---------------------------------------------------------------
-p:         .EQUATE  2
+LL5:         .EQUATE  2
 ;--------
-ptemp:     .BLOCK    2
-LL5:      .BLOCK    2
+LL6:     .BLOCK    2
+LL7:      .BLOCK    2
 ;---------------------------------------------------------------
 ;.GLOBAL   prntLst
 prntLst:   NOP0
-;;MOVE     p,s,ptemp,d ; 
+;;MOVE     LL5,s,LL6,d        ;start by moving p off the stack into ptemp ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
-LDA        p,s;< MOVE >
-STA        ptemp,d;< MOVE >
+LDA        LL5,s;< MOVE >
+STA        LL6,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;MOVE     ptemp,d,LL5,d ; 
+;;MOVE     LL6,d,LL7,d     ;and also getting the second cell by adding 2 ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
-LDA        ptemp,d;< MOVE >
-STA        LL5,d;< MOVE >
+LDA        LL6,d;< MOVE >
+STA        LL7,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;ADD      LL5,d,2,i ; 
+;;ADD      LL7,d,2,i         ;to the address ; 
 ;;SAVEA    ;< ADD > 
 STA        SAVEA,d;< SAVEA,ADD >
-LDA        LL5,d;< ADD >
+LDA        LL7,d;< ADD >
 ADDA       2,i;< ADD >
-STA        LL5,d;< ADD >
+STA        LL7,d;< ADD >
 ;;RESTOREA ;< ADD > 
 LDA        SAVEA,d;< RESTOREA,ADD >
-LL6:      NOP0
-;;MOVE     ptemp,n,ptemp,d ; 
+LL8:      NOP0
+;;MOVE     LL6,n,LL6,d    ;move the address stored in the ptemp addr ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
-LDA        ptemp,n;< MOVE >
-STA        ptemp,d;< MOVE >
+LDA        LL6,n;< MOVE >
+STA        LL6,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-STRO      ptemp,n
+STRO      LL6,n             ;into ptemp, and print it out
 CHARO     '\n',i
-;---------------------------
-LDA       0,i
-CPA       LL5,n
-BREQ      LL7
-;---------------------------
-;;MOVE     LL5,n,ptemp,d ; 
+;---------------------------    ;check if the LL7 node is null
+LDA       0,i         ; if it is, exit
+CPA       LL7,n
+BREQ      LL9
+;---------------------------    ;move the addr hold in the 'next' cell into ptemp
+;;MOVE     LL7,n,LL6,d ;this will become our current addr cell ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
-LDA        LL5,n;< MOVE >
-STA        ptemp,d;< MOVE >
+LDA        LL7,n;< MOVE >
+STA        LL6,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;MOVE     ptemp,d,LL5,d ; 
+;;MOVE     LL6,d,LL7,d ;add two to the addr for the LL7 cell ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
-LDA        ptemp,d;< MOVE >
-STA        LL5,d;< MOVE >
+LDA        LL6,d;< MOVE >
+STA        LL7,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;ADD      LL5,d,2,i ; 
+;;ADD      LL7,d,2,i ; 
 ;;SAVEA    ;< ADD > 
 STA        SAVEA,d;< SAVEA,ADD >
-LDA        LL5,d;< ADD >
+LDA        LL7,d;< ADD >
 ADDA       2,i;< ADD >
-STA        LL5,d;< ADD >
+STA        LL7,d;< ADD >
 ;;RESTOREA ;< ADD > 
 LDA        SAVEA,d;< RESTOREA,ADD >
-BR        LL6
+BR        LL8
 ;--------
-LL7:      RET0
-;TEST CODE FROM PDF
-;head:      .ADDRSS  first   ;Reference to the first node in the list
-;----------------------------------------------------------------------
-;first:     .ADDRSS  second  ;First Node – reference to LL5 node
-;           .ADDRSS  two     ;First Node – reference to string object
-;second:    .ADDRSS  third   ;Second Node – reference to LL5 node
-;           .ADDRSS  three   ;Second Node – reference to string object
-;third:     .ADDRSS  fourth  ;Third Node - reference to LL5 node
-;           .ADDRSS  four    ;Third Node - reference to string object
-;fourth:    .ADDRSS  0       ;Fourth Node – reference to LL5 node (null in this case)
-;           .ADDRSS  one     ;Fourth Node – reference to string object
-;-------------------------------------------- (String Objects follow)
-;           .BYTE    20
-;one:       .ASCII   “Washington, George\x00"
-;           .BYTE    12
-;two:       .ASCII   “Adams, John\x00"
-;           .BYTE    18
-;three:     .ASCII   “Jefferson, Thomas\x00"
-;           .BYTE    15
-;four:      .ASCII   “Madison, James\x00"
+LL9:      RET0
 ;} prntLst.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
 ;{ memcpy.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -544,15 +768,15 @@ STX        SAVEX,d;< SAVEX,SAVE >
 LDA        0,i;< CLRA >
 ;;CLRX  ; 
 LDX        0,i;< CLRX >
-LL8:      CPX      n,s
-BRGE     LL9
+LL10:      CPX      n,s
+BRGE     LL11
 LDBYTEA  from,sxf
 STBYTEA  to,sxf
 ;;INCX  ; 
 ADDX       1,i;< INCX >
-BR       LL8
+BR       LL10
 ;;done:RESTORE  ; 
-LL9: NOP0 ;< RESTORE >
+LL11: NOP0 ;< RESTORE >
 ;;RESTOREX ;< RESTORE > 
 LDX        SAVEX,d;< RESTOREX,RESTORE >
 ;;RESTOREA ;< RESTORE > 
@@ -598,8 +822,8 @@ RET0                   ;
 ;
 ;************************************************************************
 ; String subprogram that compares two strings (Sobjects) and
-; returns a number less than zero if the first object is lexiographicall
-; before (i.e. less than) the second, zero if they are equivalent, and a
+; returns a number LL13 than zero if the first object is lexiographicall
+; before (i.e. LL13 than) the second, zero if they are equivalent, and a
 ; positive number otherwise.
 ;
 ;********  int ScompTo (char[] Sobject1, char[] Sobject2)
@@ -625,7 +849,7 @@ LDA        0,i;< CLRA >
 ;;CLRX  ; 
 LDX        0,i;< CLRX >
 ;---------
-LL10:       NOP0
+LL12:       NOP0
 LDBYTEA     Sobject2,sxf
 STA         hold2,d
 LDBYTEA     Sobject1,sxf
@@ -635,23 +859,23 @@ CPA         0,i
 BREQ        equal
 ;;INCX  ; 
 ADDX       1,i;< INCX >
-BR          LL10
+BR          LL12
 ;---------
 done1:      SUBA        hold2,d
 CPA         0,i
 BRGT        greater
-BRLT        less
+BRLT        LL13
 greater:    NOP0
 LDA         1,i
-BR          LL11
-less:       NOP0
+BR          LL14
+LL13:       NOP0
 LDA         -1,i
-BR          LL11
+BR          LL14
 equal:      NOP0
 LDA         0,i
-BR          LL11
+BR          LL14
 ;;done:RESTOREX ; 
-LL11: NOP0 ;< RESTOREX >
+LL14: NOP0 ;< RESTOREX >
 LDX        SAVEX,d;< RESTOREX >
 ;<<<<<<<<< Instrumentation
 CHARO    ',',i
@@ -692,32 +916,32 @@ RET0                   ;
 ; address new(int length)
 ;---------------------------------------------------------------------------------------
 result:    .EQUATE  0
-LL12:    .EQUATE  4
+LL15:    .EQUATE  4
 ;---------------------------------------------------------------------------------------
 new:       SUBSP    2,i        ;
-LDA      LL12,s   ;+ if(length <=  255) {
+LDA      LL15,s   ;+ if(length <=  255) {
 CPA      0,i        ;|
-BRLT     LL13      ;|
+BRLT     LL16      ;|
 CPA      255,i      ;|
-BRGT     LL13      ;|
+BRGT     LL16      ;|
 ADDA     1,i        ;| + A = malloc((length+1));
 SUBSP    2,i        ;| |
 STA      0,s        ;| |
 CALL     malloc     ;| |
 ADDSP    2,i        ;| +
 CPA      0,i        ;| + if(A != 0) {
-BRLE     LL13      ;| |
+BRLE     LL16      ;| |
 STA      result,s   ;| | + set "before byte" to (length-1)
 SUBX     1,i        ;| | |
-STX      LL12,s   ;| | |
-LDA      LL12,s   ;| | |
+STX      LL15,s   ;| | |
+LDA      LL15,s   ;| | |
 LDX      0,i        ;| | |
 STBYTEA  result,sxf ;| | +
 LDA      result,s   ;| | }
 ADDA     1,i        ;| + A = A + 1;
-BR       LL14     ;+ }
-LL13:     LDA      0,i        ;
-LL14:    RET2                ;
+BR       LL17     ;+ }
+LL16:     LDA      0,i        ;
+LL17:    RET2                ;
 ;} Heap_new.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
 ;{ Heap_recycle.pep1 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -726,15 +950,15 @@ LL14:    RET2                ;
 ;---------------------------------------------------------------------------------------
 ; address recycle(address ref)
 ;---------------------------------------------------------------------------------------
-LL15:       .EQUATE  2
+LL18:       .EQUATE  2
 ;---------------------------------------------------------------------------------------
 recycle:   NOP0
-LDX      -1,i     ;+ A = "before byte" value at LL15
+LDX      -1,i     ;+ A = "before byte" value at LL18
 LDA      0,i      ;|
-LDBYTEA  LL15,sxf  ;+
+LDBYTEA  LL18,sxf  ;+
 ADDA     1,i      ;+ free((ref-1),(A+1));
 STA      -2,s     ;|
-LDA      LL15,s    ;|
+LDA      LL18,s    ;|
 SUBA     1,i      ;|
 STA      -4,s     ;|
 SUBSP    4,i      ;|
@@ -751,9 +975,9 @@ RET0              ;
 ;---------------------------------------------------------------------------------------
 need:     .EQUATE  8
 ;---------------------------------------------------------------------------------------
-prev:     .EQUATE  0         ;pointer to previous free element
+LL19:     .EQUATE  0         ;pointer to previous free element
 curr:     .EQUATE  2         ;pointer to current free element
-LL16:     .EQUATE  4         ;pointer to LL16 free element
+LL20:     .EQUATE  4         ;pointer to LL20 free element
 ;---------------------------------------------------------------------------------------
 malloc:   SUBSP    6,i       ;  Room for 3 local variables
 LDA      need,s    ;+ if(need < 4) {
@@ -780,8 +1004,8 @@ STA      HEA,d     ;|
 LDA      HEA,n     ;|   // A = curr->size;
 CPA      need,s    ;|
 BRGE     mdo       ;|
-LDA      curr,s    ;|   + prev = curr;
-STA      prev,s    ;|   +
+LDA      curr,s    ;|   + LL19 = curr;
+STA      LL19,s    ;|   +
 LDA      curr,sf   ;|   + curr = curr->flink;
 STA      curr,s    ;|   +
 BR       mloop     ;+ }
@@ -794,17 +1018,17 @@ STA      need,s    ;|  +
 LDX      curr,s    ;|  + prev->flink = curr->flink;
 STX      HEA,d     ;|  |
 LDA      HEA,n     ;|  |
-STA      prev,sf   ;|  +
+STA      LL19,sf   ;|  +
 BR       mfill     ;| } else {
 mok:      NOP0               ;|  +
-LDA      curr,s    ;|  + LL16 = curr + need;
+LDA      curr,s    ;|  + LL20 = curr + need;
 ADDA     need,s    ;|  |
-STA      LL16,s    ;|  +
+STA      LL20,s    ;|  +
 ;----------------------------;|
-STA      prev,sf   ;|    prev->flink = LL16
+STA      LL19,sf   ;|    prev->flink = LL20
 ;----------------------------;|
 LDA      curr,sf   ;|  + next->flink = curr->flink
-STA      LL16,sf   ;|  +
+STA      LL20,sf   ;|  +
 ;----------------------------;|
 LDX      curr,s    ;|  + X = (curr->size - need);
 ADDX     2,i       ;|  |
@@ -812,7 +1036,7 @@ STX      HEA,d     ;|  |
 LDX      HEA,n     ;|  |
 SUBX     need,s    ;|  +
 ;----------------------------;|
-LDA      LL16,s    ;|  + next->size = X
+LDA      LL20,s    ;|  + next->size = X
 ADDA     2,i       ;|  |
 STA      HEA,d     ;|  |
 STX      HEA,n     ;|  +
@@ -853,14 +1077,14 @@ mcode:    .WORD    0x4141    ;  a code value
 ; address free(address addr, int size)
 ;---------------------------------------------------------------------------------------
 addr:     .EQUATE  6         ;an address obtainted from a call to malloc
-LL17:     .EQUATE  8         ;the corresponding "need" used when allocating
+LL21:     .EQUATE  8         ;the corresponding "need" used when allocating
 ;---------------------------------------------------------------------------------------
 fprev:    .EQUATE  0         ;pointer to previous free element
 fcurr:    .EQUATE  2         ;pointer to current free element
 ;---------------------------------------------------------------------------------------
 free:     SUBSP    4,i       ;  Room for 2 local variables
 ;----------------------------;
-LDA      LL17,s    ;+ if((size >= 4) && ((size%2) == 0)) {
+LDA      LL21,s    ;+ if((size >= 4) && ((size%2) == 0)) {
 CPA      4,i       ;|
 BRLT     ferror    ;|
 RORA               ;|
@@ -881,16 +1105,16 @@ STA      fcurr,s   ;| | | +
 BR       floop     ;| | |
 ffound:   NOP0               ;| | + }
 LDA      addr,s    ;| | + if((addr+size) <= fcurr) {
-ADDA     LL17,s    ;| | |
+ADDA     LL21,s    ;| | |
 CPA      fcurr,s   ;| | |
 BRGT     ferror    ;| | |
 LDA      fcurr,s   ;| | | + addr->flink = fcurr;
 STA      addr,sf   ;| | | +
 LDA      addr,s    ;| | | + fprev->flink = addr;
 STA      fprev,sf  ;| | | +
-ADDA     2,i       ;| | | + addr->size = LL17;
+ADDA     2,i       ;| | | + addr->size = LL21;
 STA      HEA,d     ;| | | |
-LDA      LL17,s    ;| | | |
+LDA      LL21,s    ;| | | |
 STA      HEA,n     ;| | | +
 NOP0               ;| | + }
 NOP0               ;| + }
@@ -898,7 +1122,7 @@ NOP0               ;| + }
 ;++++++++++++++++++++++++++++++++++++  TEMPORARY CODE TO FILL DEALLOCATION
 LDA      fcode,d   ;| + hfill((addr+4),(size-4),fcode);
 STA      -2,s      ;| |
-LDA      LL17,s    ;| |
+LDA      LL21,s    ;| |
 SUBA     4,i       ;| |   //(size-4),
 STA      -4,s      ;| |
 LDA      addr,s    ;| |
@@ -963,17 +1187,21 @@ STOPEND: STOP
 ; done --> LL2
 ; done --> LL3
 ; full --> LL4
-; next --> LL5
-; loop --> LL6
-; done --> LL7
+; head --> LL5
+; htemp --> LL6
+; next --> LL7
 ; loop --> LL8
 ; done --> LL9
 ; loop --> LL10
 ; done --> LL11
-; length --> LL12
-; error --> LL13
-; return --> LL14
-; ref --> LL15
-; next --> LL16
-; size --> LL17
+; loop --> LL12
+; less --> LL13
+; done --> LL14
+; length --> LL15
+; error --> LL16
+; return --> LL17
+; ref --> LL18
+; prev --> LL19
+; next --> LL20
+; size --> LL21
 
