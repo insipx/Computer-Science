@@ -42,19 +42,13 @@ SAVEPP:   .BLOCK     2
 ; Macro to dump the top portion of the stack
 ;============================================================
 ;} PEP2.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;------------local vars----------------------------------------
-name:   .BLOCK  2
-name2:  .BLOCK  2
-.BYTE   16
-comp:   .ASCII  ""
-aComp:  .ADDRSS comp
 ;------------main----------------------------
 main:   NOP0
 CALL  buildLst
 ;;PUSHA  ; 
 STA        -2,s;< PUSHA >
 SUBSP      2,i;< PUSHA >
-CALL  prntStgs
+CALL  prntLst
 ADDSP 2,i
 ;--------------------------
 done:   NOP0
@@ -260,74 +254,401 @@ LDA      Acopy,d
 RET0
 ;} DUMPS.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
+;{ buildLst.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;-------------------------
+;BuildLst()
+;------------------------
+;---Local Variables----
+size:      .BLOCK    2         ; size
+head:      .BLOCK    2
+stringrf:  .BLOCK    2         ;the addr of the str from readSo
+next:      .BLOCK    2         ;the addr where we can start putting stuff in the heap
+node:      .BLOCK    2
+;----------------------
+buildLst:  NOP0
+;;SAVEA    ; 
+STA        SAVEA,d;< SAVEA >
+;;SAVEX    ; 
+STX        SAVEX,d;< SAVEX >
+;;CLRA  ; 
+LDA        0,i;< CLRA >
+;;CLRX  ; 
+LDX        0,i;< CLRX >
+STA       size,d
+loop:      NOP0
+;;CLRA  ; 
+LDA        0,i;< CLRA >
+CALL      readSO    ; calling readSO to read the string
+STA       stringrf,d  ;storing the reference to the String into temp
+;------------------------------
+CPA       0,i        ; if readSo returns 0 we are done
+BREQ      done
+;-------------------------------
+LDA       4,i    ;length of 4 bytes
+STA       -2,s
+SUBSP     2,i
+CALL      new
+ADDSP     2,i
+STA       node,d  ; storing the ref from new into node
+;-----------------------------; this is the place in the stack we will be using
+LDA       size,d    ;Loading size into A
+;;TSTA               ;testing against 0 ; 
+CPA        0,i;< TSTA >
+BREQ      first     ;if it's the first element, branch to first
+LDA       node,d
+STA       next,n    ;store the ref to current node in next for the prev node
+;;MOVE     node,d,next,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        node,d;< MOVE >
+STA        next,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD      next,d,2,i ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        next,d;< ADD >
+ADDA       2,i;< ADD >
+STA        next,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+LDA       0,i
+STA       next,n
+BR        insert
+;-----------------------------
+back:      LDA       stringrf,d  ;store string in first node cell
+STA       node,n
+;-----------------------------          ;make ref cell just 0
+;;MOVE     node,d,next,d      ;LDA    node,d  STA next,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        node,d;< MOVE >
+STA        next,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD      next,d,2,i ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        next,d;< ADD >
+ADDA       2,i;< ADD >
+STA        next,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+LDA       0,i
+STA       next,n
+;;INC      size,d ; 
+;;SAVEA    ;< INC > 
+STA        SAVEA,d;< SAVEA,INC >
+LDA        size,d;< INC >
+ADDA       1,i;< INC >
+STA        size,d;< INC >
+;;RESTOREA ;< INC > 
+LDA        SAVEA,d;< RESTOREA,INC >
+;-----------------------------
+BR        loop
+first:     LDA       node,d    ;store the node ref in head, b/c this is the first node
+STA       head,d
+;------------------------------
+BR        back
+;--------------------------------------------------------
+;-------Insertion Sort-----------------------------------
+;--------------------------------------------------------
+;Local Vars
+;-----------------------------
+htemp:      .BLOCK   2
+htnext:     .BLOCK   2
+iNode:      .BLOCK   2
+iNodeNx:    .BLOCK   2
+sRfTemp:    .BLOCK   2
+currSr:     .BLOCK   2
+nexSr:      .BLOCK   2
+prev:       .BLOCk   2
+;-----------------------------
+;;insert:MOVE  node,d,iNode,d    ;next node of curr node ; 
+insert: NOP0 ;< MOVE >
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        node,d;< MOVE >
+STA        iNode,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE  node,d,iNodeNx,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        node,d;< MOVE >
+STA        iNodeNx,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD   iNodeNx,d,2,i ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        iNodeNx,d;< ADD >
+ADDA       2,i;< ADD >
+STA        iNodeNx,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+;;MOVE  head,d,htemp,d    ;> ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        head,d;< MOVE >
+STA        htemp,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;------------------------------ getting the addresses
+;;MOVE  htemp,d,htnext,d    ;>     ;next node of head ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        htnext,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD   htnext,d,2,i        ;> ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        htnext,d;< ADD >
+ADDA       2,i;< ADD >
+STA        htnext,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+;--------------------------------
+;;MOVE  htemp,n,currSr,d  ;must do first element first ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,n;< MOVE >
+STA        currSr,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;CLRA  ; 
+LDA        0,i;< CLRA >
+;;PUSH  stringrf,d        ;> ; 
+STA        SAVEPP,d;< PUSH >
+LDA        stringrf,d;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+;;PUSH  currSr,d          ;> ; 
+STA        SAVEPP,d;< PUSH >
+LDA        currSr,d;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+CALL   ScompTo
+ADDSP  4,i
+CPA    0,i
+BREQ   equal
+BRLT   less
+BRGT   greatr2
+;-------------------------------
+iloop:     LDA    htnext,n           ;?
+CPA    0,i               ;>
+BREQ   back              ;>
+;------------------------------------checks if next addr is null
+;;MOVE  htnext,n,nexSr,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htnext,n;< MOVE >
+STA        nexSr,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;PUSH  currSr,d          ;> ; 
+STA        SAVEPP,d;< PUSH >
+LDA        currSr,d;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+;;PUSH  nexSr,n          ;> ; 
+STA        SAVEPP,d;< PUSH >
+LDA        nexSr,n;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+CALL   ScompTo           ;>
+ADDSP  4,i
+CPA    0,i               ;>
+BRLT   less              ;>
+BRGT   egreater           ;>
+less:      NOP0
+;;MOVE  htemp,d,prev,d    ;move curr into prev ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        prev,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE  htnext,n,htemp,d   ;> ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htnext,n;< MOVE >
+STA        htemp,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE  htemp,d,htnext,d   ;> ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        htnext,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD   htnext,d,2,i       ;> ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        htnext,d;< ADD >
+ADDA       2,i;< ADD >
+STA        htnext,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+LDA    htnext,n
+CPA    0,i
+BREQ   mv2Org
+;;MOVE  htemp,n,currSr,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,n;< MOVE >
+STA        currSr,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+BR     iloop
+egreater:   NOP0
+;;MOVE    stringrf,d,iNode,n ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        stringrf,d;< MOVE >
+STA        iNode,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE    htemp,d,iNodeNx,n ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        iNodeNx,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+LDA      prev,d
+;;ADD     prev,d,2,i ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        prev,d;< ADD >
+ADDA       2,i;< ADD >
+STA        prev,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+;;MOVE    iNode,d,prev,n  ;move current into previous ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        iNode,d;< MOVE >
+STA        prev,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+BR       loop
+greatr2:   NOP0
+LDA      stringrf,d
+STA      iNode,n
+;;MOVE    htemp,d,iNodeNx,n ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        iNodeNx,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE    htemp,d,head,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        head,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+BR       loop
+mv2Org:    NOP0
+;;MOVE    htemp,d,node,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        node,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE    htnext,d,next,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htnext,d;< MOVE >
+STA        next,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+BR       back
+done:      LDA       head,d
+RET0
+;} buildLst.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;                                                                        
 ;{ readSO.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-;---------------------------------------------------------------
-;  address readSO()
-;---------------------------------------------------------------
-.BYTE     63
-value:     .BLOCK    63
-;--------
-length:    .BLOCK    2
-ref:       .BLOCK    2
+;------------------------------------------------------------------
+;  int readSO()
+;------------------------------------------------------------------
+;------------------
+.BYTE    16
+string:    .BLOCK   31
+length:    .BLOCK   2   ;length of the string
+ref:       .BLOCK   2
+thing:     .ASCII   "this"
 ;---------------------------------------------------------------
 msgtrunc:  .ASCII   "WARNING: input truncation \x00"
-;---------------------------------------------------------------
-;.GLOBAL   readSO
+msgfull:   .ASCII   "WARNING: string array full\n\x00"
+;.GLOBAL  readSO
 readSO:    NOP0
-;;CLR      ref,d ; 
-STA        SAVEA,d;< CLR >
-;;CLRA  ;< CLR > 
-LDA        0,i;< CLRA,CLR >
-STA        ref,d;< CLR >
-LDA        SAVEA,d;< CLR >
-;;STRI     value,i          ;|   value = nextLine(); ; 
-;;PUSH      value,i ;< STRI > 
+;;CLRA  ; 
+LDA        0,i;< CLRA >
+;;CLRX  ; 
+LDX        0,i;< CLRX >
+STA      ref,d
+;;STRI    string,i ; 
+;;PUSH      string,i ;< STRI > 
 STA        SAVEPP,d;< PUSH,STRI >
-LDA        value,i;< PUSH,STRI >
+LDA        string,i;< PUSH,STRI >
 ;;PUSHA  ;< PUSH,STRI > 
 STA        -2,s;< PUSHA,PUSH,STRI >
 SUBSP      2,i;< PUSHA,PUSH,STRI >
 LDA        SAVEPP,d;< PUSH,STRI >
 CALL       STRInput;< STRI >
 ADDSP      2,i;< STRI >
-;;TSTA                      ;| + if(A > 0) { ; 
-CPA        0,i;< TSTA >
-BREQ      move             ;| |
-STRO      msgtrunc,d       ;| |   print(msgtrunc);
-;;DECOA                     ;| |   print(A); ; 
+CPA      0,i
+BREQ     move        ;if A == 0 we good
+STRO     msgtrunc,d  ; else branch
+;;DECOA  ; 
 STA        TEMP,d;< DECOA >
 DECO       TEMP,d;< DECOA >
-CHARO     '\n',i           ;| |   println();
-NOP0                       ;| + }
-;;move:PUSH     value,i          ;| + length = Slength(value); ; 
+CHARO    '\n',i
+NOP0
+;---------------------------------     length= Slength(value)
+;;move:PUSH    string,i ; 
 move: NOP0 ;< PUSH >
 STA        SAVEPP,d;< PUSH >
-LDA        value,i;< PUSH >
+LDA        string,i;< PUSH >
 ;;PUSHA  ;< PUSH > 
 STA        -2,s;< PUSHA,PUSH >
 SUBSP      2,i;< PUSHA,PUSH >
 LDA        SAVEPP,d;< PUSH >
-CALL      Slength          ;| |
-ADDSP     2,i              ;| |
-STA       length,d         ;| +
-;;TSTA                      ;| + if(length != 0) { ; 
-CPA        0,i;< TSTA >
-BREQ      done             ;| |
-;---------                            ;| |
-LDA       length,d         ;| | + ref = new(length+2);
-ADDA      2,i              ;| | |
-STA       -2,s             ;| | |
-SUBSP     2,i              ;| | |
-CALL      new              ;| | |
-ADDSP     2,i              ;| | |
-STA       ref,d            ;| | +
-;---------                            ;| |
-LDA       length,d         ;| | + *ref = (length++);
-;;INCA                      ;| | | ; 
+CALL     Slength
+ADDSP    2,i
+STA      length,d
+CPA      0,i       ; if(length!=0)
+BREQ     done
+;----------------------------------
+LDA      length,d        ; ref = new(length+2)
+ADDA     2,i
+STA      -2,s
+SUBSP    2,i
+CALL     new             ;heap init new
+ADDSP    2,i
+STA      ref,d
+;----------------------------------
+LDA      length,d        ;*ref = length++
+;;INCA  ; 
 ADDA       1,i;< INCA >
-STA       length,d         ;| | |
-STBYTEA   ref,n            ;| | +
-;;INC      ref,d            ;| |   ref = ref + 1; ; 
+STA      length,d
+STBYTEA  ref,n
+;;INC     ref,d           ;ref++ ; 
 ;;SAVEA    ;< INC > 
 STA        SAVEA,d;< SAVEA,INC >
 LDA        ref,d;< INC >
@@ -335,70 +656,97 @@ ADDA       1,i;< INC >
 STA        ref,d;< INC >
 ;;RESTOREA ;< INC > 
 LDA        SAVEA,d;< RESTOREA,INC >
-;---------
-;Took out code here from readStrgs
-;---------                            ;| |
-LDA       length,d         ;| | + memcpy(&value,ref,length);
-STA       -2,s             ;| | |
-LDA       ref,d            ;| | |
-STA       -4,s             ;| | |
-LDA       value,i          ;| | |
-STA       -6,s             ;| | |
-SUBSP     6,i              ;| | |
-CALL      memcpy           ;| | |
-ADDSP     6,i              ;| | +
-;---------                            ;| |
-;---------
-done:      LDA       ref,d
+;----------------------------------
+LDA      length,d
+STA      -2,s
+LDA      ref,d
+STA      -4,s
+LDA      string,i
+STA      -6,s
+SUBSP    6,i
+CALL     memcpy
+ADDSP    6,i
+done:      LDA      ref,d
+RET0
+full:      STRO     msgfull,d
+LDA      ref,d
 RET0
 ;} readSO.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
-;{ prntStgs.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-;Andrew Plaza
-;CMPS 250 Spring 2016
-;The following is a solution to Assignment 5
-;I worked alone
-;No flaws of which I am aware
+;{ prntLst.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;---------------------------------------------------------------
-;  int prntStgs(address p[], int n)
+;  void prntLst(address head);
 ;---------------------------------------------------------------
-p:         .EQUATE  2
-n:         .EQUATE  4
+head:         .EQUATE  2
 ;--------
-count:     .BLOCK    2
-ptemp:     .BLOCK    2
+htemp:     .BLOCK    2
+next:      .BLOCK    2
 ;---------------------------------------------------------------
-;.GLOBAL   prntStgs
-prntStgs:  NOP0
-;;SAVEA       ;save A and X and clear them for a clean slate ; 
-STA        SAVEA,d;< SAVEA >
-;;SAVEX    ; 
-STX        SAVEX,d;< SAVEX >
-;;CLRA  ; 
-LDA        0,i;< CLRA >
-STA      count,d ;count is set to 0 at first
-;;CLRX  ; 
-LDX        0,i;< CLRX >
-;------------------------------------------
-loop:      CPA      n,s     ;compare the count (loaded into A) with n(amount of str we have)
-BRGE     done    ;if it's Greater than or Equal to, we are done
-LDA      p,sxf   ;load the next addr of the p[] into A
-STA      ptemp,d ;store a in ptempt
-STRO     ptemp,n ;print the String using indirect addr mode (n)
-CHARO    '\n',i
-ADDX      2,i    ;add 2 to X to get to next addr
-LDA      count,d ;load count into A, increment it, and loop back until all str are printed
-;;INCA  ; 
-ADDA       1,i;< INCA >
-STA      count,d
-BR       loop
+;.GLOBAL   prntLst
+prntLst:   NOP0
+;;MOVE     head,s,htemp,d        ;start by moving p off the stack into ptemp ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        head,s;< MOVE >
+STA        htemp,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE     htemp,d,next,d     ;and also getting the second cell by adding 2 ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        next,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD      next,d,2,i         ;to the address ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        next,d;< ADD >
+ADDA       2,i;< ADD >
+STA        next,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+loop:      NOP0
+;;MOVE     htemp,n,htemp,d    ;move the address stored in the ptemp addr ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,n;< MOVE >
+STA        htemp,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+STRO      htemp,n             ;into ptemp, and print it out
+CHARO     '\n',i
+;---------------------------    ;check if the next node is null
+LDA       0,i         ; if it is, exit
+CPA       next,n
+BREQ      done
+;---------------------------    ;move the addr hold in the 'next' cell into ptemp
+;;MOVE     next,n,htemp,d ;this will become our current addr cell ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        next,n;< MOVE >
+STA        htemp,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE     htemp,d,next,d ;add two to the addr for the next cell ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,d;< MOVE >
+STA        next,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD      next,d,2,i ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        next,d;< ADD >
+ADDA       2,i;< ADD >
+STA        next,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+BR        loop
 ;--------
-;;RESTOREA ; 
-LDA        SAVEA,d;< RESTOREA >
-;;RESTOREX ; 
-LDX        SAVEX,d;< RESTOREX >
 done:      RET0
-;} prntStgs.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;} prntLst.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
 ;{ memcpy.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;-----------------------------------------------------------
@@ -557,52 +905,6 @@ RET0                   ;
 ;
 ;
 ;} ScompTo.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;                                                                        
-;{ buildLst.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-;-------------------------
-;BuildLst()
-;------------------------
-;---Local Variables----
-size:   .EQUATE     0     ; size
-curr:  .BLOCK      2     ;front of the list (head, first element)
-next:    .BLOCK      2     ;end of the list
-currN:  .BLOCK      2
-;----------------------
-buildLst:   NOP0
-;;SAVEA    ; 
-STA        SAVEA,d;< SAVEA >
-;;SAVEX    ; 
-STX        SAVEX,d;< SAVEX >
-;;CLRA  ; 
-LDA        0,i;< CLRA >
-;;CLRX  ; 
-LDX        0,i;< CLRX >
-loop:       NOP0
-LDA       4,i
-STA       -2,s
-CALL      new
-ADDSP     2,i
-STA       curr,d
-CALL      readSO
-STA       currN,d
-LDX       0,i
-STX       p,x
-LDX       2,i
-LDA       next,d
-STA       curr,x
-STRO      currN,n
-CHARO     '\n',i
-LDBYTEA   currN,n
-CPA       0,i
-BREQ      done
-BR        loop
-;;done:RESTOREA ; 
-done: NOP0 ;< RESTOREA >
-LDA        SAVEA,d;< RESTOREA >
-;;RESTOREX ; 
-LDX        SAVEX,d;< RESTOREX >
-RET0
-;} buildLst.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
 ;{ Heap.pep1 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;} Heap.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
