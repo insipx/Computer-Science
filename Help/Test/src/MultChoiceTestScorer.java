@@ -51,6 +51,16 @@ public class MultChoiceTestScorer {
    private int[] correctCount; // correctCount[k] is # of already-scored tests
                                // in which problem k was answered correctly
 
+                                 ///a list of problems. Problems are the index a[i]
+                                 //the number of tests
+                                 //Problem:test#correct
+                                 //
+                                 //rawscores:
+                                 //test:problems
+                                 //k == a specific test a student took
+                                 //whatever rawscores[k] returns is the # of problems that specific test taken
+                                 //by that specific student got right
+
    // constructor
    // -----------
 
@@ -65,8 +75,6 @@ public class MultChoiceTestScorer {
       numTestsScored = 0;
       rawScores = new int[NUM_STUDENTS_DEFAULT];
    }
-
-
    // observers
    // ---------
 

@@ -13,6 +13,11 @@ public class PlayCoinGames {
 
    public static void main(String[] args) {
 
+      TossableCoin object = new TossableCoin();
+      object.toss();
+
+
+      /*
       input = new Scanner(System.in);
       
       int gameChoice = chooseGame();
@@ -35,8 +40,9 @@ public class PlayCoinGames {
       int numTosses = tossHistory.length();
       System.out.println("Game ended after " + numTosses + " tosses:");
       System.out.println(tossHistory);
-   } 
-
+   }
+   */
+   }
 
    /* Prompts user to choose which game to play and returns the user's 
    ** response.
@@ -106,6 +112,7 @@ public class PlayCoinGames {
                             " HEADS or TAILS occurs...");
          return GoofyCoinGames.tossUntilRun(c, runLen);
       }
+
    }
 
 

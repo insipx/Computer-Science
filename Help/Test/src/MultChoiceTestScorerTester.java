@@ -17,6 +17,8 @@ public class MultChoiceTestScorerTester {
 
    public static void main(String[] args)
    {
+
+
       String stuAnswerPrompt = "Enter student's answers (null string to quit):";
 
       String answerKey = getStringFromUser("Enter answer key:");
