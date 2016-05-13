@@ -16,7 +16,6 @@ buildLst:  NOP0
            CLRA
            CLRX
            STA       size,d
-
 loop:      NOP0
            CLRA
            CALL      readSO    ; calling readSO to read the string
@@ -36,7 +35,7 @@ loop:      NOP0
            TSTA                ;testing against 0
            BREQ      first     ;if it's the first element, branch to first
            LDA       node,d
-           STA       next,n    ;store the ref to current node in next for the prev node
+;           STA       next,n    ;store the ref to current node in next for the prev node
            MOVE      node,d,next,d
            ADD       next,d,2,i
            LDA       0,i
@@ -63,28 +62,22 @@ first:     MOVE     node,d,head,d
 ;--------------------------------------------------------
 ;Local Vars
 ;-----------------------------
-htemp:      .BLOCK   2
-htnext:     .BLOCK   2
-iNode:      .BLOCK   2
-iNodeNx:    .BLOCK   2
-sRfTemp:    .BLOCK   2
-currSr:     .BLOCK   2
+htemp:      .BLOCK   2  ;current element starting at head
+htnext:     .BLOCK   2  ;next
+htSr:     .BLOCK   2
 nexSr:      .BLOCK   2
 prev:       .BLOCK   2
 ;-----------------------------
-insert:    MOVE   node,d,iNode,d    ;next node of curr node
-           MOVE   node,d,iNodeNx,d
-           ADD    iNodeNx,d,2,i
+insert:    NOP0
            MOVE   head,d,htemp,d    ;>
 ;------------------------------ getting the addresses
            MOVE   htemp,d,htnext,d    ;>     ;next node of head
            ADD    htnext,d,2,i        ;>
 ;--------------------------------
-           MOVE   htemp,n,currSr,d  ;must do first element first
-
+           MOVE   htemp,n,htSr,d  ;must do first element first
            CLRA
            PUSH   stringrf,d        ;>
-           PUSH   currSr,d          ;>
+           PUSH   htSr,d          ;>
            CALL   ScompTo
            ADDSP  4,i
            CPA    0,i
@@ -98,7 +91,7 @@ iloop:     LDA    htnext,n           ;?
            BREQ   back              ;>
 ;------------------------------------checks if next addr is null
            MOVE   htnext,n,nexSr,d
-           PUSH   currSr,d          ;>
+           PUSH   htSr,d          ;>
            PUSH   nexSr,n          ;>
            CALL   ScompTo           ;>
            ADDSP  4,i
@@ -106,36 +99,44 @@ iloop:     LDA    htnext,n           ;?
            BRLT   less              ;>
            BRGT   egreater           ;>
 
+
+temp:      .BLOCK   2
+
 less:      NOP0
+           MOVE   htnext,n,temp,d
+           ADD    temp,d,2,i
+           LDA    temp,n
+           CPA    0,i
+           BREQ   link
            MOVE   htemp,d,prev,d    ;move curr into prev
            MOVE   htnext,n,htemp,d   ;>
            MOVE   htemp,d,htnext,d   ;>
            ADD    htnext,d,2,i       ;>
-           LDA    htnext,n
-           CPA    0,i
-           BREQ   mv2Org
-           MOVE   htemp,n,currSr,d
+           MOVE   htemp,n,htSr,d
            BR     iloop
 
-egreater:   NOP0
-           MOVE     stringrf,d,iNode,n
-           MOVE     htemp,d,iNodeNx,n
+egreater:  NOP0
+           MOVE     stringrf,d,node,n
+           MOVE     htemp,d,node,n
            LDA      prev,d
            ADD      prev,d,2,i
-           MOVE     iNode,d,prev,n  ;move current into previous
+           MOVE     node,d,prev,n  ;move current into previous
            BR       loop
 
 greatr2:   NOP0
            LDA      stringrf,d
-           STA      iNode,n
-           MOVE     htemp,d,iNodeNx,n
+           STA      node,n
+           MOVE     htemp,d,next,n
            MOVE     htemp,d,head,d
            BR       loop
 
-mv2Org:    NOP0
-           MOVE     htemp,d,node,d
-           MOVE     htnext,d,next,d
-           BR       back
+link:      NOP0
+           LDA      stringrf,d
+           STA      node,n
+           LDA      0,i
+           STA      next,n
+           INC      size,d
+           BR       loop
 
 done:      LDA       head,d
            RET0

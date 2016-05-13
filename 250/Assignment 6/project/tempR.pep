@@ -296,7 +296,7 @@ LDA       size,d    ;Loading size into A
 CPA        0,i;< TSTA >
 BREQ      first     ;if it's the first element, branch to first
 LDA       node,d
-STA       next,n    ;store the ref to current node in next for the prev node
+;           STA       next,n    ;store the ref to current node in next for the prev node
 ;;MOVE     node,d,next,d ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
@@ -346,47 +346,27 @@ STA        size,d;< INC >
 LDA        SAVEA,d;< RESTOREA,INC >
 ;-----------------------------
 BR        LL1
-first:     LDA       node,d    ;store the node ref in head, b/c this is the first node
-STA       head,d
-;------------------------------
+;;first:MOVE    node,d,head,d ; 
+first: NOP0 ;< MOVE >
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        node,d;< MOVE >
+STA        head,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
 BR        back
 ;--------------------------------------------------------
 ;-------Insertion Sort-----------------------------------
 ;--------------------------------------------------------
 ;Local Vars
 ;-----------------------------
-htemp:      .BLOCK   2
-htnext:     .BLOCK   2
-iNode:      .BLOCK   2
-iNodeNx:    .BLOCK   2
-sRfTemp:    .BLOCK   2
-currSr:     .BLOCK   2
+htemp:      .BLOCK   2  ;current element starting at head
+htnext:     .BLOCK   2  ;next
+htSr:     .BLOCK   2
 nexSr:      .BLOCK   2
-prev:       .BLOCk   2
+prev:       .BLOCK   2
 ;-----------------------------
-;;insert:MOVE  node,d,iNode,d    ;next node of curr node ; 
-insert: NOP0 ;< MOVE >
-;;SAVEA    ;< MOVE > 
-STA        SAVEA,d;< SAVEA,MOVE >
-LDA        node,d;< MOVE >
-STA        iNode,d;< MOVE >
-;;RESTOREA ;< MOVE > 
-LDA        SAVEA,d;< RESTOREA,MOVE >
-;;MOVE  node,d,iNodeNx,d ; 
-;;SAVEA    ;< MOVE > 
-STA        SAVEA,d;< SAVEA,MOVE >
-LDA        node,d;< MOVE >
-STA        iNodeNx,d;< MOVE >
-;;RESTOREA ;< MOVE > 
-LDA        SAVEA,d;< RESTOREA,MOVE >
-;;ADD   iNodeNx,d,2,i ; 
-;;SAVEA    ;< ADD > 
-STA        SAVEA,d;< SAVEA,ADD >
-LDA        iNodeNx,d;< ADD >
-ADDA       2,i;< ADD >
-STA        iNodeNx,d;< ADD >
-;;RESTOREA ;< ADD > 
-LDA        SAVEA,d;< RESTOREA,ADD >
+insert:    NOP0
 ;;MOVE  head,d,htemp,d    ;> ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
@@ -411,11 +391,11 @@ STA        htnext,d;< ADD >
 ;;RESTOREA ;< ADD > 
 LDA        SAVEA,d;< RESTOREA,ADD >
 ;--------------------------------
-;;MOVE  htemp,n,currSr,d  ;must do first element first ; 
+;;MOVE  htemp,n,htSr,d  ;must do first element first ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        htemp,n;< MOVE >
-STA        currSr,d;< MOVE >
+STA        htSr,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
 ;;CLRA  ; 
@@ -427,9 +407,9 @@ LDA        stringrf,d;< PUSH >
 STA        -2,s;< PUSHA,PUSH >
 SUBSP      2,i;< PUSHA,PUSH >
 LDA        SAVEPP,d;< PUSH >
-;;PUSH  currSr,d          ;> ; 
+;;PUSH  htSr,d          ;> ; 
 STA        SAVEPP,d;< PUSH >
-LDA        currSr,d;< PUSH >
+LDA        htSr,d;< PUSH >
 ;;PUSHA  ;< PUSH > 
 STA        -2,s;< PUSHA,PUSH >
 SUBSP      2,i;< PUSHA,PUSH >
@@ -452,9 +432,9 @@ LDA        htnext,n;< MOVE >
 STA        nexSr,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;PUSH  currSr,d          ;> ; 
+;;PUSH  htSr,d          ;> ; 
 STA        SAVEPP,d;< PUSH >
-LDA        currSr,d;< PUSH >
+LDA        htSr,d;< PUSH >
 ;;PUSHA  ;< PUSH > 
 STA        -2,s;< PUSHA,PUSH >
 SUBSP      2,i;< PUSHA,PUSH >
@@ -471,7 +451,26 @@ ADDSP  4,i
 CPA    0,i               ;>
 BRLT   less              ;>
 BRGT   egreater           ;>
+temp:      .BLOCK   2
 less:      NOP0
+;;MOVE  htnext,n,temp,d ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htnext,n;< MOVE >
+STA        temp,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;ADD   temp,d,2,i ; 
+;;SAVEA    ;< ADD > 
+STA        SAVEA,d;< SAVEA,ADD >
+LDA        temp,d;< ADD >
+ADDA       2,i;< ADD >
+STA        temp,d;< ADD >
+;;RESTOREA ;< ADD > 
+LDA        SAVEA,d;< RESTOREA,ADD >
+LDA    temp,n
+CPA    0,i
+BREQ   link
 ;;MOVE  htemp,d,prev,d    ;move curr into prev ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
@@ -501,30 +500,27 @@ ADDA       2,i;< ADD >
 STA        htnext,d;< ADD >
 ;;RESTOREA ;< ADD > 
 LDA        SAVEA,d;< RESTOREA,ADD >
-LDA    htnext,n
-CPA    0,i
-BREQ   mv2Org
-;;MOVE  htemp,n,currSr,d ; 
+;;MOVE  htemp,n,htSr,d ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        htemp,n;< MOVE >
-STA        currSr,d;< MOVE >
+STA        htSr,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
 BR     iloop
-egreater:   NOP0
-;;MOVE    stringrf,d,iNode,n ; 
+egreater:  NOP0
+;;MOVE    stringrf,d,node,n ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        stringrf,d;< MOVE >
-STA        iNode,n;< MOVE >
+STA        node,n;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;MOVE    htemp,d,iNodeNx,n ; 
+;;MOVE    htemp,d,node,n ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        htemp,d;< MOVE >
-STA        iNodeNx,n;< MOVE >
+STA        node,n;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
 LDA      prev,d
@@ -536,22 +532,22 @@ ADDA       2,i;< ADD >
 STA        prev,d;< ADD >
 ;;RESTOREA ;< ADD > 
 LDA        SAVEA,d;< RESTOREA,ADD >
-;;MOVE    iNode,d,prev,n  ;move current into previous ; 
+;;MOVE    node,d,prev,n  ;move current into previous ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
-LDA        iNode,d;< MOVE >
+LDA        node,d;< MOVE >
 STA        prev,n;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
 BR       LL1
 greatr2:   NOP0
 LDA      stringrf,d
-STA      iNode,n
-;;MOVE    htemp,d,iNodeNx,n ; 
+STA      node,n
+;;MOVE    htemp,d,next,n ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        htemp,d;< MOVE >
-STA        iNodeNx,n;< MOVE >
+STA        next,n;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
 ;;MOVE    htemp,d,head,d ; 
@@ -562,22 +558,20 @@ STA        head,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
 BR       LL1
-mv2Org:    NOP0
-;;MOVE    htemp,d,node,d ; 
-;;SAVEA    ;< MOVE > 
-STA        SAVEA,d;< SAVEA,MOVE >
-LDA        htemp,d;< MOVE >
-STA        node,d;< MOVE >
-;;RESTOREA ;< MOVE > 
-LDA        SAVEA,d;< RESTOREA,MOVE >
-;;MOVE    htnext,d,next,d ; 
-;;SAVEA    ;< MOVE > 
-STA        SAVEA,d;< SAVEA,MOVE >
-LDA        htnext,d;< MOVE >
-STA        next,d;< MOVE >
-;;RESTOREA ;< MOVE > 
-LDA        SAVEA,d;< RESTOREA,MOVE >
-BR       back
+link:      NOP0
+LDA      stringrf,d
+STA      node,n
+LDA      0,i
+STA      next,n
+;;INC     size,d ; 
+;;SAVEA    ;< INC > 
+STA        SAVEA,d;< SAVEA,INC >
+LDA        size,d;< INC >
+ADDA       1,i;< INC >
+STA        size,d;< INC >
+;;RESTOREA ;< INC > 
+LDA        SAVEA,d;< RESTOREA,INC >
+BR       LL1
 LL2:      LDA       head,d
 RET0
 ;} buildLst.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

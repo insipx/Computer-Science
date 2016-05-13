@@ -26,6 +26,8 @@ import java.util.Arrays;
 ** Known flaws: ...
 ** 
 */
+
+
 public class MultChoiceTestScorer {
 
    // class constant
@@ -46,6 +48,8 @@ public class MultChoiceTestScorer {
    // instance variables
    // ------------------
    private int numTestsScored; // # of tests already scored
+
+
    private int[] rawScores;    // rawScores[k] = # problems answered correctly
                                // on the k-th test scored
    private int[] correctCount; // correctCount[k] is # of already-scored tests
@@ -96,7 +100,15 @@ public class MultChoiceTestScorer {
    /* Returns the raw score of the k-th test scored (counting from zero)
    ** pre-condition: 0 <= k < numTestsScored()
    */
-   public int rawScore(int k) { return rawScores[k]; }
+   public int rawScore(int k) {
+
+         if(k >= 0 && k < numTestsScored){
+           return rawScores[k];
+         }else{
+           return -1;
+         }
+
+      }
 
 
    /* Returns the average of the raw scores of the already-scored tests.
@@ -104,11 +116,15 @@ public class MultChoiceTestScorer {
    */
    public double averageRawScore()
    {
-      int sum = 0;
-      for(int i = 0; i < rawScores.length;i++){
-         sum+=rawScores[i];
+      if(numTestsScored() > 0) {
+         int sum = 0;
+         for (int i = 0; i < rawScores.length; i++) {
+            sum += rawScores[i];
+         }
+         return sum / rawScores.length;
+      }else{
+         return -1;//something went wrong
       }
-      return sum/numTestsScored;
    }
 
 
@@ -117,19 +133,29 @@ public class MultChoiceTestScorer {
    ** pre-condition: numTestsScored() > 0
    */
    public double stdDevOfRawScores() {
-      double average = averageRawScore();
-      int[] rawScoresCpy = rawScores;
 
-      for (int i = 0; i < rawScoresCpy.length; i++) {
-         rawScoresCpy[i] = rawScoresCpy[i] - (int) average;
-         rawScoresCpy[i] = rawScoresCpy[i] * rawScoresCpy[i];
+
+      if(numTestsScored() > 0) {
+         double average = averageRawScore();
+         int[] rawScoresCpy = rawScores.clone();
+
+
+         for (int i = 0; i < rawScoresCpy.length; i++) {
+            rawScoresCpy[i] = rawScoresCpy[i] - (int) average;
+            rawScoresCpy[i] = rawScoresCpy[i] * rawScoresCpy[i];
+         }
+         int sum = 0;
+         for (int i = 0; i < rawScoresCpy.length; i++) {
+            sum += rawScoresCpy[i];
+         }
+         double average2 = sum / rawScoresCpy.length;
+
+         return Math.sqrt(average2);
+
+
+      }else{
+         return -1;
       }
-      int sum = 0;
-      for (int i = 0; i < rawScoresCpy.length; i++) {
-         sum += rawScoresCpy[i];
-      }
-      double average2 = sum / rawScoresCpy.length;
-      return Math.sqrt(average2);
    }
 
 
@@ -137,7 +163,14 @@ public class MultChoiceTestScorer {
    ** was answered correctly.  (Problems are numbered starting at zero.)
    ** pre-condition: 0 <= k < numProblems()
    */
-   public int numCorrect(int k) { return correctCount[k]; }
+   public int numCorrect(int k) {
+
+      if (k >= 0 && k < numProblems()) {
+         return correctCount[k];
+      }else{
+        return -1;
+      }
+   }
 
 
    // mutator
@@ -155,13 +188,14 @@ public class MultChoiceTestScorer {
       if (numTestsScored == rawScores.length) {
          rawScores = Arrays.copyOf(rawScores, 2 * rawScores.length);
       }
-         int numCrct = 0;
+
+      numTestsScored++;
+      //correct count: problem:testsgotProbRight
+      //rawScores:     test:problemCorrects
       for(int i = 0; i < ANSWER_KEY.length(); i++){
          if(stuAnswers.charAt(i) == ANSWER_KEY.charAt(i)){
-            rawScores[i]++;
-         }
-         else{
-
+            rawScores[numTestsScored] = rawScores[numTestsScored] + 1;
+            correctCount[i] = correctCount[i] + 1;
          }
       }
 
