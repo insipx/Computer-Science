@@ -1,3 +1,8 @@
+;   This is a solution to Assignment 6 in CMPS 250 for Spring 2016
+;   I, Andrew Plaza, developed this program and am submitting it
+;   I worked alone in creating this piece of the assignment.
+;   There are no flaws of which I am aware
+
 ;-------------------------
 ;BuildLst()
 ;------------------------
@@ -63,79 +68,80 @@ first:     MOVE     node,d,head,d
 ;Local Vars
 ;-----------------------------
 htemp:      .BLOCK   2  ;current element starting at head
-htnext:     .BLOCK   2  ;next
-htSr:     .BLOCK   2
-nexSr:      .BLOCK   2
-prev:       .BLOCK   2
+htnext:     .BLOCK   2  ;next ele in linked list.....cell:[htemp][htnext]
+htSr:       .BLOCK   2  ; this is the curr string we are on whilst going through the linkedlist
+prev:       .BLOCK   2  ; used for if the ele being inserted is greater than current
 ;-----------------------------
 insert:    NOP0
-           MOVE   head,d,htemp,d    ;>
-;------------------------------ getting the addresses
-           MOVE   htemp,d,htnext,d    ;>     ;next node of head
-           ADD    htnext,d,2,i        ;>
+           MOVE   head,d,htemp,d    ;the first run through will be a bit different than what "iloop" is
+;------------------------------ getting the addresses       ;mainly, if the element being inserted
+           MOVE   htemp,d,htnext,d    ;>     ;              ;is greater than 'head', we use a different
+           ADD    htnext,d,2,i        ;>                    ;subprogram (actually that's the only diff)
 ;--------------------------------
            MOVE   htemp,n,htSr,d  ;must do first element first
            CLRA
-           PUSH   stringrf,d        ;>
-           PUSH   htSr,d          ;>
+;--------------------------------  ;call ScompTo
+           PUSH   stringrf,d
+           PUSH   htSr,d
+           CALL   ScompTo
+           ADDSP  4,i
+;---------------------------------
+           CPA    0,i
+           BREQ   link
+           BRLT   less
+           BRGT   greatr2   ; 'greatr2' because if it's greater here, we have a different method
+                            ;to take care of that
+;-------------------------------
+iloop:     NOP0
+;------------------------------------checks if next addr is null
+           MOVE   htemp,n,htSr,d    ;r
+           PUSH   stringrf,d
+           PUSH   htSr,d
            CALL   ScompTo
            ADDSP  4,i
            CPA    0,i
-           BREQ   equal
            BRLT   less
-           BRGT   greatr2
-
-;-------------------------------
-iloop:     LDA    htnext,n           ;?
-           CPA    0,i               ;>
-           BREQ   back              ;>
-;------------------------------------checks if next addr is null
-           MOVE   htnext,n,nexSr,d
-           PUSH   htSr,d          ;>
-           PUSH   nexSr,n          ;>
-           CALL   ScompTo           ;>
-           ADDSP  4,i
-           CPA    0,i               ;>
-           BRLT   less              ;>
-           BRGT   egreater           ;>
+           BRGT   greatr
 
 
 temp:      .BLOCK   2
 
 less:      NOP0
-           MOVE   htnext,n,temp,d
-           ADD    temp,d,2,i
-           LDA    temp,n
+;--------------------------------
+           MOVE   htnext,n,temp,d  ; check if the 'next' is null
+           LDA    temp,d
            CPA    0,i
-           BREQ   link
-           MOVE   htemp,d,prev,d    ;move curr into prev
-           MOVE   htnext,n,htemp,d   ;>
-           MOVE   htemp,d,htnext,d   ;>
-           ADD    htnext,d,2,i       ;>
-           MOVE   htemp,n,htSr,d
-           BR     iloop
+           BREQ   link              ; if it is, we just tack it onto the end of the list
+;---------------------------------      ; now we need to iterate thorugh the LinkedList
+           MOVE   htemp,d,prev,d     ; move current into previous
+           MOVE   htnext,n,htemp,d   ;  move the next into curr
+           MOVE   htemp,d,htnext,d   ;  get the nextnode for htnext
+           ADD    htnext,d,2,i       ;
+           BR     iloop             ;keep looping until we get to greater
 
-egreater:  NOP0
-           MOVE     stringrf,d,node,n
-           MOVE     htemp,d,node,n
+
+greatr:  NOP0     ;general case for if string we are inserting is greater
+           MOVE     stringrf,d,node,n       ;than an inserted string
+           MOVE     htemp,d,next,n
            LDA      prev,d
            ADD      prev,d,2,i
-           MOVE     node,d,prev,n  ;move current into previous
+           MOVE     node,d,prev,n
+           INC      size,d
            BR       loop
 
-greatr2:   NOP0
-           LDA      stringrf,d
-           STA      node,n
-           MOVE     htemp,d,next,n
-           MOVE     htemp,d,head,d
+greatr2:   NOP0         ;this one is for if the current element is greater
+           MOVE     stringrf,d,node,n       ;than the 'head' element
+           MOVE     htemp,d,next,n  ;move the head into next
+           MOVE     node,d,head,d
+           INC      size,d
            BR       loop
 
 link:      NOP0
-           LDA      stringrf,d
-           STA      node,n
-           LDA      0,i
-           STA      next,n
-           INC      size,d
+;--------------------------------------;this just tacks an element onto the end
+           MOVE     stringrf,d,node,n  ;load string into currNode
+           MOVE     0,i,next,n          ;make it's reference null
+           MOVE     node,d,htnext,n     ;connect the prev ele
+           INC      size,d              ;inc size
            BR       loop
 
 done:      LDA       head,d

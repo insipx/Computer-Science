@@ -1,3 +1,32 @@
-;----------------------------------------------------------------
-; AS06 the main. use SortStrings.pep2 as a reference
-;----------------------------------------------------------------
+;   This is a Solution to Assignment 6 in CMPS 250 for Spring 2016
+;   I, Andrew Plaza, developed this program and am submitting it
+;   I worked alone in creating this piece of the assignment.
+;   There are no flaws of which I am aware
+
+; P.M.J., April 2016
+;--------Includes-----------------------------------------------
+
+         .INCLUDE  "HeapInit.pep1"
+         BR        main
+         .INCLUDE  "PEP2.pep1"
+         .APPEND   "buildLst.pep2"
+         .APPEND   "readSO.pep2"
+         .APPEND   "prntLst.pep2"
+         .APPEND   "memcpy.pep2"
+         .APPEND   "Slength.pep2"
+         .APPEND   "ScompTo.pep2"
+
+;------------main----------------------------
+message:    .ASCII  "Ordered List:"
+main:   NOP0
+        CALL  buildLst
+        PUSHA
+        STRO    message,d
+        CHARO   '\n',i
+        CALL  prntLst
+        ADDSP 2,i
+;--------------------------
+done:   NOP0
+        STOP
+        .APPEND "Heap.pep1"
+        .END

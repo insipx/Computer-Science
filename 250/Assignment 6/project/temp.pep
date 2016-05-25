@@ -1,9 +1,8 @@
 ;PMJ's MPP ver2012.0 ...
-;Name:  Andrew Plaza
-;CMPS 250 Spring 2016
-;The following is a solution to Assignment 5
-;I worked a bit with Sean Batzel, mostly worked alone.
-;
+;   This is a Solution to Assignment 6 in CMPS 250 for Spring 2016
+;   I, Andrew Plaza, developed this program and am submitting it
+;   I worked alone in creating this piece of the assignment.
+;   There are no flaws of which I am aware
 ; P.M.J., April 2016
 ;--------Includes-----------------------------------------------
 ;                                                                        
@@ -43,11 +42,14 @@ SAVEPP:   .BLOCK     2
 ;============================================================
 ;} PEP2.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;------------main----------------------------
+message:    .ASCII  "Ordered List:"
 main:   NOP0
 CALL  buildLst
 ;;PUSHA  ; 
 STA        -2,s;< PUSHA >
 SUBSP      2,i;< PUSHA >
+STRO    message,d
+CHARO   '\n',i
 CALL  prntLst
 ADDSP 2,i
 ;--------------------------
@@ -255,6 +257,10 @@ RET0
 ;} DUMPS.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
 ;{ buildLst.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;   This is a solution to Assignment 6 in CMPS 250 for Spring 2016
+;   I, Andrew Plaza, developed this program and am submitting it
+;   I worked alone in creating this piece of the assignment.
+;   There are no flaws of which I am aware
 ;-------------------------
 ;BuildLst()
 ;------------------------
@@ -361,28 +367,27 @@ BR        back
 ;Local Vars
 ;-----------------------------
 htemp:      .BLOCK   2  ;current element starting at head
-htnext:     .BLOCK   2  ;next
-htSr:     .BLOCK   2
-nexSr:      .BLOCK   2
-prev:       .BLOCK   2
+htnext:     .BLOCK   2  ;next ele in linked list.....cell:[htemp][htnext]
+htSr:       .BLOCK   2  ; this is the curr string we are on whilst going through the linkedlist
+prev:       .BLOCK   2  ; used for if the ele being inserted is greater than current
 ;-----------------------------
 insert:    NOP0
-;;MOVE  head,d,htemp,d    ;> ; 
+;;MOVE  head,d,htemp,d    ;the first run through will be a bit different than what "iloop" is ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        head,d;< MOVE >
 STA        htemp,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;------------------------------ getting the addresses
-;;MOVE  htemp,d,htnext,d    ;>     ;next node of head ; 
+;------------------------------ getting the addresses       ;mainly, if the element being inserted
+;;MOVE  htemp,d,htnext,d    ;>     ;              ;is greater than 'head', we use a different ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        htemp,d;< MOVE >
 STA        htnext,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;ADD   htnext,d,2,i        ;> ; 
+;;ADD   htnext,d,2,i        ;>                    ;subprogram (actually that's the only diff) ; 
 ;;SAVEA    ;< ADD > 
 STA        SAVEA,d;< SAVEA,ADD >
 LDA        htnext,d;< ADD >
@@ -400,14 +405,47 @@ STA        htSr,d;< MOVE >
 LDA        SAVEA,d;< RESTOREA,MOVE >
 ;;CLRA  ; 
 LDA        0,i;< CLRA >
-;;PUSH  stringrf,d        ;> ; 
+;--------------------------------  ;call ScompTo
+;;PUSH  stringrf,d ; 
 STA        SAVEPP,d;< PUSH >
 LDA        stringrf,d;< PUSH >
 ;;PUSHA  ;< PUSH > 
 STA        -2,s;< PUSHA,PUSH >
 SUBSP      2,i;< PUSHA,PUSH >
 LDA        SAVEPP,d;< PUSH >
-;;PUSH  htSr,d          ;> ; 
+;;PUSH  htSr,d ; 
+STA        SAVEPP,d;< PUSH >
+LDA        htSr,d;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+CALL   ScompTo
+ADDSP  4,i
+;---------------------------------
+CPA    0,i
+BREQ   link
+BRLT   less
+BRGT   greatr2   ; 'greatr2' because if it's greater here, we have a different method
+;to take care of that
+;-------------------------------
+iloop:     NOP0
+;------------------------------------checks if next addr is null
+;;MOVE  htemp,n,htSr,d    ;r ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        htemp,n;< MOVE >
+STA        htSr,d;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;PUSH  stringrf,d ; 
+STA        SAVEPP,d;< PUSH >
+LDA        stringrf,d;< PUSH >
+;;PUSHA  ;< PUSH > 
+STA        -2,s;< PUSHA,PUSH >
+SUBSP      2,i;< PUSHA,PUSH >
+LDA        SAVEPP,d;< PUSH >
+;;PUSH  htSr,d ; 
 STA        SAVEPP,d;< PUSH >
 LDA        htSr,d;< PUSH >
 ;;PUSHA  ;< PUSH > 
@@ -417,82 +455,44 @@ LDA        SAVEPP,d;< PUSH >
 CALL   ScompTo
 ADDSP  4,i
 CPA    0,i
-BREQ   equal
 BRLT   less
-BRGT   greatr2
-;-------------------------------
-iloop:     LDA    htnext,n           ;?
-CPA    0,i               ;>
-BREQ   back              ;>
-;------------------------------------checks if next addr is null
-;;MOVE  htnext,n,nexSr,d ; 
-;;SAVEA    ;< MOVE > 
-STA        SAVEA,d;< SAVEA,MOVE >
-LDA        htnext,n;< MOVE >
-STA        nexSr,d;< MOVE >
-;;RESTOREA ;< MOVE > 
-LDA        SAVEA,d;< RESTOREA,MOVE >
-;;PUSH  htSr,d          ;> ; 
-STA        SAVEPP,d;< PUSH >
-LDA        htSr,d;< PUSH >
-;;PUSHA  ;< PUSH > 
-STA        -2,s;< PUSHA,PUSH >
-SUBSP      2,i;< PUSHA,PUSH >
-LDA        SAVEPP,d;< PUSH >
-;;PUSH  nexSr,n          ;> ; 
-STA        SAVEPP,d;< PUSH >
-LDA        nexSr,n;< PUSH >
-;;PUSHA  ;< PUSH > 
-STA        -2,s;< PUSHA,PUSH >
-SUBSP      2,i;< PUSHA,PUSH >
-LDA        SAVEPP,d;< PUSH >
-CALL   ScompTo           ;>
-ADDSP  4,i
-CPA    0,i               ;>
-BRLT   less              ;>
-BRGT   egreater           ;>
+BRGT   greatr
 temp:      .BLOCK   2
 less:      NOP0
-;;MOVE  htnext,n,temp,d ; 
+;--------------------------------
+;;MOVE  htnext,n,temp,d  ; check if the 'next' is null ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        htnext,n;< MOVE >
 STA        temp,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;ADD   temp,d,2,i ; 
-;;SAVEA    ;< ADD > 
-STA        SAVEA,d;< SAVEA,ADD >
-LDA        temp,d;< ADD >
-ADDA       2,i;< ADD >
-STA        temp,d;< ADD >
-;;RESTOREA ;< ADD > 
-LDA        SAVEA,d;< RESTOREA,ADD >
-LDA    temp,n
+LDA    temp,d
 CPA    0,i
-BREQ   link
-;;MOVE  htemp,d,prev,d    ;move curr into prev ; 
+BREQ   link              ; if it is, we just tack it onto the end of the list
+;---------------------------------      ; now we need to iterate thorugh the LinkedList
+;;MOVE  htemp,d,prev,d     ; move current into previous ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        htemp,d;< MOVE >
 STA        prev,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;MOVE  htnext,n,htemp,d   ;> ; 
+;;MOVE  htnext,n,htemp,d   ;  move the next into curr ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        htnext,n;< MOVE >
 STA        htemp,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;MOVE  htemp,d,htnext,d   ;> ; 
+;;MOVE  htemp,d,htnext,d   ;  get the nextnode for htnext ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        htemp,d;< MOVE >
 STA        htnext,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;ADD   htnext,d,2,i       ;> ; 
+;;ADD   htnext,d,2,i       ; ; 
 ;;SAVEA    ;< ADD > 
 STA        SAVEA,d;< SAVEA,ADD >
 LDA        htnext,d;< ADD >
@@ -500,27 +500,20 @@ ADDA       2,i;< ADD >
 STA        htnext,d;< ADD >
 ;;RESTOREA ;< ADD > 
 LDA        SAVEA,d;< RESTOREA,ADD >
-;;MOVE  htemp,n,htSr,d ; 
-;;SAVEA    ;< MOVE > 
-STA        SAVEA,d;< SAVEA,MOVE >
-LDA        htemp,n;< MOVE >
-STA        htSr,d;< MOVE >
-;;RESTOREA ;< MOVE > 
-LDA        SAVEA,d;< RESTOREA,MOVE >
-BR     iloop
-egreater:  NOP0
-;;MOVE    stringrf,d,node,n ; 
+BR     iloop             ;keep looping until we get to greater
+greatr:  NOP0     ;general case for if string we are inserting is greater
+;;MOVE    stringrf,d,node,n       ;than an inserted string ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        stringrf,d;< MOVE >
 STA        node,n;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;MOVE    htemp,d,node,n ; 
+;;MOVE    htemp,d,next,n ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        htemp,d;< MOVE >
-STA        node,n;< MOVE >
+STA        next,n;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
 LDA      prev,d
@@ -532,38 +525,77 @@ ADDA       2,i;< ADD >
 STA        prev,d;< ADD >
 ;;RESTOREA ;< ADD > 
 LDA        SAVEA,d;< RESTOREA,ADD >
-;;MOVE    node,d,prev,n  ;move current into previous ; 
+;;MOVE    node,d,prev,n ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        node,d;< MOVE >
 STA        prev,n;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
+;;INC     size,d ; 
+;;SAVEA    ;< INC > 
+STA        SAVEA,d;< SAVEA,INC >
+LDA        size,d;< INC >
+ADDA       1,i;< INC >
+STA        size,d;< INC >
+;;RESTOREA ;< INC > 
+LDA        SAVEA,d;< RESTOREA,INC >
 BR       loop
-greatr2:   NOP0
-LDA      stringrf,d
-STA      node,n
-;;MOVE    htemp,d,next,n ; 
+greatr2:   NOP0         ;this one is for if the current element is greater
+;;MOVE    stringrf,d,node,n       ;than the 'head' element ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        stringrf,d;< MOVE >
+STA        node,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE    htemp,d,next,n  ;move the head into next ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
 LDA        htemp,d;< MOVE >
 STA        next,n;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
-;;MOVE    htemp,d,head,d ; 
+;;MOVE    node,d,head,d ; 
 ;;SAVEA    ;< MOVE > 
 STA        SAVEA,d;< SAVEA,MOVE >
-LDA        htemp,d;< MOVE >
+LDA        node,d;< MOVE >
 STA        head,d;< MOVE >
 ;;RESTOREA ;< MOVE > 
 LDA        SAVEA,d;< RESTOREA,MOVE >
+;;INC     size,d ; 
+;;SAVEA    ;< INC > 
+STA        SAVEA,d;< SAVEA,INC >
+LDA        size,d;< INC >
+ADDA       1,i;< INC >
+STA        size,d;< INC >
+;;RESTOREA ;< INC > 
+LDA        SAVEA,d;< RESTOREA,INC >
 BR       loop
 link:      NOP0
-LDA      stringrf,d
-STA      node,n
-LDA      0,i
-STA      next,n
-;;INC     size,d ; 
+;--------------------------------------;this just tacks an element onto the end
+;;MOVE    stringrf,d,node,n  ;load string into currNode ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        stringrf,d;< MOVE >
+STA        node,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE    0,i,next,n          ;make it's reference null ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        0,i;< MOVE >
+STA        next,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;MOVE    node,d,htnext,n     ;connect the prev ele ; 
+;;SAVEA    ;< MOVE > 
+STA        SAVEA,d;< SAVEA,MOVE >
+LDA        node,d;< MOVE >
+STA        htnext,n;< MOVE >
+;;RESTOREA ;< MOVE > 
+LDA        SAVEA,d;< RESTOREA,MOVE >
+;;INC     size,d              ;inc size ; 
 ;;SAVEA    ;< INC > 
 STA        SAVEA,d;< SAVEA,INC >
 LDA        size,d;< INC >
@@ -577,6 +609,10 @@ RET0
 ;} buildLst.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
 ;{ readSO.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;   This is a solution to Assignment 6 in CMPS 250 for Spring 2016
+;   I, Andrew Plaza, developed this program and am submitting it
+;   I worked alone in creating this piece of the assignment.
+;   There are no flaws of which I am aware
 ;------------------------------------------------------------------
 ;  int readSO()
 ;------------------------------------------------------------------
@@ -668,6 +704,10 @@ RET0
 ;} readSO.pep2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;                                                                        
 ;{ prntLst.pep2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;   This is a solution to Assignment 6 in CMPS 250 for Spring 2016
+;   I, Andrew Plaza, developed this program and am submitting it
+;   I worked alone in creating this piece of the assignment.
+;   There are no flaws of which I am aware
 ;---------------------------------------------------------------
 ;  void prntLst(address head);
 ;---------------------------------------------------------------
