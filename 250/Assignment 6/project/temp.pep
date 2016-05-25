@@ -42,14 +42,13 @@ SAVEPP:   .BLOCK     2
 ;============================================================
 ;} PEP2.pep1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;------------main----------------------------
-message:    .ASCII  "Ordered List:"
+message:    .ASCII  "Ordered List:\n\x00"
 main:   NOP0
 CALL  buildLst
 ;;PUSHA  ; 
 STA        -2,s;< PUSHA >
 SUBSP      2,i;< PUSHA >
 STRO    message,d
-CHARO   '\n',i
 CALL  prntLst
 ADDSP 2,i
 ;--------------------------
