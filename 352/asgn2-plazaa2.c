@@ -31,8 +31,9 @@ typedef struct player Player;
 // instead of Node we have Player
 
 void insert(Player **head, Player *newNode);
+void kill(Player **head);
 
-int main(){
+int main() {
   int userid;
   char last[20];
   char first[20];
@@ -70,6 +71,8 @@ int main(){
                                         temp->wins, temp->losses,temp->ties);
     temp = temp->next;
   }
+  kill(&head);
+  
 }
 
 void insert(Player **head, Player *newNode){
@@ -105,5 +108,17 @@ void insert(Player **head, Player *newNode){
     }
 
   }
+
+}
+void kill(Player **head){
+  Player *node = *head; 
+  Player *temp;
+  while(node->next != NULL) {
+    temp = node;
+    node = node->next;    
+    free(temp);
+  }
+  *head = NULL;
+
 
 }
