@@ -8,9 +8,6 @@
  * This C program accepts player records from the keyboard, reads it into an ordered linked list, nd then prints the records in the list in the order they are stored.
  */
 
-// problems to solve:
-// ordered linkedlist: what is supposed to be ordered? Lexicographic? By most Wins? by most losses?
-
 #include<stdio.h>
 #include<stdlib.h>
 #include <unistd.h>
@@ -32,8 +29,7 @@ struct player {
 typedef struct player Player;
 
 // instead of Node we have Player
-//
-void append(Player **head, Player *newPlayer);
+
 void insert(Player **head, Player *newNode);
 
 int main(){
@@ -60,28 +56,54 @@ int main(){
     //userid, last name, first name, # wins, # loss, # ties. Seperated by whitespace
     scanf("%d%s%s%d%d%d", &aNode->userid, aNode->last, aNode->first, 
                           &aNode->wins, &aNode->losses, &aNode->ties);
-    printf("%s%d%c%s%c%s%c%d%c%d%c%d%c", "Player read: ", aNode->userid,' ', aNode->last,' ', 
-                                        aNode->first,' ', aNode->wins, ' ', aNode->losses,
-                                        ' ', aNode->ties, '\n');
-    append(&head, aNode);
+    
+   // printf("%s%d%c%s%c%s%c%d%c%d%c%d%c", "Player read: ", aNode->userid,' ', aNode->last,' ', 
+   //                                     aNode->first,' ', aNode->wins, ' ', aNode->losses,
+   //                                    ' ', aNode->ties, '\n');
+    insert(&head, aNode);
 
   } 
   printf("the list:\n");
   Player *temp = head;
   while(temp != NULL){
-    printf("Player: %s %s\n", temp ->first, temp->last);
+    printf("%d, %s, %s, %d, %d, %d \n", temp->userid, temp ->last, temp->first, 
+                                        temp->wins, temp->losses,temp->ties);
     temp = temp->next;
   }
 }
 
-void append(Player **head, Player *newNode) {
+void insert(Player **head, Player *newNode){
   Player *temp = *head;
   if(*head == NULL) {
     *head = newNode;
     return;
   }
-  while (temp->next != NULL) temp = temp->next;
+  // this is the (if newNode->userid < head ) case
+  if(newNode->userid < temp->userid) {
+    newNode->next = *head;
+    *head = newNode;
+    return;
+  }
 
-  temp->next = newNode;
-  newNode->next = NULL;
+  // if newNode userid is not < head, needs to be inserted into list
+  Player *curr;
+  while(temp->next !=NULL) {
+    curr = temp;
+    temp = temp -> next;
+    
+    if(newNode->userid < temp->userid) {
+      curr->next = newNode;
+      newNode->next=temp; 
+      return;
+    }
+
+    //if we are at the end of the list
+    else if(temp->next == NULL ){
+      temp->next = newNode;
+      newNode->next = NULL;
+      return;
+    }
+
+  }
+
 }
