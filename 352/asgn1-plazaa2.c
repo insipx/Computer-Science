@@ -1,9 +1,9 @@
 /* Program:	Hello World
    author:	Andrew Plaza
    Date:	Aug. 22, 2016
-   file name:   hello_world.c
-   compile:	gcc -o helloworld hello_world.c
-   run:		./helloworld
+   file name:   asgn1-plazaa2.c
+   compile:	gcc -o asgn1 asgn1-plazaa2.c
+   run:		./asgn1
 
    This C program accepts user's firstname and a positive
    integer N; it then prints a personal greeting N times.
@@ -11,7 +11,7 @@
 #include <stdio.h>	// this is equivalent to Java's import
 
 int main()   {
-    char name[20];
+    char name[20];	// A string of chars, <= 19 chars
     int times;
     int i = 0;
     
