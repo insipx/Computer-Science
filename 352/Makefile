@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-WALL -g
+CFLAGS= -g
 asgn2-plazaa2:: asgn3-plazaa2.c
 	$(CC) -o asgn3 asgn3-plazaa2.c
 clean:

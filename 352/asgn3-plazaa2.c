@@ -153,8 +153,8 @@ void insert(Player **head, Player *newNode){
 
   // if newNode userid is not < head, needs to be inserted into list
   Player *curr;
+  curr = temp;
   while(temp->next !=NULL) {
-    curr = temp;
     temp = temp -> next;
     
     if(newNode->userid < temp->userid) {
@@ -163,14 +163,13 @@ void insert(Player **head, Player *newNode){
       return;
     }
     //if we are at the end of the list
-    else if(temp->  == NULL ){
-      printf("in the if statementmofo \n");
-      curr->next = newNode;
-      newNode->next = NULL;
-      return;
-    }
+    curr = temp;
   }
-  temp-> next = NULL;
+  if(curr->next == NULL){
+    curr->next = newNode;
+    newNode->next = NULL;
+    return;
+  }
 
 }
 
