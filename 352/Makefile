@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-WALL -g
-asgn2-plazaa2:: asgn2-plazaa2.c
-	$(CC) -o asgn2 asgn2-plazaa2.c
+asgn2-plazaa2:: asgn3-plazaa2.c
+	$(CC) -o asgn3 asgn3-plazaa2.c
 clean:
-	rm asgn2
+	rm asgn3
