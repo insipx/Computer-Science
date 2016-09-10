@@ -1,2 +1,4 @@
 Makefile
 sample_programs/*
+*.sh
+*.out
