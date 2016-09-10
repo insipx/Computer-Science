@@ -2,7 +2,7 @@
  * author: Andrew Plaza
  * Date: Aug. 29, 2016
  * File Name: asgn2-plazaa2.c
- * compile: gcc -o asgn2 asgn2-plazaa2.c
+ * compile: cc -o asgn2 asgn2-plazaa2.c
  * run: ./asgn2
  *
  * This C program accepts player records from the keyboard, reads it into an ordered linked list, nd then prints the records in the list in the order they are stored.
@@ -28,12 +28,14 @@ struct player {
 };
 typedef struct player Player;
 
-// instead of Node we have Player
+// instead of Node we have Player. In this prog, player 'nodes' are still just referred
+// to as nodes. This is for simplicity.
 
 void insert(Player **head, Player *newNode);
 void kill(Player **head);
 
 int main() {
+  
   int userid;
   char last[20];
   char first[20];
@@ -57,10 +59,11 @@ int main() {
     //userid, last name, first name, # wins, # loss, # ties. Seperated by whitespace
     scanf("%d%s%s%d%d%d", &aNode->userid, aNode->last, aNode->first, 
                           &aNode->wins, &aNode->losses, &aNode->ties);
-    
+   //debugging printf 
    // printf("%s%d%c%s%c%s%c%d%c%d%c%d%c", "Player read: ", aNode->userid,' ', aNode->last,' ', 
    //                                     aNode->first,' ', aNode->wins, ' ', aNode->losses,
    //                                    ' ', aNode->ties, '\n');
+    
     insert(&head, aNode);
 
   } 
@@ -94,6 +97,7 @@ void insert(Player **head, Player *newNode){
     curr = temp;
     temp = temp -> next;
     
+    //once we find the right place to put the node, ie if userid is < than nextt 
     if(newNode->userid < temp->userid) {
       curr->next = newNode;
       newNode->next=temp; 
@@ -110,7 +114,10 @@ void insert(Player **head, Player *newNode){
   }
 
 }
+
+//free all the memory
 void kill(Player **head){
+ 
   Player *node = *head; 
   Player *temp;
   while(node->next != NULL) {
