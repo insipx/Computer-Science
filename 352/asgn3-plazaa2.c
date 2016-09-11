@@ -31,20 +31,25 @@ typedef struct player Player;
 
 // instead of Node we have Player
 
+void askinput(Player **head);
+
 void insert(Player **head, Player *newNode);
 void printPlayers(Player **head);
-void kill(Player **head);
+void printPlayer(Player **player);
 
-void add(Player **temp);
+Player* add(Player **temp);
+
 void update(Player **head);
 void query(Player **head);
 void del(Player **head);
+void checkExistence(Player **head, int userid);
 
-void askinput(Player **head);
+void kill(Player **head);
+
 
 int main() {
-  int userid, wins, losses, ties, numrec, i;
-  char last[20], first[20];
+ 
+  int numrec, i; 
   
   Player *head = NULL;
   Player *aNode = NULL; // current node we are on
@@ -63,25 +68,21 @@ int main() {
     insert(&head, aNode);
 
   } 
-  
-  printPlayers(&head);
   askinput(&head);
-  printPlayers(&head);
   kill(&head);
   
 }
 //might have to change this to getc
 void askinput(Player **head){
   Player *temp = *head;
-  //char *istring;
   char c;
   do{
     c = getchar();
     
     if(c == '+'){
-      add(&temp);
+      *head = add(&temp);
     }else if(c == '*'){
-      update(&temp) ;
+      update(&temp);
     }else if (c == '?'){
       query(&temp); 
     }else if(c == '-'){
@@ -90,41 +91,127 @@ void askinput(Player **head){
     }else if (c == '\n'){
       //ignore newline chars
     }else if (c == '#'){
-      //to get rid of "invalid input" when a '#' is entered 
+      printf("TERMINATE\n");
+      printPlayers(&temp);
     }
     else printf("Invalid Input. Try Again.\n");
   }while(c != '#');
 }
 
-void add(Player **temp){
-  Player *head = *temp; 
+Player* add(Player **head){
+  Player *temp = *head;
   Player *aNode = NULL;
-  int userid, wins, losses, ties, numrec, i;
-  char last[20], first[20];
 
+  //scan in the rest of the line
   aNode = (Player *) malloc(sizeof(Player));
   scanf("%d%s%s%d%d%d", &aNode->userid, aNode->last, aNode->first, 
                         &aNode->wins, &aNode->losses, &aNode->ties);
-  insert(&head, aNode);
+  while(temp != NULL){
+    if(temp->userid == aNode->userid){
+      printf("ERROR - userid exists.\n");
+      return *head;
+    }else{
+      temp = temp -> next;
+    }
+  }
+
+  temp = *head;
+
+  printf("%s", "ADD: ");
+  printPlayer(&aNode);
+  insert(&temp, aNode);
+  *head = temp;
+
+  //need to return pointer here or else, or at least i think, the pointer val gets stuck on the stack, 
+  //since it's a local var.
+  return *head;
 }
+ 
+
 
 void update(Player **head){
-  //do nothing
+  int userid, wins, losses, ties;
+  Player *temp = *head;
+
+  //scan in the rest of the line
+  scanf("%d%d%d%d", &userid, &wins, &losses, &ties);
+ 
+  while(temp != NULL){
+    if(temp->userid == userid) {
+      printf("%s", "BEFORE: ");
+      printPlayer(&temp);
+      temp->wins = wins;
+      temp->losses = losses;
+      temp->ties = ties;
+      printf("%s", "AFTER: ");
+      printPlayer(&temp);
+      return;
+    }else{
+      temp = temp->next;
+    }
+  }
+  printf("ERROR - player does not exist.");
+  return;
 
 }
 
 void query(Player **head){
-  //do nothing
+  int userid;
+  Player *temp = *head;
 
+  //scan in the rest of the line
+  scanf("%d", &userid);
+ 
+  while(temp != NULL){
+    if(temp->userid == userid) {
+      printf("QUERY: ");
+      printPlayer(&temp);
+      return;
+    }else{
+      temp = temp->next;
+    }
+  }
+  //ERROR
+  printf("%s\n", "ERROR - player does not exist.");
+  return;
 }
 
 void del(Player **head){
-  //do nothing
+  Player *temp = *head;
+  int userid;
 
+  //scan in the rest of the line
+  scanf("%d", &userid);
+
+  Player *curr;
+  curr = temp;
+
+  while(temp != NULL){
+    temp = temp->next;
+    if(curr->userid == userid){
+      printf("DELETE: ");
+      printPlayer(&curr);
+
+      *head = curr->next;
+      curr->next = NULL;
+      free(curr);
+      return;
+    }
+    if(temp->userid == userid) {
+      curr->next = temp->next;
+      temp->next = NULL;
+      free(temp);
+      return;
+    }else{
+      temp = temp->next;
+    }
+    curr = temp;
+  }
+  printf("%s\n", "ERROR - player does not exist.");
+  return;
 }
 
 void printPlayers(Player **head){
-  printf("Current Players: \n");
   Player *temp = *head;
   while(temp != NULL){
     printf("%d, %s, %s, %d, %d, %d \n", temp->userid, temp ->last, temp->first, 
@@ -134,11 +221,17 @@ void printPlayers(Player **head){
 
 }
 
+void printPlayer(Player **player){
+  Player *temp = *player;
+  printf("%d, %s, %s, %d, %d, %d \n", temp->userid, temp ->last, temp->first, 
+                                      temp->wins, temp->losses,temp->ties);
+
+}
+
 //pointer pointer because want value of head || two de-reference operators
 //dereference once, goes to the adress of head, dereference again and go to the value of what that adress holds
 void insert(Player **head, Player *newNode){
   Player *temp = *head;
-  newNode -> next = NULL;
 
   if(*head == NULL){
     *head = newNode;

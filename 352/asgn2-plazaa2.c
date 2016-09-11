@@ -80,6 +80,8 @@ int main() {
 
 void insert(Player **head, Player *newNode){
   Player *temp = *head;
+  newNode -> next = NULL;
+
   if(*head == NULL) {
     *head = newNode;
     return;
@@ -92,9 +94,8 @@ void insert(Player **head, Player *newNode){
   }
 
   // if newNode userid is not < head, needs to be inserted into list
-  Player *curr;
+  Player *curr = temp;
   while(temp->next !=NULL) {
-    curr = temp;
     temp = temp -> next;
     
     //once we find the right place to put the node, ie if userid is < than nextt 
@@ -103,14 +104,15 @@ void insert(Player **head, Player *newNode){
       newNode->next=temp; 
       return;
     }
+    
+    curr = temp;
 
-    //if we are at the end of the list
-    else if(temp->next == NULL ){
-      temp->next = newNode;
-      newNode->next = NULL;
-      return;
-    }
+  }
 
+  if(curr->next == NULL){
+    curr->next = newNode;
+    newNode->next = NULL;
+    return;
   }
 
 }
