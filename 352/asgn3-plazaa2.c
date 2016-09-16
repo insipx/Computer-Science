@@ -1,11 +1,13 @@
-/* Program: Programming Assignment 1 (first real asgn), Linked List 
+/* Program: Programming Assignment 3, Advanced Linked List 
  * author: Andrew Plaza
- * Date: Aug. 29, 2016
- * File Name: asgn2-plazaa2.c
- * compile: gcc -o asgn2 asgn2-plazaa2.c
- * run: ./asgn2
+ * Date: Sept 14, 2016
+ * File Name: asgn3-plazaa2.c
+ * compile: cc -o asgn3.out asgn3-plazaa2.c -g -Wall
+ * run: ./asgn3.out
  *
- * This C program accepts player records from the keyboard, reads it into an ordered linked list, nd then prints the records in the list in the order they are stored.
+ * This C program accepts player records from the keyboard, 
+ * reads it into an ordered linked list, nd then prints the records
+ * in the list in the order they are stored.
  */
 
 #include<stdio.h>
@@ -13,7 +15,7 @@
 #include <unistd.h>
 
 
-//typedefs
+//typedefs, player is basically a node in the Linked List
 
 struct player {
 
@@ -29,8 +31,7 @@ struct player {
 
 typedef struct player Player;
 
-// instead of Node we have Player
-
+//method definitions
 void askinput(Player **head);
 
 void insert(Player **head, Player *newNode);
@@ -42,25 +43,28 @@ Player* add(Player **temp);
 void update(Player **head);
 void query(Player **head);
 void del(Player **head);
-void checkExistence(Player **head, int userid);
 
 void kill(Player **head);
+
+
+//LL = Linked List
 
 
 int main() {
  
   int numrec, i; 
   
-  Player *head = NULL;
+  Player *head = NULL; //head node, always first node in the LL
   Player *aNode = NULL; // current node we are on
- 
-  // the first line of input contains a non-negative integer indicating the # of player records to
-  //be entered from the keyboard 
+
+  // the first line of input contains a non-negative integer indicating the # of player
+  // records to be entered from the keyboard 
   printf("%s", "Enter the number of player records being entered: ");
   scanf("%d", &numrec); 
   
   for(i = 0; i < numrec; i ++){
     aNode = (Player *) malloc(sizeof(Player));
+
     //userid, last name, first name, # wins, # loss, # ties. Seperated by whitespace
     scanf("%d%s%s%d%d%d", &aNode->userid, aNode->last, aNode->first, 
                           &aNode->wins, &aNode->losses, &aNode->ties);
@@ -69,32 +73,35 @@ int main() {
 
   } 
   askinput(&head);
+
+  //kill memory because nothing needs it anymore
   kill(&head);
   
 }
-//might have to change this to getc
+
+//get first character in input,
+//go to method to do what user asks
 void askinput(Player **head){
   Player *temp = *head;
   char c;
   do{
+    
     c = getchar();
     
-    if(c == '+'){
+    if(c == '+')
       *head = add(&temp);
-    }else if(c == '*'){
+    else if(c == '*')
       update(&temp);
-    }else if (c == '?'){
+    else if (c == '?')
       query(&temp); 
-    }else if(c == '-'){
+    else if(c == '-')
       del(&temp);
-     
-    }else if (c == '\n'){
-      //ignore newline chars
-    }else if (c == '#'){
+    else if (c == '\n');
+      //ignore newline chars, reduced 'Error Invalid Input'
+    else if (c == '#'){
       printf("TERMINATE\n");
       printPlayers(&temp);
     }
-    else printf("Invalid Input. Try Again.\n");
   }while(c != '#');
 }
 
@@ -122,8 +129,8 @@ Player* add(Player **head){
   insert(&temp, aNode);
   *head = temp;
 
-  //need to return pointer here or else, or at least i think, the pointer val gets stuck on the stack, 
-  //since it's a local var.
+  //need to return pointer here else the pointer val gets stuck 
+  //on the stack, since it's a local var.
   return *head;
 }
  
@@ -135,7 +142,9 @@ void update(Player **head){
 
   //scan in the rest of the line
   scanf("%d%d%d%d", &userid, &wins, &losses, &ties);
- 
+   
+  //find data for playerid user entered, change info 
+  //for that node
   while(temp != NULL){
     if(temp->userid == userid) {
       printf("%s", "BEFORE: ");
@@ -161,7 +170,9 @@ void query(Player **head){
 
   //scan in the rest of the line
   scanf("%d", &userid);
- 
+
+  //find data user needs based on given ID
+  //print that player data
   while(temp != NULL){
     if(temp->userid == userid) {
       printf("QUERY: ");
@@ -185,9 +196,13 @@ void del(Player **head){
 
   Player *curr;
   curr = temp;
-
+   
+  //find right node and delete it
   while(temp != NULL){
     temp = temp->next;
+    
+    //handle case where head needs to be
+    //re-assigned
     if(curr->userid == userid){
       printf("DELETE: ");
       printPlayer(&curr);
@@ -197,6 +212,8 @@ void del(Player **head){
       free(curr);
       return;
     }
+   
+    //handle all other cases
     if(temp->userid == userid) {
       curr->next = temp->next;
       temp->next = NULL;
@@ -214,11 +231,9 @@ void del(Player **head){
 void printPlayers(Player **head){
   Player *temp = *head;
   while(temp != NULL){
-    printf("%d, %s, %s, %d, %d, %d \n", temp->userid, temp ->last, temp->first, 
-                                        temp->wins, temp->losses,temp->ties);
+    printPlayer(&temp);
     temp = temp->next;
   }
-
 }
 
 void printPlayer(Player **player){
@@ -228,8 +243,18 @@ void printPlayer(Player **player){
 
 }
 
-//pointer pointer because want value of head || two de-reference operators
-//dereference once, goes to the adress of head, dereference again and go to the value of what that adress holds
+//pointer pointer because want value of head |_| two de-reference operators
+//dereference once, goes to the adress of head, dereference again and 
+//go to the value of what that address holds
+//    |Player **head 0xmemaddr| |addr of the addr where head is|
+//                                             ↓  
+//      <---------------------------------------  dereference once
+//     ↓
+//    |Pointer *head 0xmemaddr| |addr of head|
+//                              ↓
+//              ↓ <--------------                 dereference again
+//    |addr of head||head value|
+
 void insert(Player **head, Player *newNode){
   Player *temp = *head;
 
@@ -266,6 +291,7 @@ void insert(Player **head, Player *newNode){
 
 }
 
+//free memory starting from head
 void kill(Player **head){
   Player *node = *head; 
   Player *temp;
@@ -275,5 +301,4 @@ void kill(Player **head){
     free(temp);
   }
   *head = NULL;
-
 }
