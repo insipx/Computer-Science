@@ -117,9 +117,7 @@ Player* add(Player **head){
     if(temp->userid == aNode->userid){
       printf("ERROR - userid exists.\n");
       return *head;
-    }else{
-      temp = temp -> next;
-    }
+    }else temp = temp -> next;
   }
 
   temp = *head;
@@ -131,6 +129,7 @@ Player* add(Player **head){
 
   //need to return pointer here else the pointer val gets stuck 
   //on the stack, since it's a local var.
+  
   return *head;
 }
  
