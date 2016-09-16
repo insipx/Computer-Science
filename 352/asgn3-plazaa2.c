@@ -32,9 +32,11 @@ struct player {
 typedef struct player Player;
 
 //method definitions
+
 void askinput(Player **head);
 
 void insert(Player **head, Player *newNode);
+
 void printPlayers(Player **head);
 void printPlayer(Player **player);
 
@@ -102,6 +104,7 @@ void askinput(Player **head){
       printf("TERMINATE\n");
       printPlayers(&temp);
     }
+
   }while(c != '#');
 }
 
@@ -195,15 +198,16 @@ void del(Player **head){
 
   Player *curr;
   curr = temp;
-   
+ 
   //find right node and delete it
   while(temp != NULL){
-    temp = temp->next;
-    
+
     //handle case where head needs to be
     //re-assigned
-    if(curr->userid == userid){
-      printf("DELETE: ");
+    //  if the pointer is the same, 
+    //      subtracting them will give 0
+    if(curr-*head == 0 && curr->userid == userid){
+      printf("DELETE:");
       printPlayer(&curr);
 
       *head = curr->next;
@@ -211,18 +215,22 @@ void del(Player **head){
       free(curr);
       return;
     }
-   
+  
     //handle all other cases
     if(temp->userid == userid) {
+      printf("DELETE:");
+      printPlayer(&temp);
+
       curr->next = temp->next;
       temp->next = NULL;
       free(temp);
       return;
-    }else{
-      temp = temp->next;
     }
+    
     curr = temp;
+    temp = temp->next;
   }
+  //if passes through this than player does not exist.
   printf("%s\n", "ERROR - player does not exist.");
   return;
 }
@@ -241,6 +249,7 @@ void printPlayer(Player **player){
                                       temp->wins, temp->losses,temp->ties);
 
 }
+
 
 //pointer pointer because want value of head |_| two de-reference operators
 //dereference once, goes to the adress of head, dereference again and 
@@ -261,6 +270,7 @@ void insert(Player **head, Player *newNode){
     *head = newNode;
     return;
   }
+
   // this is the (if newNode->userid < head ) case
   if(newNode->userid < temp->userid) {
     newNode->next = *head;
@@ -271,6 +281,7 @@ void insert(Player **head, Player *newNode){
   // if newNode userid is not < head, needs to be inserted into list
   Player *curr;
   curr = temp;
+
   while(temp->next !=NULL) {
     temp = temp -> next;
     
@@ -282,12 +293,12 @@ void insert(Player **head, Player *newNode){
     //if we are at the end of the list
     curr = temp;
   }
+
   if(curr->next == NULL){
     curr->next = newNode;
     newNode->next = NULL;
     return;
   }
-
 }
 
 //free memory starting from head
