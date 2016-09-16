@@ -4,6 +4,7 @@
  * File Name: asgn3-plazaa2.c
  * compile: cc -o asgn3.out asgn3-plazaa2.c -g -Wall
  * run: ./asgn3.out
+ * debug: gdb ./asgn3.out
  *
  * This C program accepts player records from the keyboard, 
  * reads it into an ordered linked list, nd then prints the records
@@ -104,7 +105,6 @@ void askinput(Player **head){
       printf("TERMINATE\n");
       printPlayers(&temp);
     }
-
   }while(c != '#');
 }
 
