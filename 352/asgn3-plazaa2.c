@@ -67,7 +67,7 @@ int main() {
   
   for(i = 0; i < numrec; i ++){
     aNode = (Player *) malloc(sizeof(Player));
-
+    printf("> ");
     //userid, last name, first name, # wins, # loss, # ties. Seperated by whitespace
     scanf("%d%s%s%d%d%d", &aNode->userid, aNode->last, aNode->first, 
                           &aNode->wins, &aNode->losses, &aNode->ties);
@@ -75,6 +75,7 @@ int main() {
     insert(&head, aNode);
 
   } 
+  
   askinput(&head);
 
   //kill memory because nothing needs it anymore
@@ -87,8 +88,12 @@ int main() {
 void askinput(Player **head){
   Player *temp = *head;
   char c;
+
+  //make input look nicer 
+  printf("> ");
+
   do{
-    
+     
     c = getchar();
     
     if(c == '+')
@@ -111,7 +116,7 @@ void askinput(Player **head){
 Player* add(Player **head){
   Player *temp = *head;
   Player *aNode = NULL;
-
+    
   //scan in the rest of the line
   aNode = (Player *) malloc(sizeof(Player));
   scanf("%d%s%s%d%d%d", &aNode->userid, aNode->last, aNode->first, 
@@ -133,6 +138,10 @@ Player* add(Player **head){
   //need to return pointer here else the pointer val gets stuck 
   //on the stack, since it's a local var.
   
+  
+  //make input look nicer 
+  printf("> ");
+
   return *head;
 }
  
@@ -156,12 +165,20 @@ void update(Player **head){
       temp->ties = ties;
       printf("%s", "AFTER: ");
       printPlayer(&temp);
+      
+      //make input look nicer 
+      printf("> ");
+
       return;
     }else{
       temp = temp->next;
     }
   }
   printf("ERROR - player does not exist.");
+
+  //make input look nicer 
+  printf("> ");
+  
   return;
 
 }
@@ -179,6 +196,10 @@ void query(Player **head){
     if(temp->userid == userid) {
       printf("QUERY: ");
       printPlayer(&temp);
+
+      //make input look nicer 
+      printf("> ");
+
       return;
     }else{
       temp = temp->next;
@@ -186,6 +207,10 @@ void query(Player **head){
   }
   //ERROR
   printf("%s\n", "ERROR - player does not exist.");
+
+  //make input look nicer 
+  printf("> ");
+
   return;
 }
 
@@ -213,6 +238,10 @@ void del(Player **head){
       *head = curr->next;
       curr->next = NULL;
       free(curr);
+      
+      //make input look nicer 
+      printf("> ");
+
       return;
     }
   
@@ -224,6 +253,11 @@ void del(Player **head){
       curr->next = temp->next;
       temp->next = NULL;
       free(temp);
+       
+      //make input look nicer 
+      printf("> ");
+        
+     
       return;
     }
     
@@ -232,6 +266,10 @@ void del(Player **head){
   }
   //if passes through this than player does not exist.
   printf("%s\n", "ERROR - player does not exist.");
+  
+  //make input look nicer 
+  printf("> ");
+
   return;
 }
 
