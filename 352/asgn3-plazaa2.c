@@ -4,6 +4,7 @@
  * File Name: asgn3-plazaa2.c
  * compile: cc -o asgn3.out asgn3-plazaa2.c -g -Wall
  * run: ./asgn3.out
+ * debug: gdb ./asgn3.out
  *
  * This C program accepts player records from the keyboard, 
  * reads it into an ordered linked list, nd then prints the records
@@ -32,9 +33,11 @@ struct player {
 typedef struct player Player;
 
 //method definitions
+
 void askinput(Player **head);
 
 void insert(Player **head, Player *newNode);
+
 void printPlayers(Player **head);
 void printPlayer(Player **player);
 
@@ -64,14 +67,14 @@ int main() {
   
   for(i = 0; i < numrec; i ++){
     aNode = (Player *) malloc(sizeof(Player));
-
+    printf("> ");
     //userid, last name, first name, # wins, # loss, # ties. Seperated by whitespace
     scanf("%d%s%s%d%d%d", &aNode->userid, aNode->last, aNode->first, 
                           &aNode->wins, &aNode->losses, &aNode->ties);
     
     insert(&head, aNode);
-
   } 
+  
   askinput(&head);
 
   //kill memory because nothing needs it anymore
@@ -84,8 +87,12 @@ int main() {
 void askinput(Player **head){
   Player *temp = *head;
   char c;
+
+  //make input look nicer 
+  printf("> ");
+
   do{
-    
+     
     c = getchar();
     
     if(c == '+')
@@ -108,7 +115,7 @@ void askinput(Player **head){
 Player* add(Player **head){
   Player *temp = *head;
   Player *aNode = NULL;
-
+    
   //scan in the rest of the line
   aNode = (Player *) malloc(sizeof(Player));
   scanf("%d%s%s%d%d%d", &aNode->userid, aNode->last, aNode->first, 
@@ -117,9 +124,7 @@ Player* add(Player **head){
     if(temp->userid == aNode->userid){
       printf("ERROR - userid exists.\n");
       return *head;
-    }else{
-      temp = temp -> next;
-    }
+    }else temp = temp -> next;
   }
 
   temp = *head;
@@ -131,6 +136,11 @@ Player* add(Player **head){
 
   //need to return pointer here else the pointer val gets stuck 
   //on the stack, since it's a local var.
+  
+  
+  //make input look nicer 
+  printf("> ");
+
   return *head;
 }
  
@@ -154,12 +164,20 @@ void update(Player **head){
       temp->ties = ties;
       printf("%s", "AFTER: ");
       printPlayer(&temp);
+     
+      //make input look nicer 
+      printf("> ");
+
       return;
     }else{
       temp = temp->next;
     }
   }
   printf("ERROR - player does not exist.");
+
+  //make input look nicer 
+  printf("> ");
+  
   return;
 
 }
@@ -177,6 +195,10 @@ void query(Player **head){
     if(temp->userid == userid) {
       printf("QUERY: ");
       printPlayer(&temp);
+
+      //make input look nicer 
+      printf("> ");
+
       return;
     }else{
       temp = temp->next;
@@ -184,6 +206,10 @@ void query(Player **head){
   }
   //ERROR
   printf("%s\n", "ERROR - player does not exist.");
+
+  //make input look nicer 
+  printf("> ");
+
   return;
 }
 
@@ -196,35 +222,52 @@ void del(Player **head){
 
   Player *curr;
   curr = temp;
-   
+ 
   //find right node and delete it
   while(temp != NULL){
-    temp = temp->next;
-    
+
     //handle case where head needs to be
     //re-assigned
-    if(curr->userid == userid){
-      printf("DELETE: ");
+    //  if the pointer is the same, 
+    //      subtracting them will give 0
+    if(curr-*head == 0 && curr->userid == userid){
+      printf("DELETE:");
       printPlayer(&curr);
 
       *head = curr->next;
       curr->next = NULL;
       free(curr);
+      
+      //make input look nicer 
+      printf("> ");
+
       return;
     }
-   
+  
     //handle all other cases
     if(temp->userid == userid) {
+      printf("DELETE:");
+      printPlayer(&temp);
+
       curr->next = temp->next;
       temp->next = NULL;
       free(temp);
+       
+      //make input look nicer 
+      printf("> ");
+     
       return;
-    }else{
-      temp = temp->next;
     }
+    
     curr = temp;
+    temp = temp->next;
   }
+  //if passes through this than player does not exist.
   printf("%s\n", "ERROR - player does not exist.");
+  
+  //make input look nicer 
+  printf("> ");
+
   return;
 }
 
@@ -242,6 +285,7 @@ void printPlayer(Player **player){
                                       temp->wins, temp->losses,temp->ties);
 
 }
+
 
 //pointer pointer because want value of head |_| two de-reference operators
 //dereference once, goes to the adress of head, dereference again and 
@@ -262,6 +306,7 @@ void insert(Player **head, Player *newNode){
     *head = newNode;
     return;
   }
+
   // this is the (if newNode->userid < head ) case
   if(newNode->userid < temp->userid) {
     newNode->next = *head;
@@ -272,6 +317,7 @@ void insert(Player **head, Player *newNode){
   // if newNode userid is not < head, needs to be inserted into list
   Player *curr;
   curr = temp;
+
   while(temp->next !=NULL) {
     temp = temp -> next;
     
@@ -283,21 +329,22 @@ void insert(Player **head, Player *newNode){
     //if we are at the end of the list
     curr = temp;
   }
+
   if(curr->next == NULL){
     curr->next = newNode;
     newNode->next = NULL;
     return;
   }
-
 }
 
 //free memory starting from head
 void kill(Player **head){
   Player *node = *head; 
   Player *temp;
-  while(node->next != NULL) {
+  while(node != NULL) {
     temp = node;
     node = node->next;    
+    temp->next = NULL;
     free(temp);
   }
   *head = NULL;
