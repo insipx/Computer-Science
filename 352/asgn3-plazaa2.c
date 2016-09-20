@@ -164,7 +164,7 @@ void update(Player **head){
       temp->ties = ties;
       printf("%s", "AFTER: ");
       printPlayer(&temp);
-     
+      
       //make input look nicer 
       printf("> ");
 
@@ -255,7 +255,7 @@ void del(Player **head){
        
       //make input look nicer 
       printf("> ");
-     
+    
       return;
     }
     
