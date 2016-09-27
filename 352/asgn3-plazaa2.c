@@ -255,7 +255,7 @@ void del(Player **head){
        
       //make input look nicer 
       printf("> ");
-     
+      
       return;
     }
     
