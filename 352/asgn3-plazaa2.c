@@ -73,7 +73,6 @@ int main() {
                           &aNode->wins, &aNode->losses, &aNode->ties);
     
     insert(&head, aNode);
-
   } 
   
   askinput(&head);
@@ -165,7 +164,7 @@ void update(Player **head){
       temp->ties = ties;
       printf("%s", "AFTER: ");
       printPlayer(&temp);
-      
+     
       //make input look nicer 
       printf("> ");
 
@@ -256,7 +255,6 @@ void del(Player **head){
        
       //make input look nicer 
       printf("> ");
-        
      
       return;
     }
@@ -343,9 +341,10 @@ void insert(Player **head, Player *newNode){
 void kill(Player **head){
   Player *node = *head; 
   Player *temp;
-  while(node->next != NULL) {
+  while(node != NULL) {
     temp = node;
     node = node->next;    
+    temp->next = NULL;
     free(temp);
   }
   *head = NULL;
