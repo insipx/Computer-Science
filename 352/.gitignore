@@ -2,4 +2,5 @@ sample_programs/*
 *.sh
 *.out
 *.dat
+notes/*
 

@@ -28,33 +28,40 @@ struct player {
   int losses;
   int ties;
   int index;
-  struct player *next;
 };
 
+struct node {
+  int userid;
+  int index;
+  struct node *next;
+};
+
+typedef struct node Node;
 typedef struct player Player;
 
 //method definitions
 
 int askinput(Player **head, int fd, int index);
 
-void insert(Player **head, Player *newNode);
+void insert(Player **head, int userid, int index);
 
 void printPlayers(Player **head);
 void printPlayer(Player **player);
 
 Player* add(Player **temp, int fd, int index);
-
 void update(Player **head);
 void query(Player **head);
 
-void kill(Player **head);
 void write_node(Player **node, int fd, int index);
+
+void kill(Player **head);
+int read_dat(Player **temp, int fd, int index);
 
 //LL = Linked List
 
 
 int main(int argc, char *argv[]) {
-  int numrec, i, index = 0, fd = 0; 
+  int index = 0, fd = 0; 
  
   if (argc <= 1){
     fprintf(stderr, "Usage: './asgn4.out record_file.dat'\n");
@@ -62,37 +69,20 @@ int main(int argc, char *argv[]) {
   }else{
     fd = open(argv[1], O_RDWR|O_CREAT, S_IRWXU);
   }
-    
-  Player *head = NULL; //head node, always first node in the LL
-  Player *aNode = NULL; // current node we are on
-
-  // the first line of input contains a non-negative integer indicating the # of player
-  // records to be entered from the keyboard 
-  printf("%s", "Enter the number of player records being entered: ");
-  scanf("%d", &numrec); 
+  Player *head = NULL; //head node initialized in main
   
-  for(i = 0; i < numrec; i ++){
-
-    aNode = (Player *) malloc(sizeof(Player));
-    printf("> ");
-    //userid, last name, first name, # wins, # loss, # ties. Seperated by whitespace
-    scanf("%d%s%s%d%d%d", &aNode->userid, aNode->last, aNode->first, 
-                          &aNode->wins, &aNode->losses, &aNode->ties);
-    aNode->index = index;
-
-    insert(&head, aNode);
-    write_node(&aNode, fd, index);
-    index++;
-
-  } 
-
-  
+  index = read_dat(&head, fd, index);
+ 
   index = askinput(&head, fd, index);
 
   close(fd);
-  //kill memory because nothing needs it anymore
-  kill(&head);
   
+  kill(&head);
+  printf("END\n");
+}
+int read_player(int fd, int userid){
+   
+
 }
 
 void write_node(Player **node, int fd, int index){
@@ -126,14 +116,16 @@ int askinput(Player **head, int fd, int index){
     else if (c == '#'){
       printf("TERMINATE\n");
       printPlayers(&temp);
+      return index;
     }
   }while(c != '#');
 
   return index;
 }
 
-Player* add(Player **head, int fd, int index){
-  Player *temp = *head;
+Node* add(Node **head, int fd, int index){
+  
+  Node *temp = *head;
   Player *aNode = NULL;
     
   //scan in the rest of the line
@@ -143,16 +135,21 @@ Player* add(Player **head, int fd, int index){
   while(temp != NULL){
     if(temp->userid == aNode->userid){
       printf("ERROR - userid exists.\n");
+      printPlayer(&temp)
+      printf("> ");
       return *head;
     }else temp = temp -> next;
   }
+
   aNode->index = index; 
   temp = *head;
+  
   //write node to binary file 
   write_node(&aNode, fd, index);
 
   printf("%s", "ADD: ");
   printPlayer(&aNode);
+  
   insert(&temp, aNode);
   *head = temp;
 
@@ -181,9 +178,11 @@ void update(Player **head){
     if(temp->userid == userid) {
       printf("%s", "BEFORE: ");
       printPlayer(&temp);
+ 
       temp->wins = wins;
       temp->losses = losses;
       temp->ties = ties;
+
       printf("%s", "AFTER: ");
       printPlayer(&temp);
      
@@ -263,7 +262,7 @@ void printPlayer(Player **player){
 //              ↓ <--------------                 dereference again
 //    |addr of head||head value|
 
-void insert(Player **head, Player *newNode){
+void insert(Player **head, int userid, int index){
   Player *temp = *head;
 
   if(*head == NULL){
