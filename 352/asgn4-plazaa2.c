@@ -41,21 +41,22 @@ typedef struct player Player;
 
 //method definitions
 
-int askinput(Player **head, int fd, int index);
+int askinput(Node **head, int fd, int index);
 
-void insert(Player **head, int userid, int index);
+void insert(Node **head, Node *newNode);
 
-void printPlayers(Player **head);
-void printPlayer(Player **player);
+void printPlayers(Node **head, int fd);
+void printPlayer(int index, int fd);
 
-Player* add(Player **temp, int fd, int index);
-void update(Player **head);
-void query(Player **head);
+Node* add(Node **head, int fd, int index);
+void update(Node **head, int fd);
+void query(Node **head, int fd);
 
-void write_node(Player **node, int fd, int index);
+void write_node(Player *node, int fd, int index);
 
-void kill(Player **head);
-int read_dat(Player **temp, int fd, int index);
+void kill(Node **head);
+void read_player(int fd, int index, Player *play);
+void die(const char *message);
 
 //LL = Linked List
 
@@ -67,11 +68,11 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "Usage: './asgn4.out record_file.dat'\n");
     exit(1);
   }else{
-    fd = open(argv[1], O_RDWR|O_CREAT, S_IRWXU);
+    fd = open(argv[1], O_TRUNC|O_RDWR|O_CREAT, S_IRWXU);
   }
-  Player *head = NULL; //head node initialized in main
   
-  index = read_dat(&head, fd, index);
+  Node *head = NULL; //head node initialized in main
+  
  
   index = askinput(&head, fd, index);
 
@@ -80,22 +81,26 @@ int main(int argc, char *argv[]) {
   kill(&head);
   printf("END\n");
 }
-int read_player(int fd, int userid){
-   
 
+
+void read_player(int fd, int index, Player *play){
+  lseek(fd, index*sizeof(Player),0);
+  if(read(fd, play, sizeof(Player)) == -1)
+    die("[ERROR] read failed");
 }
 
-void write_node(Player **node, int fd, int index){
-  Player *pnode = *node;  
-  if(write(fd, &pnode, index*sizeof(pnode)) == -1)
-    printf("[ERROR] write failed");
+void write_node(Player *node, int fd, int index){
+  struct player play = *node;
+  lseek(fd, index*sizeof(Player), 0);
+  if(write(fd, &play, sizeof(Player)) == -1)
+    die("[ERROR] write failed");
 }
 
 //get first character in input,
 //go to method to do what user asks
-int askinput(Player **head, int fd, int index){
+int askinput(Node **head, int fd, int index){
   
-  Player *temp = *head;
+  Node *temp = *head;
   char c;
 
   //make input look nicer 
@@ -107,15 +112,16 @@ int askinput(Player **head, int fd, int index){
     if(c == '+'){
       *head = add(&temp, fd, index);
       index++;
-    }else if(c == '*')
-      update(&temp);
+    }
+    else if(c == '*')
+      update(&temp, fd);
     else if (c == '?')
-      query(&temp); 
+      query(&temp, fd); 
     else if (c == '\n');
       //ignore newline chars, reduced 'Error Invalid Input'
     else if (c == '#'){
       printf("TERMINATE\n");
-      printPlayers(&temp);
+      printPlayers(&temp, fd);
       return index;
     }
   }while(c != '#');
@@ -132,42 +138,51 @@ Node* add(Node **head, int fd, int index){
   aNode = (Player *) malloc(sizeof(Player));
   scanf("%d%s%s%d%d%d", &aNode->userid, aNode->last, aNode->first, 
                         &aNode->wins, &aNode->losses, &aNode->ties);
+  
   while(temp != NULL){
     if(temp->userid == aNode->userid){
       printf("ERROR - userid exists.\n");
-      printPlayer(&temp)
+      printPlayer(temp->index, fd);
       printf("> ");
       return *head;
     }else temp = temp -> next;
   }
 
-  aNode->index = index; 
+  //reset temp after iterating through LL
   temp = *head;
-  
-  //write node to binary file 
-  write_node(&aNode, fd, index);
 
+  aNode->index = index; 
+
+  //write node to binary file 
+  write_node(aNode, fd, index);
+     
   printf("%s", "ADD: ");
-  printPlayer(&aNode);
   
-  insert(&temp, aNode);
+  printPlayer(aNode->index, fd);
+  //allocate mem for LL node 
+  //set new node to values of node just written to
+  //persistant file 
+  Node *newNode = (Node*)malloc(sizeof(Node));
+  newNode->userid = aNode->userid;
+  newNode->index = aNode->index;
+  
+  insert(&temp, newNode);
   *head = temp;
 
-  //need to return pointer here else the pointer val gets stuck 
-  //on the stack, since it's a local var.
-  
   
   //make input look nicer 
   printf("> ");
+  
+  free(aNode);
 
   return *head;
 }
  
 
 
-void update(Player **head){
+void update(Node **head, int fd){
   int userid, wins, losses, ties;
-  Player *temp = *head;
+  Node *temp = *head;
 
   //scan in the rest of the line
   scanf("%d%d%d%d", &userid, &wins, &losses, &ties);
@@ -177,18 +192,19 @@ void update(Player **head){
   while(temp != NULL){
     if(temp->userid == userid) {
       printf("%s", "BEFORE: ");
-      printPlayer(&temp);
- 
-      temp->wins = wins;
-      temp->losses = losses;
-      temp->ties = ties;
-
+      printPlayer(temp->index, fd);
+      Player *node = (Player *)malloc(sizeof(Player));
+      lseek(fd, temp->index*sizeof(Player), 0);
+      read_player(fd, temp->index, node);
+      node->userid = userid;
+      node->wins = wins;
+      node->losses=losses;
+      node->ties=ties;
+      write_node(node, fd, temp->index);
       printf("%s", "AFTER: ");
-      printPlayer(&temp);
-     
+      printPlayer(temp->index, fd);
       //make input look nicer 
       printf("> ");
-
       return;
     }else{
       temp = temp->next;
@@ -203,9 +219,9 @@ void update(Player **head){
 
 }
 
-void query(Player **head){
+void query(Node **head, int fd){
   int userid;
-  Player *temp = *head;
+  Node *temp = *head;
 
   //scan in the rest of the line
   scanf("%d", &userid);
@@ -215,7 +231,7 @@ void query(Player **head){
   while(temp != NULL){
     if(temp->userid == userid) {
       printf("QUERY: ");
-      printPlayer(&temp);
+      printPlayer(temp->index, fd);
 
       //make input look nicer 
       printf("> ");
@@ -234,36 +250,31 @@ void query(Player **head){
   return;
 }
 
-void printPlayers(Player **head){
-  Player *temp = *head;
+void printPlayers(Node **head, int fd){
+  Node *temp = *head;
   while(temp != NULL){
-    printPlayer(&temp);
+    printPlayer(temp->index, fd);
     temp = temp->next;
   }
 }
 
-void printPlayer(Player **player){
-  Player *temp = *player;
-  printf("%d, %s, %s, %d, %d, %d \n", temp->userid, temp ->last, temp->first, 
-                                      temp->wins, temp->losses,temp->ties);
+void printPlayer(int index, int fd){
+  struct player play;
+  read_player(fd, index, &play);
+  
+  printf("%d, %s, %s, %d, %d, %d \n", play.userid, 
+                                      play.last, 
+                                      play.first, 
+                                      play.wins, 
+                                      play.losses, 
+                                      play.ties);
+  return;
 
 }
 
+void insert(Node **head, Node *newNode){
+  Node *temp = *head;
 
-//pointer pointer because want value of head |_| two de-reference operators
-//dereference once, goes to the adress of head, dereference again and 
-//go to the value of what that address holds
-//    |Player **head 0xmemaddr| |addr of the addr where head is|
-//                                             ↓  
-//      <---------------------------------------  dereference once
-//     ↓
-//    |Pointer *head 0xmemaddr| |addr of head|
-//                              ↓
-//              ↓ <--------------                 dereference again
-//    |addr of head||head value|
-
-void insert(Player **head, int userid, int index){
-  Player *temp = *head;
 
   if(*head == NULL){
     *head = newNode;
@@ -278,7 +289,7 @@ void insert(Player **head, int userid, int index){
   }
 
   // if newNode userid is not < head, needs to be inserted into list
-  Player *curr;
+  Node *curr;
   curr = temp;
 
   while(temp->next !=NULL) {
@@ -301,9 +312,9 @@ void insert(Player **head, int userid, int index){
 }
 
 //free memory starting from head
-void kill(Player **head){
-  Player *node = *head; 
-  Player *temp;
+void kill(Node **head){
+  Node *node = *head; 
+  Node *temp;
   while(node != NULL) {
     temp = node;
     node = node->next;    
@@ -311,4 +322,13 @@ void kill(Player **head){
     free(temp);
   }
   *head = NULL;
+}
+
+void die(const char *message){
+  if(errno)
+    perror(message);
+  else
+    printf("ERROR: %s\n", message);
+
+  exit(1);
 }
