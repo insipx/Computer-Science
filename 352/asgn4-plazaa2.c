@@ -6,9 +6,15 @@
  * run: ./asgn4.out
  * debug: gdb ./asgn4.out
  *
- * This C program accepts player records from the keyboard, 
- * reads it into an ordered linked list, nd then prints the records
- * in the list in the order they are stored.
+ * This C program accepts player records from the keyboard.
+ * '+ userid lastname firstname wins losses ties' to add
+ * '* userid wins losses ties' to update
+ * '? userid' to query
+ * '#' to terminate program
+ * Records are read and then written in binary form to a file. 
+ * There is an option to load this file the next time the program is run. 
+ * The program keeps data relating to where each record is in a file with a linked list (struct node). 
+ * Upon termination the records and linked list are printed.
  */
 
 #include <stdio.h>
@@ -59,7 +65,6 @@ void insert(Node **head, Node *newNode);
 void update(int fd, Node **head);
 void query(int fd, Node **head);
 
-
 void kill(Node **head);
 void die(const char *message);
 
@@ -87,16 +92,14 @@ int main(int argc, char *argv[]) {
       filename = (char*)malloc(strlen(argv[1]+1));
       strcpy(filename, argv[1]);
 
-       fd = open(argv[1], O_RDWR|O_CREAT, 
-                          S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_ISUID);
+       fd = open(argv[1], O_RDWR|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 
        persist(fd, &index, &head, filename);
 
        free(filename);
        
      //if no add O_TRUNC to clear any previous data
-    }else fd = open(argv[1], O_TRUNC|O_RDWR|O_CREAT, 
-                             S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_ISUID);
+    }else fd = open(argv[1], O_TRUNC|O_RDWR|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
   }
 
   if( fd < 0) die("[ERROR] open failed");
@@ -134,7 +137,6 @@ void persist(int fd, int *index, Node **head, char *filename){
   Node *temp = *head;
   struct stat st;
   struct player rec;
-
 
   //stat file size, convert to index
   stat(filename, &st);
@@ -349,7 +351,6 @@ void update(int fd, Node **head){
 void query(int fd, Node **head){
   int userid;
   Node *temp = *head;
-  
   scanf("%d", &userid);
 
   //find data user needs based on given ID
