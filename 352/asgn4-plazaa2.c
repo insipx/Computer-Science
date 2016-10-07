@@ -110,6 +110,7 @@ int main(int argc, char *argv[]) {
   print_nodes(&head);
   kill(&head);
   printf("END\n");
+  exit(EXIT_SUCCESS);
 }
 
 
@@ -135,6 +136,7 @@ void persist(int fd, int *index, Node **head, char *filename){
   struct player rec;
 
   Node *newn = (Node *)malloc(sizeof(Node));
+  memset(newn,0,sizeof(*newn));
 
   //stat file size, convert to index
   stat(filename, &st);
@@ -226,6 +228,8 @@ Node* add(int fd, int index, Node **head){
   
   Node *temp = *head;
   struct player prec;
+  //initialize mem to 0
+  memset(&prec, 0, sizeof(prec));
   //scan in the rest of the line
   scanf("%d%s%s%d%d%d", &prec.userid, prec.last, prec.first, 
                         &prec.wins, &prec.losses, &prec.ties);
@@ -250,6 +254,7 @@ Node* add(int fd, int index, Node **head){
   printp(fd, prec.index);
   
   Node *newNode = (Node*)malloc(sizeof(Node));
+  memset(newNode, 0, sizeof(*newNode));
   newNode->userid = prec.userid;
   newNode->index = prec.index;
   
@@ -339,7 +344,7 @@ void update(int fd, Node **head){
 void query(int fd, Node **head){
   int userid;
   Node *temp = *head;
-
+  
   scanf("%d", &userid);
 
   //find data user needs based on given ID
