@@ -77,18 +77,26 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "Usage: './asgn4.out filename'\n");
     exit(1);
   }else{
-    //allocate memory so avoid buffer overflow, need filename for stat
-    filename = (char*)malloc(strlen(argv[1]+1));
-    strcpy(filename, argv[1]);
+
     // y/n, if it's not y or Y then it's assumed to be no
     printf("Load data from previous file (if it exists)? [Y/n] ");
     char c = getchar(); 
+
     if(c == 'y' || c == 'Y'){
-       fd = open(argv[1], O_RDWR|O_CREAT, S_IRWXU|S_IRWXG);
+      //allocate memory so avoid buffer overflow, need filename for stat
+      filename = (char*)malloc(strlen(argv[1]+1));
+      strcpy(filename, argv[1]);
+
+       fd = open(argv[1], O_RDWR|O_CREAT, 
+                          S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_ISUID);
+
        persist(fd, &index, &head, filename);
+
+       free(filename);
        
      //if no add O_TRUNC to clear any previous data
-    }else fd = open(argv[1], O_TRUNC|O_RDWR|O_CREAT, S_IRWXU|S_IRWXG);
+    }else fd = open(argv[1], O_TRUNC|O_RDWR|O_CREAT, 
+                             S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_ISUID);
   }
 
   if( fd < 0) die("[ERROR] open failed");
@@ -119,11 +127,13 @@ void writep(int fd, int index, Player *play){
 }
 
 void persist(int fd, int *index, Node **head, char *filename){
-  int temp_i = *index; 
-  Node *temp = *head;
   int size, i;
+  int temp_i = *index; 
+
+  Node *temp = *head;
   struct stat st;
   struct player rec;
+
   Node *newn = (Node *)malloc(sizeof(Node));
 
   //stat file size, convert to index
@@ -215,15 +225,13 @@ void ask_input(int fd, int index, Node **head){
 Node* add(int fd, int index, Node **head){
   
   Node *temp = *head;
-  Player *aNode = NULL;
-    
+  struct player prec;
   //scan in the rest of the line
-  aNode = (Player *) malloc(sizeof(Player));
-  scanf("%d%s%s%d%d%d", &aNode->userid, aNode->last, aNode->first, 
-                        &aNode->wins, &aNode->losses, &aNode->ties);
+  scanf("%d%s%s%d%d%d", &prec.userid, prec.last, prec.first, 
+                        &prec.wins, &prec.losses, &prec.ties);
   
   while(temp != NULL){
-    if(temp->userid == aNode->userid){
+    if(temp->userid == prec.userid){
       printf("ERROR - userid exists.\n");
       printp(fd, temp->index);
       printf("> ");
@@ -234,30 +242,22 @@ Node* add(int fd, int index, Node **head){
   //reset temp after iterating through LL
   temp = *head;
 
-  aNode->index = index; 
-
+  prec.index = index; 
   //write node to binary file 
-  writep(fd, index, aNode);
+  writep(fd, index, &prec);
      
   printf("%s", "ADD: ");
+  printp(fd, prec.index);
   
-  printp(fd, aNode->index);
-  //allocate mem for LL node 
-  //set new node to values of node just written to
-  //persistant file 
   Node *newNode = (Node*)malloc(sizeof(Node));
-  newNode->userid = aNode->userid;
-  newNode->index = aNode->index;
+  newNode->userid = prec.userid;
+  newNode->index = prec.index;
   
   insert(&temp, newNode);
   *head = temp;
-
-  
   //make input look nicer 
   printf("> ");
   
-  free(aNode);
-
   return *head;
 }
 
@@ -267,16 +267,14 @@ void insert(Node **head, Node *newNode){
   if(*head == NULL){
     *head = newNode;
     return;
-  }
-
-  // this is the (if newNode->userid < head ) case
-  if(newNode->userid < temp->userid) {
+  }else if(newNode->userid < temp->userid) {
+  //if need to move head back must do it outside loop
     newNode->next = *head;
     *head = newNode;
     return;
   }
 
-  // if newNode userid is not < head, needs to be inserted into list
+  //else we can just insert it into the right pos in the list 
   Node *curr;
   curr = temp;
 
@@ -302,37 +300,31 @@ void insert(Node **head, Node *newNode){
 void update(int fd, Node **head){
   int userid, wins, losses, ties;
   Node *temp = *head;
+  //declare struct, don't need to use memory on the heap
+  struct player prec;
 
-  //scan in the rest of the line
   scanf("%d%d%d%d", &userid, &wins, &losses, &ties);
    
   //find data for playerid user entered, change info 
-  //for that node
   while(temp != NULL){
     if(temp->userid == userid) {
       printf("%s", "BEFORE: ");
       printp(fd, temp->index);
-  
-      Player *node = (Player *)malloc(sizeof(Player));
-      lseek(fd, temp->index*sizeof(Player), 0);
-      readp(fd, temp->index, node);
- 
-      node->userid = userid;
-      node->wins = wins;
-      node->losses=losses;
-      node->ties=ties;
 
-      writep(fd, temp->index, node);
+      readp(fd, temp->index, &prec);
+      prec.userid = userid;
+      prec.wins = wins;
+      prec.losses=losses;
+      prec.ties=ties;
+
+      writep(fd, temp->index, &prec);
 
       printf("%s", "AFTER: ");
       printp(fd, temp->index);
       //make input look nicer 
+      
       printf("> ");
-
-      free(node);
-
       return;
-
     }else{
       temp = temp->next;
     }
@@ -348,7 +340,6 @@ void query(int fd, Node **head){
   int userid;
   Node *temp = *head;
 
-  //scan in the rest of the line
   scanf("%d", &userid);
 
   //find data user needs based on given ID
@@ -357,7 +348,6 @@ void query(int fd, Node **head){
     if(temp->userid == userid) {
       printf("QUERY: ");
       printp(fd, temp->index);
-
       //make input look nicer 
       printf("> ");
 
@@ -388,6 +378,8 @@ void kill(Node **head){
   *head = NULL;
 }
 
+//throws a meaningful error message if something goes wrong
+//useful, especially in file I/O
 void die(const char *message){
   if(errno)
     perror(message);
@@ -395,3 +387,14 @@ void die(const char *message){
     printf("ERROR: %s\n", message);
   exit(1);
 }
+
+
+
+
+
+
+
+
+
+
+
