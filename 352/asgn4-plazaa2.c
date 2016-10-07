@@ -135,22 +135,24 @@ void persist(int fd, int *index, Node **head, char *filename){
   struct stat st;
   struct player rec;
 
-  Node *newn = (Node *)malloc(sizeof(Node));
-  memset(newn,0,sizeof(*newn));
 
   //stat file size, convert to index
   stat(filename, &st);
-  size = st.st_size;
+  size = st.st_size/sizeof(Player);
   if (size == 0) return;
   
-  for(i = 0; i < (size/60); i++){
-    readp(fd, size, &rec);
+  for(i = 0; i < (size); i++){
+    Node *newn = (Node *)malloc(sizeof(Node));
+    memset(newn,0,sizeof(*newn));
+    
+    readp(fd, temp_i, &rec);
     newn->userid = rec.userid;
     newn->index = temp_i;
     insert(&temp, newn);
     temp_i++;
   }
   *index = temp_i;
+  *head = temp;
 }
 
 
@@ -255,6 +257,7 @@ Node* add(int fd, int index, Node **head){
   
   Node *newNode = (Node*)malloc(sizeof(Node));
   memset(newNode, 0, sizeof(*newNode));
+
   newNode->userid = prec.userid;
   newNode->index = prec.index;
   
@@ -269,11 +272,13 @@ Node* add(int fd, int index, Node **head){
 void insert(Node **head, Node *newNode){
   Node *temp = *head;
 
-  if(*head == NULL){
+  if(temp == NULL){
     *head = newNode;
     return;
-  }else if(newNode->userid < temp->userid) {
-  //if need to move head back must do it outside loop
+  }
+ 
+  if(newNode->userid < temp->userid) {
+    //if need to move head back must do it outside loop
     newNode->next = *head;
     *head = newNode;
     return;
