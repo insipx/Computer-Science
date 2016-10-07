@@ -3,4 +3,5 @@ sample_programs/*
 *.out
 *.dat
 notes/*
+Makefile
 
