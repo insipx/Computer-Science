@@ -84,12 +84,15 @@ int main(int argc, char *argv[]) {
     printf("Load data from previous file (if it exists)? [Y/n] ");
     char c = getchar(); 
     if(c == 'y' || c == 'Y'){
-       fd = open(argv[1], O_RDWR|O_CREAT, S_IRWXU);
+       fd = open(argv[1], O_RDWR|O_CREAT, S_IRWXU|S_IRWXG);
        persist(fd, &index, &head, filename);
        
      //if no add O_TRUNC to clear any previous data
-    }else fd = open(argv[1], O_TRUNC|O_RDWR|O_CREAT, S_IRWXU);
+    }else fd = open(argv[1], O_TRUNC|O_RDWR|O_CREAT, S_IRWXU|S_IRWXG);
   }
+
+  if( fd < 0) die("[ERROR] open failed");
+
 
  
   ask_input(fd, index, &head);
@@ -116,7 +119,7 @@ void writep(int fd, int index, Player *play){
 }
 
 void persist(int fd, int *index, Node **head, char *filename){
-  
+  int temp_i = *index; 
   Node *temp = *head;
   int size, i;
   struct stat st;
@@ -126,15 +129,16 @@ void persist(int fd, int *index, Node **head, char *filename){
   //stat file size, convert to index
   stat(filename, &st);
   size = st.st_size;
-  size /= 60;
+  if (size == 0) return;
   
-  for(i = 0; i < size; i++){
+  for(i = 0; i < (size/60); i++){
     readp(fd, size, &rec);
     newn->userid = rec.userid;
-    newn->index = *index;
+    newn->index = temp_i;
     insert(&temp, newn);
-    *index++;
+    temp_i++;
   }
+  *index = temp_i;
 }
 
 
