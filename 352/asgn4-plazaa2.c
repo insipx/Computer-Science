@@ -17,6 +17,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 
 struct player {
   int userid;
@@ -27,6 +28,7 @@ struct player {
   int ties;
   int index;
 };
+
 
 struct node {
   int userid;
@@ -41,6 +43,9 @@ typedef struct player Player;
 
 void readp(int fd, int index, Player *play);
 void writep(int fd, int index, Player *play);
+
+//read in previous records
+void persist(int fd, int *index, Node **head, char *filename);
 
 void print_nodes(Node **head);
 void print_players(int fd, Node **head);
@@ -62,17 +67,31 @@ void die(const char *message);
 
 
 int main(int argc, char *argv[]) {
+
   int index = 0, fd = 0; 
+  char *filename;
+  Node *head = NULL; //head node initialized in main
+
  
   if (argc <= 1){
     fprintf(stderr, "Usage: './asgn4.out filename'\n");
     exit(1);
   }else{
-    fd = open(argv[1], O_TRUNC|O_RDWR|O_CREAT, S_IRWXU);
+    //allocate memory so avoid buffer overflow, need filename for stat
+    filename = (char*)malloc(strlen(argv[1]+1));
+    strcpy(filename, argv[1]);
+    // y/n, if it's not y or Y then it's assumed to be no
+    printf("Load data from previous file (if it exists)? [Y/n] ");
+    char c = getchar(); 
+    if(c == 'y' || c == 'Y'){
+       fd = open(argv[1], O_RDWR|O_CREAT, S_IRWXU);
+       persist(fd, &index, &head, filename);
+       
+     //if no add O_TRUNC to clear any previous data
+    }else fd = open(argv[1], O_TRUNC|O_RDWR|O_CREAT, S_IRWXU);
   }
-  
-  Node *head = NULL; //head node initialized in main
-  
+
+ 
   ask_input(fd, index, &head);
   
   //end sequence
@@ -88,7 +107,7 @@ void readp(int fd, int index, Player *play){
   if(read(fd, play, sizeof(Player)) == -1)
     die("[ERROR] read failed");
 }
-//Player *node, int fd, int index
+
 void writep(int fd, int index, Player *play){
   struct player rec = *play;
   lseek(fd, index*sizeof(Player), 0);
@@ -96,6 +115,30 @@ void writep(int fd, int index, Player *play){
     die("[ERROR] write failed");
 }
 
+void persist(int fd, int *index, Node **head, char *filename){
+  
+  Node *temp = *head;
+  int size, i;
+  struct stat st;
+  struct player rec;
+  Node *newn = (Node *)malloc(sizeof(Node));
+
+  //stat file size, convert to index
+  stat(filename, &st);
+  size = st.st_size;
+  size /= 60;
+  
+  for(i = 0; i < size; i++){
+    readp(fd, size, &rec);
+    newn->userid = rec.userid;
+    newn->index = *index;
+    insert(&temp, newn);
+    *index++;
+  }
+}
+
+
+//print functions
 void print_nodes(Node **head){
   Node *node = *head;
   printf("The linked list: ");
@@ -114,6 +157,9 @@ void print_players(int fd, Node **head){
   }
 }
 
+//takes file and index of player
+//reads with readp into player struct
+//prints it
 void printp(int fd, int index){
   struct player play;
   readp(fd, index, &play);
@@ -282,6 +328,7 @@ void update(int fd, Node **head){
       free(node);
 
       return;
+
     }else{
       temp = temp->next;
     }
