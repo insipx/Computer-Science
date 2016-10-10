@@ -89,14 +89,12 @@ int main(int argc, char *argv[]) {
 
     if(c == 'y' || c == 'Y'){
       //allocate memory so avoid buffer overflow, need filename for stat
-      filename = (char*)malloc(strlen(argv[1]+1));
+      filename = (char*)malloc(strlen(argv[1])+1);
+      memset(filename, 0, sizeof(*filename));
       strcpy(filename, argv[1]);
-
-       fd = open(argv[1], O_RDWR|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
-
-       persist(fd, &index, &head, filename);
-
-       free(filename);
+      fd = open(argv[1], O_RDWR|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+      persist(fd, &index, &head, filename);
+      free(filename);
        
      //if no add O_TRUNC to clear any previous data
     }else fd = open(argv[1], O_TRUNC|O_RDWR|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
