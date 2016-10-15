@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
   while(1){
     printf("%c%s%c%c ", '$', login, '_', '>');
     readln(&cmd);
-    printf("%s\n",cmd);
+    printf(cmd);
     if(strcmp(cmd, "exit") == 0) 
       break;
   }
