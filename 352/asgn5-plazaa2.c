@@ -19,19 +19,26 @@
 
 //method definitions
 char *readln();
-char *plogin();
+int retLogin(char *getlog);
 int is_whitespace(char c);
 void die(const char *message);
 
 int main(int argc, char *argv[]){
   char *cmd;
+  //max login length is 32 bytes, 33 for good luck
+  char *login = malloc(33);
+  memset(login, 0, 33);
+
+  retLogin(login);
+
   while(1){
-    printf("%c%s%c%c ", '$', plogin(), '_', '>');
+    printf("%c%s%c%c ", '$', login, '_', '>');
     cmd = readln();
     printf(cmd);
     if(strcmp(cmd, "exit") == 0) exit(0);
   }
-
+  free(cmd);
+  free(login);
   return 0;
 }
 
@@ -40,7 +47,7 @@ char *readln() {
 	// Allocate memory for a string.
   // avoid buffer overflow through realloc
   
-	size_t size = 8;
+	size_t size = 20;
 	char *str = (char*) malloc(size);
   memset(str, 0, size);
 	if (str) {
@@ -59,14 +66,14 @@ char *readln() {
     //it goes over the size (initially 20B)
 		if (i >= size) {
 			size++;
-			str = (char*) realloc(str, size);
-      memset(str+size, 0, 1);
-		}else if (c == '\n' || c == EOF) {
-      memset(str+size, '\0', (sizeof(str)*strlen(str))-size);
-			break;
+			str = realloc(str, size);
+		}
+    if (c == '\n' || c == EOF) {
+		  *(str + i)	= '\0';
+      break;
 		}
 
-		str[i] = c;
+		*(str + i) = c;
 		i++;
 
 	} while (1);
@@ -88,16 +95,16 @@ char *readln() {
     printf("%s", getlog);
   return 0;
 */
-char *plogin(){
-  char *getlog = (char*)malloc(50);
-  memset(getlog,0, 50);
+int retLogin(char *getlog){
+  
   getlog = getlogin();
   
   if(!getlog){
     //perror("getlogin() error");
-    return NULL;
+    free(getlog);
+    return -1;
   }else
-    return getlog;
+    return 0;
 }
 
 int is_whitespace(char c) {
