@@ -16,43 +16,68 @@
 #include <errno.h>
 #include <fcntl.h>
 
-
 //method definitions
-int readln(char **tmp);
+char **getArgs();
+int readWord(char **tmp);
 int retLogin(char **getlog);
 int is_whitespace(char c);
 void die(const char *message);
+void free_a(char **strA, int args_size);
 
 int main(int argc, char *argv[]){
   
-  //just one byte 
-  char *cmd = malloc(sizeof(char));
-  memset(cmd, 0, 8);
+  //args_size will be the argc to our argv for execvp
+  int args_size; 
+  char **ex_argv;
+  //just one byte, realloced in readWord 
+  char *cmd = malloc(2 * sizeof(char));
+  memset(cmd, 0, 2);
   
   //max login length is 32 bytes, 33 for good luck
-  char *login = malloc(sizeof(char)*33);
+  char *login = malloc(33 *sizeof(char));
   memset(login, 0, 33);
+
   retLogin(&login);
 
   while(1){
     printf("%c%s%c%c ", '$', login, '_', '>');
-    readln(&cmd);
-    printf(cmd);
+    if(readWord(&cmd) == -2)
+      ex_argv = getArgs(&args_size);  
     if(strcmp(cmd, "exit") == 0) 
       break;
-  }
+    printf("%s%s\n", ex_argv[0], ex_argv[1]);
 
+  }
+  free_a(ex_argv, args_size);
+  free(ex_argv);
   free(cmd);
   free(login);
   return 0;
 }
 
+char **getArgs(int *args_size){
+  int i = 0;
+  char **ex_argv = malloc(sizeof(char *) * 1);
+  
+  while(1){
+    ex_argv[i] = malloc(sizeof(char) * 2);
+    memset(ex_argv[i], 0, sizeof(char));
+    if(readWord(&ex_argv[i]) == -2){
+      i++;
+      ex_argv = realloc(ex_argv, sizeof(char *) * (i+1));
+    }
+    else{
+      *args_size = i;
+      return ex_argv;
+    }
+  } 
+}
 
-int readln(char **tmp) {
+int readWord(char **tmp) {
   char *str = *tmp; 
 	// Allocate memory for a string.
   // avoid buffer overflow through realloc
-  size_t size = sizeof(str);	
+  size_t size = strlen(str);	
 
 	char c;
 	int i = 0;
@@ -64,18 +89,21 @@ int readln(char **tmp) {
     //it goes over the size (initially 8B)
 		if (i >= size) {
 			size++;
-			str = realloc(str, size);
+			*tmp = realloc(*tmp, sizeof(char) * size);
+      str = *tmp;
 		}
-    if (c == '\n' || c == EOF) {
-		  *(str + i)	= '\0';
+    if (c == '\n' || c == EOF || c == ' ') {
+		  str[i]	= '\0';
       break;
 		}
 
-		*(str + i) = c;
+		str[i] = c;
 		i++;
 	} while (1);
   
-  if(str) 
+  if (c == ' ')
+    return -2;
+  else if(str)
     return 0;
   else
     return -1;
@@ -83,18 +111,7 @@ int readln(char **tmp) {
 
 
 //getlogin is deprecated on ArchLinux (& newer distro's in general)
-//this is one way to 'trick' it into working (sometimes)  
 //works fine on the servers, for the purposes of this proj
-/*  char *getlog;
-  getlog = (char*)malloc(50);
-  memset(getlog,0, 50);
-  getlog = getlogin();
-  if(!getlog) 
-    perror("getlogin() error");
-  else
-    printf("%s", getlog);
-  return 0;
-*/
 int retLogin(char **tmp){
   char *getlog = *tmp; 
   getlog = getlogin();  
@@ -107,14 +124,11 @@ int retLogin(char **tmp){
     return 0;
 }
 
-int is_whitespace(char c) {
-   int i = 0;
-   char spaces[] = {' ', '\t'};
-   while (spaces[i] != '\0') {
-      if (c == spaces[i++])
-         return 1;
-   }
-   return 0;
+void free_a(char **strA, int length){
+  int i = 0;
+  for(i = 0; i < length+1; i++){
+    free(strA[i]);
+  }
 }
 
 void die(const char *message){
