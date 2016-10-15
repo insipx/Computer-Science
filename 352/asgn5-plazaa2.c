@@ -18,42 +18,41 @@
 
 
 //method definitions
-char *readln();
-int retLogin(char *getlog);
+int readln(char **tmp);
+int retLogin(char **getlog);
 int is_whitespace(char c);
 void die(const char *message);
 
 int main(int argc, char *argv[]){
-  char *cmd;
+  
+  //just one byte 
+  char *cmd = malloc(sizeof(char));
+  memset(cmd, 0, 8);
+  
   //max login length is 32 bytes, 33 for good luck
-  char *login = malloc(33);
+  char *login = malloc(sizeof(char)*33);
   memset(login, 0, 33);
-
-  retLogin(login);
+  retLogin(&login);
 
   while(1){
     printf("%c%s%c%c ", '$', login, '_', '>');
-    cmd = readln();
-    printf(cmd);
-    if(strcmp(cmd, "exit") == 0) exit(0);
+    readln(&cmd);
+    printf("%s\n",cmd);
+    if(strcmp(cmd, "exit") == 0) 
+      break;
   }
+
   free(cmd);
   free(login);
   return 0;
 }
 
 
-char *readln() {
+int readln(char **tmp) {
+  char *str = *tmp; 
 	// Allocate memory for a string.
   // avoid buffer overflow through realloc
-  
-	size_t size = 20;
-	char *str = (char*) malloc(size);
-  memset(str, 0, size);
-	if (str) {
-	} else {
-		die("Mem allocate unsuccessful");
-	}
+  size_t size = sizeof(str);	
 
 	char c;
 	int i = 0;
@@ -61,9 +60,8 @@ char *readln() {
 	do {
 		c = fgetc(stdin);
 	  
-    //printf("%c\n", c);
     //reallocate memory by 1B every time
-    //it goes over the size (initially 20B)
+    //it goes over the size (initially 8B)
 		if (i >= size) {
 			size++;
 			str = realloc(str, size);
@@ -75,10 +73,12 @@ char *readln() {
 
 		*(str + i) = c;
 		i++;
-
 	} while (1);
-
-  return str;
+  
+  if(str) 
+    return 0;
+  else
+    return -1;
 }
 
 
@@ -95,13 +95,13 @@ char *readln() {
     printf("%s", getlog);
   return 0;
 */
-int retLogin(char *getlog){
-  
-  getlog = getlogin();
-  
+int retLogin(char **tmp){
+  char *getlog = *tmp; 
+  getlog = getlogin();  
+
   if(!getlog){
     //perror("getlogin() error");
-    free(getlog);
+    //free(getlog);
     return -1;
   }else
     return 0;
