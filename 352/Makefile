@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS= -Wall -g
-asgn4-plazaa2:: asgn4-plazaa2.c
-	$(CC) -o asgn4.out asgn4-plazaa2.c $(CFLAGS)
+asgn5-plazaa2:: asgn5-plazaa2.c
+	$(CC) -o asgn5.out asgn5-plazaa2.c $(CFLAGS)
 clean:
-	rm asgn4.out
+	rm asgn5.out
