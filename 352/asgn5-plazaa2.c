@@ -27,7 +27,7 @@ void die(const char *message);
 int main(int argc, char *argv[]){
   int i = 0;
   while(i < 2){
-    printf("%s%c \n", plogin(), '>');
+    printf("%c%s%c%c\n", '$', plogin(), '_', '>');
     i++;
   }
   return 0;
@@ -95,7 +95,7 @@ char *plogin(){
   getlog = getlogin();
   
   if(!getlog){
-    perror("getlogin() error");
+    //perror("getlogin() error");
     return NULL;
   }else
     return getlog;
