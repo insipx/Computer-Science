@@ -18,27 +18,23 @@
 
 
 //method definitions
-char *get_cmd();
 char *readln();
 char *plogin();
 int is_whitespace(char c);
 void die(const char *message);
 
 int main(int argc, char *argv[]){
-  int i = 0;
-  while(i < 2){
-    printf("%c%s%c%c\n", '$', plogin(), '_', '>');
-    i++;
+  char *cmd;
+  while(1){
+    printf("%c%s%c%c ", '$', plogin(), '_', '>');
+    cmd = readln();
+    printf(cmd);
+    if(strcmp(cmd, "exit") == 0) exit(0);
   }
+
   return 0;
 }
 
-
-char *get_cmd(){
-  char c;
-   
-  return NULL;
-}
 
 char *readln() {
 	// Allocate memory for a string.
@@ -57,19 +53,22 @@ char *readln() {
 
 	do {
 		c = fgetc(stdin);
-		str[i] = c;
-		i++;
-		
-    //reallocate memory by 1B every time,
+	  
+    //printf("%c\n", c);
+    //reallocate memory by 1B every time
+    //it goes over the size (initially 20B)
 		if (i >= size) {
 			size++;
 			str = (char*) realloc(str, size);
       memset(str+size, 0, 1);
-		}
-		if (c == '\n' || c == EOF) {
-			str[i] = '\0';
+		}else if (c == '\n' || c == EOF) {
+      memset(str+size, '\0', (sizeof(str)*strlen(str))-size);
 			break;
 		}
+
+		str[i] = c;
+		i++;
+
 	} while (1);
 
   return str;
