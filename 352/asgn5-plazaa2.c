@@ -27,7 +27,7 @@ void die(const char *message);
 int main(int argc, char *argv[]){
   int i = 0;
   while(i < 2){
-    printf("%s%c", plogin(), '>');
+    printf("%s%c\n", plogin(), '>');
     i++;
   }
   return 0;
