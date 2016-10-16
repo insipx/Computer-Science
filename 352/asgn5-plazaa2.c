@@ -57,17 +57,20 @@ int main(){
   retLogin(&login);
 
   do{
+    
     printf("%c%s%c%c ", '$', login, '_', '>');
     args = getArgs(&args_size);  
     status = execute(args);
     
     free_a(args, args_size);
     free(args);
+
   }while(status);
 
   free_a(args, args_size);
   free(args);
   free(login);
+
   return EXIT_SUCCESS;
 }
 
@@ -113,7 +116,7 @@ int readWord(char **tmp) {
       str = *tmp;
 		}
 
-    //stops at a whitespace
+    //stops at a whitespace to get entire word
     if (c == '\n' || c == EOF || c == ' ') {
 		  str[i]	= '\0';
       break;
@@ -180,7 +183,7 @@ int execute(char **args){
 }
 
 int launch(char **args){
- int pid, w_pid, status;
+ int pid, status;
  
  pid = fork();
  if(pid == 0){
@@ -190,7 +193,7 @@ int launch(char **args){
    die("[ERROR] forking");
  else{
   do {
-    w_pid = waitpid(pid, &status, WUNTRACED);
+    waitpid(pid, &status, WUNTRACED);
     } while (!WIFEXITED(status) && !WIFSIGNALED(status)); 
  }
  return 1;
