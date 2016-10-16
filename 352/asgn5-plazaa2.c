@@ -19,63 +19,76 @@
 #include <sys/wait.h>
 
 //method definitions
+int num_builtins();
 char **getArgs();
 int readWord(char **tmp);
 int retLogin(char **getlog);
-int is_whitespace(char c);
+int sh_cd(char **args);
+int sh_exit(char **args);
+int launch(char **args);
+int execute(char **args);
 void die(const char *message);
 void free_a(char **strA, int args_size);
 
-int main(int argc, char *argv[]){
-  
+//built-ins
+char *builtin_str[] = {
+  "cd",
+  "exit"
+};
+
+int (*builtin_func[]) (char **) = {
+  &sh_cd,
+  &sh_exit
+};
+
+int num_builtins() {
+  return sizeof(builtin_str) / sizeof(char *);
+}
+
+int main(){
   //args_size will be the argc to our argv for execvp
   int args_size, status; 
-  char **ex_argv;
-  //just one byte, realloced in readWord 
-  char *cmd = malloc(2 * sizeof(char));
-  memset(cmd, 0, 2);
-  
-  //max login length is 32 bytes, 33 for good luck
-  char *login = malloc(33 *sizeof(char));
-  memset(login, 0, 33);
+  char **args, *login;
 
+  //max login length is 32 bytes, 33 for good luck
+  login = malloc(33 *sizeof(char));
+  memset(login, 0, 33);
   //get the login 
   retLogin(&login);
 
-  while(1){
+  do{
     printf("%c%s%c%c ", '$', login, '_', '>');
-    if(readWord(&cmd) == -2)
-      ex_argv = getArgs(&args_size);  
-    if(strcmp(cmd, "exit") == 0) 
-      break;
-    if(fork() != 0){
-      waitpid(-1, &status, WNOHANG);
-    }else{
-      execvp(cmd, ex_argv);
-    }
-  }
+    args = getArgs(&args_size);  
+    status = execute(args);
+    
+    free_a(args, args_size);
+    free(args);
+  }while(status);
 
-  free_a(ex_argv, args_size);
-  free(ex_argv);
-  free(cmd);
+  free_a(args, args_size);
+  free(args);
   free(login);
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 char **getArgs(int *args_size){
   int i = 0;
-  char **ex_argv = malloc(sizeof(char *) * 1);
+  char **args = malloc(sizeof(char *) * 1);
   
   while(1){
-    ex_argv[i] = malloc(sizeof(char) * 2);
-    memset(ex_argv[i], 0, sizeof(char));
-    if(readWord(&ex_argv[i]) == -2){
+    args[i] = malloc(sizeof(char) * 2);
+    memset(args[i], 0, sizeof(char));
+    if(readWord(&args[i]) == -2){
       i++;
-      ex_argv = realloc(ex_argv, sizeof(char *) * (i+1));
+      args = realloc(args, sizeof(char *) * (i+1));
     }
     else{
+      //add one more char* that is NULL so execvp knows the length
+      i++;
+      args = realloc(args, sizeof(char *) * (i+1));
+      args[i] = NULL;
       *args_size = i;
-      return ex_argv;
+      return args;
     }
   } 
 }
@@ -99,6 +112,8 @@ int readWord(char **tmp) {
 			*tmp = realloc(*tmp, sizeof(char) * size);
       str = *tmp;
 		}
+
+    //stops at a whitespace
     if (c == '\n' || c == EOF || c == ' ') {
 		  str[i]	= '\0';
       break;
@@ -131,6 +146,57 @@ int retLogin(char **tmp){
     return 0;
 }
 
+int sh_cd(char **args){
+  if(args[1] == NULL)
+    fprintf(stderr, "Error: user-entered command and parameters");
+  else{
+    if(chdir(args[1]) != 0){
+      perror("[ERROR] chdir failed");
+    }
+  }
+  //this way status will keep going
+  return 1;
+}
+
+
+int sh_exit(char **args){
+  exit(0);
+}
+
+int execute(char **args){
+  int i; 
+
+  if(args[0] == NULL){
+    return 1; 
+  }
+
+  for(i = 0; i < num_builtins(); i++){
+    if(strcmp(args[0], builtin_str[i]) == 0)
+     return(*builtin_func[i])(args);
+  
+  }
+  return launch(args);
+
+}
+
+int launch(char **args){
+ int pid, w_pid, status;
+ 
+ pid = fork();
+ if(pid == 0){
+  if(execvp(args[0], args) == -1)
+    die("[ERROR] did not execute correctly");
+ }else if (pid < 0)
+   die("[ERROR] forking");
+ else{
+  do {
+    w_pid = waitpid(pid, &status, WUNTRACED);
+    } while (!WIFEXITED(status) && !WIFSIGNALED(status)); 
+ }
+ return 1;
+}
+
+
 void free_a(char **strA, int length){
   int i = 0;
   for(i = 0; i < length+1; i++){
@@ -142,7 +208,7 @@ void die(const char *message){
   if(errno)
     perror(message);
   else
-    printf("ERROR: %s\n", message);
+    printf("[ERROR] %s\n", message);
   exit(1);
 }
 
