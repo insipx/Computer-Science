@@ -15,6 +15,8 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 //method definitions
 char **getArgs();
@@ -27,7 +29,7 @@ void free_a(char **strA, int args_size);
 int main(int argc, char *argv[]){
   
   //args_size will be the argc to our argv for execvp
-  int args_size; 
+  int args_size, status; 
   char **ex_argv;
   //just one byte, realloced in readWord 
   char *cmd = malloc(2 * sizeof(char));
@@ -37,6 +39,7 @@ int main(int argc, char *argv[]){
   char *login = malloc(33 *sizeof(char));
   memset(login, 0, 33);
 
+  //get the login 
   retLogin(&login);
 
   while(1){
@@ -45,9 +48,13 @@ int main(int argc, char *argv[]){
       ex_argv = getArgs(&args_size);  
     if(strcmp(cmd, "exit") == 0) 
       break;
-    printf("%s%s\n", ex_argv[0], ex_argv[1]);
-
+    if(fork() != 0){
+      waitpid(-1, &status, WNOHANG);
+    }else{
+      execvp(cmd, ex_argv);
+    }
   }
+
   free_a(ex_argv, args_size);
   free(ex_argv);
   free(cmd);
