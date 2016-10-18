@@ -31,6 +31,9 @@ int isNextArg();
 void die(const char *message);
 void free_a(char **strA, int args_size);
 
+
+//if done in this way, adding new builtins (if needed)
+//is cake
 //built-ins
 char *builtin_str[] = {
   "cd",
@@ -84,7 +87,7 @@ char **getArgs(int *args_size){
   while(1){
     args[i] = malloc(sizeof(char) * 2);
     memset(args[i], 0, sizeof(char));
-    if(readWord(&args[i]) == -2){
+    if(readWord(&args[i]) == -1){
       i++;
       args = realloc(args, sizeof(char *) * (i+1));
     }
@@ -133,15 +136,12 @@ int readWord(char **tmp) {
     ungetc(c, stdin);
     //this is for getting rid of whitespace
     return isNextArg();
-  }else if(str)
+  }else
     return 0;
-  else
-    return -1;
 }
 
 //check if the next character is the start of another
 //argument, and not simply whitespace
-
 int isNextArg(){
   char c;
   int i;
@@ -152,10 +152,10 @@ int isNextArg(){
   } while (c == ' ');
   
   if(c == EOF || c == '\n' )
-    return -1;
+    return 0;
   else{
     ungetc(c, stdin);
-    return -2;
+    return -1;
   }
 }
 
@@ -167,8 +167,8 @@ int retLogin(char **tmp){
   getlog = getlogin();  
 
   if(!getlog){
-    //perror("getlogin() error");
-    //free(getlog);
+    perror("getlogin() error");
+    free(getlog);
     return -1;
   }else
     return 0;
