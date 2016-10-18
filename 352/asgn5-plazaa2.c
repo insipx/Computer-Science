@@ -165,6 +165,7 @@ int isNextArg(){
 int retLogin(char **tmp){
   char *getlog = *tmp; 
   getlog = getlogin();  
+  *tmp = getlog;
 
   if(!getlog){
     perror("getlogin() error");
