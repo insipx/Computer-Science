@@ -168,7 +168,7 @@ int retLogin(char **tmp){
   *tmp = getlog;
 
   if(!getlog){
-    perror("getlogin() error");
+    die("getlogin() error");
     free(getlog);
     return -1;
   }else
@@ -214,7 +214,7 @@ int launch(char **args){
  pid = fork();
  if(pid == 0){
   if(execvp(args[0], args) == -1)
-    die("[ERROR] did not execute correctly");
+    die("[ERROR] command not found");
  }else if (pid < 0)
    die("[ERROR] forking");
  else{
