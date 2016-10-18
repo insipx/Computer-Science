@@ -27,6 +27,7 @@ int sh_cd(char **args);
 int sh_exit(char **args);
 int launch(char **args);
 int execute(char **args);
+int isNextArg();
 void die(const char *message);
 void free_a(char **strA, int args_size);
 
@@ -44,6 +45,8 @@ int (*builtin_func[]) (char **) = {
 int num_builtins() {
   return sizeof(builtin_str) / sizeof(char *);
 }
+
+// create a trim whitespace function
 
 int main(){
   //args_size will be the argc to our argv for execvp
@@ -109,7 +112,7 @@ int readWord(char **tmp) {
 		c = fgetc(stdin);
 	  
     //reallocate memory by 1B every time
-    //it goes over the size (initially 8B)
+    //it goes over the size (initially 1B)
 		if (i >= size) {
 			size++;
 			*tmp = realloc(*tmp, sizeof(char) * size);
@@ -120,18 +123,40 @@ int readWord(char **tmp) {
     if (c == '\n' || c == EOF || c == ' ') {
 		  str[i]	= '\0';
       break;
-		}
-
-		str[i] = c;
-		i++;
+		}else{
+      str[i] = c;
+      i++;
+    }
 	} while (1);
   
-  if (c == ' ')
-    return -2;
-  else if(str)
+  if (c == ' '){
+    ungetc(c, stdin);
+    //this is for getting rid of whitespace
+    return isNextArg();
+  }else if(str)
     return 0;
   else
     return -1;
+}
+
+//check if the next character is the start of another
+//argument, and not simply whitespace
+
+int isNextArg(){
+  char c;
+  int i;
+
+  do{
+    c = fgetc(stdin);
+    i++;
+  } while (c == ' ');
+  
+  if(c == EOF || c == '\n' )
+    return -1;
+  else{
+    ungetc(c, stdin);
+    return -2;
+  }
 }
 
 
