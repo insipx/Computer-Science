@@ -17,6 +17,9 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <pwd.h>
+
 
 //method definitions
 int num_builtins();
@@ -163,13 +166,14 @@ int isNextArg(){
 //getlogin is deprecated on ArchLinux (& newer distro's in general)
 //works fine on the servers, for the purposes of this proj
 int retLogin(char **tmp){
-  char *getlog = *tmp; 
-  getlog = getlogin();  
-  *tmp = getlog;
-
-  if(!getlog){
+  
+  struct passwd *pass;
+//  getlog = getlogin();  
+  pass = getpwuid(getuid());
+  *tmp = pass->pw_name;
+    
+  if(!*tmp){
     die("getlogin() error");
-    free(getlog);
     return -1;
   }else
     return 0;
@@ -214,7 +218,7 @@ int launch(char **args){
  pid = fork();
  if(pid == 0){
   if(execvp(args[0], args) == -1)
-    die("[ERROR] command not found");
+    die("command not found");
  }else if (pid < 0)
    die("[ERROR] forking");
  else{
