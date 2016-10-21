@@ -6,7 +6,8 @@
  * run: ./asgn5.out
  * debug: gdb ./asgn5.out
  * 
- * DESCRIBE PROGRAM HERE
+ * A simple shell program, without autocomplete, 
+ * globbing, cool unicode stuff, but it's awesome
  */
 
 #include <stdio.h>
