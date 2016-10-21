@@ -22,63 +22,58 @@
 
 
 //method definitions
-int num_builtins();
 char **getArgs();
 int readWord(char **tmp);
-int retLogin(char **getlog);
+int isNextArg();
 int sh_cd(char **args);
 int sh_exit(char **args);
-int launch(char **args);
-int execute(char **args);
-int isNextArg();
+int start(char **args);
+int initChild(char **args);
+void argsError(char **args);
+void freeArgs(char **strA, int args_size);
 void die(const char *message);
-void free_a(char **strA, int args_size);
 
 
 //if done in this way, adding new builtins (if needed)
 //is cake
 //built-ins
-char *builtin_str[] = {
+char *builtinStr[] = {
   "cd",
   "exit"
 };
 
-int (*builtin_func[]) (char **) = {
+int (*builtinFunc[]) (char **) = {
   &sh_cd,
   &sh_exit
 };
 
-int num_builtins() {
-  return sizeof(builtin_str) / sizeof(char *);
+int numBuiltins() {
+  return sizeof(builtinStr) / sizeof(char *);
 }
-
-// create a trim whitespace function
+//end built-ins
 
 int main(){
+
   //args_size will be the argc to our argv for execvp
   int args_size, status; 
-  char **args, *login;
+  char **args;
 
   //max login length is 32 bytes, 33 for good luck
-  login = malloc(33 *sizeof(char));
-  memset(login, 0, 33);
+  
   //get the login 
-  retLogin(&login);
 
+  //main shell loop
   do{
-    
-    printf("%c%s%c%c ", '$', login, '_', '>');
+    printf("%c%s%c%c ", '$', getlogin(), '_', '>');
     args = getArgs(&args_size);  
-    status = execute(args);
+    status = start(args);
     
-    free_a(args, args_size);
+    freeArgs(args, args_size);
     free(args);
-
   }while(status);
 
-  free_a(args, args_size);
+  freeArgs(args, args_size);
   free(args);
-  free(login);
 
   return EXIT_SUCCESS;
 }
@@ -163,30 +158,14 @@ int isNextArg(){
 }
 
 
-//getlogin is deprecated on ArchLinux (& newer distro's in general)
-//works fine on the servers, for the purposes of this proj
-int retLogin(char **tmp){
-  
-  struct passwd *pass;
-//  getlog = getlogin();  
-  pass = getpwuid(getuid());
-  *tmp = pass->pw_name;
-    
-  if(!*tmp){
-    die("getlogin() error");
-    return -1;
-  }else
-    return 0;
-}
-
 int sh_cd(char **args){
   if(args[1] == NULL)
     fprintf(stderr, "Error: user-entered command and parameters");
   else{
-    if(chdir(args[1]) != 0){
+    if(chdir(args[1]) != 0)
       perror("[ERROR] chdir failed");
-    }
   }
+
   //this way status will keep going
   return 1;
 }
@@ -196,29 +175,31 @@ int sh_exit(char **args){
   exit(0);
 }
 
-int execute(char **args){
+int start(char **args){
   int i; 
 
   if(args[0] == NULL){
     return 1; 
   }
 
-  for(i = 0; i < num_builtins(); i++){
-    if(strcmp(args[0], builtin_str[i]) == 0)
-     return(*builtin_func[i])(args);
+  for(i = 0; i < numBuiltins(); i++){
+    if(strcmp(args[0], builtinStr[i]) == 0)
+     return(*builtinFunc[i])(args);
   
   }
-  return launch(args);
+  return initChild(args);
 
 }
 
-int launch(char **args){
- int pid, status;
+int initChild(char **args){
+ int pid, status, err;
  
  pid = fork();
  if(pid == 0){
-  if(execvp(args[0], args) == -1)
-    die("command not found");
+  err = execvp(args[0], args);
+  if(err == -1){
+    argsError(args);
+  }
  }else if (pid < 0)
    die("[ERROR] forking");
  else{
@@ -229,8 +210,18 @@ int launch(char **args){
  return 1;
 }
 
+void argsError(char **args){
+  int i = 0;
+  printf("Error: ");
+  while(args[i] != NULL){
+    printf("%s%c", args[i], ' ');
+    i++;
+  }
+  printf("\n");
+  exit(1);
+} 
 
-void free_a(char **strA, int length){
+void freeArgs(char **strA, int length){
   int i = 0;
   for(i = 0; i < length+1; i++){
     free(strA[i]);
