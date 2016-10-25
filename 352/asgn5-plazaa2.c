@@ -23,7 +23,7 @@
 
 
 //method definitions
-char **getArgs();
+char **getArgs(int *args_size);
 int readWord(char **tmp);
 int isNextArg();
 int sh_cd(char **args);
@@ -118,7 +118,7 @@ int readWord(char **tmp) {
 		if (i >= size) {
 			size++;
 			*tmp = realloc(*tmp, sizeof(char) * size);
-      str = *tmp;
+          str = *tmp;
 		}
 
     //stops at a whitespace to get entire word
