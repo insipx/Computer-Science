@@ -143,7 +143,7 @@ int readWord(char **tmp) {
 //argument, and not simply whitespace
 int isNextArg(){
   char c;
-  int i;
+  int i = 0;
 
   do{
     c = fgetc(stdin);
