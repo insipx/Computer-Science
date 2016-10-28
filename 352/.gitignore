@@ -4,4 +4,6 @@ sample_programs/*
 *.dat
 notes/*
 Makefile
+.idea/*
+CMakeLists.txt
 
