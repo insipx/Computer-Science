@@ -1,0 +1,12 @@
+Script started on Sun 19 Feb 2017 04:17:51 PM EST
+[1m[7m%[27m[1m[0m                                                                                                                                                                             ]2;insidious@localhost: ~/workspace/Computer-Science/370/assignment_1]1;../assignment_1[0m[27m[24m[J[39m[0m[49m[40m[39m insidious@localhost [44m[30m[30m assignment_1 [43m[34m[30m  master [49m[33m[39m [K[?1h=[?2004h//usr/bin/bash[?1l>[?2004l
+]2;/usr/bin/bash]1;/usr/bin/bash]0;insidious@localhost:~/workspace/Computer-Science/370/assignment_1[insidious@localhost assignment_1]$ make
+gcc simple.c -D_LINUX -ffast-math -funroll-loops -O3 -g  -I../include -L../lib -L/usr/X11R6/lib -lGL -lglut -lGLU  -o simple
+]0;insidious@localhost:~/workspace/Computer-Science/370/assignment_1[insidious@localhost assignment_1]$ ls
+Makefile  output.txt  [0m[01;32msimple[0m  simple.c
+]0;insidious@localhost:~/workspace/Computer-Science/370/assignment_1[insidious@localhost assignment_1]$ ./simple 
+]0;insidious@localhost:~/workspace/Computer-Science/370/assignment_1[insidious@localhost assignment_1]$ [K[insidious@localhost assignment_1]$ ex[K[Kexit
+exit
+[1m[7m%[27m[1m[0m                                                                                                                                                                             ]2;insidious@localhost: ~/workspace/Computer-Science/370/assignment_1]1;../assignment_1[0m[27m[24m[J[39m[0m[49m[40m[39m insidious@localhost [44m[30m[30m assignment_1 [43m[34m[30m  master [49m[33m[39m [K[?1h=[?2004heexit[?1l>[?2004l
+]2;exit]1;exit
+Script done on Sun 19 Feb 2017 04:18:05 PM EST
