@@ -17,7 +17,6 @@
 
 
 void display(void)
-
 {
 /* clear window */
 
@@ -34,7 +33,6 @@ void display(void)
 	glEnd();
 
 /* flush GL buffers */
-
 	glFlush(); 
 
 }
@@ -52,10 +50,12 @@ void init()
 /* set up standard orthogonal view with clipping */
 /* box as cube of side 2 centered at origin */
 /* This is default view and these statement could be removed */
-
+/*
 	glMatrixMode (GL_PROJECTION);
   glLoadIdentity ();
 	glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0); 
+*/
+
 }
 
 int main(int argc, char** argv)
@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);  
 	glutInitWindowSize(500,500);
 	glutInitWindowPosition(0,0);
-	glutCreateWindow("simple"); 
+	glutCreateWindow("simple");  //window name
 	glutDisplayFunc(display);
 	init();
 	glutMainLoop();
