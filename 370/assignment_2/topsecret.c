@@ -59,6 +59,15 @@ void init_mod()
 
   glColor3f(1.0, 1.0, 1.0);
 
+  /* set up standard orthogonal view with clipping */
+  /* box as cube of side 2 centered at origin */
+  /* This is default view and these statements could be removed */
+  /*
+	glMatrixMode (GL_PROJECTION);
+  glLoadIdentity ();
+	glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0); 
+  */
+
 }
 
 
