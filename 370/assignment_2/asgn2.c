@@ -1,11 +1,12 @@
 // Code online at http://www.cs.uofs.edu/~bishop/proj1-2.c
 #include <GL/glut.h>         /* glut.h includes gl.h and glu.h*/
 #include "topsecret.c"
-
+int rotate = 0;
 void display(void)
 {
-        // rotate eye about y
-	transform_eye();
+  rotate += 1;
+  // rotate eye about y
+	transform_eye(rotate);
   int eyex = 5, eyey = 5, eyez = 5;
 
 	// set up new view
@@ -21,14 +22,16 @@ void display(void)
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); 
 	draw_triangles();
-	//glFlush();
+	
+  //glFlush();
 	glutSwapBuffers();
 }
 
 int main(int argc, char** argv)
 {
+ 	glutInit(&argc,argv); 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	glutCreateWindow("simple"); 
+	glutCreateWindow("Assignment 2"); 
 	glutDisplayFunc(display);
 	glutIdleFunc(glutPostRedisplay);
 	glEnable(GL_DEPTH_TEST);
