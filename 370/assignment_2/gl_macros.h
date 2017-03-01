@@ -73,18 +73,18 @@
     {                                                             \
       {cosT, 0, sinT, 0},                                         \
       {0, 1, 0, 0},                                               \
-      {sinT, 0, cosT, 0},                                         \
+      {-sinT, 0, cosT, 0},                                        \
       {0, 0, 0, 1},                                               \
     };                                                            \
                                                                   \
     int i = 0, j = 0;                                             \
-    float result[4];                                              \
+    double result[4];                                             \
     for(i = 0; i < 4; i++) {                                      \
       for(j = 0; j < 4; j++) {                                    \
         result[i] += rotateArr[i][j] * vector[j];                 \
       }                                                           \
     }                                                             \
-    printf("%f %f %f\n", result[0], result[1], result[2]);        \
+    printf("%lf %lf %lf\n", result[0], result[1], result[2]);        \
 	  gluLookAt(result[0], result[1], result[2], /* eye */          \
 	            target[0], target[1], target[2], /* target */       \
 	            up[0], up[1], up[2]  /* up */                       \

@@ -1,15 +1,19 @@
 // Code online at http://www.cs.uofs.edu/~bishop/proj1-2.c
 #include <GL/glut.h>         /* glut.h includes gl.h and glu.h*/
 #include "topsecret.c"
-int rotate = 0;
+
+double rotate = 0;
+
 void display(void)
 {
-  rotate += 1;
-  // rotate eye about y
-	transform_eye(rotate);
-  int eyex = 5, eyey = 5, eyez = 5;
+  rotate += .01; //rotate by .01 degrees
 
-	// set up new view
+  // rotate eye about y
+  float eyex = 5, eyey = 5, eyez = 5;
+	transform_eye(rotate, &eyex, &eyey, &eyez);
+  printf("[%lf, %lf, %lf]\n", eyex, eyey, eyez);
+	
+  // set up new view
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective( 40.0, 1.0, 1.0, 10000.0 );
