@@ -2,7 +2,6 @@
 #include <stdlib.h>
 /*
  * 
- * Sean Batzel's Version of the Solution to Machine Org Assignment 1 (Unlimited unsigned integers) Developed by Myself and Andrew Plaza.
  *
  ***************************************************************************************************
  *KNOWN ISSUES
@@ -53,7 +52,7 @@ void die(const char *message) {
 }
 
 int getSize(char *str) {
-	//just walk through the string until we come accross the nullbyte or \n and increment i
+	//just walk through the string until we come across the nullbyte or \n and increment i
 	char c;
 	int i = 0;
 	do {

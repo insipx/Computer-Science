@@ -2,6 +2,16 @@
 #include <stdlib.h>
 #include <GL/glut.h>
 #include "gl_macros.h"
+float vectors[10][3] = {
+  {0, 0, 0},
+  {0, 0, .5},
+  {0, .5, 0},
+  {.5, 0, 0},
+  {0, .5, .5},
+  {.5, 0, .5},
+  {.5, .5, 0},
+  {.5, .5, .5}
+};
 
 void draw_triangles()
 {
@@ -22,15 +32,16 @@ void draw_triangles()
 
 }
 
-void transform_eye(float theta, float* eyex, float* eyey, float* eyez) 
+void transform_eye(double theta, double* eyex, double* eyey, double* eyez) 
 {
 
-  float origPos[4] = {5, 5, 5, 1};
+  double origPos[4] = {5, 5, 5, 1};
+  
 
-  float cosT = cos(theta);
-  float sinT = sin(theta);
+  double cosT = cos(theta);
+  double sinT = sin(theta);
 
-  float rotateArr[4][4] =
+  double rotateArr[4][4] =
   {
     {cosT, 0, sinT, 0},
     {0, 1, 0, 0},
@@ -39,7 +50,7 @@ void transform_eye(float theta, float* eyex, float* eyey, float* eyez)
   };
 
   int i = 0, j = 0;
-  float result[4];
+  double result[4];
   for(i = 0; i < 4; i++) {
     for(j = 0; j < 4; j++) {
       result[i] += rotateArr[i][j] * origPos[j];
@@ -67,8 +78,4 @@ void init_mod()
   glLoadIdentity ();
 	glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0); 
   */
-
 }
-
-
-
