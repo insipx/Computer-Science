@@ -2,16 +2,8 @@
 #include <stdlib.h>
 #include <GL/glut.h>
 #include "gl_macros.h"
-float vectors[10][3] = {
-  {0, 0, 0},
-  {0, 0, .5},
-  {0, .5, 0},
-  {.5, 0, 0},
-  {0, .5, .5},
-  {.5, 0, .5},
-  {.5, .5, 0},
-  {.5, .5, .5}
-};
+
+Vectors asgn2_data;
 
 void draw_triangles()
 {
@@ -69,7 +61,16 @@ void init_mod()
   /* set fill  color to white */
 
   glColor3f(1.0, 1.0, 1.0);
+  
+  //initialize Vector Data Structure
+  asgn2_data.vectors = (float [8][3]){
+    {-.5, .5, .5},
+    {.5, -.5, .5}, 
+    {-.5, .5, -.5},
+    {.5, -.5, -.5}
+  };
 
+ 
   /* set up standard orthogonal view with clipping */
   /* box as cube of side 2 centered at origin */
   /* This is default view and these statements could be removed */
