@@ -11,6 +11,7 @@
 
 typedef struct vectors {
   float** vectors;
+  float** triangles;
 }Vectors;
 
 /* for some safety */
