@@ -27,10 +27,10 @@ typedef struct vectors {
 // Vector data Structure Init
 #define INIT_VECTORS(X, size)                           \
 ({                                                      \
- X.vectors = calloc(size, sizeof(float*));              \
+ Vectors X = calloc(float*, size);                      \
  for(int i = 0; i < size; i++)                          \
  {                                                      \
-  X.vectors[i] = calloc(3, sizeof(float*));             \
+  calloc(float*, 3);                                    \
  }                                                      \
 })
 
@@ -39,9 +39,9 @@ typedef struct vectors {
 ({                                                      \
   for(int i = 0; i < size; i++)                         \
   {                                                     \
-    free(X.vectors[i]);                                 \
+    free(X[i]);                                         \
   }                                                     \
-  free(X.vectors);                                      \
+  free(X);                                              \
 })
 
 // Operates on traditional X, Y, Z Plane (no rotation)
