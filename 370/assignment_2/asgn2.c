@@ -1,4 +1,7 @@
-// Code online at http://www.cs.uofs.edu/~bishop/proj1-2.c
+/* Code Online Used as Starter 
+ * Modified by Andrew Plaza
+ */
+
 #include <GL/glut.h>         /* glut.h includes gl.h and glu.h*/
 #include "topsecret.c"
 
@@ -12,7 +15,7 @@ void display(void)
   // rotate eye about y
   double eyex = 5, eyey = 5, eyez = 5;
 	transform_eye(rotate, &eyex, &eyey, &eyez);
-  printf("[%lf, %lf, %lf]\n", eyex, eyey, eyez);
+  //printf("[%lf, %lf, %lf]\n", eyex, eyey, eyez); //debugging
 	
   // set up new view
 	glMatrixMode(GL_PROJECTION);

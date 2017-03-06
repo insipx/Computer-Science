@@ -2,7 +2,7 @@
 // Created by insi on 02/27/17.
 //
 //Macros to Construct 2D Squares on Different Planes
-//Useful for creating Cubes out of Triangles ;)
+//Useful for creating Cubes out of Triangles
 #include <GL/glut.h>
 #include <math.h>
 
@@ -16,7 +16,7 @@ typedef struct vectors {
 
 /* for some safety */
 // doesn't quite work
-// but i'll leave it here for the future
+// but I will leave it here for the future
 #define TYPECHECK(type, x)                              \
 ({                                                      \
   type dumb;                                            \
