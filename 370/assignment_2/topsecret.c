@@ -41,7 +41,6 @@ void transform_eye(double theta, double* eyex, double* eyey, double* eyez)
       result[i] += rotateArr[i][j] * origPos[j];
     }
   }
-
   *eyex = result[0];
   *eyey = result[1];
   *eyez = result[2];

@@ -11,7 +11,7 @@
 
 typedef struct vectors {
   float vertices[8][3];
-  float *triangles[12][3];
+  float* triangles[12][3];
 }Vectors;
 
 /* for some safety */
@@ -25,6 +25,8 @@ typedef struct vectors {
 })
 
 //draw a square with given coordinates
+//accepts two triangles
+//triangles should be on the same plane to work properly
 #define DRAW_SQUARE(tri1, tri2)                         \
 ({                                                      \
  glVertex3f(tri1[0][0], tri1[0][1], tri1[0][2]);        \
