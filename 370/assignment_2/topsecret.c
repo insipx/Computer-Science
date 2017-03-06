@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <GL/glut.h>
 #include "gl_macros.h"
 
@@ -9,31 +10,22 @@ void draw_triangles()
 {
 	glBegin(GL_TRIANGLES);
     //squares on traditional X/Y/Z Axis
-    glColor3f(1.0, 0, 0); // red
-    DRAW_SQUARE(-.5, .5, .5, -.5, .5);
-    DRAW_SQUARE(-.5, .5, .5, -.5, -.5);
-    //squares with Z operating as X (visually)
-    glColor3f(0, 1.0, 0); // green
-    DRAW_SQUARE_YZ(-.5, .5, .5, -.5, .5); //right side
-    DRAW_SQUARE_YZ(-.5, .5, .5, -.5, -.5); // left side
-    //squares with Z operating as Y (visually) 
-    glColor3f(0, 0, 1.0);
-    DRAW_SQUARE_ZX(-.5, .5, .5, -.5, .5);
-    DRAW_SQUARE_ZX(-.5, .5, .5, -.5, -.5);
-    glColor3f(1.0, 1.0, 1.0);
-	glEnd();
-
+    for(int i = 0; i < 12; i+=2) {
+      if(i % 4 == 0) {
+        //alternate colors for each 2 squares. Squares across from each other should be the same color
+        glColor3f( i == 0 ? 1.0 : 0.0, i == 4 ? 1.0 : 0.0, i == 8 ? 1.0 : 0 );
+      }
+      DRAW_SQUARE(asgn2_data.triangles[i], asgn2_data.triangles[i+1]);
+    }
+  glEnd();    
 }
 
 void transform_eye(double theta, double* eyex, double* eyey, double* eyez) 
 {
 
   double origPos[4] = {5, 5, 5, 1};
+  double cosT = cos(theta), sinT = sin(theta);
   
-
-  double cosT = cos(theta);
-  double sinT = sin(theta);
-
   double rotateArr[4][4] =
   {
     {cosT, 0, sinT, 0},
@@ -55,7 +47,6 @@ void transform_eye(double theta, double* eyex, double* eyey, double* eyez)
   *eyez = result[2];
 }
 
-
 void init_mod() 
 {
   glClearColor (0.0, 0.0, 0.0, 0.0);
@@ -64,23 +55,52 @@ void init_mod()
   glColor3f(1.0, 1.0, 1.0);
 
   //initialize Vector Data Structure
-  asgn2_data.vectors = (float [8][3])
-  {
-    {-.5, .5, .5},
-    {.5, -.5, .5}, 
-    {-.5, .5, -.5},
-    {.5, -.5, -.5}
-  };
+  memcpy(asgn2_data.vertices, (float[8][3]) 
+    {
+      {-.5, .5, .5}, //0
+      // -  + +
+      {-.5, -.5, .5}, //1
+      // - - +
+      {.5, .5, .5}, //2
+      // + + +
+      {.5, -.5, .5},  //3
+      //+ - +
+      {-.5, .5, -.5}, //4
+      //- + -
+      {.5, -.5, -.5}, //5
+      //+ - - 
+      {.5, .5, -.5}, //6
+      //+ + -
+      {-.5, -.5, -.5} //7
+      // ---
+    }, sizeof(asgn2_data.vertices));
 
-  /*asgn2_data.triangles = (float [10][3]) 
-  {
-    {asgn2_data.vectors[0][1], asgn2_data.vectors[0][1], asgn2_data.vectors[0][2]},
-    {}
-  };*/
+  memcpy(asgn2_data.triangles, (float *[12][3])
+    {
+      //square 1
+      {asgn2_data.vertices[0], asgn2_data.vertices[1], asgn2_data.vertices[2]},
+      {asgn2_data.vertices[3], asgn2_data.vertices[2], asgn2_data.vertices[1]},
 
-/*   DRAW_SQUARE(-.5, .5, .5, -.5, .5);
-    DRAW_SQUARE(-.5, .5, .5, -.5, -.5);
-*/
+      //square 1
+      {asgn2_data.vertices[4], asgn2_data.vertices[7], asgn2_data.vertices[6]},
+      {asgn2_data.vertices[5], asgn2_data.vertices[6], asgn2_data.vertices[7]},
+      
+      //square 2
+      {asgn2_data.vertices[6], asgn2_data.vertices[5], asgn2_data.vertices[2]},
+      {asgn2_data.vertices[3], asgn2_data.vertices[2], asgn2_data.vertices[5]},
+
+      //square 2
+      {asgn2_data.vertices[4], asgn2_data.vertices[7], asgn2_data.vertices[0]}, 
+      {asgn2_data.vertices[1], asgn2_data.vertices[0], asgn2_data.vertices[7]},
+
+      //Square 3
+      {asgn2_data.vertices[0], asgn2_data.vertices[4], asgn2_data.vertices[2]},
+      {asgn2_data.vertices[6], asgn2_data.vertices[2], asgn2_data.vertices[4]},
+
+      //square 3
+      {asgn2_data.vertices[1], asgn2_data.vertices[7], asgn2_data.vertices[3]},
+      {asgn2_data.vertices[5], asgn2_data.vertices[3], asgn2_data.vertices[7]}
+    }, sizeof(asgn2_data.triangles));
 
   /* set up standard orthogonal view with clipping */
   /* box as cube of side 2 centered at origin */
