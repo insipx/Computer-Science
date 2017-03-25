@@ -4,7 +4,7 @@ INCDIR=-I../include
 LIBDIR=-L../lib -L/usr/X11R6/lib
 CC=gcc
 
-asgn2: asgn2.c
-	$(CC) asgn2.c $(FLAGS) $(INCDIR) $(LIBDIR) $(LIBS) -o asgn2
+asgn3: asgn3.c
+	$(CC) asgn3.c $(FLAGS) $(INCDIR) $(LIBDIR) $(LIBS) -o asgn3
 clean:
-	rm asgn2
+	rm asgn3
