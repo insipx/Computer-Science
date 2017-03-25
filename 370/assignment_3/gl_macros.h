@@ -33,7 +33,7 @@ typedef struct vectors {
  glTexCoord3f(1.0, 1.0, 0.0); glVertex3f(tri1[1][0], tri1[1][1], tri1[1][2]);      \
  glTexCoord3f(0.0, 0.0, 0.0); glVertex3f(tri1[2][0], tri1[2][1], tri1[2][2]);      \
                                                         \
- glTexCoord3f(0.0, -1.0, 0.0); glVertex3f(tri2[0][0], tri2[0][1], tri2[0][2]);     \
+ glTexCoord3f(-1.0, 0.0, 0.0); glVertex3f(tri2[0][0], tri2[0][1], tri2[0][2]);     \
  glTexCoord3f(-1.0, -1.0, 0.0); glVertex3f(tri2[1][0], tri2[1][1], tri2[1][2]);     \
  glTexCoord3f(0.0, 0.0, 0.0); glVertex3f(tri2[2][0], tri2[2][1], tri2[2][2]);     \
  })
