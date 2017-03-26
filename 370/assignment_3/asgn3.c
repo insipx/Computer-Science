@@ -4,13 +4,12 @@
 
 #include <GL/glut.h>         /* glut.h includes gl.h and glu.h*/
 #include "topsecret.c"
-#include "img/hl3.c"
 
 double rotate = 0;
 
 void display(void)
 {
-  rotate += .0004; //rotate by .01 degrees
+  rotate += .01; //rotate by .01 degrees
   if(rotate >= 360) rotate = 0; //reset rotate, reduces floating point errors
 
   // rotate eye about y
@@ -42,19 +41,19 @@ void display(void)
 
 int main(int argc, char** argv)
 {
-  GLuint image;
+  //GLuint image;
  	glutInit(&argc,argv); 
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_ALPHA);
 	glutCreateWindow("Assignment 2"); 
 	glutDisplayFunc(display);
 	glutIdleFunc(glutPostRedisplay);
 	glEnable(GL_DEPTH_TEST);
   glEnable(GL_MULTISAMPLE);
-  glEnable(GL_TEXTURE_2D);
 
-  /* Texture Init */
+  /* Texture Init 
   glGenTextures(1, &image);
   gluBuild2DMipmaps(GL_TEXTURE_2D, hl3_image.bytes_per_pixel, hl3_image.width, hl3_image.height, GL_RGBA, GL_UNSIGNED_BYTE, hl3_image.pixel_data);
+  */
 
 	init_mod();
 	glutMainLoop();

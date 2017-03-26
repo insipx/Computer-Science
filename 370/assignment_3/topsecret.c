@@ -5,6 +5,7 @@
 #include <string.h>
 #include <GL/glut.h>
 #include "gl_macros.h"
+#include "img/hl3.c"
 
 Vectors asgn2_data;
 
@@ -51,9 +52,25 @@ void transform_eye(double theta, double* eyex, double* eyey, double* eyez)
 void init_mod() 
 {
   glClearColor (0.0, 0.0, 0.0, 0.0);
-  /* set fill  color to white */
-
-  glColor3f(1.0, 1.0, 1.0);
+  
+  /* Texture Init */  
+  GLuint image;
+  glEnable(GL_TEXTURE_2D);
+  glGenTextures(1, &image);
+  glBindTexture(GL_TEXTURE_2D, image);
+  glTexImage2D (
+    GL_TEXTURE_2D,
+    0,
+    4,
+    hl3_image.width,
+    hl3_image.height,
+    0,
+    GL_RGBA,
+    GL_UNSIGNED_BYTE,
+    hl3_image.pixel_data
+  );
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
   //initialize Vector Data Structure
   memcpy(asgn2_data.vertices, (float[8][3]) 
