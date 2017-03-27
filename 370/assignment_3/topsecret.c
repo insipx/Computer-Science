@@ -16,7 +16,7 @@ void draw_triangles()
     for(int i = 0; i < 12; i+=2) {
       if(i % 4 == 0) {
         //alternate colors for each 2 squares. Squares across from each other should be the same color
-        glColor3f( i == 0 ? 1.0 : 0.0, i == 4 ? 1.0 : 0.0, i == 8 ? 1.0 : 0 );
+        glColor3f( (i == 0 || i==8 )? 1.0f : 0.0f, (i == 4 || i == 8)? 1.0f : 0.0f, i == 8 ? 1.0f : 0.0f );
       }
       DRAW_SQUARE(asgn2_data.triangles[i], asgn2_data.triangles[i+1]);
     }
