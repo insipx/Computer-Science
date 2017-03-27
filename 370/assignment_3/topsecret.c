@@ -96,8 +96,8 @@ void init_mod()
   memcpy(asgn2_data.triangles, (float *[12][3])
     {
       //square 1
-      {asgn2_data.vertices[0], asgn2_data.vertices[1], asgn2_data.vertices[2]},
-      {asgn2_data.vertices[3], asgn2_data.vertices[2], asgn2_data.vertices[1]},
+      {asgn2_data.vertices[2], asgn2_data.vertices[3], asgn2_data.vertices[0]},
+      {asgn2_data.vertices[1], asgn2_data.vertices[0], asgn2_data.vertices[3]},
 
       //square 1
       {asgn2_data.vertices[4], asgn2_data.vertices[7], asgn2_data.vertices[6]},
@@ -107,9 +107,9 @@ void init_mod()
       {asgn2_data.vertices[6], asgn2_data.vertices[5], asgn2_data.vertices[2]},
       {asgn2_data.vertices[3], asgn2_data.vertices[2], asgn2_data.vertices[5]},
 
-      //square 2
-      {asgn2_data.vertices[4], asgn2_data.vertices[7], asgn2_data.vertices[0]}, 
-      {asgn2_data.vertices[1], asgn2_data.vertices[0], asgn2_data.vertices[7]},
+      //square 2( 4 7 0) (1 0 7)
+      {asgn2_data.vertices[0], asgn2_data.vertices[1], asgn2_data.vertices[4]}, 
+      {asgn2_data.vertices[7], asgn2_data.vertices[4], asgn2_data.vertices[1]},
 
       //Square 3
       {asgn2_data.vertices[0], asgn2_data.vertices[4], asgn2_data.vertices[2]},

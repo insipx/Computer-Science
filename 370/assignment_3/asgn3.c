@@ -9,11 +9,11 @@ double rotate = 0;
 
 void display(void)
 {
-  rotate += .01; //rotate by .01 degrees
+  rotate += .0005; //rotate by .01 degrees
   if(rotate >= 360) rotate = 0; //reset rotate, reduces floating point errors
 
   // rotate eye about y
-  double eyex = 5, eyey = 0, eyez = 5;
+  double eyex = 5, eyey = 5, eyez = 0;
   transform_eye(rotate, &eyex, &eyey, &eyez);
   //printf("[%lf, %lf, %lf]\n", eyex, eyey, eyez); //debugging
   

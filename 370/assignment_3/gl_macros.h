@@ -30,12 +30,26 @@ typedef struct vectors {
 #define DRAW_SQUARE(tri1, tri2)                         \
 ({                                                      \
  \
- glTexCoord2f(0.0, -1.0); glVertex3f(tri1[0][0], tri1[0][1], tri1[0][2]);    \
- glTexCoord2f(0.0, 0.0); glVertex3f(tri1[1][0], tri1[1][1], tri1[1][2]);     \
+ glTexCoord2f(1.0f, 0.0f); glVertex3f(tri1[0][0], tri1[0][1], tri1[0][2]);    \
+ glTexCoord2f(1.0f, 1.0f);  glVertex3f(tri1[1][0], tri1[1][1], tri1[1][2]);     \
+ glTexCoord2f(0.0f, 0.0f); glVertex3f(tri1[2][0], tri1[2][1], tri1[2][2]);   \
+ \
+ glTexCoord2f(0.0f, 1.0f); glVertex3f(tri2[0][0], tri2[0][1], tri2[0][2]);    \
+ glTexCoord2f(0.0f, 0.0f); glVertex3f(tri2[1][0], tri2[1][1], tri2[1][2]);   \
+ glTexCoord2f(1.0f, 1.0f); glVertex3f(tri2[2][0], tri2[2][1], tri2[2][2]);     \
+ })
+
+/*
+#define DRAW_SQUARE(tri1, tri2)                         \
+({                                                      \
+ \
+ glTexCoord2f(0, -1.0); glVertex3f(tri1[0][0], tri1[0][1], tri1[0][2]);    \
+ glTexCoord2f(0, 0); glVertex3f(tri1[1][0], tri1[1][1], tri1[1][2]);     \
  glTexCoord2f(-1.0, -1.0); glVertex3f(tri1[2][0], tri1[2][1], tri1[2][2]);   \
  \
- glTexCoord2f(-1.0, 0.0); glVertex3f(tri2[0][0], tri2[0][1], tri2[0][2]);    \
- glTexCoord2f(-1.0, -1.0); glVertex3f(tri2[1][0], tri2[1][1], tri2[1][2]);   \
- glTexCoord2f(0.0, 0.0); glVertex3f(tri2[2][0], tri2[2][1], tri2[2][2]);     \
+ glTexCoord2f(0, 1.0); glVertex3f(tri2[0][0], tri2[0][1], tri2[0][2]);    \
+ glTexCoord2f(0, 0); glVertex3f(tri2[1][0], tri2[1][1], tri2[1][2]);   \
+ glTexCoord2f(1.0, 1.0); glVertex3f(tri2[2][0], tri2[2][1], tri2[2][2]);     \
  })
+ */
 #endif /* GL_MACROS_H */
