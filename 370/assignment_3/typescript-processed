@@ -1,0 +1,45 @@
+Script started on Mon 27 Mar 2017 10:31:38 AM EDT
+       _,met$$$$$gg.
+    ,g$$$$$$$$$$$$$$$P.
+  ,g$$P"     """Y$$.".
+ ,$$P'		    `$$$.
+',$$P	    ,ggs.     `$$b:
+`d$$'	  ,$P"'   .    $$$
+ $$P	  d$'	  ,    $$P
+ $$:	  $$.	-    ,d$$'
+ $$;	  Y$b._   _,d$P'
+ Y$$.	 `.`"Y$$$$P"'
+ `$$b	   "-.__
+  `Y$$
+   `Y$$.
+     `$$b.
+       `Y$$b.
+	  `"Y$b._
+	      `"""
+insi@rias
+---------
+OS: Debian GNU/Linux 8.7 (jessie) x86_64
+Kernel: 3.16.0-4-amd64
+Uptime: 22 hours, 1 minute
+Packages: 1592
+Shell: zsh 5.0.7
+Resolution: 1920x1080, 1920x1080
+WM: i3
+Theme: Paper [GTK2/3]
+Icons: Paper-Mono-Dark [GTK2/3]
+Terminal: script
+CPU: AMD FX-8320 (8) @ 3.5GHz
+GPU: AMD Radeon R9 290
+Memory: 1467MiB / 32213MiB
+
+
+
+
+➜  assignment_3 git:(master) ✗ ls
+asgn3.c  gl_macros.h  img  Makefile  output.txt  screenies  topsecret.c  typescript
+➜  assignment_3 git:(master) ✗ make
+gcc asgn3.c -D_LINUX -ffast-math -funroll-loops -O3 -g -std=gnu99 -trigraphs -I../include -L../lib -L/usr/X11R6/lib -lGL -lglut -lGLU -lm -o asgn3
+➜  assignment_3 git:(master) ✗ ./asgn3
+➜  assignment_3 git:(master) ✗ exit
+
+Script done on Mon 27 Mar 2017 10:34:00 AM EDT
