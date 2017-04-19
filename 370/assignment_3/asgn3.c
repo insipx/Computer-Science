@@ -9,7 +9,7 @@ double rotate = 0;
 
 void display(void)
 {
-  rotate += .0005; //rotate by .01 degrees
+  rotate += .011; //rotate by .01 degrees
   if(rotate >= 360) rotate = 0; //reset rotate, reduces floating point errors
 
   // rotate eye about y
