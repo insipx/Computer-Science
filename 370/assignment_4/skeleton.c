@@ -18,16 +18,15 @@ void drawpixel(float x,float y,float r,float g,float b) // assume x,y 0-100
 
 void run_raytracer() {
 
-  tTuplef eye = TUPLE(.5, .5, -2.0);
-  
-  float i = 0.0, j = 0.0;
-  bool color;
-  for(i; i < 1.0; i += 0.01){
-    for(j; j < 1.0; j += 0.01){
-      color = ray((tTuplef){i, j, 0}, eye);
-
-      if(color) drawpixel(i, j, 1,1,1);
-      else drawpixel(i, j, 0,0,0);
+  tTuplef eye = {.5, .5, -2.0};
+   
+  for(float i = 0; i < 1.0; i += 0.01){
+    for(float j = 0; j < 1.0; j += 0.01){
+      tTuplef screen = {i, j, 0};
+      bool color = ray(screen, eye);
+      if(color) printf("%s: %d ", "Ray returns", color);
+      if(color) drawpixel(i*100, j*100, 1,1,1);
+      else drawpixel(i*100, j*100, 0,0,0);
     }
   } 
 }
@@ -35,7 +34,6 @@ void run_raytracer() {
 void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT); 
-	drawpixel(50.0,50.0,1.0,1.0,1.0); 
   run_raytracer();
 	glFlush(); 
 }

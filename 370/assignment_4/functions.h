@@ -8,13 +8,6 @@ typedef struct {
   float z;
 } tTuplef; // type tuple float
 
-//Tuple
-#define TUPLE(x, y, z) { x, y, z }
-
-
-#define SCREEN_END 1
-#define SCREEN_INC .01
-
 //Vector Operations
 //calculate all Ds
 #define VECTOR_DS(D1, D2, D3, C1, C2, C3) ({      \
@@ -81,10 +74,7 @@ typedef struct {
 //perform a dot operation, V1 dot V2
 //puts result in p, a float
 #define VECTOR_DOT(P, V1, V2) ({            \
-  P =                                       \
-  (V1.x * V2.x) +                           \
-  (V1.y * V2.y) *                           \
-  (V1.z * V2.z);                            \
+  P = (V1.x * V2.x) + (V1.y * V2.y) + (V1.z * V2.z);  \
 })                                          \
 
 // Multiply vector V1 by scalar S, and store
