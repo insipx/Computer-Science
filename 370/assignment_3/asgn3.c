@@ -44,7 +44,7 @@ int main(int argc, char** argv)
   //GLuint image;
  	glutInit(&argc,argv); 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_ALPHA);
-	glutCreateWindow("Assignment 2"); 
+	glutCreateWindow("Assignment 4"); 
 	glutDisplayFunc(display);
 	glutIdleFunc(glutPostRedisplay);
 	glEnable(GL_DEPTH_TEST);

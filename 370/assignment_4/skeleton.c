@@ -25,8 +25,8 @@ void display(void)
 
 int main(int argc, char** argv)
 {
-        glutInit(&argc,argv);
-	glutCreateWindow("simple"); 
+  glutInit(&argc,argv);
+	glutCreateWindow("Assignment 4"); 
 	glutDisplayFunc(display);
 	glutMainLoop();
 }
