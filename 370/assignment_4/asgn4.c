@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-int main() {
-  //pass 
-}
+#include "skeleton.c"
 
 //our ray function
 int ray() {
