@@ -1,0 +1,45 @@
+Script started on Mon 27 Mar 2017 10:31:38 AM EDT
+[?25l[?7l[0m[1m       _,met$$$$$gg. 
+    ,g$$$$$$$$$$$$$$$P. 
+  ,g$$P"     """Y$$.". 
+ ,$$P'              `$$$. 
+',$$P       ,ggs.     `$$b: 
+`d$$'     ,$P"'   [0m[31m[1m.[0m[1m    $$$ 
+ $$P      d$'     [0m[31m[1m,[0m[1m    $$P 
+ $$:      $$.   [0m[31m[1m-[0m[1m    ,d$$' 
+ $$;      Y$b._   _,d$P' 
+ Y$$.    [0m[31m[1m`.[0m[1m`"Y$$$$P"' 
+[0m[1m `$$b      [0m[31m[1m"-.__ 
+[0m[1m  `Y$$ 
+   `Y$$. 
+     `$$b. 
+       `Y$$b. 
+          `"Y$b._ 
+              `""" 
+[17A[9999999D[30C[0m[1m[31m[1minsi[0m@[31m[1mrias[0m 
+[30C[0m---------[0m 
+[30C[0m[31m[1mOS[0m[0m:[0m Debian GNU/Linux 8.7 (jessie) x86_64[0m 
+[30C[0m[31m[1mKernel[0m[0m:[0m 3.16.0-4-amd64[0m 
+[30C[0m[31m[1mUptime[0m[0m:[0m 22 hours, 1 minute[0m 
+[30C[0m[31m[1mPackages[0m[0m:[0m 1592[0m 
+[30C[0m[31m[1mShell[0m[0m:[0m zsh 5.0.7[0m 
+[30C[0m[31m[1mResolution[0m[0m:[0m 1920x1080, 1920x1080[0m 
+[30C[0m[31m[1mWM[0m[0m:[0m i3[0m 
+[30C[0m[31m[1mTheme[0m[0m:[0m Paper [GTK2/3][0m 
+[30C[0m[31m[1mIcons[0m[0m:[0m Paper-Mono-Dark [GTK2/3][0m 
+[30C[0m[31m[1mTerminal[0m[0m:[0m script[0m 
+[30C[0m[31m[1mCPU[0m[0m:[0m AMD FX-8320 (8) @ 3.5GHz[0m 
+[30C[0m[31m[1mGPU[0m[0m:[0m AMD Radeon R9 290[0m 
+[30C[0m[31m[1mMemory[0m[0m:[0m 1467MiB / 32213MiB[0m 
+
+[30C[0m[30m[40m   [0m[31m[41m   [0m[32m[42m   [0m[33m[43m   [0m[34m[44m   [0m[35m[45m   [0m[36m[46m   [0m[37m[47m   [0m
+
+
+[?25h[?7h[1m[7m%[27m[1m[0m                                                                                                                                                                                             ]2;insi@rias: ~/workspace/Computer-Science/370/assignment_3]1;../assignment_3[0m[27m[24m[J[01;32m➜  [36massignment_3[00m [01;34mgit:([31mmaster[34m) [33m✗[00m [K=lls>
+]2;ls --color=tty]1;lsasgn3.c  gl_macros.h  [0m[01;34mimg[0m  Makefile  output.txt  [01;34mscreenies[0m  topsecret.c  typescript
+[1m[7m%[27m[1m[0m                                                                                                                                                                                             ]2;insi@rias: ~/workspace/Computer-Science/370/assignment_3]1;../assignment_3[0m[27m[24m[J[01;32m➜  [36massignment_3[00m [01;34mgit:([31mmaster[34m) [33m✗[00m [K=mmake>
+]2;make]1;makegcc asgn3.c -D_LINUX -ffast-math -funroll-loops -O3 -g -std=gnu99 -trigraphs -I../include -L../lib -L/usr/X11R6/lib -lGL -lglut -lGLU -lm -o asgn3
+[1m[7m%[27m[1m[0m                                                                                                                                                                                             ]2;insi@rias: ~/workspace/Computer-Science/370/assignment_3]1;../assignment_3[0m[27m[24m[J[01;32m➜  [36massignment_3[00m [01;34mgit:([31mmaster[34m) [33m✗[00m [K=../asgn3[1m [0m[0m >
+]2;./asgn3]1;./asgn3[1m[7m%[27m[1m[0m                                                                                                                                                                                             ]2;insi@rias: ~/workspace/Computer-Science/370/assignment_3]1;../assignment_3[0m[27m[24m[J[01;32m➜  [36massignment_3[00m [01;34mgit:([31mmaster[34m) [33m✗[00m [K=eexit>
+]2;exit]1;exit
+Script done on Mon 27 Mar 2017 10:34:00 AM EDT
