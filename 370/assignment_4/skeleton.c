@@ -23,9 +23,7 @@ void run_raytracer() {
   for(float i = 0; i < 1.0; i += 0.01){
     for(float j = 0; j < 1.0; j += 0.01){
       tTuplef screen = {i, j, 0};
-      bool color = ray(screen, eye);
-      if(color) printf("%s: %d ", "Ray returns", color);
-      if(color) drawpixel(i*100, j*100, 1,1,1);
+      if(ray(screen, eye)) drawpixel(i*100, j*100, 1,1,1);
       else drawpixel(i*100, j*100, 0,0,0);
     }
   } 
@@ -42,6 +40,7 @@ int main(int argc, char** argv)
 {
   glutInit(&argc,argv);
 	glutCreateWindow("Assignment 4"); 
+  init_mod();
 	glutDisplayFunc(display);
 	glutMainLoop();
 }

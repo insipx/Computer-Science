@@ -1,0 +1,44 @@
+Script started on Wed 19 Apr 2017 11:48:10 AM EDT
+       _,met$$$$$gg.
+    ,g$$$$$$$$$$$$$$$P.
+  ,g$$P"     """Y$$.".
+ ,$$P'		    `$$$.
+',$$P	    ,ggs.     `$$b:
+`d$$'	  ,$P"'   .    $$$
+ $$P	  d$'	  ,    $$P
+ $$:	  $$.	-    ,d$$'
+ $$;	  Y$b._   _,d$P'
+ Y$$.	 `.`"Y$$$$P"'
+ `$$b	   "-.__
+  `Y$$
+   `Y$$.
+     `$$b.
+       `Y$$b.
+	  `"Y$b._
+	      `"""
+insi@rias
+---------
+OS: Debian GNU/Linux 8.7 (jessie) x86_64
+Kernel: 3.16.0-4-amd64
+Uptime: 54 minutes
+mPackages: 1786
+Shell: zsh 5.0.7
+Resolution: 1920x1080, 1920x1080
+WM: i3
+Theme: Paper [GTK2/3]
+Icons: Paper-Mono-Dark [GTK2/3]
+Terminal: script
+CPU: AMD FX-8320 (8) @ 3.5GHz
+GPU: AMD Radeon R9 290
+Memory: 2029MiB / 32213MiB
+
+
+
+
+➜  assignment_4 git:(master) ✗ make
+gcc skeleton.c -D_LINUX -ffast-math -funroll-loops -O0 -g -std=gnu99 -trigraphs -I../include -L../lib -L/usr/X11R6/lib -lGL -lglut -lGLU -lm -o asgn4
+➜  assignment_4 git:(master) ✗ ./asgn4
+^C
+➜  assignment_4 git:(master) ✗ exit
+
+Script done on Wed 19 Apr 2017 11:48:34 AM EDT

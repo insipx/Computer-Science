@@ -18,7 +18,65 @@ typedef struct {
   tTriangle triangle_data[1];
 } Triangles;
 
-//Vector Operations
+typedef struct {
+  float u;
+  bool lit;
+} tIntersect;
+
+    //\/\/\/\/\/\/\/\/\/
+    //Object Construction
+    //\/\/\/\/\/\/\/\/\/
+
+#define BUILD_SQUAREX(v1, v2, v3, v4, plane) ({                   \
+    //triangle 1
+    {plane, v1.y, v1.z},                                          \
+    {plane, v2.y, v2.z},                                          \
+    {plane, v4.y, v4.z},                                          \
+                                                                  \
+    //triangle 2                                                  \ 
+    {plane, v4.y, v4.z},                                          \
+    {plane, v3.y, v3.z},                                          \
+    {plane, v2.y, v2.z},                                          \
+                                                                  \
+    })
+
+#define BUILD_SQUAREY(v1, v2, v3, v4, plane) ({                   \
+                                                                  \
+    //triangle 2                                                  \
+    {v1.x, plane, v1.z},                                          \
+    {v2.x, plane, v2.z},                                          \
+    {v4.x, plane, v4.z},                                          \
+                                                                  \
+    //triangle 2                                                  \ 
+    {v4.x, plane, v4.z},                                          \
+    {v3.x, plane, v3.z},                                          \
+    {v2.x, plane, v2.z},                                          \
+                                                                  \
+    })
+
+#define BUILD_SQUAREZ(v1, v2, v3, v4, plane) ({                   \
+    // triangle 1                                                 \
+    {v1.x, v1.y, plane},                                          \
+    {v2.x, v2.y, plane},                                          \
+    {v4.x, v4.y, plane},                                          \
+                                                                  \
+    //triangle 2                                                  \ 
+    {v4.x, v4.y, plane},                                          \
+    {v3.x, v3.y, plane},                                          \
+    {v2.x, v2.y, plane},                                          \
+                                                                  \
+    })
+
+#define BUILD_CUBE(center, offset) ({                             \
+                                                                  \
+                                                                  \
+    })
+
+
+    //\/\/\/\/\/\/\/\/\/
+    //Vector Operations 
+    //\/\/\/\/\/\/\/\/\/
+
 //calculate all Ds
 #define VECTOR_DS(D1, D2, D3, C1, C2, C3) ({      \
   VECTOR_DOT(D1, C1, C2);                         \
