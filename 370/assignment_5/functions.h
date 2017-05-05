@@ -25,7 +25,11 @@ typedef struct triangle {
 
 typedef struct {
   float u;
+  tTuplef normal;
+  tTuplef I;
   bool lit;
+  int type; //-1 = light, 1 = triangle, 0 = NaN
+  int ind;
 } tIntersect;
 
 typedef struct {
@@ -34,10 +38,20 @@ typedef struct {
   int len;
 } asgn5_data;
 
+typedef struct {
+  tTuplef light_arr[1024];
+  tTuplef *light_data;
+  int len;
+} light_data; 
+
     //\/\/\/\/\/\/\/\/\/
     //Vector Operations 
     //\/\/\/\/\/\/\/\/\/
-    
+
+#define CHECK_SIGNS(R, X, Y) ({                    \
+    R = !((X >= 0) ^ (Y < 0));                     \
+    })                                             \
+
 //sphere          //tTuplef's
 #define VECTOR_TEST_RADIUS(R, P1, P2, P3, RAD) ({  \
     float _u;                                      \
