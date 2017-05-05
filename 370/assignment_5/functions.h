@@ -27,48 +27,48 @@ typedef struct {
     //Object Construction
     //\/\/\/\/\/\/\/\/\/
 
+#define BUILD_TRIANGLEX(v1, v2, v3, plane) ({                     \
+      {plane, v1.y, v1.z},                                        \
+      {plane, v2.y, v2.z},                                        \
+      {plane, v3.y, v3.z},                                        \
+    })                                                            \
+
+#define BUILD_TRIANGLEY(v1, v2, v3, plane) ({                     \
+      {v1.x, plane, v1.z},                                        \
+      {v2.x, plane, v2.z},                                        \
+      {v3.x, plane, v3.z},                                        \
+    })                                                            \
+
+#define BUILD_TRIANGLEZ(v1, v2, v3, plane) ({                     \
+      {v1.x, v1.y, plane},                                        \
+      {v2.x, v2.y, plane},                                        \
+      {v3.x, v2.y, plane},                                        \
+    })
+
 #define BUILD_SQUAREX(v1, v2, v3, v4, plane) ({                   \
-    //triangle 1
-    {plane, v1.y, v1.z},                                          \
-    {plane, v2.y, v2.z},                                          \
-    {plane, v4.y, v4.z},                                          \
-                                                                  \
-    //triangle 2                                                  \ 
-    {plane, v4.y, v4.z},                                          \
-    {plane, v3.y, v3.z},                                          \
-    {plane, v2.y, v2.z},                                          \
-                                                                  \
+    BUILD_TRIANGLEX(v1,v2,v4,plane);                              \
+    BUILD_TRIANGLEX(v4,v3,v2,plane);                              \
     })
 
 #define BUILD_SQUAREY(v1, v2, v3, v4, plane) ({                   \
-                                                                  \
-    //triangle 2                                                  \
-    {v1.x, plane, v1.z},                                          \
-    {v2.x, plane, v2.z},                                          \
-    {v4.x, plane, v4.z},                                          \
-                                                                  \
-    //triangle 2                                                  \ 
-    {v4.x, plane, v4.z},                                          \
-    {v3.x, plane, v3.z},                                          \
-    {v2.x, plane, v2.z},                                          \
-                                                                  \
+    BUILD_TRIANGLEY(v1,v2,v4,plane);                              \
+    BUILD_TRIANGLEY(v4,v3,v2,plane);                              \
     })
 
 #define BUILD_SQUAREZ(v1, v2, v3, v4, plane) ({                   \
-    // triangle 1                                                 \
-    {v1.x, v1.y, plane},                                          \
-    {v2.x, v2.y, plane},                                          \
-    {v4.x, v4.y, plane},                                          \
-                                                                  \
-    //triangle 2                                                  \ 
-    {v4.x, v4.y, plane},                                          \
-    {v3.x, v3.y, plane},                                          \
-    {v2.x, v2.y, plane},                                          \
-                                                                  \
+    BUILD_TRIANGLEZ(v1,v2,v4,plane);                              \
+    BUILD_TRIANGLEZ(v4,v3,v2,plane);                              \
     })
 
 #define BUILD_CUBE(center, offset) ({                             \
+    BUILD_SQUAREZ(center.x-offset, center.y+offset, center.z);    \
+    BUILD_SQUAREZ(center.x+offset, center.y-offset, center.z);    \
                                                                   \
+    BUILD_SQUAREX(center.x, center.y+offset, center.z-offset);    \
+    BUILD_SQUAREX(center.x, center.y-offset, center.z+offset);    \
+                                                                  \
+    BUILD_SQUAREY(center.x+offset, center.y, center.z-offset);    \
+    BIULD_SQUAREY(center.x-offset, center.y, center.z-offset);    \
                                                                   \
     })
 
