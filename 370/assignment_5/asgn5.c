@@ -19,7 +19,7 @@ light_data lights = {
 tIntersect query_intersection(tTuplef screen, tTuplef eye, int triangle);
 tIntersect query_lightray(tTuplef screen, tTuplef eye, tTuplef center, float radius);
 
-bool ray(tTuplef screen, tTuplef eye) {
+float ray(tTuplef screen, tTuplef eye) {
   #define LIGHT -1.0
   #define TRIANGLE 1.0
   float bright = 0.0;
@@ -71,13 +71,13 @@ bool ray(tTuplef screen, tTuplef eye) {
       CHECK_SIGNS(differs, dot_old, dot_new);
 
       if(differs) {
-        bright+=.1;
+        tTuplef sub_diff; VECTOR_SUBTRACT(sub_diff, closest_u.I, lights.light_data[i]);
+        float mag;
+        VECTOR_MAG(mag, sub_diff);
+        bright += (ray(lights.light_data[i], closest_u.I)) / (mag);
       }
-     
     }
   }
-
-
 
   return bright;
 }

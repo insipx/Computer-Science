@@ -38,7 +38,7 @@ void build_trianglez(tTuple2df v1, tTuple2df v2, tTuple2df v3, float plane, tTri
 
 void build_squarez(tTuplef center, float offset, tTriangle *ptr, int dir)
 {
-    int centerOff;
+    float centerOff;
     if(dir == 0) centerOff = center.z;
     else if (dir < 0) centerOff = center.z - offset;
     else centerOff = center.z + offset;
@@ -58,7 +58,7 @@ void build_squarez(tTuplef center, float offset, tTriangle *ptr, int dir)
 
 void build_squarey(tTuplef center, float offset, tTriangle *ptr, int dir)
 {
-    int centerOff;
+    float centerOff;
     if(dir == 0) centerOff = center.y;
     else if (dir < 0) centerOff = center.y - offset;
     else centerOff = center.y + offset;
@@ -79,7 +79,7 @@ void build_squarey(tTuplef center, float offset, tTriangle *ptr, int dir)
 
 void build_squarex(tTuplef center, float offset, tTriangle *ptr, int dir)
 {
-    int centerOff;
+    float centerOff;
     if(dir == 0) centerOff = center.x;
     else if (dir < 0) centerOff = center.x - offset;
     else centerOff = center.x + offset;

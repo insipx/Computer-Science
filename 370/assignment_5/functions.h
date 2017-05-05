@@ -44,6 +44,7 @@ typedef struct {
   int len;
 } light_data; 
 
+
     //\/\/\/\/\/\/\/\/\/
     //Vector Operations 
     //\/\/\/\/\/\/\/\/\/

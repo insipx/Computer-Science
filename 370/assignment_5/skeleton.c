@@ -26,8 +26,8 @@ void run_raytracer() {
   for(float i = 0; i < 1.0; i += INC){
     for(float j = 0; j < 1.0; j += INC){
       tTuplef screen = {i, j, 0};
-      if(ray(screen, eye)) drawpixel(i*500, j*500, 1,1,1);
-      else drawpixel(i*500, j*500, 0,0,0);
+      float color = ray(screen, eye);
+      drawpixel(i*500, j*500, color, color, color);
     }
   } 
 }
