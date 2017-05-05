@@ -21,7 +21,7 @@ void run_raytracer() {
  
 #define INC 0.002 //verify /* seems to work */
 
-  tTuplef eye = {.5, .5, -1.0};
+  tTuplef eye = {0.5, 0.5, -1.0};
    
   for(float i = 0; i < 1.0; i += INC){
     for(float j = 0; j < 1.0; j += INC){

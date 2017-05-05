@@ -2,77 +2,112 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-typedef struct {
+typedef struct tuple {
   float x;
   float y;
   float z;
 } tTuplef; // type tuple float
 
-typedef struct {
+typedef struct tuple2d {
+  float a;
+  float b;
+} tTuple2df;
+
+typedef struct triangle {
   tTuplef t1;
   tTuplef t2;
   tTuplef t3;
 } tTriangle;
 
 typedef struct {
-  tTriangle triangle_data[1];
-} Triangles;
-
-typedef struct {
   float u;
   bool lit;
 } tIntersect;
+
+typedef struct {
+  tTriangle triangle_arr[1024];
+  tTriangle *triangle_data; //by reference
+  int len;
+} asgn5_data;
+
 
     //\/\/\/\/\/\/\/\/\/
     //Object Construction
     //\/\/\/\/\/\/\/\/\/
 
-#define BUILD_TRIANGLEX(v1, v2, v3, plane) ({                     \
-      {plane, v1.y, v1.z},                                        \
-      {plane, v2.y, v2.z},                                        \
-      {plane, v3.y, v3.z},                                        \
+#define BUILD_TRIANGLEX(v1, v2, v3, plane, ptr) ({                \
+    *(ptr) = ((struct triangle){                                   \
+          .t1={plane, v1.a, v1.b},                                \
+          .t2={plane, v2.a, v2.b},                                \
+          .t3={plane, v3.a, v3.b}                                 \
+        });                                                       \
     })                                                            \
 
-#define BUILD_TRIANGLEY(v1, v2, v3, plane) ({                     \
-      {v1.x, plane, v1.z},                                        \
-      {v2.x, plane, v2.z},                                        \
-      {v3.x, plane, v3.z},                                        \
+#define BUILD_TRIANGLEY(v1, v2, v3, plane, ptr) ({                \
+    *(ptr) = ((struct triangle){                                   \
+      .t1={v1.a, plane, v1.b},                                    \
+      .t2={v2.a, plane, v2.b},                                    \
+      .t3={v3.a, plane, v3.b}                                     \
+    });                                                           \
     })                                                            \
 
-#define BUILD_TRIANGLEZ(v1, v2, v3, plane) ({                     \
-      {v1.x, v1.y, plane},                                        \
-      {v2.x, v2.y, plane},                                        \
-      {v3.x, v2.y, plane},                                        \
+#define BUILD_TRIANGLEZ(v1, v2, v3, plane, ptr) ({                \
+    *(ptr) = (struct triangle) {                                  \
+      .t1={v1.a, v1.b, plane},                                    \
+      .t2={v2.a, v2.b, plane},                                    \
+      .t3={v3.a, v2.b, plane}                                     \
+        };                                                       \
     })
 
-#define BUILD_SQUAREX(v1, v2, v3, v4, plane) ({                   \
-    BUILD_TRIANGLEX(v1,v2,v4,plane);                              \
-    BUILD_TRIANGLEX(v4,v3,v2,plane);                              \
-    })
-
-#define BUILD_SQUAREY(v1, v2, v3, v4, plane) ({                   \
-    BUILD_TRIANGLEY(v1,v2,v4,plane);                              \
-    BUILD_TRIANGLEY(v4,v3,v2,plane);                              \
-    })
-
-#define BUILD_SQUAREZ(v1, v2, v3, v4, plane) ({                   \
-    BUILD_TRIANGLEZ(v1,v2,v4,plane);                              \
-    BUILD_TRIANGLEZ(v4,v3,v2,plane);                              \
-    })
-
-#define BUILD_CUBE(center, offset) ({                             \
-    BUILD_SQUAREZ(center.x-offset, center.y+offset, center.z);    \
-    BUILD_SQUAREZ(center.x+offset, center.y-offset, center.z);    \
+#define BUILD_SQUAREZ(center, offset, ptr) ({                    \
+    BUILD_TRIANGLEZ(                                              \
+        ((struct tuple2d) {.a=center.x-offset, .b=center.y+offset}),   \
+        ((struct tuple2d) {.a=center.x+offset, .b=center.y-offset}),   \
+        ((struct tuple2d) {.a=center.x-offset, .b=center.y-offset}),   \
+        center.z-offset, ptr);                                         \
                                                                   \
-    BUILD_SQUAREX(center.x, center.y+offset, center.z-offset);    \
-    BUILD_SQUAREX(center.x, center.y-offset, center.z+offset);    \
-                                                                  \
-    BUILD_SQUAREY(center.x+offset, center.y, center.z-offset);    \
-    BIULD_SQUAREY(center.x-offset, center.y, center.z-offset);    \
-                                                                  \
+    BUILD_TRIANGLEZ(                                              \
+        ((struct tuple2d) {.a=center.x-offset, .b=center.y+offset}),   \
+        ((struct tuple2d) {.a=center.x+offset, .b=center.y-offset}),   \
+        ((struct tuple2d) {.a=center.x-offset, .b=center.y-offset}),   \
+        center.z+offset,ptr+1);                                         \
     })
 
+#define BUILD_SQUAREY(center, offset, ptr) ({                  \
+    BUILD_TRIANGLEY(                                              \
+        ((struct tuple2d) {.a=center.x-offset, .b=center.z+offset}),   \
+        ((struct tuple2d) {.a=center.x+offset, .b=center.z-offset}),   \
+        ((struct tuple2d) {.a=center.x-offset, .b=center.z-offset}),   \
+        center.y-offset, ptr);                                         \
+                                                                  \
+    BUILD_TRIANGLEY(                                              \
+        ((struct tuple2d) {.a=center.x-offset, .b=center.z+offset}),   \
+        ((struct tuple2d) {.a=center.x+offset, .b=center.z-offset}),   \
+        ((struct tuple2d) {.a=center.x-offset, .b=center.z-offset}),   \
+        center.y+offset, ptr+1);                                         \
+    })
 
+#define BUILD_SQUAREX(center, offset, ptr) ({                     \
+     BUILD_TRIANGLEX(                                             \
+        ((struct tuple2d) {.a=center.y-offset, .b=center.z+offset}),       \
+        ((struct tuple2d) {.a=center.y+offset, .b=center.z-offset}),       \
+        ((struct tuple2d) {.a=center.y-offset, .b=center.z-offset}),       \
+        center.x-offset, ptr);                                         \
+                                                                  \
+    BUILD_TRIANGLEX(                                              \
+        ((struct tuple2d) {.a=center.y-offset, .b=center.z+offset}),       \
+        ((struct tuple2d) {.a=center.y+offset, .b=center.z-offset}),       \
+        ((struct tuple2d) {.a=center.y-offset, .b=center.z-offset}),       \
+        center.x+offset, ptr+1);                                         \
+    })
+   
+
+#define BUILD_CUBE(center, offset, ptr) ({                        \
+    BUILD_SQUAREX(center,offset, ptr);                            \
+    BUILD_SQUAREY(center,offset, ptr+2);                          \
+    BUILD_SQUAREZ(center,offset, ptr+4);                            \
+    })
+    
     //\/\/\/\/\/\/\/\/\/
     //Vector Operations 
     //\/\/\/\/\/\/\/\/\/
