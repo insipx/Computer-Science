@@ -3,7 +3,8 @@
 
 void drawpixel(float x,float y,float r,float g,float b) // assume x,y 0-100
 {
-  #define SZ  0.004
+  //#define SZ  0.004
+  #define SZ  0.002
 
   glBegin(GL_TRIANGLES);
 	  glColor3f(r,g,b);
@@ -19,7 +20,7 @@ void drawpixel(float x,float y,float r,float g,float b) // assume x,y 0-100
 
 void run_raytracer() {
  
-#define INC 0.002 //verify /* seems to work */
+#define INC 0.001 //verify /* seems to work */
 
   tTuplef eye = {0.5, 0.5, -1.0};
    
@@ -27,7 +28,7 @@ void run_raytracer() {
     for(float j = 0; j < 1.0; j += INC){
       tTuplef screen = {i, j, 0};
       float color = ray(screen, eye);
-      drawpixel(i*500, j*500, color, color, color);
+      drawpixel(i*1000, j*1000, color, color, color);
     }
   } 
 }

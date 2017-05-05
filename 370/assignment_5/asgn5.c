@@ -24,16 +24,8 @@ float ray(tTuplef screen, tTuplef eye) {
   #define TRIANGLE 1.0
   float bright = 0.0;
   
-  //check all collisions(lights + tris)
-  //find one with closest u such that u > 0
-  //if(light) right = 1;
-  //if(tri) foreach light where signs of oldray dot N and newray dot N differ {
-  //  bright += ray(I to light)/|I - light|
-  //}
-  //return bright
- 
-  //check collisions  
   
+  //check triangle collisions 
   tIntersect result, closest_u;
   closest_u.u = INFINITY; 
   
@@ -47,7 +39,7 @@ float ray(tTuplef screen, tTuplef eye) {
   }
 
   //check light collisions
-  for (int i = 0; i< lights.len; i++) {
+  for (int i = 0; i < lights.len; i++) {
     result = query_lightray(screen, eye, lights.light_data[i], .1);
     if(result.u < closest_u.u && result.u > 0 && result.lit){
       closest_u = result;
@@ -58,22 +50,19 @@ float ray(tTuplef screen, tTuplef eye) {
   if(closest_u.type == LIGHT)  bright = 1.0;
   if(closest_u.type == TRIANGLE) {
     bright = 0.1;
+    
+    //foreach light where signs of oldray dot N and newray dot N differ {}  
     for(int i = 0; i < lights.len; i++) {
-      tTuplef oldray;
-      VECTOR_SUBTRACT(oldray, eye, screen);
-      tTuplef newray;
-      VECTOR_SUBTRACT(newray, closest_u.I, lights.light_data[i]); 
-      float dot_old, dot_new;
-      VECTOR_DOT(dot_old, oldray, closest_u.normal);
-      VECTOR_DOT(dot_new, newray, closest_u.normal);
-      //foreach light where signs of oldray dot N and newray dot N differ {}  
-      bool differs;
-      CHECK_SIGNS(differs, dot_old, dot_new);
+      tTuplef oldray; VECTOR_SUBTRACT(oldray, eye, screen);
+      tTuplef newray; VECTOR_SUBTRACT(newray, closest_u.I, lights.light_data[i]); 
+      float dot_old;  VECTOR_DOT(dot_old, oldray, closest_u.normal);
+      float dot_new;  VECTOR_DOT(dot_new, newray, closest_u.normal);
+      
+      bool differs; CHECK_SIGNS(differs, dot_old, dot_new);
 
       if(differs) {
         tTuplef sub_diff; VECTOR_SUBTRACT(sub_diff, closest_u.I, lights.light_data[i]);
-        float mag;
-        VECTOR_MAG(mag, sub_diff);
+        float mag; VECTOR_MAG(mag, sub_diff);
         bright += (ray(lights.light_data[i], closest_u.I)) / (mag);
       }
     }
@@ -83,7 +72,7 @@ float ray(tTuplef screen, tTuplef eye) {
 }
 
 
-// TODO: could make a meta-macro
+// TODO: could make a macro, pass by reference
 tIntersect query_intersection(tTuplef screen, tTuplef eye, int triangle) {
   
   //init to 0
@@ -134,21 +123,18 @@ tIntersect query_intersection(tTuplef screen, tTuplef eye, int triangle) {
   return result;
 }
 
+// TODO: Pass screen, eye, and center by reference, make query_lightray a macro
 tIntersect query_lightray(tTuplef screen, tTuplef eye, tTuplef center, float radius) {
   //eye screen center
   tIntersect result = { 0.0, false };
   
-  float u;                                       
-  VECTOR_U_SPHERE(u, eye, screen, center);                
-                                                  
-  tTuplef p;                                     
-  VECTOR_DIST_SPHERE(p,eye,screen,u);
-                                                  
-  tTuplef sub;                                   
-  VECTOR_SUBTRACT(sub, p, center);                  
-                                                  
-  float sub_mag;                                 
-  VECTOR_MAG(sub_mag, sub);                     
+  float u; VECTOR_U_SPHERE(u, eye, screen, center);                
+ 
+  tTuplef p; VECTOR_DIST_SPHERE(p,eye,screen,u);
+  
+  tTuplef sub; VECTOR_SUBTRACT(sub, p, center);                  
+  
+  float sub_mag; VECTOR_MAG(sub_mag, sub);                     
                                                   
   result.u = u;
   result.lit = sub_mag <= radius;
