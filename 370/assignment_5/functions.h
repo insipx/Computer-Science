@@ -1,6 +1,10 @@
+#include <math.h>
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
+
+#define DEBUG 0
+#define GL_TEST 0
 
 typedef struct tuple {
   float x;
@@ -30,87 +34,57 @@ typedef struct {
   int len;
 } asgn5_data;
 
-
-    //\/\/\/\/\/\/\/\/\/
-    //Object Construction
-    //\/\/\/\/\/\/\/\/\/
-
-#define BUILD_TRIANGLEX(v1, v2, v3, plane, ptr) ({                \
-    *(ptr) = ((struct triangle){                                   \
-          .t1={plane, v1.a, v1.b},                                \
-          .t2={plane, v2.a, v2.b},                                \
-          .t3={plane, v3.a, v3.b}                                 \
-        });                                                       \
-    })                                                            \
-
-#define BUILD_TRIANGLEY(v1, v2, v3, plane, ptr) ({                \
-    *(ptr) = ((struct triangle){                                   \
-      .t1={v1.a, plane, v1.b},                                    \
-      .t2={v2.a, plane, v2.b},                                    \
-      .t3={v3.a, plane, v3.b}                                     \
-    });                                                           \
-    })                                                            \
-
-#define BUILD_TRIANGLEZ(v1, v2, v3, plane, ptr) ({                \
-    *(ptr) = (struct triangle) {                                  \
-      .t1={v1.a, v1.b, plane},                                    \
-      .t2={v2.a, v2.b, plane},                                    \
-      .t3={v3.a, v2.b, plane}                                     \
-        };                                                       \
-    })
-
-#define BUILD_SQUAREZ(center, offset, ptr) ({                    \
-    BUILD_TRIANGLEZ(                                              \
-        ((struct tuple2d) {.a=center.x-offset, .b=center.y+offset}),   \
-        ((struct tuple2d) {.a=center.x+offset, .b=center.y-offset}),   \
-        ((struct tuple2d) {.a=center.x-offset, .b=center.y-offset}),   \
-        center.z-offset, ptr);                                         \
-                                                                  \
-    BUILD_TRIANGLEZ(                                              \
-        ((struct tuple2d) {.a=center.x-offset, .b=center.y+offset}),   \
-        ((struct tuple2d) {.a=center.x+offset, .b=center.y-offset}),   \
-        ((struct tuple2d) {.a=center.x-offset, .b=center.y-offset}),   \
-        center.z+offset,ptr+1);                                         \
-    })
-
-#define BUILD_SQUAREY(center, offset, ptr) ({                  \
-    BUILD_TRIANGLEY(                                              \
-        ((struct tuple2d) {.a=center.x-offset, .b=center.z+offset}),   \
-        ((struct tuple2d) {.a=center.x+offset, .b=center.z-offset}),   \
-        ((struct tuple2d) {.a=center.x-offset, .b=center.z-offset}),   \
-        center.y-offset, ptr);                                         \
-                                                                  \
-    BUILD_TRIANGLEY(                                              \
-        ((struct tuple2d) {.a=center.x-offset, .b=center.z+offset}),   \
-        ((struct tuple2d) {.a=center.x+offset, .b=center.z-offset}),   \
-        ((struct tuple2d) {.a=center.x-offset, .b=center.z-offset}),   \
-        center.y+offset, ptr+1);                                         \
-    })
-
-#define BUILD_SQUAREX(center, offset, ptr) ({                     \
-     BUILD_TRIANGLEX(                                             \
-        ((struct tuple2d) {.a=center.y-offset, .b=center.z+offset}),       \
-        ((struct tuple2d) {.a=center.y+offset, .b=center.z-offset}),       \
-        ((struct tuple2d) {.a=center.y-offset, .b=center.z-offset}),       \
-        center.x-offset, ptr);                                         \
-                                                                  \
-    BUILD_TRIANGLEX(                                              \
-        ((struct tuple2d) {.a=center.y-offset, .b=center.z+offset}),       \
-        ((struct tuple2d) {.a=center.y+offset, .b=center.z-offset}),       \
-        ((struct tuple2d) {.a=center.y-offset, .b=center.z-offset}),       \
-        center.x+offset, ptr+1);                                         \
-    })
-   
-
-#define BUILD_CUBE(center, offset, ptr) ({                        \
-    BUILD_SQUAREX(center,offset, ptr);                            \
-    BUILD_SQUAREY(center,offset, ptr+2);                          \
-    BUILD_SQUAREZ(center,offset, ptr+4);                            \
-    })
-    
     //\/\/\/\/\/\/\/\/\/
     //Vector Operations 
     //\/\/\/\/\/\/\/\/\/
+    
+//sphere          //tTuplef's
+#define VECTOR_TEST_RADIUS(R, P1, P2, P3, RAD) ({  \
+    float _u;                                      \
+    VECTOR_U_SPHERE(_u, P1, P2, P3);               \
+                                                   \
+    tTuplef _p;                                    \
+    VECTOR_DIST_SPHERE(_p, P1, P2, _u);            \
+                                                   \
+    tTuplef _sub;                                  \
+    VECTOR_SUBTRACT(_sub, _p, P3);                 \
+                                                   \
+    float _sub_mag;                                \
+    VECTOR_MAG(_sub_mag, _sub);                    \
+                                                   \
+    R = _sub_mag <= RAD;                           \
+    })
+
+// P1 = EYE P2 = SCREEN P3 = CENTER
+#define VECTOR_DIST_SPHERE(R, P1, P2, U) ({   \
+    tTuplef sr1;                              \
+    VECTOR_SUBTRACT(sr1, P2, P1);             \
+                                              \
+    tTuplef mr1;                              \
+    VECTOR_MULTIPLY_S(mr1, sr1, U);           \
+    VECTOR_ADD(R, P1, mr1);                   \
+    });
+
+#define VECTOR_U_SPHERE(R, P1, P2, P3) ({  \
+    float top_result =                        \
+      ((P3.x - P1.x)*(P2.x-P1.x)) +           \
+      ((P3.y-P1.y)*(P2.y-P1.y))   +           \
+      ((P3.z-P1.z)*(P2.z-P1.z));              \
+                                              \
+    tTuplef bot_v_sub;                        \
+    VECTOR_SUBTRACT(bot_v_sub, P2, P1);       \
+                                              \
+    float bot_result;                         \
+    VECTOR_MAG(bot_result, bot_v_sub);        \
+    bot_result = bot_result*bot_result;       \
+                                              \
+    R = top_result / bot_result;              \
+    })
+
+#define VECTOR_MAG(R, VEC) ({                           \
+    R = sqrt(VEC.x*VEC.x + VEC.y*VEC.y + VEC.z*VEC.z);  \
+    })                                                  \
+
 
 //calculate all Ds
 #define VECTOR_DS(D1, D2, D3, C1, C2, C3) ({      \
@@ -201,5 +175,9 @@ typedef struct {
   R.y = V1.y - V2.y;                        \
   R.z = V1.z - V2.z;                        \
 })                                          \
+
+//P1 = EYE
+//P2 = SCREEN
+//P3 = CENTER OF SPHERE
 
 #endif /* FUNCTIONS_H */
