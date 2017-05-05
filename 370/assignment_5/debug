@@ -1,0 +1,917 @@
+gcc skeleton.c -D_LINUX -ffast-math -funroll-loops -O0 -g -std=gnu99 -trigraphs -I../include -L../lib -L/usr/X11R6/lib -lGL -lglut -lGLU -lm -o asgn5
+In file included from skeleton.c:2:0:
+asgn5.c: In function ‘query_intersection’:
+asgn5.c:28:25: error: ‘tTriangle {aka struct triangle}’ has no member named ‘triangle_data’
+   tTuplef t1 = triangles->triangle_data[triangle].t1,
+                         ^~
+asgn5.c:29:25: error: ‘tTriangle {aka struct triangle}’ has no member named ‘triangle_data’
+           t2 = triangles->triangle_data[triangle].t2,
+                         ^~
+asgn5.c:30:25: error: ‘tTriangle {aka struct triangle}’ has no member named ‘triangle_data’
+           t3 = triangles->triangle_data[triangle].t3;
+                         ^~
+asgn5.c: In function ‘init_mod’:
+asgn5.c:67:19: error: macro "BUILD_TRIANGLEX" requires 5 arguments, but only 1 given
+   BUILD_TRIANGLEX();
+                   ^
+asgn5.c:67:3: error: ‘BUILD_TRIANGLEX’ undeclared (first use in this function)
+   BUILD_TRIANGLEX();
+   ^~~~~~~~~~~~~~~
+asgn5.c:67:3: note: each undeclared identifier is reported only once for each function it appears in
+asgn5.c:68:19: error: macro "BUILD_TRIANGLEY" requires 5 arguments, but only 1 given
+   BUILD_TRIANGLEY();
+                   ^
+asgn5.c:68:3: error: ‘BUILD_TRIANGLEY’ undeclared (first use in this function)
+   BUILD_TRIANGLEY();
+   ^~~~~~~~~~~~~~~
+In file included from asgn5.c:5:0,
+                 from skeleton.c:2:
+functions.h:85:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                 ^
+functions.h:33:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:85:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                    ^
+functions.h:33:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:85:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                    ^
+functions.h:33:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:85:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                                        ^
+functions.h:33:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:85:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                                        ^
+functions.h:33:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:85:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                 ^
+functions.h:33:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:85:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                    ^
+functions.h:33:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:85:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                    ^
+functions.h:33:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:85:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                                        ^
+functions.h:33:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:85:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                                        ^
+functions.h:33:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:86:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                 ^
+functions.h:34:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:86:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                    ^
+functions.h:34:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:86:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                    ^
+functions.h:34:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:86:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:34:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:86:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:34:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:86:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                 ^
+functions.h:34:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:86:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                    ^
+functions.h:34:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:86:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                    ^
+functions.h:34:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:86:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:34:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:86:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:34:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:87:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                 ^
+functions.h:35:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:87:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                    ^
+functions.h:35:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:87:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                    ^
+functions.h:35:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:87:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:35:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:87:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:35:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:87:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                 ^
+functions.h:35:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:87:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                    ^
+functions.h:35:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:87:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                    ^
+functions.h:35:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:87:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:35:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:87:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:35:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:91:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                 ^
+functions.h:33:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:91:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                    ^
+functions.h:33:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:91:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                    ^
+functions.h:33:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:91:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                                        ^
+functions.h:33:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:91:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                                        ^
+functions.h:33:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:91:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                 ^
+functions.h:33:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:91:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                    ^
+functions.h:33:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:91:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                    ^
+functions.h:33:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:91:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                                        ^
+functions.h:33:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:91:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z+offset}),       \
+                                        ^
+functions.h:33:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t1={plane, v1.y, v1.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:92:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                 ^
+functions.h:34:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:92:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                    ^
+functions.h:34:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:92:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                    ^
+functions.h:34:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:92:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:34:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:92:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:34:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:92:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                 ^
+functions.h:34:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:92:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                    ^
+functions.h:34:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:92:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                    ^
+functions.h:34:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:92:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:34:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:92:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y+offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:34:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t2={plane, v2.y, v2.z},                                \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:93:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                 ^
+functions.h:35:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:93:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                    ^
+functions.h:35:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:93:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                    ^
+functions.h:35:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:93:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:35:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:93:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:35:23: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                       ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:93:17: error: expected ‘{’ before ‘)’ token
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                 ^
+functions.h:35:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:93:20: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                    ^
+functions.h:35:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:93:20: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                    ^
+functions.h:35:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:93:40: error: field name not in record or union initializer
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:35:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:93:40: note: (near initialization for ‘(anonymous)’)
+         ((struct) {.y=center.y-offset, .z=center.z-offset}),       \
+                                        ^
+functions.h:35:29: note: in definition of macro ‘BUILD_TRIANGLEX’
+           .t3={plane, v3.y, v3.z}                                 \
+                             ^~
+functions.h:99:5: note: in expansion of macro ‘BUILD_SQUAREX’
+     BUILD_SQUAREX(center,offset, ptr);                            \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:71:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x-offset, .z=center.z+offset}),   \
+                                                ^
+functions.h:41:12: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t1={v1.x, plane, v1.z},                                    \
+            ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:71:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x-offset, .z=center.z+offset}),   \
+                                                ^
+functions.h:41:25: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t1={v1.x, plane, v1.z},                                    \
+                         ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:41:27: error: ‘struct tuple2d’ has no member named ‘z’
+       .t1={v1.x, plane, v1.z},                                    \
+                           ^
+functions.h:70:5: note: in expansion of macro ‘BUILD_TRIANGLEY’
+     BUILD_TRIANGLEY(                                              \
+     ^~~~~~~~~~~~~~~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:72:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x+offset, .z=center.z-offset}),   \
+                                                ^
+functions.h:42:12: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t2={v2.x, plane, v2.z},                                    \
+            ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:72:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x+offset, .z=center.z-offset}),   \
+                                                ^
+functions.h:42:25: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t2={v2.x, plane, v2.z},                                    \
+                         ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:73:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x-offset, .z=center.z-offset}),   \
+                                                ^
+functions.h:43:12: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t3={v3.x, plane, v3.z}                                     \
+            ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:73:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x-offset, .z=center.z-offset}),   \
+                                                ^
+functions.h:43:25: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t3={v3.x, plane, v3.z}                                     \
+                         ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:77:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x-offset, .z=center.z+offset}),   \
+                                                ^
+functions.h:41:12: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t1={v1.x, plane, v1.z},                                    \
+            ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:77:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x-offset, .z=center.z+offset}),   \
+                                                ^
+functions.h:41:25: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t1={v1.x, plane, v1.z},                                    \
+                         ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:41:27: error: ‘struct tuple2d’ has no member named ‘z’
+       .t1={v1.x, plane, v1.z},                                    \
+                           ^
+functions.h:76:5: note: in expansion of macro ‘BUILD_TRIANGLEY’
+     BUILD_TRIANGLEY(                                              \
+     ^~~~~~~~~~~~~~~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:78:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x+offset, .z=center.z-offset}),   \
+                                                ^
+functions.h:42:12: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t2={v2.x, plane, v2.z},                                    \
+            ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:78:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x+offset, .z=center.z-offset}),   \
+                                                ^
+functions.h:42:25: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t2={v2.x, plane, v2.z},                                    \
+                         ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:79:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x-offset, .z=center.z-offset}),   \
+                                                ^
+functions.h:43:12: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t3={v3.x, plane, v3.z}                                     \
+            ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+functions.h:79:48: error: unknown field ‘z’ specified in initializer
+         ((struct tuple2d) {.x=center.x-offset, .z=center.z-offset}),   \
+                                                ^
+functions.h:43:25: note: in definition of macro ‘BUILD_TRIANGLEY’
+       .t3={v3.x, plane, v3.z}                                     \
+                         ^~
+functions.h:100:5: note: in expansion of macro ‘BUILD_SQUAREY’
+     BUILD_SQUAREY(center,offset, ptr+2);                          \
+     ^~~~~~~~~~~~~
+asgn5.c:69:3: note: in expansion of macro ‘BUILD_CUBE’
+   BUILD_CUBE(((struct tuple ){.x=0.2, .y=0.15, .z=0.6}), 0.1, triangles); // (.2, .15, .6), offset .1
+   ^~~~~~~~~~
+make: *** [Makefile:8: asgn5] Error 1
