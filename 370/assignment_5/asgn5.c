@@ -173,7 +173,7 @@ void init_mod() {
     printf("                             INIT_MOD                            \n");
     printf("=================================================================\n");
     if(GL_TEST) {
-      for(int i = 2; i < 14; i++) {
+      for(int i = 10; i < 14; i++) {
 
         if(i == 2) printf("glColor3f(%d,%d,%d);\n", 1,0,0);
         if(i == 6) printf("glColor3f(%d,%d,%d);\n", 0,0,1);
@@ -184,7 +184,7 @@ void init_mod() {
 
       }
     } else {
-      for(int i = 0; i < 14; i++) {
+      for(int i = 8; i < 14; i++) {
         printf("TRIANGLE %d\n", i);
         printf("    (%f, %f, %f)\n", i, triangles.triangle_data[i].t1.x, triangles.triangle_data[i].t1.y, triangles.triangle_data[i].t1.z);
         printf("    (%f, %f, %f)\n", i, triangles.triangle_data[i].t2.x, triangles.triangle_data[i].t2.y, triangles.triangle_data[i].t2.z);

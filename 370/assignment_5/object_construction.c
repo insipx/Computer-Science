@@ -31,7 +31,7 @@ void build_trianglez(tTuple2df v1, tTuple2df v2, tTuple2df v3, float plane, tTri
     *(ptr) = (struct triangle) {                                  
       .t1={v1.a, v1.b, plane},                                    
       .t2={v2.a, v2.b, plane},                                    
-      .t3={v3.a, v2.b, plane}                                     
+      .t3={v3.a, v3.b, plane}                                     
     };                                                       
 
 }
