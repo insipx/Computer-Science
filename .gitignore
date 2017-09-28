@@ -61,3 +61,4 @@ nbproject/private/*
 *.sh
 *.out
 *.dat
+.DS_STORE
