@@ -1,0 +1,107 @@
+<html>
+<head>
+  <title>Proving Correctness of a skip-program</title>
+</head>
+<body>
+<H2>
+SE 504 <br />
+Proving Correctness of a skip-program
+</H2>
+
+<p>
+The Hoare Triple law for skip says
+<p><center>
+                {P} skip {Q}  &equiv;  [P <tt>&rArr;</tt> Q]
+</center>
+<p>
+Thus, to show {P} skip {Q}, it suffices to complete a proof of 
+P <tt>&rArr;</tt> Q.
+
+<p>
+Example: Prove { x > y } skip { x &ge; y  &or;  z < y }.
+<p>
+<b>Solution:</b> Taking P to be x &gt; y and Q to be x &ge; y &or; z &lt; y,
+it suffices (by the Hoare Triple law for skip) to complete a proof of 
+P <tt>&rArr;</tt> Q:
+<pre>  Assume P (i.e., x > y).
+
+     Q
+
+  =     < defn of Q >
+
+     x &ge; y  &or;  z < y
+
+  =     < defn of &ge;  >
+
+     (x > y &or; x=y)  &or;  z < y
+
+  =     < assumption P (i.e., x > y) >
+
+     (true &or; x=y)  &or;  z < y
+
+  =     < symmetry of &or; (Gries 3.24) >
+
+     (x=y &or; true)  &or;  z < y
+
+  =     < zero of &or; (Gries 3.29) >
+
+     true  &or;  z < y
+
+  =     < symmetry of &or; (Gries 3.24) >
+
+     z < y  &or;  true
+
+  =     < zero of &or; (Gries 3.29) >
+
+     true
+</pre>
+<p>
+Our proof was given in quite gory detail.  Usually, we can omit explicit
+mention of the use of (Gries 3.24), for example.  Also, we could have
+appealed to the assumption <tt>x&gt;y</tt> as a justification for
+replacing (the weaker) <tt>x&ge;y</tt> by <tt>true</tt> directly,
+without first rewriting the latter as <tt>x&gt;y &or; x=y</tt> and
+then using the assumption.  A more concise proof would have been:
+<pre>  Assume P (i.e., x > y).
+
+     Q
+
+  =     < defn of Q >
+
+     x &ge; y  &or;  z < y
+
+  =     < assumption P (i.e., x > y) implies x &ge; y >
+
+     true &or; z < y
+
+  =     < zero of &or; (Gries 3.29) >
+
+     true </pre>
+<hr>
+<p>
+Now suppose that we use the wp-approach instead of the Hoare Triple approach.
+The relationship between wp and Hoare Triples is
+<p><center>
+                {P} S {Q} &nbsp;&equiv;&nbsp;  [P <tt>&rArr;</tt> wp.S.Q]
+</center>
+<p>
+Hence, to prove {P} skip {Q} we show the equivalent
+[P <tt>&rArr;</tt> wp.skip.Q].
+The usual approach is to assume the antecedant and to show the consequent:
+<pre>  Assume P (i.e., x > y).
+
+     wp.skip.Q
+
+  =     < defn of Q >
+
+     wp.skip.(x &ge; y  &or;  z < y)
+
+  =     < wp skip rule, which says [wp.skip.Q &nbsp;&equiv;&nbsp; Q] >
+
+     x &ge; y  &or;  z < y </pre>     
+<p>
+As we have arrived at the second line of the proof above, we simply continue
+as we did there.
+
+</body>
+</html>

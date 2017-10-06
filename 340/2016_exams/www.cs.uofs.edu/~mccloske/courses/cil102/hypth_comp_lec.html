@@ -1,0 +1,372 @@
+<html>
+<head>
+  <title>C/IL 102 &nbsp Hypothetical Computer</title>
+</head>
+<body>
+<H3>C/IL 102  (Computing & Information Literacy) <br>
+Dr. McCloskey<br>
+Description of (and examples pertaining to) a hypothetical computer
+</H3>
+
+</p><p>
+<b>Acknowledgement:</b>
+The "machine" described here is an adaptation of that presented in 
+<em>Introducing Computer Concepts by Simulating a Simple Computer</em>,
+by Dr. Robert A. Campbell, SIGCSE Bulletin, Vol. 28, No. 3, Sept. 1996,
+pp. 9-11.  
+
+</p><p>
+The purpose of this presentation is to illustrate how an
+electronic digital computer operates at the machine language level
+of abstraction.  The electronic aspects of its operation are not treated.
+
+</p><p>
+The hypothetical computer described here serves as a model, or abstraction,
+of the step-by-step behavior of a real-life digital computer.
+Being only a model (and thus a simplification of reality),
+the hypothetical computer does not possess all the capabilities of a
+(typical) real-life general-purpose computer; however, it operates
+in, essentially, the same way.
+<!-- in a manner that is, essentially, the same as 
+     a real-life digital computer.
+-->
+Thus, by coming to an understanding of this model, you will have come also
+to a better understanding of what goes on "under the hood" of your
+<!-- desktop PC or any other digital computer that you happen to use. -->
+laptop computer, or smart phone, or other digital data processing device
+that you may happen to use.
+
+
+<h4>Components of the hypothetical computer:</h4>
+
+<ol>
+  <li><b>RAM (main/primary memory/storage):</b>
+      Comprised of 4096 (that's 2<sup>12</sup>) 16-bit memory locations
+      (or "words") with addresses 0, 1, 2, ..., 4095.
+      (A memory location is analogous to a mailbox in a post office or
+      to a cell in an MS-Excel worksheet.)
+  </li>
+  <li><b>Central Processing Unit (CPU):</b>
+    <ul>
+      <li><b>Control unit (CU):</b>
+              does the decoding (or interpreting) of instructions, and sends
+              out the electronic signals that cause an instruction to be
+              executed
+      </li>
+      <li><b>Arithmetic/logic unit (ALU):</b>
+              carries out the arithmetic calculations (e.g., adding) and
+              logical calculations (e.g., comparing)
+      </li>
+      <li><b>Registers:</b>
+          special, high-speed storage cells (but not part of RAM) that are
+          directly accessible by the CU and ALU
+         <ol>    
+           <li><b>Accumulator (ACC)</b>  (16 bits)
+               (typically) holds data that has just been produced as the
+                result of an instruction or that is about to be operated upon
+           </li>
+           <li><b>Instruction Counter (IC):</b>  (12 bits)
+               holds the address of the memory location containing the 
+               next instruction to be executed.  In effect, the IC is
+               the computer's way of "remembering where it is" within
+               the program being executed.  (You should be able to make
+               the connection between the size of this register, 12 bits,
+               and the # of distinct addresses in RAM, 2<sup>12</sup>.)
+               Perhaps a better name for this register would be
+               Instruction <em>Pointer</em>, as its purpose is to hold
+               a value that "points to" the memory cell containing the
+               next instruction.
+           </li>
+           <li><b>Instruction Register (IR)</b>  (16 bits)
+               holds the instruction about to be (or being) executed
+           </li>
+         </ol>    
+      </li>
+    </ul>
+  </li>
+  <li><b>I/O Devices:</b>
+     <ul>
+        <li>keyboard, at which the user can enter integer values</li>
+        <li>screen, on which integer values can be displayed</li>
+     </ul>
+  </li>
+</ol>
+
+</p><p>
+General-purpose digital computers are designed to employ the
+<em>stored program</em> concept, which is to say that not only data 
+occupies memory, but also the instructions comprising the software that
+is processing that data.  Another way to look at it is that instructions
+are nothing but another form of data, in addition to numbers, characters,
+images, etc.
+
+</p><p>
+Recall from the <em>Giant Brains</em> videorecording that one interesting
+weakness of ENIAC was that it was NOT a stored-program computer.
+That is, a program being executed on the ENIAC was embodied/expressed
+in terms of its wiring, as opposed to being expressed as a sequence of
+instructions (encoded by bit strings or characters, or whatever) stored
+in its memory.
+As a consequence of this, changing ENIAC's programming required that
+technicians make physical alterations to its wiring, which could take 
+hours or even days!!
+
+</p><p>
+Let us assume that we have some way of filling each memory location with a
+string of 16 bits.  (This allows us to place a program that we wish to be
+executed, as well as data that might be useful to it, into RAM.)  Once we
+hit the EXECUTE button on the computer, it repeats, over and over, the
+following <em>fetch-decode-execute</em> cycle, stopping only after the HALT
+instruction has been executed.
+
+
+<h4>Fetch-Decode-Execute Cycle:</h4>
+<ol>
+  <li>Fetch next instruction
+        (i.e., copy into the IR the contents of the
+        memory location identified by the IC)
+  </li>
+  <li>Increment the IC (i.e., add one to the value in IC)
+  </li>
+  <li>Execute the instruction occupying the IR
+  </li>
+</ol>
+
+</p><p> 
+The purpose of (2) is to make it so that, by default, the instructions will
+be executed in the same order as they appear in memory.  (This is analogous
+to following a recipe line by line.)  Only by executing an instruction that
+modifies the contents of the IC can this behavior be changed.  In order to
+design programs with loops (instruction sequences that are repeated during
+execution of a program) we need instructions that do exactly this.
+
+</p><p>
+For convenience, we assume that, upon hitting the EXECUTE button, the IC is
+initialized to zero.  This means that the first instruction executed will
+always be the one stored in location 0.  (For this reason, we will always
+assume that the program we want to run is stored beginning at location
+0 in RAM.  Exactly how we get our program there is beyond the scope of this
+discussion.)
+
+
+<h4>Encoding of instructions</h4>
+
+<p>
+An instruction is encoded inside a 16-bit word as follows:
+
+<center>
+<table border="0" cellpadding="4">
+<tr><td>
+<pre>                     |
+         +--+--+--+--|--+--+--+--+--+--+--+--+--+--+--+--+
+         |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+         +--+--+--+--|--+--+--+--+--+--+--+--+--+--+--+--+
+          operation  |            operand
+            code      
+        (1st 4 bits)           (last 12 bits) </pre> 
+</td></tr>
+</table>
+</center>
+
+Thus, when decoding the contents of the IR, the control unit will interpret
+the first four bits as identifying <b>which kind</b> of instruction is to be 
+executed and the last 12 bits as the <b>operand</b> (i.e., the data to be used
+by the instruction).  Note that some kinds of instructions do not use an
+operand, in which case the last twelve bits are ignored.
+
+<h4>Instruction Set/Repertoire</h4>
+
+The hypothetical computer has a (small) repertoire of instructions that it is
+capable of carrying out.   This is called its "instruction set", and it is as
+follows:
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+ Opcode       Name          Effect
+ ---------    --------      -----------------------------------------
+  0 (0000)    HALT          execution of program terminates
+  1 (0001)    READ          copies data entered by user into ACC
+  2 (0010)    WRITE         displays contents of ACC onto screen
+  3 (0011)    LOAD          copies contents of specified location into ACC
+  4 (0100)    LOAD-IM       copies specified data into ACC
+  5 (0101)    STORE         copies contents of ACC into specified location
+  6 (0110)    ADD           adds contents of specified location to ACC
+  7 (0111)    ADD-IM        adds specified value to ACC
+  8 (1000)    SUB           subtracts contents of specified location from ACC
+  9 (1001)    SUB-IM        subtracts specified value from ACC
+ 10 (1010)    BRANCH        changes contents of IC to specified value
+ 11 (1011)    BRANCH-P      if ACC has positive value (i.e., greater than
+                            zero), changes contents of IC to specified value
+ 12 (1100)    BRANCH-N      if ACC has negative value (i.e., less than zero),
+                            changes contents of IC to specified value
+ 13 (1101)    BRANCH-Z      if ACC has value zero, changes contents of IC to
+                            specified value
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+For example, a word of memory containing
+</p><p>
+<center>
+<table>
+<tr><td>
+<pre>
+    +--+--+--+--|--+--+--+--+--+--+--+--+--+--+--+--+
+    | 0| 0| 1| 1| 0| 0| 0| 0| 0| 0| 1| 0| 1| 0| 1| 1|
+    +--+--+--+--|--+--+--+--+--+--+--+--+--+--+--+--+ </pre>
+</td></tr>
+</table>
+</center>
+corresponds to the instruction LOAD 43.  The first four bits contain the
+operation code for LOAD (0011) and the last twelve bits contain (the binary
+representation of) 43 (000000101011).
+For the sake of convenience, henceforth we will not concern ourselves with
+the details of the bit strings occupying the memory locations.
+
+<p>
+Examples of instructions (and the effect of executing each one):
+<pre>
+    LOAD 43:     copies contents of memory location 43 into ACC
+    LOAD-IM 43:  places the (bit string corresponding to) value 43 into ACC
+    STORE 12:    copies value in ACC into memory location 12
+    ADD 17:      adds the value in memory location 17 to the value in ACC 
+    BRANCH-Z 7:  examines ACC---if value there is zero, the contents of
+                 the IC are changed to 7; otherwise, nothing happens
+</pre> 
+
+
+<h4>Example program 1: Finding sum of two inputs</h4>
+
+<p>
+Here is a program to accept two inputs from the user and display their sum.
+(The contents of each memory location is given in "reader-friendly" form,
+rather than in the form of a bit string.)
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+   Mem
+   Loc     Content         Remarks
+   ---     ----------      ------------------------------------------
+    0      READ            --reads 1st input (into ACC)
+    1      STORE 6         --stores into location 6 (for safe keeping)
+    2      READ            --reads 2nd input (into ACC)
+    3      ADD 6           --adds 1st input to 2nd
+    4      WRITE           --displays sum
+    5      HALT            --execution terminates
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+In order to illustrate what happens during execution of the program, we
+show a "snapshot" of the computer's state (which is given by the values in
+each of its relevant memory locations) at the beginning and end of each
+iteration of the fetch-decode-execute cycle.  In this particular example,
+we assume that the user supplies inputs 31 and 14.  Each remark indicates
+what actions occur during the corresponding iteration of the cycle.
+(The change-of-state resulting from such actions can be discerned by
+examining the contents of IC, ACC, etc. indicated on the next line.)
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+                          Input   Output 
+Cycle  IC   ACC   Loc 6   so far  so far    Remarks
+-----  --   ---   -----   ------  ------    -------
+  -     0    -      -       -       -       initial state
+  1     1    31     -       31      -       user input 31 was READ into ACC
+  2     2    31     31      31      -       31 was STOREd in location 6
+  3     3    14     31    31 14     -       user input 14 was READ into ACC
+  4     4    45     31    31 14     -       loc. 6 contents were ADDed to ACC
+  5     5    45     31    31 14     45      ACC contents were WRITtEn to screen
+  6     6    45     31    31 14     45      program has halted </pre>
+</td></tr>
+</table>
+</center>
+
+
+<hr>
+<h4>Example program 2: Countdown</h4>
+
+<p>
+Here is a program that accepts one input from the user and then displays
+a countdown to zero, beginning with the input value.
+This program illustrates the concept of a loop, which is a sequence of
+instructions that gets executed repeatedly.  
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+   Mem
+   Loc     Content          Remarks
+   ---     ----------       --------------------------------------------
+    0      READ             reads input into ACC
+    1      BRANCH-N 5       if ACC's value is negative, go to location 5
+    2      WRITE            outputs ACC's value
+    3      SUB-IM 1         subtracts 1 from value in ACC
+    4      BRANCH 1         go back to location 1
+    5      HALT             terminate execution </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Here is a history of the computation that would result if the user were
+to enter 2 as the input value:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+                   Input    Output 
+Cycle  IC   ACC   so far   so far     Remarks
+-----  --   ---   ------   -------    ---------------------------------
+  -     0    -      -         -       initial state
+  1     1    2      2         -       user input of 2 was READ into ACC
+  2     2    2      2         -       ACC is not negative, so BRANCH-N had no effect
+  3     3    2      2         2       ACC contents were WRITtEn to screen
+  4     4    1      2         2       1 was SUBtracted from ACC
+  5     1    1      2         2       BRANCH caused 1 to be stored in IC 
+  6     2    1      2         2       ACC is not negative, so BRANCH-N had no effect
+  7     3    1      2        2 1      ACC contents were WRITtEn to screen
+  8     4    0      2        2 1      1 was SUBtracted from ACC
+  9     1    0      2        2 1      BRANCH caused 1 to be stored in IC
+ 10     2    0      2        2 1      ACC is not negative, so BRANCH-N had no effect
+ 11     3    0      2       2 1 0     ACC contents were WRITtEn to screen
+ 12     4   -1      2       2 1 0     1 was SUBtracted from ACC
+ 13     1   -1      2       2 1 0     BRANCH caused 1 to be stored in IC
+ 14     5   -1      2       2 1 0     ACC is negative, so BRANCH-N put 5 into IC
+ 15     6   -1      2       2 1 0     program has halted </pre>
+</td></tr>
+</table>
+</center>
+
+<hr>
+<h4>Exercise</h4>
+</p><p>
+Making use of pieces of the two programs presented above, develop a program
+that, given as inputs two natural numbers (i.e., nonnegative integers),
+outputs their product.
+
+</p><p>
+<b>Hint:</b> The product <tt>m&times;n</tt> is just the sum
+<tt>n + n + ... + n</tt>, in which <tt>n</tt> appears <tt>m</tt> times.
+A program that does this calculation can place zero into a particular
+memory location and then add <tt>n</tt> to the value in that location
+<tt>m</tt> times.  To make the code segment that does the adding repeat
+exactly <tt>m</tt> times, the program can do a countdown, as in the
+second example program above.
+
+</body>
+</html>

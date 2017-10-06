@@ -1,0 +1,408 @@
+<html>
+<head><title>DEC Command Language (DCL): Some basic commands</title>
+</head>
+<body>
+<H2>
+CMPS 340 (File Processing) &nbsp; U of Scranton<br>
+DEC Command Language (DCL)<br>
+Some Basic Commands
+</H2>
+
+<p>
+As is typical of machines running the VMS operating system, the command
+language (or "shell", in UNIX terminology) by which a user communicates with
+<!-- the University's main academic computer, TIGER (tiger.uofs.edu), -->
+the CS Dept.'s VAX (<tt>vaxsrv1.cs.uofs.edu</tt>),
+is DCL ("Digital Command Language").  Note that VMS is case-insensitive,
+which means that it does not distinguish between the lower and upper case
+versions of any letter.  In this document, we will show all DCL commands
+and file names in upper case.
+
+<p>
+To access the CS Dept.'s Vax, you probably will want to use 
+some version of <tt>TELNET</tt>.  On the PC's in the department's
+Plonsky lab (St. Thomas 488), this can be accomplished by using Putty.
+(Students taking the File Processing course will be issued a username
+and password.)
+
+<!-- <p>
+Regarding how one accesses <tt>TIGER</tt> in the first place, you
+probably want to use some version of <tt>TELNET</tt>.
+-->
+
+<p>
+Herein are described a small number of the most useful commands in DCL.  The
+reader is assumed to be familiar with the idea of organizing files as a
+hierarchy using directories.  File names under VMS have three parts: a name,
+followed by a period, then a (possibly empty) suffix (or extension,
+if you prefer), followed by a semicolon, and finally, a version number.
+For example, in
+<p>
+<center><tt>GPA_PROG.COB;17</tt></center>
+
+<p>
+<tt>GPA_PROG</tt> is the name, <tt>COB</tt> is the suffix, and 
+<tt>17</tt> is the version number.
+Certain suffixes have special significance.  For example, directories are
+files with the suffix <tt>DIR</tt>.  Files containing DCL "scripts" are
+given the suffix <tt>COM</tt>.  
+By convention, files containing COBOL programs are suffixed by <tt>COB</tt>.
+To refer to a file that is not in the default (i.e., current)
+directory, you would use a "path".  For example,
+
+<center><tt>USERS:[HOME.MCCLOSKE.CMPS340]GPA_PROG.COB</tt></center>
+<!-- <center><tt>SYS$USERDISK:[MCCLOSKEYR1.CMPS340]GPA_PROG.COB</tt></center>
+-->
+
+<p>
+refers to the (latest version of the) file named <tt>GPA_PROG.COB</tt>
+that resides within the <tt>CMPS340</tt> subdirectory within the 
+<tt>MCCLOSKE</tt> <!-- <tt>MCCLOSKEYR1</tt>  -->
+subdirectory within the <tt>HOME</tt> subdirectory
+on the device <tt>USERS</tt>.  <!-- <tt>SYS$USERDISK</tt>. -->
+
+<hr>
+<H3>Logging Off</H3>
+<p>
+To terminate an interactive terminal session (i.e., log off), use the command
+<p>
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> LOGOUT</tt>
+
+<p>
+or its abbreviation, <tt>LOG</tt>.
+(Note that the dollar sign is the prompt to which the user replies.) 
+
+<hr>
+<H3>Changing Your Password</H3>
+<p>
+Use the command
+<p>
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> SET PASSWORD</tt>
+
+<p>
+You will be prompted to enter
+your current password and your new one, twice.
+
+<hr>
+<H3>Documentation</H3>
+<p>
+Use the <tt>HELP</tt> command (analogous to Unix's <tt>man</tt>) to view
+documentation on how to use the commands in DCL.  That is, enter
+
+<p>
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> HELP</tt>
+
+
+<p>
+To get help on a specific command, <tt>COPY</tt> for example, enter
+
+<p>
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> HELP COPY</tt>
+
+<hr>
+<H3>Directories</H3>
+
+<b>Navigation:</b>
+<p>
+In DCL, the term is "default" directory, rather than Unix's "working"
+(or what most of us refer to as "current") directory.
+
+<p>
+The path of your default directory is displayed on the first line in
+response to the <tt>DIRECTORY</tt> command (see below).
+(There may be a better way to ascertain it, but we haven't found it.)
+<!-- even Bill Gunshannon doesn't know how!) -->
+
+<p>
+To go from the current directory to a subdirectory within it (called
+<tt>SAM</tt>, say) you would enter the command
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> SET DEFAULT [.SAM]</tt>
+
+<p>
+As <tt>DEFAULT</tt> may be abbreviated as <tt>DEF</tt>, we will do so
+hereafter.
+
+<p>
+To go from the current directory to its parent, you would enter the command
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> SET DEF [-]</tt>
+
+<p>
+As in UNIX, you can move through several levels using a single command,
+as in
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> SET DEF [-.MARY.HELEN]</tt>
+<p>
+which has the effect of moving from the current directory up to its
+parent, then down to its subdirectory <tt>MARY</tt> and then to
+<tt>MARY</tt>'s subdirectory <tt>HELEN</tt>.
+Strangely, if you "move" to a non-existent subdirectory, no error message
+is displayed until after you issue the next command involving the
+default directory, such as <tt>DIRECTORY</tt> (see below).
+If you find yourself in such a "netherworld", you can get back to your
+home directory by entering
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b>
+<!-- SET DEF [000000.&lt;</tt><em>your user name</em><tt>&gt;]</tt> -->
+SET DEF [HOME.<em>your user name</em>]</tt>
+
+<!--
+<p>
+Well, that works for me, but students' accounts may be nested one or more
+levels deeper.  So I'm not really sure.
+-->
+
+<p><br>
+<b>Listing File Names:</b>
+
+<p>
+To get a listing of all (names of) files in the default (i.e., current)
+directory, enter the command
+<p>
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> DIRECTORY</tt>
+
+
+<p>
+As <tt>DIRECTORY</tt> may be abbreviated as <tt>DIR</tt>, we will do
+so hereafter.
+
+<p>
+Using the "wildcard" character, <tt>*</tt>, the listing can be
+restricted to names containing specified substrings.
+For example, if you want to see only the names of files containing COBOL
+programs (i.e., ones with the suffix <tt>COB</tt>), you would enter
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> DIR *.COB</tt>
+
+<p>
+If you want to see only the names of subdirectories, you would enter
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> DIR *.DIR</tt>
+
+<p>
+To list the names of all files containing <tt>JUNK</tt> somewhere in 
+the main part of the name, you would enter
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> DIR *JUNK*.*</tt>
+
+<p>
+Let's say you want a listing of all files containing COBOL programs
+in the subdirectory <tt>CMPS340</tt> of the default directory.
+You would enter
+<p>
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> DIR [.CMPS340]*.COB</tt>
+
+<p>
+If you want more information about each listed file (such as size, creation
+time, time of most recent modification, etc.), use the <tt>FULL</tt> 
+qualifier, as in
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> DIR/FULL</tt>
+
+<p>
+As it is likely that you are interested in seeing this information about
+only one file, you would most likely enter something like
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> DIR/FULL PROG1.COB</tt>
+
+<p>
+which would give you complete information regarding (the latest version
+of) the file named <tt>PROG1.COB</tt>.
+
+<p><br>
+<b>Creation:</b>
+<p>
+To create a subdirectory called <tt>FRANK</tt> within the current directory,
+enter 
+
+<p>
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> CREATE/DIR [.FRANK]</tt>
+
+<hr>
+<H3>Files</H3>
+
+<p>
+<b>Deleting Files:</b>
+<p>
+  Depending upon the settings chosen by the system administrator, VMS may
+  save the last few versions of each file (rather than only the latest one).
+  Different versions of the "same" file are distinguished by their version
+  numbers.  Among two files with the same name, except for their version
+  numbers, the one with the higher version number is the one more recently
+  created.
+<p>
+  To delete all but the most recent version of each file in the default
+  directory, enter the command
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> PURGE</tt>
+
+<p>
+  To restrict purging to only those files whose names are of a certain form,
+  enter, for example, 
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> PURGE *.COB</tt>
+
+<p>
+  which would purge only among files containing COBOL programs.
+
+<p>
+  To delete a particular file, you would enter, for example, 
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> DELETE PROG1.COB;5</tt>
+
+<p>
+  Notice that the version number is required here!  To delete all versions
+  of the file, you would enter
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> DELETE PROG1.COB;*</tt>
+
+<p>
+  To delete all files containing COBOL programs (for example), enter
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> DELETE *.COB;*</tt>
+
+<p><br>
+<b>Creating Files:</b>
+
+<p>
+  Occasionally, it may be convenient to create a new (and "empty") file.
+  An example of doing that is
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> CREATE JUNK.TXT</tt>
+
+<p>
+At this point, you will be in edit mode (see <tt>EDIT</tt> command
+below).  To escape from it, hit <tt>CNTRL-Z</tt>.
+
+<p><br>
+<b>Copying Files:</b>
+<p>
+To copy the contents of, say, the file <tt>JUNK.TXT</tt> into a new
+file <tt>JUNK_OLD.TXT</tt>, enter
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> COPY JUNK.TXT JUNK_OLD.TXT</tt>
+
+<p>As a special case of file copying, you can concatenate the contents
+of two or more files, placing the result into another one, as follows
+(for example):
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> COPY JUNK1.TXT JUNK2.TXT JUNK3.TXT 
+     JUNK.TXT</tt>
+
+<p>
+which has the effect of creating <tt>JUNK.TXT</tt> and making its contents
+be the concatenation of
+<tt>JUNK1.TXT</tt>, <tt>JUNK2.TXT</tt>, and <tt>JUNK3.TXT</tt>.
+
+<p>
+If you want to append to an existing file the contents of one or more
+other files, use <tt>APPEND</tt>, as in
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> APPEND JUNK1.TXT JUNK2.TXT JUNK3.TXT 
+     JUNK.TXT</tt>
+
+<p>
+which has the effect of appending the contents of the first three files
+mentioned onto the end of the fourth file mentioned.  (In other words,
+the last file mentioned is the "destination".)
+It is recommended that the destination file <!-- (above, <tt>JUNK.TXT</tt>) -->
+<em>not</em> be among the "source" files, as you could get unexpected
+results.
+
+<p><br>
+<b>Renaming</b>
+<p>
+To rename a file from, say, <tt>JUNK.TXT</tt> to <tt>GARBAGE.TXT</tt>,
+you would enter the command
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> RENAME JUNK.TXT GARBAGE.TXT</tt>
+
+<p><br>
+<b>Displaying Contents of Files:</b>
+
+<p>
+  To display the contents of a text file, enter something such as
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> TYPE PROG1.COB</tt>
+
+<p>
+  If you attempt to <tt>TYPE</tt> a non-text file, you will get garbage.
+  (More precisely, the system will interpret the file's contents as though
+  it were text.)
+
+<p>
+  To "dump" the (uninterpreted) contents of a file, enter something such as
+
+<p>  
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> DUMP PROG1.COB</tt>
+
+<p>
+  This displays the contents of the file in hexadecimal form
+  and as text, side by side.
+  <!--, as well as textual (on the side). -->
+
+<p><br>
+<b>Editing Files:</b>
+
+<p>  
+At the moment, at least two text editors are available on
+<tt>vaxsrv1.cs.uofs.edu</tt>, one of which is <tt>edit</tt>,
+which is invoked as in the following:
+<p>
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> EDIT PROG1.COB</tt>
+<p>
+This editor allows you to move around the screen with the arrow keys
+and insert characters simply by typing.  To exit and save the file,
+hit <tt>CNTRL-Z</tt>.  To quit without saving, hit <tt>CNTRL-Y</tt>.
+
+<p>
+However, we recommend that you use <tt>vim</tt>, which is a clone of
+<a href="http://www.cs.uofs.edu/~mccloske/vi_instruct.txt"><tt>vi</tt></A>,
+a popular editor on Unix systems.  An example of invocation is
+<p>
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> VIM PROG1.COB</tt>
+
+<!--
+<p>
+Replacing <tt>EDIT</tt> by <tt>LSE</tt> gives you the
+"Language Sensitive Editor" and <tt>EDIT/EDT</tt> gives
+you yet a different one.
+-->
+
+<hr>
+<A Name="e-mail">
+<H3>Sending E-mail</H3>
+<p>
+To send a file as e-mail, enter the command
+<p>
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> MAIL/SUBJECT="&lt;subject line&gt;"
+    &lt;file name&gt;  &lt;recipient username&gt;</tt>
+<p>
+For example, 
+<p>
+<tt>&nbsp;&nbsp;&nbsp;<b>$</b> MAIL/SUBJECT="program #1"
+    prog1.cob  mccloske</tt>
+
+<p>
+Note that <tt>vaxsrv1.cs.uofs.edu</tt> supports only intra-system
+e-mail.
+
+
+</body>
+</html>

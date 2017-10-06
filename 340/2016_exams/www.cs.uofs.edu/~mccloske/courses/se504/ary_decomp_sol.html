@@ -1,0 +1,221 @@
+<html>
+<head>
+<title>Solution to Array Decomposition Problem</title>
+</head>
+<body>
+<H2>
+  SE 504 <br />
+  Solution to Array Decomposition Problem
+</H2>
+
+<p>
+Develop a program to satisfy the following specification.
+<pre>
+|[ con N : int; { N > 0 }
+   con F : array [0..N) of int;
+   var h : array [0..N) of int;
+
+   h := ?
+
+   {(&forall;k | 0&le;k&lt;N : F.k = (+i | 0&le;i&le;k : h.i)) |
+]|</pre>
+
+</p><p>
+In words, the goal is to place values into array h so that, for each k,
+the sum of the elements in h[0..k] is equal to F.k.
+
+</p><p>
+We strengthen the postcondition by replacing the constant <tt>N</tt> 
+by the fresh variable <tt>n</tt> and adding the conjunct <tt>n=N</tt>.
+Then we take the first conjunct as a possible loop invariant and the
+negation of the second as the guard of the loop.
+It would appear that, as is often the case, the variable <tt>n</tt>
+should be incremented during each loop iteration.  In addition, we
+probably need to modify h on each iteration.  This gives rise to 
+<pre>
+|[ con N : int; { N > 0 }
+   con F : array [0..N) of int;
+   var h : array [0..N) of int;
+   var n : int;
+
+   n,h := D, E;
+   {invariant I: (&forall;k | 0&le;k&lt;n : F.k = (+i | 0&le;i&le;k : h.i))  &and;  0&le;n&le;N }
+   do n &ne; N &xrarr; n,h := n+1,G;
+   od
+   {(&forall;k | 0&le;k&lt;N : F.k = (+i | 0&le;i&le;k : h.i)) }
+]|
+</pre>
+<p>
+To make initialization easy, we could take <tt>D</tt> to be 0.
+That would truthify <tt>I</tt> and make initialization of <tt>h</tt>
+unnecessary.  If we were to take <tt>D</tt> to be 1, then to truthify 
+<tt>I</tt> we would have to initialize <tt>h</tt> to <tt>h(0:F.0)</tt>.
+(That is, we would have to copy the value of <tt>F.0</tt> into <tt>h.0</tt>.)
+
+<p>
+As for <tt>G</tt>, let us attempt to derive it by showing (ii) of the 
+loop checklist:
+<pre>
+  {I &and; B} n,h := n+1,G {I}   (i.e., [I &and; B  &rArr;  wp.(n,h := n+1,G).I] )
+
+    wp.(n,h := n+1,G).I
+
+ =     < defn of I, wp assignment law, textual sub >
+
+    (&forall;k | 0&le;k&lt;n+1 : F.k = (+i | 0&le;i&le;k : G.i))  &and;  0&le;n+1&le;N 
+    
+ =     < 2nd conjunct is implied by assumption 0&le;n&le;N &and; n&ne;N, (3.39) >
+
+    (&forall;k | 0&le;k&lt;n+1 : F.k = (+i | 0&le;i&le;k : G.i))
+
+ =     < split off term (8.23) >
+
+    (&forall;k | 0&le;k&lt;n : F.k = (+i | 0&le;i&le;k : G.i))  &and;  F.n = (+i | 0&le;i&le;n : G.i)
+
+ =     < assume that G[0..n) =  h[0..n) >
+
+    (&forall;k | 0&le;k&lt;n : F.k = (+i | 0&le;i&le;k : h.i))  &and;  F.n = (+i | 0&le;i&le;n : G.i)
+
+ =     < assumption I, (3.39) >
+
+    F.n = (+i | 0&le;i&le;n : G.i)
+
+ =     < assume n&gt;0, and split off term (8.23) >
+
+    F.n = (+i | 0&le;i&lt;n : G.i) + G.n
+
+ =     < assume (again) that G satisfies G.i = h.i for i satisfying 0&le;i&lt;n >
+
+    F.n = (+i | 0&le;i&lt;n : h.i) + G.n
+</pre>
+<p>
+At this point, we notice that the first term on the right-hand side 
+looks very much like a subexpression of the first conjunct of our
+loop invariant.  It would look even more similar if we rewrote the
+inequality <tt>i&lt;n</tt> as <tt>i&le;n-1</tt>, so we do that now:
+<pre>
+    F.n = (+i | 0&le;i&lt;n : h.i) + G.n
+
+ =     < rewrite inequality i&lt;n as i&le;n-1 >
+
+    F.n = (+i | 0&le;i&le;n-1 : h.i) + G.n
+</pre>
+The first conjunct of the loop invariant (which we have taken as an
+assumption, you will recall) says that
+<tt>F.k = (+i | 0&le;i&le;k : h.i)</tt> for every <tt>k</tt> from zero
+up to and including <tt>n-1</tt>.
+In particular, then, by plugging in <tt>n-1</tt> for <tt>k</tt> we get
+<tt>F.(n-1) = (+i | 0&le;i&le;n-1 : h.i)</tt>.  Note that we need
+<tt>n&gt;0</tt> to do this.  To justify this step technically, we use
+a slightly more general form of Gries's and Schneider's (9.13) Instantiation
+theorem, which we call (9.13') and can be found in the Appendix below.
+Continuing the proof:
+
+<pre>
+    F.n = (+i | 0&le;i&le;n-1 : h.i) + G.n
+
+ =     < assumptions I (the loop invariant) and n > 0, and application
+         of (9.13') (see Appendix), instantiated by 
+         x: k, 
+         e: n-1,
+         R: 0&le;k&lt;n, and
+         P: F.k = (+i | 0&le;i&le;k : h.i)   >
+
+    F.n = F.(n-1) + G.n
+
+ =     < algebra >
+
+    G.n = F.n - F.(n-1)
+
+ =     < choose G to be h(n : F.n - F.(n-1)), so that G.n = F.n - F.(n-1)
+         and so that earlier assumption that G.i = h.i for i satisfying
+         0&le;i&lt;n also holds                                                >
+
+    true
+</pre>
+<p>
+Recall that during the derivation above, we assumed that <tt>n&gt;0</tt>.
+Hence, our initialization of <tt>n</tt> should be <tt>n:=1</tt> rather than
+<tt>n:=0</tt>.
+The assignment <tt>h := h(n : F.n - F.(n-1))</tt> is usually written 
+<tt>h.n := F.n - F.(n-1)</tt>.  The program is
+
+<pre>
+|[ con N : int; { N > 0 }
+   con F : array [0..N) of int;
+   var h : array [0..N) of int;
+   var n : int;
+
+   n,h.0 := 1,F.0;
+   {invariant I: (&forall;k | 0&le;k&lt;n : F.k = (+i | 0&le;i&le;k : h.i))  &and;  0&le;n&le;N }
+   do n &ne; N &xrarr; n, h.n := n+1, F.n - F.(n-1);
+   od
+   {(&forall;k | 0&le;k&lt;N : F.k = (+i | 0&le;i&le;k : h.i)) }
+]|
+</pre>
+<p>
+Had we recognized from the start that the only modification needing to be
+made to <tt>h</tt> on each iteration were to the element <tt>h.n</tt>,
+we would have started with our loop body being the assignment
+    
+<p><center><tt>n, h.n := n+1, G;</tt></center>
+
+<p>
+This would have made the calculation of <tt>G</tt> somewhat easier.
+
+<H3>Appendix: Theorem (9.13')</H3>
+<p>
+In Gries &amp; Schneider, Theorem 9.13 (Instantiation) says
+<p><center><tt>(&forall;x |: P) &rArr; P(x:=e)</tt></center>
+
+<p>
+Informally, this says that, if every choice of <tt>x</tt> satisfies
+<tt>P</tt>, then <tt>e</tt> satisfies <tt>P</tt>.
+
+<!-- <tt>P</tt> holds for all <tt>x</tt>,
+then it holds when <tt>x</tt> is <tt>e</tt>.
+-->
+<p>
+A somewhat more general form of this theorem is as follows:
+<p>
+<b>Theorem 9.13'</b>:
+   <tt>R(x:=e) &rArr; ((&forall;x | R : P) &rArr; P(x:=e))</tt>
+
+<p>
+It is readily seen that (9.13) is obtained from (9.13') by taking 
+<tt>R</tt> to be <b>true</b> (and then applying (3.73)).
+<p>
+Informally, (9.13') says that, if <tt>e</tt> satisfies <tt>R</tt>
+and <tt>P</tt> is satisfied by every <tt>x</tt> satisfying <tt>R</tt>,
+then <tt>e</tt> satisfies <tt>P</tt>.
+
+<p>
+Here is a proof of (9.13').
+<pre>
+    Assume R(x:=e).
+
+    (&forall;x | R : P)
+
+=      < (9.2) Trading >
+
+    (&forall;x |: R &rArr; P)
+
+&rArr;      < (9.13) Instantiation >
+
+    (R &rArr; P)(x:=e)
+
+=      < textual substitution distributes over operators >
+
+    R(x:=e) &rArr; P(x:=e)
+
+=      < assumption R(x:=e) >
+
+    true &rArr; P(x:=e)
+
+=      < (3.73) true is left identity of &rArr; >
+
+    P(x:=e)
+</pre>
+
+</body>
+</html>

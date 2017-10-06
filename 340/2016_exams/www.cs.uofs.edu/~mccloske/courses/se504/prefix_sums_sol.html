@@ -1,0 +1,427 @@
+<html>
+<head>
+  <title>Development of a program to compute prefix sums</title>
+</head>
+<body>
+<H2>
+  SE 504 <br />
+  Development of a program to compute prefix sums
+</H2>
+
+<p>
+Let b be an integer array.  Suppose that we want to develop a
+program that establishes, for all i satisfying 0&le;i&lt;#b,
+
+<p><center><tt>b.i = B.0 + B.1 + ... + B.i</tt></center>
+
+<p>
+where B is the original value of b.  Intuitively, this means that we want
+to replace the value in each element of b by the sum of all the values
+(originally) occupying the prefix of b ending with that element.
+
+<p>
+A formal specification is as follows:
+
+<pre>
+|[var b : array  of int;  { b=B }
+
+  prefixSums
+
+  {Q: (&forall;i | 0&le;i&lt;#b : b.i = prefixSum.i) }
+]|
+</pre>
+
+where <tt>prefixSum.m = (+j | 0<=j<=m : B.j)</tt>.
+
+<p>
+Clearly, to solve this we should use a loop.  As a first step in developing
+the program, we employ the heuristic of replacing a constant (in the
+postcondition Q) by a fresh variable and adding a new conjunct stating
+that the fresh variable is equal to that constant.
+(This yields Q', a slightly strengthened form of the postcondition.)
+Choosing to replace constant <tt>#b</tt> by (fresh variable) <tt>n</tt>,
+we get
+<p><center><tt>
+Q' : (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i) &nbsp; &and; &nbsp; n = #b
+</tt></center>
+<p>
+We take the modified postcondition (not including the new conjunct)
+to be a candidate for a loop invariant and the negation of the new conjunct
+(<tt>n&ne;#b</tt>) to be the loop guard.
+<!-- in order to arrive at a possible
+loop invariant.  Let us replace constant <tt>#b</tt> by (fresh variable)
+<tt>n</tt>.  The appropriate loop guard is thus <tt>n &ne; #b</tt>.
+-->
+The loop body should involve changes to <tt>n</tt> and <tt>b</tt>.
+We get:
+<pre>
+|[var b : array of int;  { b=B }
+  var n : int;
+
+  n := E;
+  {loop invariant I: (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i) }
+  do n &ne; #b  ---&gt;  n, b := F, G;
+  od
+  {Q': (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i) &and; n = #b }
+  {Q: (&forall;i | 0&le;i&lt;#b : b.i = prefixSum.i) }
+]|
+</pre>
+<p>
+The obvious initialization for <tt>n</tt> is to make it zero, as that
+truthifies <tt>I</tt>. 
+Considering this, together with the loop guard, the obvious modification
+to <tt>n</tt> inside the loop is to increment it.
+This suggests that <tt>0&le;n&le;#b</tt> is also an invariant of the loop,
+which could turn out to be important (especially in showing item <em>(iv)</em>
+on the loop checklist).
+It also suggests that <tt>G</tt> be of the form <tt>b(n:E)</tt>.  
+That is, it would seem that each iteration of the loop should modify
+<tt>b.n</tt>.  Our proposed program is then
+<pre>
+|[var b : array of int;  { b=B }
+  var n : int;
+
+  n := 0;
+  {loop invariant I: (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i)  &and;  0&le;n&le;#b }
+  do n &ne; #b  ---&gt;  n, b := n+1, b(n:E);
+  od
+  {Q': (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i) &and; n = #b }
+  {Q: (&forall;i | 0&le;i&lt;#b : b.i = prefixSum.i) }
+]|
+</pre>
+
+<p>
+To calculate <tt>E</tt>, we attempt to prove item (ii) of the loop checklist.
+(Note the use of the 
+<A HREF="irrel_ary_elem_axiom.html">Irrelevant Array Element Axiom</A>.)
+
+<pre>
+  {I &and; B} n, b := n+1, b(n:E) {I}  (i.e., [I &and; B  &rArr; wp.(n,b:=n+1,b(n:E)).I])
+
+ Assume I and B.
+
+    wp.(n,b := n+1,b(n:E)).I
+
+ =    < wp law, defn. of I, text. sub >
+
+    (&forall;i | 0&le;i&lt;n+1 : b(n:E).i = prefixSum.i)
+
+ =    < (8.23) split off term (note importance here of assumption 0&le;n) >
+
+    (&forall;i | 0&le;i&lt;n : b(n:E).i = prefixSum.i)  &and;  b(n:E).n = prefixSum.n
+
+ =    < b(n:E).n = E by defn of b(n:E) >
+
+    (&forall;i | 0&le;i&lt;n : b(n:E).i = prefixSum.i)  &and;  E = prefixSum.n
+
+ =    < b(n:E).i = b.i for all i&lt;n, which follows from 
+        Irrelevant Array Element Axiom instantiated by
+        R := 0&le;i&lt;n, b := b, i := i, P := b.i = prefixSum.i,
+        k := n, E := E, and * := &and;                                >
+
+    (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i)  &and;  E = prefixSum.n
+
+ =    < 1st conjunct above is 1st conjuct of I, which is assumed; (3.39) >
+
+    E = prefixSum.n
+
+ =    < defn of function prefixSum >
+
+    E = (+j | 0&le;j&le;n : B.j)
+   
+ =    < (8.23) Split Off Term (note importance of assumption n&ge;0) >
+
+    E = (+j | 0&le;j&lt;n : B.j)  +  B.n
+
+ =    < j&lt;n = j&le;n-1 (due to j and n being integers) >
+
+    E = (+j | 0&le;j&le;n-1 : B.j)  +  B.n
+
+ =    < defn of prefixSum >
+
+    E = prefixSum.(n-1)  +  B.n
+
+ =    < by assumption I, b.(n-1) = prefixSum.(n-1) >
+
+    E = b.(n-1) + B.n
+</pre>
+<p>
+As <tt>B</tt> is only a <b>rigid variable</b> (or what some authors call a
+<b>specification variable</b>), and not a variable (or constant) that can be
+referred to in the (executable code within the) program, we are not done.
+Yet we realize that the loop invariant <b>must</b> say something about
+<tt>B.n</tt>, or else there is no way to proceed.
+Examining the program, we notice that, as any given iteration of the loop
+begins, the only elements of <tt>b</tt> that have been modified
+(during previous iterations) are those in <tt>b[0..n)</tt>.
+Thus, it is clear that <tt>B.n = b.n</tt> is an invariant of the loop.
+Indeed, we can make the stronger statement that <tt>B[n..#b) = b[n..#b)</tt>
+(which, of course, is an abbreviation for
+<tt>(&forall;j | n&le;j&lt;#b : B.j = b.j)</tt>)
+is an invariant of the loop.
+(It turns out that we <b>must</b> make this stronger statement in order
+to be able to prove <em>(ii)</em> on the loop checklist (i.e., that <tt>I</tt>
+is a loop invariant).  This is an example of where it is easier to prove a
+stronger statement than to prove a weaker one.)
+Using this, we get:
+
+<pre>
+ =    < assume I has been augmented to include
+        B[n..#b) = b[n..#b) as a new conjunct      >
+
+    E = b.(n-1) + b.n
+</pre>
+
+Thus, we have calculated an expression for <tt>E</tt>.
+The resulting program is
+<pre>
+|[var b : array of int;  { b=B }
+  var n : int;
+
+  n := 0;
+  {loop invariant I: 
+     (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i) &and; 0&le;n&le;#b &and; b[n..#b)=B[n..#b)
+  }
+  do n &ne; #b &xrarr; n, b := n+1, b(n : b.(n-1) + b.n);
+  od
+  {Q': (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i) &and; n = #b }
+  {Q: (&forall;i | 0&le;i&lt;#b : b.i = prefixSum.i) }
+]|
+</pre>
+
+<p>
+However, this program is faulty because during the loop's first iteration
+an access will be made to <tt>b[-1]</tt>, which does not exist.
+To repair this, we can nest a selection command within the loop body
+to force different actions to be taken when <tt>n=0</tt> vs. 
+(the more usual case) when <tt>n&gt;0</tt>.  Doing so, we get:
+
+<pre>
+|[var b : array of int;  { b=B }
+  var n : int;
+
+  n := 0;
+  {loop invariant I: 
+     (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i) &and; 0&le;n&le;#b &and; b[n..#b)=B[n..#b)
+  }
+  do n &ne; #b  &xrarr;
+     if n=0 &xrarr;  n, b := n+1, ?; 
+     [] n>0 &xrarr;  n, b := n+1, b(n : b.(n-1) + b.n);
+     fi
+  od
+  {Q': (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i) &and; n = #b }
+  {Q: (&forall;i | 0&le;i&lt;#b : b.i = prefixSum.i) }
+]|
+</pre>
+<p>
+We are left to figure out the correct assignment to <tt>b</tt> during the
+loop iteration when <tt>n=0</tt> (which is, of course, the first iteration).
+The intended effect of this assignment is to establish <tt>I(n:=1)</tt>,
+of course.  But the relevant part of <tt>I(n:=1)</tt> simply says that 
+<tt>b.0 = prefixSum.0</tt>, which is to say that <tt>b.0 = B.0</tt>.
+But to establish <tt>b.0 = B.0</tt> is trivial, as the loop invariant says
+that it already holds!
+(From an operational point of view, <tt>B.0</tt> (the initial value of 
+<tt>b.0</tt>) must be equal to <tt>b.0</tt> because no changes are made to
+<tt>b.0</tt> prior to the first iteration of the loop.)
+Hence, during that iteration, we need not do an assignment to <tt>b</tt> 
+at all!  We get
+
+<pre>
+|[var b : array of int;  { b=B }
+  var n : int;
+
+  n := 0;
+  {loop invariant I: 
+     (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i) &and; 0&le;n&le;#b &and; b[n..#b)=B[n..#b)
+  }
+  do n &ne; #b &xrarr; 
+     if n=0 &xrarr;  n := n+1; 
+     [] n>0 &xrarr;  n, b := n+1, b(n : b.(n-1) + b.n);
+     fi
+  od
+  {Q': (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i) &and; n = #b }
+  {Q: (&forall;i | 0&le;i&lt;#b : b.i = prefixSum.i) }
+]|
+</pre>
+
+</p><p>
+The fact that the first loop iteration has no effect except to increment
+<tt>n</tt> to 1 suggests that we should initialize <tt>n</tt> to 1,
+thereby eliminating the need for an iteration when <tt>n=0</tt>!
+By doing that, we can modify the second conjunct of <tt>I</tt> to say 
+<tt>0&lt;n&lt;#b</tt>, making unnecessary the selection command inside
+the loop.
+
+</p><p>
+Unfortunately, we have introduced a new problem, namely that the program
+no longer works when <tt>b</tt> has length zero (i.e., <tt>#b = 0</tt>).
+Why?  Because during the first iteration of the loop (which really
+shouldn't happen!), an index-out-of-range error will occur.
+We can fix this by changing the loop guard to <tt>n&le;#b</tt>.
+It is intuitively obvious that the resulting program will work correctly
+(including in the case that <tt>#b = 0</tt>), but, in that same case, 
+the loop invariant will be false after the initialization of <tt>n</tt>.
+
+</p><p>
+If we don't mind this bit of logical awkwardness (after all, you might
+argue, we were simply trying to develop a correct program;
+we don't really care whether the loop invariant that helped to get us
+there is no longer correct), then we can live with this.
+
+</p><p>
+If, on the other hand, you are a stickler for details,
+you can resolve the issue in at least three ways.
+One is to strengthen the precondition to say <tt>#b&gt;0</tt>.
+This is not much of a sacrifice, given that there is absolutely no need
+to invoke the program in the case <tt>#b=0</tt>, as it will have no
+effect.  (This solution would impose a slight burden on clients of the
+program, as they would now be obligated not to invoke the program to
+compute the prefix sums of an empty array.)
+
+</p><p>
+An alternative resolution would be to tweak the loop invariant
+(see boldfaced subexpressions) to arrive at the following:
+
+<pre>loop invariant I:
+  (&forall;i | 0&le;i&lt;(<b>n min #b</b>) : b.i = prefixSum.i) &and;
+  0&lt;n&le;(<b>#b max 1</b>) &and; b[n..#b)=B[n..#b)</pre>
+
+</p><p>
+A third alternative would be to nest the loop (including its initialization
+code) inside one branch of a selection command, as follows:
+<pre>
+   if #b = 0 &xrarr; skip
+   [] #b > 0 &xrarr; n := 1;
+                do n &ne; #b &xrarr; n, b := n+1, b(n : b(n-1) + b.n)
+                od
+   fi</pre>
+
+</p><p>
+From a performance standpoint, this is superior to nesting the selection
+command inside the loop (as we had in a previous version of the program)
+because it is better to test the condition <tt>#b=0</tt> just once,
+rather than every time around the loop.
+
+</p><p>
+Choosing the option of strengthening the pre-condition, the final program is
+
+<pre>
+|[var b : array of int;  { b=B }
+  var n : int;
+  {#b > 0}
+  n := 1;
+  {loop invariant I: 
+     (&forall;i | 0&le;i&lt;n : b.i = prefixSum.i) &and; 0&lt;n&le;#b &and; b[n..#b)=B[n..#b)
+  }
+  do n &ne; #b &xrarr; n, b := n+1, b(n : b.(n-1) + b.n);
+  od
+  {Q: (&forall;i | 0&le;i&lt;#b : b.i = prefixSum.i) }
+]|</pre>
+
+</p><p>
+Of course, the more usual way of writing the assignment to b is
+
+</p><p>
+<center><tt>b.n := b.(n-1) + b.n</tt></center>
+
+</p><p>
+There is yet another issue to address.  In calculating the right-hand side
+of the assignment to <tt>b</tt>,
+we strengthened the loop invariant to include the new conjunct 
+<tt>b[n..#b) = B[n..#b)</tt>.  Having done so, we are responsible for
+showing that execution of the loop body preserves this new conjunct.  Now,
+intuitively it is obvious that if we modify <tt>b.n</tt> but also increment
+<tt>n</tt>, then the truth of <tt>b[n..#b) = B[n..#b)</tt> is preserved.
+(Note that the modified array element is now <tt>b.(n-1)</tt>, on which this
+condition does not depend.)
+But let's prove it formally, so as to illustrate, once again, the use of the 
+<A HREF="irrel_ary_elem_axiom.html">Irrelevant Array Element Axiom</A>.
+What we want to show is 
+
+</p><p>
+<center><tt>{I &and; B} n, b := n+1, b(n : b.(n-1) + b.n) {I}</tt></center> 
+
+</p><p>
+Letting the three conjuncts of <tt>I</tt> be <tt>I<sub>0</sub></tt>,
+<tt>I<sub>1</sub></tt>, and <tt>I<sub>2</sub></tt>,
+our previous work has demonstrated that 
+
+</p><p>
+<center><tt>
+  {I &and; B} 
+  n, b := n+1, b(n : b.(n-1) + b.n)
+  {I<sub>0</sub> &and; I<sub>1</sub>} 
+</tt></center>
+
+</p><p>
+Hence, it remains to show
+
+</p><p>
+<center><tt>{I &and; B} n, b := n+1, b(n : b.(n-1) + b.n) {I<sub>2</sub>} 
+</tt>
+</center>
+
+</p><p>
+<b>Note</b>: <tt>I<sub>2</sub></tt>, as written above, is an
+abbreviation for the expression
+<!-- <p><center> -->
+<tt>(&forall;i | n&le;i&lt;#b : b.i = B.i)</tt>.
+<!-- </center> -->
+From now on, we use this as our <tt>I<sub>2</sub></tt>.
+<b>End of note.</b>
+
+</p><p>
+By the relationship between Hoare Triples and wp, 
+<!-- the Hoare Triple that we wish to show -->
+this is equivalent to
+
+<p><center><tt>[I &and; B  &nbsp;&rArr;&nbsp;  
+                wp.(n, b := n+1, b(n : b.(n-1) + b.n)).I<sub>2</sub>]
+</tt></center>
+<p>
+We assume the antecedent, <tt>I &and; B</tt>, and show the consequent:
+
+<pre>
+  Assume I and B.
+
+     wp.(n, b := n+1, b(n : b.(n-1) + b.n)).I<sub>2</sub>]
+
+  =    < wp assignment law >
+
+     I<sub>2</sub>(n, b := n+1, b(n : b.(n-1) + b.n))
+
+  =    < defn of I<sub>2</sub> >
+
+     (&forall;i | n&le;i&lt;#b : b.i = B.i)(n, b := n+1, b(n : b.(n-1) + b.n))
+
+  =    < textual substitution >
+
+     (&forall;i | n+1&le;i&lt;#(b(n:b.(n-1)+b.n)) : b(n : b.(n-1) + b.n).i = B.i)
+
+  =    < length of array b is same as length of array b(n : b.(n-1)+b.n) >
+
+     (&forall;i | n+1&le;i&lt;#b : b(n : b.(n-1) + b.n).i = B.i)
+
+  =    < Irrelevant Array Element Axiom, with instantiation 
+         R := n+1&le;i&lt;#b, b := b, i := i, P := b.i = B.i,
+         k := n, E := b.(n-1) + b.n, and * := &and;            >
+
+     (&forall;i | n+1&le;i&lt;#b : b.i = B.i)
+
+ <==   < (3.76b) >
+
+     b.n = B.n &and; (&forall;i | n+1&le;i&lt;#b : b.i = B.i)
+
+  =    < split off term (8.23) (assumptions I and B yield n&lt;#b) >
+
+     (&forall;i | n&le;i&lt;#b : b.i = B.i)
+
+  =    < assumption I (in particular, I<sub>2</sub>) >
+
+     true
+</pre>
+
+</body>
+</html>
+

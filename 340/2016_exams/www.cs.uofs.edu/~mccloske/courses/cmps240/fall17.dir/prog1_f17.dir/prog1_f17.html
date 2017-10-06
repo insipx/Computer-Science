@@ -1,0 +1,116 @@
+<html>
+<head>
+  <title>CMPS 240  Fall 2017  Programming Assignment #1</title>
+</head>
+<body>
+<h2>
+  CMPS 240  Fall 2017<br />
+  Programming Assignment #1: Freeing Java Arrays from the [0,N) 
+  Index Range Straitjacket<br />
+  Due: Noon, Monday August 28
+</h2>
+
+<h3>Requirements</h3>
+
+</p><p>
+For this assignment, you are to complete the development of the Java class 
+<a href="DynAnchArrayZZ.java">DynAnchArray</a>
+(an abbreviation for "Dynamically Anchored Array"),
+whose instances have essentially the same functionality as (one-dimensional)
+arrays (even if the syntax for accessing their elements more closely resembles
+that of <tt>ArrayList</tt>s), except that their index ranges are specified, at
+construction time, by the client.  (In Java, every array's index range begins
+at zero, which can be an inconvenience.)
+
+</p><p>
+Each method that needs to be completed is identified by the comment
+<tt>// STUB!!</tt>.
+
+</p><p>
+For your convenience, the Java application
+<a href="DynAnchArrayTester.java">DynAnchArrayTester</a>
+is provided to you.  In order to make fruitful use of it,
+you must pass to it a sequence of <b>command line arguments</b>
+(or what jGrasp calls "run arguments").
+How to do this when running a program in jGrasp is explained 
+<a href="../../../com_line_args_jGrasp.html">here</a>.
+
+</p><p>
+What <tt>DynAnchArrayTester</tt> does is to place whatever
+command line arguments are provided to it into an instance of
+the <tt>DynAnchArray</tt> class, in a pseudo-random order.
+(The bottom of the index range is also chosen pseudo-randomly.)
+Then it displays the contents of that object two times, 
+once using its <tt>toString()</tt> method and once using an 
+Iterator.
+
+<table border="2" cellpadding="4" align="right" >
+<tr><td>
+<pre>
+
+% <b>java DynAnchArrayTester Kirk Spock Uhura McCoy Scott Sulu</b>
+Contents of a DynAnchArray as provided by its toString() method:
+
+-2: Spock
+-1: Uhura
+0: Sulu
+1: Kirk
+2: McCoy
+3: Scott
+
+Contents of DynAnchArray as provided by an Iterator:
+
+Spock
+Uhura
+Sulu
+Kirk
+McCoy
+Scott
+
+Goodbye.</pre>
+</td></tr>
+</table>
+
+</p><p>
+To illustrate, on the right is shown an invocation of
+<tt>DynAnchArrayTester</tt> from the command line in a UNIX environment
+(shown in boldface) and the output that results.
+
+</p><p>
+In case you are not familiar with some of the features of Java that
+are to be used in this assignment (e.g., generics, nested classes, 
+iterators), provided to you is this sample Java class:
+<a href="StackViaAryBounded.java">StackViaAryBounded</a>.
+
+</p><p>
+<hr>
+
+<h3>Program Submission</h3>
+
+Submit your source code file (<tt>DynAnchArray.java</tt>) from the course web
+page using the <b>Submit/Review</b> link that is adjacent to the link that 
+brought you to this page. (Again, submit <b>only</b> your
+<tt>DynAnchArray.java</tt> file, not the corresponding <tt>.class</tt> file 
+nor any other file.) 
+
+</p><p>
+Make sure to augment the comments near the top of the class so that you 
+identify yourself, acknowledge any persons who aided you in developing your 
+solution, and point out any flaws that you know about.
+
+</p><p>
+Be aware that you can submit more than one time. Hence, if, after submitting,
+you improve your program (e.g., by fixing logic errors), you should submit 
+the newer version.  Every submitted file should have the same name,
+namely <tt>DynAnchArray.java</tt>!
+
+</p><p>
+After submitting a file, you can verify that it was copied into the proper
+folder by "reviewing" it.  Just refresh the "Submit Page" and links to
+all files that you have submitted will appear under your name near the
+top left of the page.   Note that when a file with the same name as a
+previously-submitted file is submitted, the older file is renamed so
+that a time stamp is in its name.
+
+</body>
+</html>

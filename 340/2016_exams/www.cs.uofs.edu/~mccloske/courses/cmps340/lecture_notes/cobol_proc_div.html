@@ -1,0 +1,1391 @@
+<html>
+<head>
+<title>McCloskey's notes on COBOL: PROCEDURE DIVISION</title>
+<body>
+<H1>COBOL</H1>
+
+<H2>PROCEDURE DIVISION</H2>
+
+<ul>
+  <li><A HREF="#Overview">Overview</A></li>
+  <li><A HREF="#Verb_classify">Classification of Verbs</A></li>
+</ul>
+
+<A NAME="Overview">
+<H3>Overview</H3>
+
+The fourth division in a COBOL (sub)program is the PROCEDURE DIVISION,
+which contains the executable code.  It is comprised of one or more
+paragraphs, each of which is identified by a programmer-supplied name.
+The rules governing whether a paragraph name is valid are the same as
+those governing data names.
+
+<H4>Paragraphs and Flow of Control</H4>
+
+Syntactically, each paragraph is of the form
+<BR><BR>
+<pre>
+&lt;paragraph-name&gt;
+    &lt;executable statement&gt;
+    &lt;executable statement&gt;
+    ... 
+    &lt;executable statement&gt;
+    .  </pre>
+
+<p>
+As this suggests, each executable statement in a paragraph
+is indented relative to the paragraph's name.
+This would be a sensible convention to follow even if it were not
+required.  However, it <b>is</b> required!  Executable statements may
+not intersect with Area A, which includes the first four positions on
+each line.
+
+<p>
+When a COBOL program is executed, or when a COBOL subprogram is called,
+execution begins at (the first statement of) its first paragraph and
+continues (possibly crossing into the 2nd paragraph or beyond) either
+until the end of the (sub)program has been reached or until execution
+of the instruction <tt>STOP RUN</tt>, or, in the case of a subprogram,
+<tt>EXIT PROGRAM</tt>, which hands control back to the caller.
+(Execution of <tt>STOP RUN</tt> inside a subprogram terminates execution of
+the (entire) program; this should never be used to achieve
+"normal" program termination.)
+
+<p>
+Although COBOL allows it, this author considers it to be a poor
+programming practice to allow execution to flow out the end of one
+paragraph and into the next.
+Hence, it is recommended that any program that you develop have
+<tt>STOP RUN</tt> (or, in the case of a subprogram, <tt>EXIT PROGRAM</tt>)
+as the last statement in its first paragraph.
+This will prevent execution from flowing in the undesired manner.
+Furthermore, in order to comply with the tenets of "structured programming"
+(one of which says that every block of code should have exactly one entry
+point and exactly one exit point), this instance of <tt>STOP RUN</tt>
+(or <tt>EXIT PROGRAM</tt>) should be the <em>only</em> instance in the
+entire (sub)program (excepting any that are used expressly for causing 
+"abnormal" termination of execution).
+In effect, we are mandating that the first paragraph in a (sub)program act
+as the "driver".
+
+<p>
+As for the paragraphs other than the first, each of them is analogous to a 
+a no-argument void method in Java (or a no-parameter procedure subprogram
+in Ada or Pascal) having no local declarations.
+That is, any such paragraph may be invoked, and, when it is,
+its statements are executed, following which 
+execution resumes with the <!--control is handed back to the -->
+statement following the one that made the invocation.
+(The first paragraph can be invoked,
+too, but, due to the remarks below regarding COBOL's non-support of
+recursion, it would rarely be a good idea to do so.)
+
+<H4>Nested Programs</H4>
+COBOL allows one program to be nested inside another.
+In effect, a nested program is a callable subprogram having no parameters,
+but possibly having local data. 
+See Chapter 23 of <em>Comprehensive COBOL</em> for more.
+
+<p>
+<H4>COBOL Does Not Support Recursion</H4>
+<p>
+There is no prohibition against a paragraph invoking itself (either
+directly or indirectly), but, if this occurs, you should not expect
+behavior analogous to that of a program written in Java, C/C++, Ada,
+or Pascal.
+
+<p>
+Let us explore the reasons for this:  Assuming that no
+paragraph will ever call itself (either directly or indirectly), there can
+be at most one "active instance" of any particular paragraph at any one
+time.  Hence, in order to keep track of the return addresses of the
+current "chain of calls", there is no need for a stack.
+(Recall from CS2 how a so-called run-time stack is used for storing the
+local data and the return address for each active instance of a subprogram.)
+Rather, it suffices to associate with each paragraph a single location in
+which is stored the address to which to return when execution of (the active
+instance of, if any) that paragraph terminates.  And that is what a
+typical implementation of COBOL will do.  The effect is that, if an
+already-active paragraph is invoked, the return address corresponding to
+its original invocation is replaced by the return address corresponding to
+the "new" invocation.  Thus, the original return address is "forgotten"!
+
+<p>
+For example, suppose that A and B are paragraphs and that A calls B, which
+then calls itself.  Assuming that (the second instance of) B terminates,
+execution will resume at the statement in (the first instance of) B 
+that immediately follows B's invocation of itself, as you would expect.
+Now suppose that, subsequently, the first instance of B terminates.
+You might expect execution to resume at the statement in A that immediately
+follows A's invocation of B.  But it won't, because the fact that A called B
+will have been "forgotten", and, instead, execution will resume (as it
+did the last time B terminated) at the statement in B that immediately
+follows B's invocation of itself.
+<p>
+What has just been described is one possibility; exactly what happens
+when a COBOL program is "recursive" depends upon the compiler.
+<b>End of note.</b>
+
+
+<H4>Statement Format</H4>
+
+In COBOL, most statements are of the form
+<pre>       &lt;verb&gt; &lt;operand(s)&gt;</center></pre>
+
+(possibly with some reserved words among the operands)
+in which the verb is a reserved word that indicates the kind of action that
+is to be taken and the operand(s) are the data items on which the action is
+to be taken.  There are also some verbs corresponding to flow-of-control
+constructs (i.e., iteration, alternative).
+With these we associate a code segment rather than a list of operands.
+These take on a form such as
+<BR><BR>
+<pre>
+        &lt;verb&gt;
+            &lt;sequence of statements&gt;
+        END-&lt;verb&gt; </pre>
+
+
+<A NAME="Verb_classify">
+<H3>Classification of Verbs/Statements</H3>
+
+One reasonably could clasify the verbs/statements of COBOL as follows:
+<ol>
+  <li><b>No-Op (i.e. do nothing):</b>
+      <A HREF="#continue"><tt>CONTINUE</tt></A> &nbsp; &nbsp;
+  </li>
+  <li><b>Assignment/Data Transfer:</b>
+         <A HREF="#Move"><tt>MOVE</tt></A>, 
+         <A HREF="#Set"><tt>SET</tt></A>, <tt>INITIALIZE</tt>
+  </li>
+  <li><A HREF="#arithmetic">Arithmetic:</A> <tt>ADD</tt>, <tt>SUBTRACT</tt>, 
+          <tt>MULTIPLY</tt>, <tt>DIVIDE</tt>, <tt>COMPUTE</tt>
+  </li>
+  <li><A HREF="#input_output">Input/Output:</A> 
+       <tt>OPEN</tt>, <tt>CLOSE</tt>, <tt>READ</tt>,
+       <tt>WRITE</tt>, <tt>REWRITE</tt>, <tt>DELETE</tt>,
+       <tt>START</tt>,
+       <A HREF="#accept"><tt>ACCEPT</tt></A>, 
+       <A HREF="#display"><tt>DISPLAY</tt></A>
+  </li>
+  <li><b>Flow-of-control:</b> 
+     <ul>
+       <li><b>Termination/Return to Caller:</b>
+           <A HREF="#stop_run"><tt>STOP RUN</tt></A>, 
+           <A HREF="#exit_program"><tt>EXIT PROGRAM</tt></A>
+       </li>
+       <li><b>Conditional/Alternative/Decision:</b>
+               <A HREF="#if"><tt>IF</tt></A>,
+               <A HREF="#evaluate"><tt>EVALUATE</tt></A> </li>
+       <li><A HREF="#Repetition">Repetition:</A>
+            three forms of <tt>PERFORM</tt>:
+          <ul>
+            <li><A HREF="#Perform_until"><tt>PERFORM UNTIL</tt></A>:
+                 analogous to a WHILE loop
+            </li>
+            <li><A HREF="#Perform_varying"><tt>PERFORM VARYING</tt></A>:
+                 analogous to a FOR loop
+            </li>
+            <li><A HREF="#Perform_times">
+                <tt>PERFORM &lt;integer-expr&gt; TIMES</tt></A>:
+                 analogous to a FOR loop without a loop control variable
+            </li>
+          </ul>
+       <li><b>Paragraph/Subprogram Invocation:</b>
+            <A HREF="#Perform_par_invoke"><tt>PERFORM</tt></A>,
+            <tt>CALL</tt>
+       </li>
+       <li><b>Bad (never use):</b> <tt>EXIT</tt>, <tt>NEXT SENTENCE</tt>,
+              <tt>GO TO</tt>, <tt>GO TO DEPENDING ON</tt> </li>
+     </ul>
+  </li>
+  <li><A HREF="#Char_process">Character Processing:</A>
+     <A HREF="#String"><tt>STRING</tt></A>,
+     <A HREF="#Unstring"><tt>UNSTRING</tt></A>,
+     <A HREF="#Inspect"><tt>INSPECT</tt></A>,
+     <A HREF="#ref_mod">reference modification</A>
+  </li>
+  <li><b>High-level Utilities:</b>
+       <tt>SEARCH</tt>, <tt>SEARCH ALL</tt>, 
+       <tt>SORT</tt>, <tt>MERGE</tt> </li>
+
+</ol>
+
+  (These lists are not exhaustive.)
+
+<hr>
+<H4>No-OP Verb</H4>
+
+<A NAME="continue">
+<H5><u>CONTINUE</u></H5>
+<p>
+<b>Syntax:</b>  <tt>CONTINUE</tt>
+
+<p>
+<b>Semantics:</b> Execution has no effect.
+
+<p>
+Some programming languages, including COBOL, have syntactic constructs
+that call for the appearance of a (non-empty) sequence of statements.
+Good examples include the two branches of an <tt>IF</tt> statement and
+the statement within the <tt>AT END</tt> clause.
+If the programmer wants to specify that such a code segment is to have
+no effect, the most appropriate way of doing so is to use <tt>CONTINUE</tt>.
+
+<p>
+Example:
+<pre>
+   IF Counter > 0
+      SUBTRACT 1 FROM Counter
+   ELSE
+      CONTINUE
+   END-IF </pre>
+
+<hr>
+
+<A NAME="data_trans">
+<H4>Data Transfer Verbs</H4>
+
+<A NAME="Move">
+<H5><u>MOVE</u></H5>
+<p>
+<b>Syntax:</b><br>
+<tt>&nbsp;&nbsp;&nbsp;
+   MOVE {&lt;identifier-1&gt; | &lt;literal&gt;} TO 
+   &lt;identifier-2&gt; [,&lt;identifier-3&gt;...]
+</tt>
+
+<p>
+Examples:
+<pre>    MOVE Num-Children TO Num-Blessings
+    MOVE 0 TO Counter-1, Counter-2 </pre>
+
+<p>
+<b>Semantics:</b>
+The contents of the "source" field is copied into each "destination" field.
+
+<p>
+On the surface, this would seem to be a simple instruction.  However,
+its behavior differs according to whether it involves either 
+elementary numeric data items or elementary data items whose
+picture clauses include special "editing" characters (such as
+<tt>$</tt> and <tt>,</tt> (comma) for inserting dollar signs and
+commas into numbers).
+
+<p>
+If either the source or the destination is a group data item, or if both
+are non-numeric elementary data items, and if the destination is not an
+edited data field, the copying is done literally.
+That is, the bytes comprising the source field are copied, from
+"left to right", into the destination field.
+If the source field is longer than the destination field, 
+the rightmost bytes of the former are simply not transferred.
+If the source field is shorter, 
+the rightmost bytes of the destination field are filled with spaces.
+
+<p>
+<b>Note:</b> If the destination field is an elementary alphabetic or
+alphanumeric data item whose defining picture clause is accompanied
+by a <tt>JUSTIFIIED RIGHT</tt> clause, data will be transferred into
+that field from "right to left" rather than the ordinary "left to right".
+For more information, see page 487 in <em>Comprehensive COBOL</em>.
+<b>End of note.</b>
+
+<p>
+If both items are elementary and numeric, one could think of the
+data transfer as proceeding as follows: digits to the left of the
+decimal point are copied into the destination field from "right to
+left" (so that any truncation occurring will be of the
+<b>most significant</b> digits) and digits to the right of the
+decimal point are transferred into the destination from "left to
+right" (so that any truncation occurring will be of the least
+significant digits).  Leading and trailing zeros are placed into
+the destination field (rather than spaces) if there are "left over"
+digits.
+
+<p>For more information about the MOVE verb, 
+see pages 112-115 in <em>Comprehensive COBOL</em>.
+
+<A NAME="Set">
+<H5><u>SET</u></H5>
+
+The SET verb has three forms and may be used for any of the following:
+<ul>
+  <li>to set the value of a condition-name to TRUE,</li>
+  <li>to set the value of an <b>index</b> data item to some positive
+      integer (described by a numeric literal)
+  </li>
+  <li>to transfer data from one <b>index</b> data item to another,</li>
+  <li>to transfer data to/from an <b>index</b> data item from/to </li>
+      a non-index numeric data item, or</li>
+  <li>to modify the value of an <b>index</b> data item by a
+      specified amount</li>
+</ul>
+
+<p>
+The syntax of the first form of <tt>SET</tt> is
+<pre>SET &lt;condition-name&gt; TO TRUE</pre>
+
+<p>
+The effect is that the value of the field associated with the condition-name
+is changed so that it takes on the value associated with the condition-name.
+(If the condition-name is associated with more than one value, the smallest
+such value is given to the associated field.)
+
+<p>
+For example, suppose we have the declaration
+<pre>
+  01 Assessment  PIC 9.
+     88 Excellent  VALUE 8 THRU 9.
+     88 Very-Good  VALUE 7 THRU 8.
+     88 Good       VALUE 6 THRU 7.
+     88 Fair       VALUE 4 THRU 5.
+     88 Poor       VALUE 0 THRU 3. </pre>
+
+Then execution of &nbsp;<tt>SET Good TO TRUE</tt>&nbsp; results in 
+<tt>Assessment</tt> taking on the value 6. 
+
+<p>
+The syntax of the second form (which covers the second, third, and
+fourth cases mentioned above) is
+<pre>SET { &lt;index-name&gt; | &lt;data-name&gt; } TO { &lt;index-name&gt; | &lt;data-name&gt; | &lt;integer-literal&gt; }</pre>
+
+<p>
+For example, suppose that <tt>I</tt> and <tt>J</tt> have been declared using
+a <tt>USAGE IS INDEX</tt> clause and that <tt>Num</tt> has been declared
+using a picture clause such as <tt>PIC&nbsp;9(3)</tt>.  Then each of the
+following are proper uses of the <tt>SET</tt> verb:
+
+<pre>
+SET I TO 15
+SET I TO J
+SET I TO Num
+SET Num TO I </pre>
+
+<p>
+The third form of the <tt>SET</tt> verb is used to increment or decrement
+an <b>index</b> data item by a nonnegative integer value specified by
+either a numeric literal or by a numeric data item that was not declared
+using the <tt>USAGE IS INDEX</tt> clause.  The syntax is
+
+<p>
+<tt>SET &lt;index-name&gt; {UP | DOWN} BY 
+    { &lt;data-name&gt; | &lt;integer-literal&gt; }</tt>
+
+<p>
+Using the same data-names as in the previous examples, the following are
+valid uses of <tt>SET</tt>:
+
+<pre>
+SET I UP BY 1
+SET I DOWN BY Num </pre>
+
+
+<hr>
+<A NAME="arithmetic">
+<H4>Arithmetic Verbs: ADD, SUBTRACT, MULTIPLY, DIVIDE, COMPUTE</H4>
+
+<p>
+For each verb (except <tt>COMPUTE</tt>), there are two basic forms
+of statement: one in which a destination field is explicitly indicated
+(via a <tt>GIVING</tt> clause) and another in which one of the operands
+is implicitly understood as the destination field.
+
+<p>
+<b>Syntax:</b>
+<p>
+<tt>ADD {&lt;data-name-1&gt; | &lt;numeric-literal-1&gt;} 
+    TO {&lt;data-name-2&gt; | &lt;numeric-literal-2&gt;} 
+    GIVING &lt;data-name3&gt; </tt>
+<p>
+<tt>ADD {&lt;data-name-1&gt; | &lt;numeric-literal&gt;} 
+    TO &lt;data-name-2&gt; [, &lt;data-name-3&gt;, ...] </tt>
+<p>
+<tt>SUBTRACT {&lt;data-name-1&gt; | &lt;numeric-literal-1&gt;} 
+    FROM {&lt;data-name-2&gt; | &lt;numeric-literal-2&gt;} 
+    GIVING &lt;data-name3&gt; </tt>
+<p>
+<tt>SUBTRACT {&lt;data-name-1&gt; | &lt;numeric-literal&gt;} 
+    FROM &lt;data-name-2&gt; [, &lt;data-name-3&gt;, ...] </tt>
+<p>
+<tt>MULTIPLY {&lt;data-name-1&gt; | &lt;numeric-literal-1&gt;} 
+    BY {&lt;data-name-2&gt; | &lt;numeric-literal-2} 
+    GIVING &lt;data-name-3&gt; </tt>
+<p>
+<tt>MULTIPLY &lt;data-name-1&gt; [, &lt;data-name-2&gt;, ...] 
+    BY {&lt;data-name-3&gt; | &lt;numeric-literal&gt;} </tt>
+<p>
+<tt>DIVIDE {&lt;data-name-1&gt; | &lt;numeric-literal-1&gt;} 
+    INTO {&lt;data-name-2&gt; | &lt;numeric-literal-2} 
+    GIVING &lt;data-name-3&gt; </tt>
+<p>
+<tt>DIVIDE {&lt;data-name-1&gt; | &lt;numeric-literal}&gt;}
+    INTO &lt;data-name-2&gt; [,&lt;data-name-3&gt;, ...]</tt>
+
+<p>
+<b>Examples:</b><br>
+<tt>ADD 1 TO Counter, Num-Widgets</tt><br>
+<tt>ADD Num-Children TO Num-Parents GIVING Family-Size</tt><br>
+            
+<p>
+<b>Semantics:</b> 
+obvious (except for where result goes in multiplications and
+divisions when no destination field is explicitly specified)
+
+<p>
+<b>Remark:</b> 
+The inclusion of <tt>ADD</tt>, <tt>SUBTRACT</tt>, <tt>MULTIPLY</tt>,
+and <tt>DIVIDE</tt> in the language was for the purpose of 
+making code more readable to non-technical people.  (Indeed, this
+goal was influential in the design of much of COBOL's syntax, which,
+for this very reason, tends to make programs annoyingly verbose.)
+Luckily, we need never use these verbs, because the <tt>COMPUTE</tt>
+verb can be used instead:
+
+<p>        
+<b>Syntax:</b>
+<pre>
+COMPUTE &lt;data-name&gt; [ROUNDED] = &lt;arithmetic-expression&gt;
+   [ ON SIZE ERROR &lt;imperative-statement&gt; ]
+   [ NOT ON SIZE ERROR &lt;imperative-statement&gt; ]
+[END-COMPUTE]
+</pre>
+<p>
+
+<p>
+We omit the precise syntax for an arithmetic expression, because it
+is, essentially, the same as found in other programming languages.
+The operators are <tt>+</tt> (for addition), <tt>-</tt> (for subtraction), 
+<tt>*</tt> (for multiplication) and <tt>/</tt> (for division).
+Make sure to include at least one space between a minus sign and a
+data-name, because otherwise the compiler might mistake the former
+as being part of the latter. 
+
+<p>
+Examples:<br>
+<tt>COMPUTE Gross-Pay = (Hours-Worked * Hourly-Wage) +
+    ((Hours-Worked - 40.0) * (1.5 * Hourly-Wage))</tt><br>
+<tt>COMPUTE Average-Score ROUNDED = Sum-of-Scores / Num-Scores</tt>
+
+<p>
+<b>Semantics:</b>
+The arithmetic expression to the right of the <tt>=</tt> is
+evaluated, and the result is copied into the data item whose name
+is on the left.
+
+<p>
+<b>Remark:</b>
+In my opinion, the <tt>COMPUTE</tt> verb should be used in almost all
+circumstances in which an arithmetic operation (or possibly several)
+is to be carried out.  The only exceptions I can think of are ones
+similar to <tt>ADD 1 to Counter</tt>  (rather than 
+<tt>COMPUTE Counter = Counter + 1</tt> or
+<tt>MULTIPLY Val BY 2</tt> (rather than <tt>COMPUTE Val = 2 * Val</tt>.
+
+<p>
+Even in these examples, one could argue that the version using
+the <tt>COMPUTE</tt> verb is no less readable.
+
+
+<hr>
+<A NAME="input_output">
+<H4>Input/Output verbs</H4>
+
+<A NAME="display">
+<H5><u>DISPLAY</u></H5> 
+<p>
+<b>Syntax:</b>
+<tt>&nbsp;&nbsp;&nbsp;
+    DISPLAY { &lt;identifier-1&gt; | &lt;literal-1&gt; } 
+    [, &lt;identifier-2&gt; | &lt;literal-2&gt; ...] <br>
+    [ WITH NO ADVANCING ]
+</tt>
+<p>
+<b>Semantics:</b>
+Displays upon "standard output" the values of the item(s) indicated.
+If the <tt>WITH NO ADVANCING</tt> clause is present, the cursor
+remains on the same line after displaying the data; otherwise it
+advances to the next line.  Failing to advance to the next line
+is usually preferred when displaying a prompt to the user.
+
+<p>
+<b>Example:</b> <tt>DISPLAY 'The value of Junk is', Junk</tt>
+<br>
+<b>Example:</b> <tt>DISPLAY 'Enter Y or N:' WITH NO ADVANCING</tt>
+
+<A NAME="accept">
+<H5><u>ACCEPT</u></H5> 
+<p>
+<b>Syntax:</b>
+<tt>&nbsp;&nbsp;&nbsp;
+    ACCEPT &lt;identifier&gt;
+</tt>
+<p>
+<b>Semantics:</b>
+"Reads" value entered by user at keyboard into the specified variable.
+
+<p>
+<b>Example:</b> <tt>ACCEPT Response</tt>
+
+<p>
+For a description of COBOL's remaining input/output verbs,
+as well as other issues surrounding the use of files in COBOL, click
+<A HREF="cobol_files.html">here</A>.
+
+<!--
+  (a) OPEN 
+
+   Syntax:
+    OPEN {Input | Output | Extend | I-O} <file-name>[, <file-name>...]
+
+     E.g.,  OPEN Input My-File
+            OPEN Input My-File, My-Other-File
+                 Output Third-File
+
+     Semantics: causes the specified file to be made ready for I/O
+        operations, consistent with its mode.  Input mode allows (sequential)
+        reading (starting at the beginning of the file); Output mode destroys
+        the original file (makes it empty), and allows (sequential) writing;
+        Extend mode allows (sequential) writing of records that will be
+        placed after the last record of the original file; I-O mode, which
+        allows both reading and writing, applies to INDEXED and RELATIVE files
+        as well as to SEQUENTIAL files that are being updated "in place".
+        
+
+  (b) CLOSE
+
+      Syntax:  CLOSE <file-name>
+
+      Semantics: causes specified file to be closed.  The position of the
+       file pointer cannot be recovered.  
+    
+
+  (c) READ
+
+      Syntax:  READ <file-name> [INTO data-name]
+                 AT END <imperative-statement>
+                 [NOT AT END <imperative-statement>]
+               [END-READ]
+
+      E.g., READ In-File
+               AT END  SET In-File-EOF TO TRUE
+            END-READ
+
+      Semantics: attempts to read "next" record of specified file (into the
+         buffer for that file (as well as the specified data-name, if the
+         INTO clause is present)); if the end-of-file condition is detected,
+         the statement following the AT END is executed; otherwise, the 
+         statement following NOT AT END (if it is present) is executed.
+
+      Note: The end-of-file condition is not detected in a COBOL program
+        until an attempt to read beyond the end of the file occurs; this is
+        different from Ada and Pascal, in which the end-of-file condition 
+        (which can be tested via a call to EOF in Pascal and to tio.End_of_File
+        in Ada) becomes true upon reading the last record in the file.  This
+        has an important impact upon how the typical "file processing" loop is
+        written in COBOL.  See later discussion.
+
+  
+  (d) WRITE
+
+      Syntax:  WRITE <file-record-name> [FROM data-name]
+               [END-WRITE]
+
+      E.g., WRITE Print-Rec
+            WRITE Out-Rec FROM Client-Rec
+
+      Semantics: causes the contents of the specified file buffer to be
+         written at the end of the file.  If the FROM clause is present,
+         first the data in the specified data item is copied into the file
+         buffer, and then it is written.
+
+-->
+
+<HR>
+<H3>Flow-of-control</H3>
+
+<A NAME="stop_run">
+<H5><u>STOP RUN</u></H5>
+
+<p>
+<b>Syntax:</b>  <tt>STOP RUN</tt>
+<p>
+<b>Semantics:</b> Causes execution of program to terminate.
+<p>
+<em>Note:</em> Normal termination of a program should always occur as a
+result of executing <tt>STOP RUN</tt> as the last instruction in the first
+paragraph in the main program.  Any other uses of <tt>STOP RUN</tt> should
+be for the express purpose of terminating execution due to some 
+error condition.
+
+<A NAME="exit_program">
+<H5><u>EXIT PROGRAM</u></H5>
+<p>
+<b>Syntax:</b>  <tt>EXIT PROGRAM</tt>
+<p>
+<b>Semantics:</b> When used inside a subprogram, causes execution of 
+the subprogram to terminate, handing control back to its caller.
+When used inside a program, effect is ???
+
+<HR>
+<H4>Conditional/Alternative/Decision Statments:</H4>
+
+<p>
+<A NAME="if">
+<H5><u>IF Statement</u></H5> 
+<p>
+<b>Syntax:</b>
+<pre>
+  IF &lt;condition&gt;
+     &lt;statement-seq-1&gt;
+[ ELSE
+     &lt;statement-seq-2&gt; ]
+  END-IF</pre>
+<p>
+Recall that the square brackets enclose an optional portion of the
+statement.
+
+<p>
+<b>Semantics:</b>
+The condition is evaluated.  If it is true, <tt>statement-seq-1</tt>
+is executed, but <tt>statement-seq-2</tt> is not.  If it is false,
+and if the optional <tt>ELSE</tt> clause appears, <tt>statement-seq-2</tt>
+is executed, but <tt>statement-seq-1</tt> is not.
+
+<p>There is no <tt>ELSIF</tt> in COBOL.  Thus, to write an <tt>IF</tt>
+statement with three or more branches, you must nest <tt>IF</tt>'s within
+<tt>ELSE</tt> clauses of enclosing <tt>IF</tt>'s.  Here is an example
+with four branches:
+<pre>
+    IF Score > 90
+       MOVE 'A' TO Grade
+       MOVE 'Great job' to Out-Remarks
+    ELSE
+       IF Score > 80
+          MOVE 'B' TO Grade
+       ELSE
+          IF Score > 70
+             MOVE 'C' TO Grade
+          ELSE
+             MOVE 'D' TO Grade
+             MOVE 'Deficiency' to Out-Remarks
+          END-IF
+       END-IF
+    END-IF  </pre>
+
+<p>
+In order to make this a bit more compact, and to make it closer in appearance
+to a multi-branch IF in Ada, we could write it as follows:
+
+<pre>
+    IF Score > 90
+       MOVE 'A' TO Grade
+       MOVE 'Great job' to Out-Remarks
+    ELSE IF Score > 80
+       MOVE 'B' TO Grade
+    ELSE IF Score > 70
+       MOVE 'C' TO Grade
+    ELSE
+       MOVE 'D' TO Grade
+       MOVE 'Deficiency' to Out-Remarks
+    END-IF
+    END-IF
+    END-IF  </pre>
+
+<p>
+Notice that each <tt>IF</tt> must be matched by a separate <tt>END-IF</tt>,
+which makes the above look a little goofy.  An acceptable variation on the
+above format would be to place all the <tt>END-IF</tt>'s on the same line.
+
+<p>
+<b>Warning:</b> In COBOL-74, there was no such thing as an <tt>END-IF</tt>.
+Instead, <tt>IF</tt> statements were terminated by a period.  Moreover,
+a period terminated not only the "most recent" <tt>IF</tt> but also any
+in which it is nested.  (One consequence of this is that it is impossible,
+in COBOL-74, to nest an <tt>ELSE</tt>-less <tt>IF</tt> statement within the 
+first branch (of two branches) of another <tt>IF</tt> statement.)
+This is the main reason why, in COBOL-85, it is a good idea never to use
+a period at the end of a statement, except where it is required, namely
+after the last statement in each paragraph.
+
+<p>
+For more information, see Chapters 5 and 8 of <em>Comprehensive COBOL</em>.
+
+<p>
+<A NAME="evaluate">
+<H5><u>EVALUATE Statement</u></H5>
+<p>
+Due to the fact that COBOL's <tt>IF</tt> statement, described elsewhere,
+has at most two branches (as opposed to more, such as can be achieved in
+Ada using the <b>elsif</b>), in order to achieve the effect of a
+multi-branch conditional statement, it is necessary to nest each <tt>IF</tt>
+inside the previous one's <tt>ELSE</tt> branch.  This makes things rather
+messy; in particular, it requires the use of several <tt>END-IF</tt>'s at
+the end.  Even if multi-branch <tt>IF</tt> statements did exist in COBOL,
+such a statement with many branches can often look messy.  For this reason,
+languages such as Algol, Ada, and Pascal have a <b>case</b> statement
+(invented by C.A.R. Hoare).  (C, C++, and Java have the <b>switch</b>
+statement, which is a perverted cousin of <b>case</b>.)  COBOL has a
+<b>case</b> construct that is known by a different name: <tt>EVALUATE</tt>.
+(But it smells as sweet.)
+
+<p>
+<b>Syntax:</b>
+The general syntax of this statement is rather complicated, but a
+simplified version is as follows:
+<pre>
+   EVALUATE &lt;expr-1&gt;
+      WHEN &lt;expr-2&gt; [ THRU &lt;expr-2b&gt; ]
+         &lt;imperative-statement&gt;
+      WHEN &lt;expr-3&gt; [ THRU &lt;expr-3b&gt; ]
+         &lt;imperative-statement&gt;
+      ...
+      ...
+
+    [ WHEN OTHER   
+         &lt;imperative-statement&gt;  ]
+
+      END-EVALUATE </pre>
+
+<b>Semantics:</b>
+The so-called <em>evaluation subject</em>, <tt>expr-1</tt>, is evaluated.
+Its value is compared to each of the so-called <em>evaluation objects</em>,
+<tt>expr-2</tt>, <tt>expr-3</tt>, etc., in turn, until a matching value
+is found.  If a match is found, the <tt>imperative-statement</tt> associated
+with the (first) matching evaluation object is then executed.
+If no match is found, and if the optional <tt>WHEN OTHER</tt> clause is
+present, the <tt>imperative-statement</tt> associated to it is executed.
+If no match is found, but the optional <tt>WHEN OTHER</tt> clause is
+absent, nothing happens (aside from the evaluation of all the evaluation
+objects).
+
+<p>If an evaluation object is specified using the <tt>THRU</tt>
+clause, then a match occurs if the evaluation subject falls within the
+indicated range.
+
+<p>
+<b>Example 1:</b>
+<pre>
+   EVALUATE Score
+
+      WHEN 91 THRU 100
+         MOVE 'A' TO Grade
+         MOVE 'Great job' to Out-Remarks
+
+      WHEN 81 THRU 90
+         MOVE 'B' TO Grade
+
+      WHEN 71 THRU 80
+         MOVE 'C' TO Grade
+
+      WHEN OTHER
+         MOVE 'D' TO Grade
+         MOVE 'Deficiency' to Out-Remarks
+
+    END-EVALUATE </pre>
+
+<p>
+<b>Example 2:</b>
+Suppose that we have declarations such as these:
+<pre>
+   01 User-Response  PIC 9.
+      88 Add-Response  VALUE 1.
+      88 Chg-Response  VALUE 2.
+      88 Del-Response  VALUE 3.
+      88 Quit-Response VALUE 4. </pre>
+
+Now suppose that, depending upon the value of <tt>User-Response</tt>,
+one of several possible actions are to be taken.  This can be expressed
+using the following:
+
+<pre>
+    EVALUATE TRUE
+       WHEN Add-Response   &lt;imperative-statement&gt;
+       WHEN Chg-Response   &lt;imperative-statement&gt;
+       WHEN Del-Response   &lt;imperative-statement&gt;
+       WHEN Quit-Response  &lt;imperative-statement&gt;
+       WHEN OTHER          &lt;DISPLAY 'Invalid response ...'
+    END-EVALUATE</pre>
+<p>
+At first glance, the above might seem confusing, due to the use of
+<tt>TRUE</tt> as the evaluation subject.  However, it is really no
+different from the earlier example:
+The evaluation objects (<tt>Add-Response</tt>, <tt>Chg-Response</tt>, etc.)
+are evaluated, one by one, until one having a matching value (namely,
+<b>true</b>) is found.  The corresponding imperative statement is then
+executed.
+
+<b>Note:</b> The statement associated with each evaluation object in an 
+<tt>EVALUATE</tt> statement must be an <em>imperative</em> statement.
+This excludes statements such as <tt>IF</tt>'s, <tt>EVALUATE</tt>'s,
+and <tt>READ</tt>'s (which qualify as statements but not as
+imperative statements).  As described in the 
+<A HREF="#Perform">section covering the <tt>PERFORM</tt> verb</A>,
+a non-imperative statement can be enclosed between <tt>PERFORM</tt>
+and <tt>END-PERFORM</tt> in order to obtain an imperative statement.
+
+<p>
+For more about the <tt>EVALUATE</tt> statement, see pages 241-246 of
+<em>Comprehensive COBOL</em>.
+
+<HR>
+<A NAME="Perform">
+<H3>PERFORM</H3>
+<p>
+The PERFORM verb is "overloaded" (to use a modern term) in that its
+behavior depends upon the syntactic form of the instruction in which it is
+used.
+
+<H4>Grouping Statements Together</H4>
+Used in conjunction with END-PERFORM, the PERFORM verb groups together a
+sequence of statements, making them into a single (imperative) statement.
+(This is exactly what you do in Pascal using <b>begin</b> and <b>end</b> or
+in C/C++ and Java using <b>{</b> and <b>}</b>.)
+Such a use of PERFORM would appear as
+<pre>
+        PERFORM
+           &lt;sequence of statements&gt;
+        END-PERFORM </pre>
+
+This form of <tt>PERFORM</tt> is useful in places where an imperative statement
+is allowed, but a conditional statement (such as an IF statement) is not.
+The statement occurring after the <tt>AT END</tt> (or <tt>NOT AT END</tt>)
+clause (within a <tt>READ</tt> statement) must be imperative, for example,
+as must the statement specified for each case in an <tt>EVALUATE</tt>
+structure (which is COBOL's version of a <b>case</b> statement).
+
+<H4>Paragraph Invocation</H4>
+<A NAME="Perform_par_invoke">
+Alternatively, <tt>PERFORM</tt> can be used to invoke a paragraph.
+Recall that a paragraph in the PROCEDURE division is analogous to a
+parameter-less procedure in Ada.  When a paragraph is <tt>PERFORM</tt>-ed,
+execution is transferred to its first instruction.
+When execution reaches the end of that paragraph, control is returned
+to the calling paragraph, with execution resuming where it had left off
+(namely, at the instruction that follows the <tt>PERFORM</tt>).
+Such a use of <tt>PERFORM</tt> appears as
+ <pre>     PERFORM &lt;paragraph-name&gt; </pre>
+      
+<A NAME="Repetition">
+<H4>Repetition (Looping)</H4>
+
+<A NAME="Perform_until">
+<H5><u>PERFORM UNTIL</u></H5>
+By adding an <tt>UNTIL</tt> clause (the reserved word <tt>UNTIL</tt> 
+followed by a boolean expression, or what in COBOL is called a condition)
+to either of the forms above, we get a loop structure!  That is,
+<pre>
+           PERFORM UNTIL &lt;condition&gt;
+              &lt;sequence of statements&gt;
+           END-PERFORM </pre>
+  
+is analogous to a WHILE loop in Ada or Pascal (except that the loop
+terminates when the condition becomes true, rather than when it becomes
+false).  This form is referred to as an "inline" <tt>PERFORM</tt>.
+(In COBOL-74, this form did not exist.)  Similarly,
+
+<pre>         PERFORM &lt;paragraph-name&gt; UNTIL &lt;condition&gt; </pre>
+
+has the effect of repeatedly <tt>PERFORM</tt>-ing the specified paragraph
+until the condition has become true.  This form is superfluous, in
+that it can be rewritten as an inline <tt>PERFORM</tt>, as follows:
+<pre>
+          PERFORM UNTIL &lt;condition&gt;
+             PERFORM &lt;paragraph-name&gt;
+          END-PERFORM </pre>
+ 
+<p>
+Not infrequently, we wish to develop a loop that iterates at least once.
+(A good example is a loop whose purpose is to get user input:
+each iteration prompts the user and reads his response, and the loop
+terminates only after the user has entered a valid response.)
+To achieve this in COBOL, insert the clause <tt>WITH TEST AFTER</tt>
+immediately before the word <tt>UNTIL</tt>.  For example, the
+paragraph-calling form of the <tt>PERFORM</tt> loop would look like
+this:
+<pre>
+         PERFORM &lt;par-name&gt; WITH TEST AFTER UNTIL &lt;condition&gt;</pre>
+
+<p>
+Alternatively, we can insert the clause <tt>WITH TEST BEFORE</tt>, which is
+the default. 
+
+<A NAME="Perform_varying">
+<H5><u>PERFORM VARYING</u></H5>
+To arrive at a loop structure somewhat analogous to Ada's or Pascal's 
+FOR loop, we use a <tt>VARYING ... FROM ... BY</tt> clause in addition
+to the <tt>UNTIL</tt> clause.  The inline form looks like
+
+<pre>
+     PERFORM VARYING &lt;data-name&gt;
+             FROM &lt;init-val&gt; BY &lt;incr-val&gt; UNTIL &lt;condition&gt;
+        &lt;sequence-of-statements&gt;
+     END-PERFORM  </pre>
+
+The other form is
+<pre>
+     PERFORM &lt;paragraph-name&gt; 
+         VARYING &lt;data-name&gt; FROM &lt;init-val&gt; BY &lt;incr-val&gt; UNTIL &lt;condition&gt; </pre>
+
+<p>
+The data-name identifies what we sometimes call the loop control
+variable (LCV), the &lt;init-val&gt; gives the value to which the LCV is to be
+initialized, and &lt;incr-val&gt; gives the value to be added to the LCV at
+the end of each iteration.  Both &lt;init-val&gt; and &lt;incr-val&gt;
+must be either numeric literals or data-names.  (That is, neither can be
+an expression containing an operator, such as "X + 1".)  In a typical use
+of PERFORM with the VARYING clause, the loop termination condition will
+involve the LCV.  It need not, however.  (Because of this, one might argue
+that this loop form bears a stronger resemblence to C's FOR loop than to
+Ada's or Pascal's.)
+
+<A NAME="Perform_times">
+<H5><u>PERFORM ... TIMES</u></H5>
+<p>
+Often times, we simply want to repeat a chunk of code some specific
+number of times, where this number is either a constant (e.g., 10) or
+the value of some variable, and where there is no need for the chunk
+of code to make any reference to an LCV.  In that case, we can write
+an inline <tt>PERFORM</tt> as follows
+<pre>
+       PERFORM &lt;expr&gt; TIMES
+          &lt;sequence of statements&gt;
+       END-PERFORM </pre>
+
+or the other form as follows
+
+<pre>      PERFORM &lt;paragraph-name&gt; &lt;expr&gt; TIMES </pre>
+
+
+The expression giving the number of iterations must be either a numeric
+literal or the name of a numeric data item.
+
+
+<!--
+
+
+--------------------------------------------------------------------------
+
+Condition Names (88-level items):  This feature of COBOL gives us something
+akin to the boolean data type of Ada or Pascal.  
+
+Suppose we declare a student record as follows, in which the Sex field is
+intended to contain either 'F' or 'M' to indicate female or male, respectively.
+
+  01 Student-Rec.
+     02 SSN       PIC X(9).
+     02 Sex       PIC X.
+     02 Name      PIC X(20).
+     ...
+
+
+If in some segment of code we wanted to take alternative actions according
+to whether the student was female or male (and check for a possible invalid
+value), we might write
+
+       IF Sex = 'F'
+          ...
+       ELSE IF Sex = 'M'
+          ...
+       ELSE
+          <report error>
+       END-IF
+       END-IF
+
+Instead of using the "boolean" expressions Sex='F' and Sex='M', condition
+names can be introduced to take their place.  We could augment our record
+declaration as follows:
+
+  01 Student-Rec.
+     02 SSN       PIC X(9).
+     02 Sex       PIC X.
+        88 Female  VALUE 'F'.
+        88 Male    VALUE 'M'.
+     02 Name      PIC X(30).
+     ...
+
+Now we have two "boolean" entities, Female and Male, such that, whenever the
+value of Sex is 'F', Female has value TRUE, and whenever the value of Sex is
+'M', Male has value TRUE.  (Conversely, the value of Female is FALSE whenever
+Sex has a value other than 'F', and similarly for Male.)
+
+This allows us to rewrite our IF statement as
+
+       IF Female
+          ...
+       ELSE IF Male
+          ...
+       ELSE
+          <report error>
+       END-IF
+       END-IF
+
+
+A nice use of condition names arises in coping with the end-of-file condition.
+We could declare
+
+      01 EOF   PIC 9 VALUE 0.
+         88 End-of-File VALUE 1.
+
+The loop that terminates upon end-of-file could look like this:
+
+      PERFORM UNTIL End-of-File
+         ...
+      END-PERFORM
+
+and in the paragraph where we read a record we could say
+
+      READ In-File
+        AT END SET End-of-File TO TRUE
+      END-READ
+
+The SET verb can be used to cause a condition name to become TRUE.
+(The effect is to set the "enclosing" item to the (first, if there are
+more than one) value that makes the condition name TRUE.
+
+Notice that the program NEVER refers to the data-name EOF!!  Indeed, this
+data item doesn't even need a name, and so we could have declared it as
+follows:
+
+      01 FILLER   PIC 9 VALUE 0.
+         88 End-of-File VALUE 1.
+
+
+
+As alluded to above, a condition name can be associated with a set of values,
+rather than just one.  For example
+
+    01 Rating   PIC 9.
+       88 Excellent VALUE 9.
+       88 Good      VALUES 7 THRU 9.
+       88 Fair      VALUES 3 THRU 7.
+       88 Poor      VALUES 1 THRU 4. 
+       88 Terrible  VALUES 0 THRU 1.
+
+(You can also list values separated by commas, I think, so that the set of
+values need not be a contiguous range.)
+
+Notice that the value sets of the condition names need not be disjoint.
+For example, if the value of Rating happens to be 3 (or 4), both Poor and
+Fair will have value TRUE.
+
+-->
+
+<HR>
+<A NAME="Char_process">
+<H4>Character Processing Verbs</H4>
+
+<A NAME="String">
+<H5><u>STRING</u></H5>
+
+<b>Syntax:</b>
+<pre>
+STRING { &lt;data-name&gt; | &lt;literal&gt; }  DELIMITED BY {  SIZE | &lt;data-name&gt; | &lt;literal&gt; }
+       { &lt;data-name&gt; | &lt;literal&gt; }  DELIMITED BY {  SIZE | &lt;data-name&gt; | &lt;literal&gt; }
+       ...
+       { &lt;data-name&gt; | &lt;literal&gt; }  DELIMITED BY {  SIZE | &lt;data-name&gt; | &lt;literal&gt; }
+
+   INTO  &lt;data-name&gt;  [WITH POINTER &lt;data-name&gt;]
+
+   [ON OVERFLOW &lt;imperative-statement&gt;]
+   [NOT ON OVERFLOW &lt;imperative-statement&gt;]
+END-STRING
+</pre>
+
+<p>
+<em>Note on notation:</em>
+Keep in mind that square brackets around an item indicates that it is
+optional, whereas a list of items between curly braces and separated
+by vertical bars indicates that exactly one of the items must appear.
+
+<p>
+The <tt>STRING</tt> verb facilitates the transfer of data from one or
+more source fields into a single destination field.
+In effect, the destination field ends up containing the concatenation of
+data copied from the source fields.
+For each source field, a <tt>DELIMITED BY</tt> clause is used to control
+"how much" data is transferred from that field into the destination.
+
+<p>
+Suppose, for example, that we have the following declarations:
+<pre>
+   01 Person-Rec.
+      02 Name.
+         03 First-Name  PIC X(10).
+         03 Middle-Init PIC X.
+         03 Last-Name   PIC X(16).
+      02 ... 
+      02 ...
+
+   01 Combo-Name  PIC X(28).  </pre>
+
+Suppose that we want to transfer the person's name from <tt>Person-Rec</tt>
+into <tt>Combo-Name</tt> so that the latter contains the last name,
+followed by a comma, followed by a space, followed by the first name.  
+
+<p>
+The following would accomplish it:
+
+<pre>
+   STRING Last-Name  DELIMITED BY SIZE
+          ', '       DELIMITED BY SIZE
+          First-Name DELIMITED BY SIZE   
+      INTO Combo-Name
+   END-STRING  </pre>
+  
+<p>
+However, this would have the (probably unintended) effect of placing
+all 20 characters from <tt>Last-Name</tt> into <tt>Combo-Name</tt>,
+including any trailing spaces, followed by a comma and a space, followed
+by all ten characters of <tt>First-Name</tt>, including any trailing
+spaces.
+For example, if we had <br />
+<tt>Last-Name = "Smith&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"</tt> &nbsp; and <br />
+<tt>First-Name = "Mary&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"</tt>, 
+<p>
+the result of the above statement would be <br />
+<p>
+<tt>Combo-Name =
+"Smith&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,&nbsp;Mary&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+</tt>
+
+<p>
+What was probably intended was to achieve 
+<p>
+<tt>Combo-Name = "Smith, Mary"</tt>
+<p>
+That is, we probably wanted to place the string
+<tt>"Smith, Mary"</tt> into (the first eleven bytes of)
+<tt>Combo-Name</tt>.  To do this, we would modify the
+<tt>DELIMITED BY</tt> clauses for the two name fields
+so that they indicated that data transfer should stop when a space is
+encountered.  The modified code is as follows:
+
+<pre>
+   STRING Last-Name  DELIMITED BY ' '
+          ', '       DELIMITED BY SIZE
+          First-Name DELIMITED BY ' '
+      INTO Combo-Name
+   END-STRING  </pre>
+  
+<p>
+Note that the <tt>DELIMITED BY</tt> clause can specify either that
+the entire source field be transferred (indicated by the word 
+<tt>SIZE</tt>) or that data transfer end with the last character
+preceding the first occurrence of whatever string is indicated 
+(by either a literal string, a figurative constant (such as 
+<tt>SPACE</tt>), or the name of a data item).
+If the source field contains no occurrence of the indicated
+delimiter string, its contents will be transferred to the
+destination in their entirety.
+
+<p>
+The example above assumes that neither <tt>Last-Name</tt> nor
+<tt>First-Name</tt> includes any spaces preceding the last
+non-space.  Hence, it would not work correctly for the last name
+<tt>Van Leuven</tt>, for example.  By changing the delimeter from
+'<tt>&nbsp;</tt>' (a single space) to <tt>'&nbsp;&nbsp;'</tt> (two spaces), this
+problem is eliminated.  However, it introduces a new problem!
+Suppose that the contents of <tt>Last-Name</tt> are
+"<tt>Van Leuven </tt>" (in which there is a single trailing space).
+As the delimiting string '<tt>&nbsp;&nbsp;</tt>' does not appear in
+<tt>Last-Name</tt>, the destination field <tt>Combo-Name</tt>
+will end up containing "<tt>Van Leuven&nbsp;, ...</tt>" 
+(with the trailing space from the source field present).
+It is left to the reader to work out how to fix this.
+
+
+<p>
+Another useful feature of the <tt>STRING</tt> verb is the
+<tt>WITH POINTER</tt> clause, which makes it possible to
+<ul>
+  <li>specify the starting location within the destination field at which
+      incoming data is to be placed, and
+  <li>keep track of which location within the destination field
+      was the last to have had data transferred into it.
+  </li>
+</ul>
+This makes it easy to transfer data into the destination field using two
+or more occurrences of the <tt>STRING</tt> verb, each time placing the
+"new" data immediately after the "old".  This is especially useful when
+it is necessary to keep track of how many characters were transferred
+from each source field.
+
+<p>
+For example, if we needed to know the precise lengths of the names
+transferred into <tt>Combo-Name</tt> in the example above, we could
+have done things like this:
+
+<pre>
+* in Working-Storage section:
+
+01 Pntr        PIC 99.
+01 Old-Pntr    PIC 99.
+01 Last-Name-Len  PIC 99.
+01 First-Name-Len  PIC 99.
+
+...
+...
+
+* in Procedure Division:
+
+    MOVE 1 TO Pntr
+    MOVE 1 TO Old-Pntr
+    STRING Last-Name  DELIMITED BY ' '
+       INTO Combo-Name 
+       WITH POINTER Pntr
+    END-STRING
+
+    COMPUTE Last-Name-Len = Pntr - Old-Pntr
+
+    STRING ', ' DELIMITED BY SIZE
+       INTO Combo-Name 
+       WITH POINTER Pntr
+    END-STRING
+
+    MOVE Pntr TO Old-Pntr
+    STRING First-Name  DELIMITED BY ' '
+       INTO Combo-Name
+       WITH POINTER Pntr
+    END-STRING
+
+    COMPUTE First-Name-Len = Pntr - Old-Pntr </pre>
+</pre>
+  
+<p>
+In the above, the data item <tt>Pntr</tt> is used for keeping track of
+where next to place data into <tt>Combo-Name</tt>.
+Execution of the <tt>STRING</tt> verb automatically updates the
+value of <tt>Pntr</tt> so that it "points to" the location following
+the last one already filled.
+
+<p>
+The <tt>ON&nbsp;OVERFLOW</tt> and <tt>NOT&nbsp;ON&nbsp;OVERFLOW</tt>
+clauses are optional, as indicated.
+In the context of the <tt>STRING</tt> verb, overflow occurs when 
+data transfer must be terminated due to the destination field not 
+being long enough to hold all the data that was "intended to be"
+transferred into it.
+
+<p>
+For another description of the <tt>STRING</tt> verb, 
+see pages 208-210 of <em>Comprehensive COBOL</em>, which is
+on reserve at the Weinberg Library.
+
+<hr>
+<A NAME="Unstring">
+<H5><u>UNSTRING</u></H5>
+
+<p>
+The <tt>UNSTRING</tt> verb facilitates the transfer of data from a single
+source field into one or more destination fields.
+In effect, each destination field ends up containing a segment of
+the data from the source field.
+A <tt>DELIMITED BY</tt> clause is used to indicate at which points
+within the source data the transfer is to shift from one destination field
+to the next.
+
+<p>
+<b>Syntax (some options omitted):</b>
+<pre>
+UNSTRING &lt;data-name-1&gt;  DELIMITED BY [ALL] {&lt;data-name-2&gt; | &lt;literal&gt; }
+   [ OR [ALL]  {&lt;data-name-3&gt; | &lt;literal&gt; } ... ]
+   INTO &lt;data-name-4&gt; [, &lt;data-name-5&gt; ...]
+   [WITH POINTER &lt;data-name-6&gt;]
+   [ON OVERFLOW &lt;imperative-statement&gt;]
+   [NOT ON OVERFLOW &lt;imperative-statement&gt;]
+END-UNSTRING
+</pre>
+
+<p>
+For example, suppose that, to save space, the records in a file are 
+stored so that adjacent fields are separated by a comma, rather than being
+fixed in length.  For example, a record representing a student might be
+<pre>
+Rumplestiltskin,Chris,Kelly,1313 Mockingbird,Scranton,18510
+</pre>
+After reading a record into, say, the field <tt>Stu-Rec-Free-Form</tt>
+with <tt>PICTURE</tt> clause <tt>PIC X(70)</tt>, we wish to parse the data
+so as to place the appropriate substrings into <tt>Stu-Rec-Formatted</tt>,
+declared as
+<pre>
+01 Stu-Rec-Formatted.
+   02 Name.
+      03 Last-Name  PIC X(16).
+      03 First-Name PIC X(10).
+      03 Mid-Name   PIC X(10).
+   02 Address.
+      03 Street-Addr PIC X(20).
+      03 City        PIC X(15).
+      03 Zip         PIC X(10).
+</pre>
+
+<p>
+We will get the desired effect using the statement
+
+<pre>
+  UNSTRING Stu-Rec-Free-Form 
+     DELIMITED BY ','
+     INTO  Last-Name,
+           First-Name,
+           Mid-Name,
+           Street-Addr,
+           City,
+           Zip
+  END-UNSTRING
+</pre> 
+
+<p>
+See pages 208-213 of <em>Comprehensive COBOL</em> for a complete
+description.
+
+<hr>
+<p>
+<H5><u>INSPECT</u></H5>
+See pages 213-215 in <em>Comprehensive COBOL</em>.
+
+<p>
+<A NAME="ref_mod">
+<H5><u>Reference Modification</u></H5>
+<p>
+The term "reference modification" refers to neither a COBOL verb nor 
+to a kind of COBOL statement, but rather to a kind of expression that
+allows the programmer to refer to any segment of a data item. 
+
+<p>
+The syntax is
+<pre>
+&lt;data-name&gt;(&lt;start-pos&gt; : [&lt;length&gt;]) </pre>
+
+where the &lt;start-pos&gt; and &lt;length&gt; are given by either
+numeric literals or names of numeric data items.  For example, if
+<tt>Junk</tt> is a field declared using the picture clause 
+<tt>PIC X(14)</tt>, then <tt>Junk(5:3)</tt> refers to the segment
+of <tt>Junk</tt> of length three beginning at its 5th character.
+Such an expression can be used where any data-name is legal.
+
+<p>
+As indicated in the syntax description, the &lt;length&gt; item
+appearing after the colon is optional.  If it is omitted, the
+segment referred to extends to the end of the data item.  For example,
+<tt>Junk(5:)</tt> would refer to the segment of <tt>Junk</tt>
+beginning at its 5th character and extending through its last
+character.
+
+<p>
+Examples of use:
+<pre>
+   01 Junk    PIC X(10) VALUE 'abcdefghij'.
+   01 Garbage PIC X(5)  VALUE 'klmno'.
+   ...
+   ...
+
+   MOVE Garbage TO Junk(3:5)   <--- changes Junk to 'abklmnohij'
+   MOVE Junk(8:) TO Garbage    <--- changes Garbage to 'hij  '
+</pre>
+
+<p>
+See pages 471-474 of <em>Comprehensive COBOL</em> for more.
+
+</body>
+</html>

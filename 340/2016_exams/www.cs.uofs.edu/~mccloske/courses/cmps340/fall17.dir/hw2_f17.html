@@ -1,0 +1,270 @@
+<html>
+<head>
+  <title>CMPS 340 Fall 2017 HW #2</title>
+</head>
+<body>
+<h2>CMPS 340  Fall 2017<br />
+    HW #2: Relational Model Constraints and ER-to-Relational Mapping<br />
+    Original Due Date: 1pm, Monday, September 18<br />
+    New Due Date: 6pm, Friday, September 22<br />
+
+</h2>
+
+<b>1.</b>
+<em>(i)</em>
+For each of the following "update" operations ((a) through (g)), indicate
+(by placing marks in the appropriate table cells) which relational constraints
+would be violated if the operation were applied to the <tt>COMPANY</tt>
+database state/snapshot illustrated in 
+<a href="../elmasri_navathe.dir/en_6e_fig_3-6.pdf" target="_blank">
+Figure 5.6</a> <!-- (page 72) -->
+of the (7th edition of the) E&amp;N textbook.
+For definitions of these constraints, see Sections 5.2.1, 5.2.2, and 5.2.4.
+(For the 6th edition, change all these chapter numbers from 5 to 3.)
+You are to assume that the database remains unchanged except for the
+particular tuple mentioned.
+
+<!--Assume that the <b>ON DELETE RESTRICT</b> 
+   <b>cascade</b> option (see near bottom of page 77 in
+   6th edition, page 163 in 5th) <b>is not</b> in effect.
+-->
+
+</p><p>
+<em>(ii)</em>
+For each <b>delete</b> operation (i.e., (f) and (g)), identify all
+tuples (other than the one explicitly mentioned) that would be removed
+from the database, assuming 
+<!--(contrary to part <em>(i)</em>) --> 
+that the <b>ON DELETE CASCADE</b> option were in effect 
+for each foreign key in the database.
+(This option says that, if tuple A refers (via a foreign key)
+to tuple B, and tuple B is deleted, then tuple A must also be deleted.)
+
+</p><p>
+<table border="0" cellpadding="10">
+<tr>
+  <td>  <!-- left column are the update operations -->
+    <b>(a)</b> Insert &lt;'End Global Warming', 13, 'Scranton', 8&gt; 
+               into <tt>Project</tt>.<br />
+    <b>(b)</b> Insert &lt;'888665555', 7, 'Many'&gt; into 
+               <tt>Works_On</tt>.<br />
+    <b>(c)</b> Insert &lt;5, NULL&gt; into <tt>Dept_Locations</tt>.<br />
+    <b>(d)</b> Insert &lt;'Mary', 'J', 'Rumplestiltskin', '987987987', 
+               '1923-04-20', '13 Elm St., Nowhere,CA', 'G', 21325, 
+               '123456789', 1&gt; into <tt>Employee</tt>.<br />
+    <b>(e)</b> Change the tuple &lt;1, 'Houston'&gt; in the
+               <tt>Dept_Locations</tt> table to &lt;NULL, 'Houston'&gt;<br />
+    <!-- Has no other effect!
+    <b>(e)</b> Delete from the <tt>Dept_Locations</tt> table the tuple 
+               &lt;1, 'Houston'&gt;</tt>.<br />
+    -->
+    <b>(f)</b> Delete from the <tt>Employee</tt> table the tuple whose 
+               <!-- <tt>Ssn</tt> attribute has value <tt>'987654321'</tt>. -->
+               <tt>Fname</tt> and <tt>Lname</tt> attributes have values
+               <tt>'Jennifer'</tt> and <tt>'Wallace'</tt>, respectively.
+               <br />
+    <b>(g)</b> Delete from the <tt>Department</tt> table the tuple having value
+               <!-- 4 in its <tt>Dnumber</tt> attribute. -->
+               'Headquarters' in its <tt>Dname</tt> attribute.
+               <br />
+  </td> <!-- end of left column -->
+  <td>  <!-- right column is the table to be filled in -->
+    <table border="1" cellpadding="4">
+    <tr>
+      <th>&nbsp;</th>
+      <th>Domain</th>
+      <th>Key</th>
+      <th>Entity<br />Integrity</th>
+      <th>Referential<br />Integrity</th>
+    </tr>
+    <tr><td>(a)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(b)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(c)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(d)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(e)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(f)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(g)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    </table>
+  </td> <!-- end of right column -->
+</tr>
+</table>
+
+<hr>
+<b>2.</b>
+Using the 7-step procedure described in Chapter 9 of E&amp;N,
+transform into a relational schema the ER schema diagram
+<!-- diagram below. -->
+described (in outline form) below. 
+(It is similar to, but different from, the ER diagram that we
+developed in class as a solution for HW #1.)
+
+</p><p>
+For each relation in your schema, and each attribute in each relation, 
+indicate (as we did in class (on Friday, Sept. 8) when translating the 
+ER diagram for the COMPANY database into the relational schema for that 
+database) which of the seven steps called for its introduction.
+Feel free to modify names of attributes in order to avoid name clashes
+or to shorten lengthy names, but don't deviate from the practice of 
+using names that are suggestive of purpose/meaning.
+
+</p><p>
+<h3>Entity Types</h3>
+<ul>
+  <li><b>TV_Series</b> (strong entity type)
+    <ul>
+      <li>ID (composite key attribute )
+        <ul><li>Title</li><li>CreatorName</li></ul>
+      </li>
+    </ul>
+  </li>
+  <li><b>Actor</b> (strong entity type)
+    <ul>
+      <li>ID (composite key attribute )
+        <ul><li>StageName</li><li>DateOfBirth</li></ul>
+      </li>
+      <li>RealName</li>
+    </ul> 
+  </li>
+  <li><b>Episode</b> (weak entity type)
+    <ul>
+      <li>ID (composite partial key attribute)
+        <ul><li>SeasonNum</li><li>EpisodeNum</li></ul>
+      </li>
+      <li>Title</li>
+      <li>Showing (composite multi/set-valued attribute)
+          <ul>
+             <li>Date</li><li>Time</li><li>Network</li>
+          </ul>
+      </li>
+    </ul>
+  </li>
+  <li><b>Character</b> (weak entity type)
+    <ul>
+      <li>Name (partial key attribute)</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>Relationship Types</h3>
+<ul>
+  <li><b>EpisodeOf</b> (identifying, N:1 between <b>Episode</b> and 
+      <b>TV_Series)</b>
+  </li>
+  <li><b>FirstAppearedIn</b> (identifying, N:1 between <b>Character</b> 
+      and <b>Episode</b>)
+  </li>
+  <li><b>SpunOffFrom</b> (regular, N:1 between <b>TV_Series</b> and itself)
+  </li>
+  <li><b>MostIdentifiedWith</b> (regular, N:1 between <b>Character</b> and 
+      <b>Actor</b>)
+  </li>
+  <li><b>AppearedInPlayedBy</b> (regular, ternary M:N:1 between 
+      <b>Character</b>, <b>Episode</b>, and <b>Actor</b>)
+    <ul>
+      <li>Duration (attribute)</li>
+    </ul>
+  </li>
+</ul>
+
+</p><p>
+<h3>Remarks</h3>
+<ul>
+  <li>The roles played by the participants in the <b>SpunOffFrom</b> 
+      relationship are <b>spinoff</b> and <b>parent</b>.
+      (E.g., "Cleveland" is a spinoff from "Family Guy";
+       "Angel" was a spinoff from "Buffy the Vampire Slayer".)
+  </li>
+  <li>In the <b>AppearedInPlayedBy</b> relationship, it is assumed that, 
+      given any episode and character, at most one actor played that 
+      character in that episode.  (That explains the <b>1</b> in "M:N:1".)
+  </li>
+  <li>The <b>MostIdentifiedWith</b> relationship is intended to match each 
+      character with the actor who is most identified with that character.
+      (E.g., Spock with Leonard Nimoy, Columbo with Peter Falk)
+  </li>
+<!-- Replace this instruction by the next one
+  <li>No particular significance should be attached to the fact that some
+      (partial) keys were chosen to be composite attributes named <b>ID</b>.
+      Equivalently, for any such attribute, you can consider its set of 
+      sub-attributes to be the (partial) key of the relevant entity type.
+      In the relational schema, there should be no composite attributes.
+  </li>
+-->
+  <li>Contrary to the traditional (but misguided?) conditions that
+      define <b>first normal form</b>, here you are allowed
+      &mdash;even encouraged&mdash; 
+      to include composite attributes in your relational schema.
+      For example, your relational schema should include (according
+      to step 1 of E&amp;N's procedure) a relation (i.e., table) 
+      corresponding to the <b>TV_Series</b> entity type.  
+      E&amp;N would have you put attributes <b>Title</b> and 
+      <b>CreatorName</b> (the atomic sub-attributes of composite
+      attribute <b>ID</b>) into that relation.  
+      But you are encouraged to place into it, more simply, 
+      just <b>ID</b>.  Don't worry about the sub-attributes!
+  </li>
+  <li>The bullet point above applies to <em>composite</em> attributes only,
+      not to set-valued (or what E&amp;N call "multi-valued") attributes.
+      Thus, following the traditional rules, you cannot put a set-valued 
+      attribute into a relation.
+      However, because we are treating composite attributes as though
+      they were atomic, you can treat a set-valued composite attribute 
+      (e.g., <b>Showing</b> in the <b>Episode</b> entity type) 
+      as though it were a set-valued atomic attribute.
+  </li>
+  <li>The <b>Duration</b> attribute of the <b>AppearedInPlayedBy</b>
+      relationship is simply a measure of how long (e.g., number of minutes)
+      the given character appeared in the given episode.
+  </li>
+</ul>
+
+<!--
+</p><p>
+Due to limitations of the software that was used to produce the
+diagram (or perhaps your instructor's lack of familiarity with its
+features), certain diagramatic conventions used here differ from those 
+used in the textbook.  Specifically,
+<ul>
+  <li>weak entity types are indicated by (non-rectangular) parallelograms 
+      (rather than by double rectanges),
+  </li>
+  <li>identifying relationship types are indicated by diamonds containing
+      four line segments that form explicit triangles in the corners
+      (rather than double diamonds),
+  </li>
+  <li>line segments connecting the boxes representing entity types with
+      the diamonds representing relationship types do not necessarily meet 
+      the corner of the latter,
+  </li>
+  <li>multi-valued (i.e., set-valued) attributes are indicated by
+      octagons (rather than double ovals),
+  </li>
+  <li>partial key attributes of weak entity types are indicated, 
+      &mdash;as are, as usual, full keys of regular entity types&mdash;
+      by a solid underline (rather than a dashed underline).
+  </li>
+</ul>
+
+</p><p>
+<a href="prog_contest_er.gv.jpg">Download Image</a>
+
+</p><p>
+<img src="prog_contest_er.gv.jpg" height="600">
+-->
+
+<!--
+</p><p>
+Gif:
+<img src="prog_contest_er.gv.gif">
+-->
+
+
+</body>
+</html>

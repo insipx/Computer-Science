@@ -1,0 +1,463 @@
+<html>
+<head>
+<title>1999 U of S Programming Contest Problems</title>
+<H2>University of Scranton 1999 High School Programming Contest Problems
+</H2>
+</head>
+
+<body>
+
+<p>
+<A HREF="#What_My_Score">Problem 1: What's My Score?</A><br>
+<A HREF="#Spiral_of_Squares">Problem 2: Spiral of Squares</A><br>
+<A HREF="#Hill_Removal">Problem 3: Hill Removal</A><br>
+<A HREF="#Num_Rep_Factorial_Base">Problem 4: 
+        Number Representation in the Factorial Base</A><br>
+<A HREF="#No_Hassle_Auto_Insurance">Problem 5: No Hassle Auto Insurance</A><br>
+<A HREF="#Lax_Security">Problem 6: Lax Security</A>
+
+<p> &nbsp;<br>
+<A NAME="What_My_Score">
+<hr>
+<b>Problem 1: What's My Score?</b></A>
+
+<p>
+Ann, Bob, Carol, and Dave played nine holes of golf together.
+On the first hole, Ann teed off first, followed by Bob, then Carol,
+and, finally, Dave.  At each subsequent hole, the order in which
+they teed off was in accord with the usual golfing convention,
+which is as follows:  The golfer with the lowest score on the
+previous hole tees off first, followed by the golfer with the
+second lowest score, etc., etc.  Golfers having equal scores on
+the previous hole tee off in the same relative order as they did
+on the previous hole.
+
+<p>
+A scorecard has four columns (one for each golfer) and nine rows
+(one for each of the nine holes).
+The score achieved by a given golfer on a given hole is to be
+recorded in the row corresponding to that hole in the column
+corresponding to that golfer.
+
+<p>
+Bob was responsible for keeping score.  He was well aware that
+the scores achieved by the golfers on a given hole were to be
+recorded on the scorecard in the row corresponding to that hole.
+Unfortunately, he did not possess a proper understanding of the
+purpose of the four columns on the scorecard!  He thought that
+the first column was for recording the score of the golfer who 
+teed off first on the given hole, the second column was for 
+recording the score of the golfer who teed off second on the 
+given hole, etc., etc.  Thus, in each row of the scorecard,
+Bob recorded the correct scores, but (usually, at least)
+in the wrong columns.
+
+<p>
+You are to develop a program that takes as input the scorecard
+filled out by Bob and that produces as output the "correct"
+scorecard.
+
+<p>
+As illustrated in the example below, your program should prompt
+the user to enter Bob's original scorecard.  The user shall enter
+nine lines of data, each containing four positive integers separated
+from each other by at least one space.  Your program should then
+display the correct scorecard, with one column showing hole
+numbers and four subsequent columns in which the scores of 
+Ann, Bob, Carol, and Dave are displayed, in that order.  Each
+golfer's total score (the sum of the scores on the nine holes)
+should be displayed at the bottom of her/his column.
+<br><br>
+<p>
+<b>Sample Program Execution:</b><br>
+<tt> 
+<p>
+  Enter original scorecard:<br>
+<u> 4  6  5  5 <br>
+    5  4  6  4 <br>
+    4  3  6  5 <br>
+    4  4  3  5 <br>
+    5  3  4  4 <br>
+    5  5  5  5 <br>
+    4  4  4  4 <br>
+    4  4  4  4 <br>
+    2  4  3  4 </u><br><br>
+  Corrected scorecard:<br>
+  1 &nbsp; 4 &nbsp;6 &nbsp;5 &nbsp;5 <br>
+  2 &nbsp; 5 &nbsp;4 &nbsp;4 &nbsp;6 <br>
+  3 &nbsp; 6 &nbsp;3 &nbsp;4 &nbsp;5 <br>
+  4 &nbsp; 5 &nbsp;4 &nbsp;4 &nbsp;3 <br>
+  5 &nbsp; 4 &nbsp;3 &nbsp;4 &nbsp;5 <br>
+  6 &nbsp; 5 &nbsp;5 &nbsp;5 &nbsp;5 <br>
+  7 &nbsp; 4 &nbsp;4 &nbsp;4 &nbsp;4 <br>
+  8 &nbsp; 4 &nbsp;4 &nbsp;4 &nbsp;4 <br>
+  9 &nbsp; 3 &nbsp;2 &nbsp;4 &nbsp;4 <br>
+  &nbsp;--------------<br>
+ &nbsp;&nbsp; 40 35 38 41
+</tt>
+<p>
+
+<p> &nbsp;<br>
+<A NAME="Spiral_of_Squares">
+<hr>
+<b>Problem 2: Spiral of Squares</b></A>
+
+<p>
+Imagine a grid whose cells have been numbered, starting at zero, in
+the outwardly-spiraling pattern illustrated below.  Imagine
+that the spiral extends out to infinity.
+
+<p>
+
+<pre>
+               56 57 58 59 60 61 62 63 64
+               55 30 31 32 33 34 35 36 65
+               54 29 12 13 14 15 16 37 66
+               53 28 11  2  3  4 17 38 67
+               52 27 10  1  0  5 18 39 68
+               51 26  9  8  7  6 19 40 69
+               50 25 24 23 22 21 20 41 70
+               49 48 47 46 45 44 43 42 71
+               80 79 78 77 76 75 74 73 72
+</pre>
+
+<p>
+You are to develop a program that, given as input two nonnegative integers 
+j and k, with neither exceeding 1000, outputs the distance on the grid
+between the cells numbered j and k.
+
+<p>
+By <em>distance between two cells </em> we mean the fewest number of steps 
+by which it is possible to get from one to the other, assuming that in each 
+step we can move one position in a horizontal or vertical
+(but <b>not</b> diagonal) direction.
+
+<p>
+End of input is signaled when both inputs are zero.
+
+<p>
+<b>Sample Program Execution:</b><br>
+<tt> 
+<p>
+  Enter two inputs:<br>
+  <u>15  42</u><br>
+  Distance: 7<br><br>
+  Enter two inputs:<br>
+  <u>132 132</u> <br>
+  Distance: 0<br><br>
+  Enter two inputs:<br>
+  <u>37 25</u><br>
+  Distance: 10<br><br>
+  Enter two inputs:<br>
+  <u>0 0</u><br>
+</tt>
+<p>
+
+
+<p> &nbsp;<br>
+<A NAME="Hill_Removal">
+<hr>
+<b>Problem 3: Hill Removal</b></A>
+
+<p>
+A sequence of three or more integers whose members are in 
+strictly increasing or strictly decreasing order is called 
+a <em>hill </em>.  
+(For example, 2, 5, 8, 9 and 5, 3,-1 are hills.
+However, 4, 7, 7, 12 is not, because its 3rd member is no greater
+than its 2nd.)
+
+<p>
+A sequence of integers that is not itself a hill may contain one or
+more contiguous subsequences that <em>are </em> hills.
+For example, the sequence 5,3,5,9,7,4,1,2 contains as subsequences
+the hills 3,5,9 and 9,7,4 and 7,4,1 and 9,7,4,1.
+
+<p>
+Develop a program that, given as input a sequence of integers,
+rearranges them so that the resulting sequence contains no
+contiguous subsequences that are hills.
+For each input sequence, the user shall enter its length followed by the sequence itself (as illustrated below).
+Each number in the sequence will be separated from the next by at least
+one space.  End of input is signaled by a sequence length of zero.
+The user shall not enter a sequence of length exceeding twenty.
+
+<p>
+<b>Sample Program Execution:</b><br>
+<tt> 
+<p>
+  Enter length of sequence: <u>9</u><br>
+  Enter sequence: <u>5 8 5 3 7 9 12 6 8</u><br>
+  5 8 3 7 5 9 6 12 8 <br><br>
+  Enter length of sequence: <u>6</u><br>
+  Enter sequence: <u>1 2 3 4 5 6</u><br>
+  1 3 2 5 4 6 <br><br>
+  Enter length of sequence: <u>2</u><br>
+  Enter sequence: <u>-1 5</u><br>
+  -1 5 <br><br>
+  Enter length of sequence: <u>0</u>
+</tt>
+<p>
+
+<p> &nbsp;<br>
+<A NAME="Num_Rep_Factorial_Base">
+<hr>
+<b>Problem 4: Number Representation in the Factorial Base</b></A>
+
+<p>
+For a positive integer m, we define 
+m! = 1 &sdot; 2 &sdot; 3 &sdot;&nbsp; ... &nbsp;&sdot; m.
+That is, m! is the product of the positive integers 1 through m.
+(This is the well known <em>factorial </em> function.)
+
+<p>
+Interestingly, for every positive integer k there exists a unique sequence
+of nonnegative integers d<sub>1</sub>, d<sub>2</sub>, ..., d<sub>n</sub>, 
+(where d<sub>j</sub>  &le; j for all j) such that 
+
+<centEr><table border=0 align=center><tr><td>
+<Table align=left><tr><td nowrap align=center>
+k = d<sub>1</sub> &sdot;1! &nbsp;+&nbsp; d<sub>2</sub> &sdot;2!
+&nbsp;+&nbsp; d<sub>3</sub> &sdot;3! &nbsp;+&nbsp; ... &nbsp;+&nbsp;
+d<sub>n</sub> &sdot;n!</td></Table>
+</td></table></centEr>
+
+
+      
+<p>
+In the factorial base number system, the number k would be represented by
+the sequence of "digits"
+d<sub>n</sub> d<sub>n-1</sub> ... d<sub>2</sub> d<sub>1</sub>.
+For example, the number that we express as 523 in the standard decimal
+number system would be expressed by 41301 in the factorial base,
+corresponding to the fact that
+
+<centEr><table border=0 align=center><tr><td>
+<Table align=left><tr><td nowrap align=center>
+523 &nbsp;&nbsp; =  &nbsp;&nbsp;1 &sdot; 1! &nbsp;+&nbsp; 0 &sdot; 2!
+&nbsp;+&nbsp; 3 &sdot; 3! &nbsp;+&nbsp; 1 &sdot; 4! &nbsp;+&nbsp; 4 &sdot; 5!
+&nbsp;&nbsp; =  &nbsp;&nbsp;1 + 0 + 18 + 24 + 480</td></Table>
+</td></table></centEr>
+
+
+
+<p>
+Develop a program that takes as input a positive integer and that 
+produces as ouput its representation in the factorial base number
+system, as illustrated below.
+(<em>Note: </em> The "digits" in the output may be separated
+by spaces.)
+End of input is signaled by the user entering zero.
+
+<p>
+You may assume that the user shall enter no input value whose
+factorial base representation requires more than seven digits.
+
+<p>
+<em>Hint: </em> By repeatedly applying the distributive property of multiplication
+over addition, you will find that the number 
+<p><center>
+k = d<sub>1</sub> &sdot; 1! &nbsp;+&nbsp;d<sub>2</sub> &sdot; 2!
+ &nbsp;+&nbsp; ... &nbsp;+&nbsp;d<sub>n</sub> &sdot; n!
+</center>
+can also be written as follows:
+
+<centEr><table border=0 align=center><tr><td>
+<Table align=left><tr><td nowrap align=center>
+k = d<sub>1</sub> + 2(d<sub>2</sub> + 3(d<sub>3</sub> + 4(d<sub>4</sub> + 
+... + (n-1)(d<sub>n-1</sub> + n &sdot;d<sub>n</sub>) ... )</td></Table>
+</td></table></centEr>
+
+
+Thus, for instance, to determine the digit d<sub>1</sub>, it suffices to take the 
+remainder of the division k/2.  The remaining digits can be determined
+by carrying out more divisions, using the same idea.
+<em>End of Hint. </em>
+
+<p>
+<b>Sample Program Execution:</b><br>
+
+<p>
+<tt> 
+Enter number: <u>1811</u><br>
+2 3 0 1 2 1<br><br>
+Enter number: <u>684</u><br>
+5 3 2 0 0<br><br>
+<b>Enter number:</b> <u>0</u>
+</tt>
+
+
+<p> &nbsp;<br>
+<A NAME="No_Hassle_Auto_Insurance">
+<hr>
+<b>Problem 5: No Hassle Auto Insurance</b></A>
+
+<p>
+The No Hassle Auto Insurance company believes that everyone
+deserves a second chance, and therefore it does not raise the
+rate of a driver after he is involved in his first accident
+or receives his first ticket.  However, the rate <em>will </em> increase
+for a driver involved in a second accident or receiving a second ticket.
+A driver whose number of accidents plus tickets exceeds four is uninsurable.
+
+<p>
+The basic formula for the rate charged by the No Hassle company is
+
+<centEr><table border=0 align=center><tr><td>
+<Table align=left><tr><td nowrap align=center>
+r = 0.02 &sdot; c &sdot; a! &sdot; t! &sdot; y</td></Table>
+</td></table></centEr>
+
+
+where c stands for the value of the car (see below), 
+a stands for number of accidents, 
+t stands for number of tickets received, and
+y stands for the <em>age multiplier </em> (see below).
+
+<p>
+Recall that 0! = 1 and, 
+for m &gt; 0, m! = 1 &sdot; 2 &sdot; 3 &sdot; ...  &sdot; m
+(i.e., the product of the integers 1 through m).
+This is the well known factorial function.
+
+<p>
+To calculate c (the value of the car), the purchase price and age of
+the car are required.  Specifically, the value of a car of age zero
+is its purchase price.  The value of a car of age greater than zero
+is 90 percent of its previous year's value. 
+
+<p>
+To calculate y, we need the driver's age.  Specifically, for a driver
+between the ages of 16 and 24, y = 3.  For ages 25 through 34, y = 1.5.
+For ages 35 through 44, y = 1.  For ages, 45 through 64, y = 1.5.
+For ages 65 and above, y = 3.
+
+<p>
+Develop a program that takes as input the purchase price and age of a car,
+the age of its driver, the number of accidents in which the driver has
+been involved, and the number of tickets the driver has received.
+(All these will be nonnegative integers.)
+As output, the program should display the insurance rate for the driver or
+a message indicating that she is uninsurable.
+
+<p>
+<b>Sample Program Execution (1):</b><br>
+<tt> 
+<p>
+  Enter purchase price of car: <u>20000</u><br>
+  Enter age of car: <u>3</u><br>
+  Enter age of driver: <u>26</u><br>
+  Enter number of accidents: <u>0</u><br>
+  Enter number of tickets: <u>2</u><br>
+  Rate: <u>874.80</u>
+</tt>
+<p>
+<b>Sample Program Execution (2):</b><br>
+<tt> 
+<p>
+  Enter purchase price of car: <u>12000</u><br>
+  Enter age of car: <u>1</u><br>
+  Enter age of driver: <u>19</u><br>
+  Enter number of accidents: <u>1</u><br>
+  Enter number of tickets: <u>2</u><br>
+  Rate: <u>1296.00</u>
+</tt>
+<p>
+<b>Sample Program Execution (3):</b><br>
+<tt> 
+<p>
+  Enter purchase price of car: <u>34000</u><br>
+  Enter age of car: <u>6</u><br>
+  Enter age of driver: <u>80</u><br>
+  Enter number of accidents: <u>1</u><br>
+  Enter number of tickets: <u>4</u><br>
+  Rate: Uninsurable
+</tt>
+<p>
+
+<p> &nbsp;<br>
+<A NAME="Lax_Security">
+<hr>
+<b>Problem 6: Lax Security</b></A>
+
+<p>
+The Lax Hazardous Waste Company must maintain a certain level of
+security at its plant because of the nature of the materials
+handled there.  The main door to the plant has a keypad similar
+to the one shown below.  To open the door, an employee must
+first enter her five-digit personal identification number (PIN).
+If the PIN is valid, the door opens.  Otherwise, it does not.
+
+<pre>
+                     +---+ +---+ +---+
+                     | 1 | | 2 | | 3 |
+                     +---+ +---+ +---+
+                     +---+ +---+ +---+
+                     | 4 | | 5 | | 6 |
+                     +---+ +---+ +---+
+                     +---+ +---+ +---+
+                     | 7 | | 8 | | 9 |
+                     +---+ +---+ +---+
+                           +---+
+                           | 0 |
+                           +---+ </pre>
+
+<p>
+However, Bocefus Lax, the company owner, is a nice guy who doesn't like
+to burden his employees unnecessarily.  The digits on the keypad are
+close together and employees often enter their PIN incorrectly by
+pressing an adjacent button instead of the intended one.  Therefore,
+he wants to modify the access system so that it allows an employee
+to open the door even if the PIN they enter is slightly incorrect.
+Specifically, Bocefus is willing to assume that the person using the
+keypad is a valid employee if the number entered has no more than one
+digit that is off-by-one from some valid PIN.  Here, off-by-one
+means that, with respect to the keypad, the incorrect digit is either
+immediately above, below, to the right of, or to the left of the 
+correct digit.  (For example, the digits that are off-by-one from 4
+are 1, 5, and 7.)
+
+<p>
+Develop a program that takes as input a list of valid PINs followed
+by a list of numbers that were entered on the keypad.  For each number
+in the latter list, the program should report whether it is accepted
+or rejected.  For each accepted number, the program reports which 
+valid PIN it matches (exactly or approximately).
+
+<p>
+Note that a number entered on the keypad could match more than one
+valid PIN.  For example, the PIN 22222 is off-by-one from 21222,
+52222, 22223, and many others.  If a number entered on the keypad
+matches a valid PIN exactly, that PIN should be identified.
+If not, but if the number approximately matches some valid PIN,
+report the first such valid PIN in the list.
+
+<p>
+End of input is signaled by the user entering all zeros.
+
+<p>
+<b>Sample Program Execution:</b><br>
+<tt> 
+<p>
+  Enter number of valid PINs: <u>4</u><br>
+  <u>10360<br>
+  36243<br>
+  39491<br>
+  26543</u> <br><br>
+  Enter a number: <u>39491</u><br>
+  Matches 39491<br><br>
+  Enter a number: <u>36491</u><br>
+  Matches 39491<br><br>
+  Enter a number: <u>14543</u><br>
+  No matches<br><br>
+  Enter a number: <u>26243</u><br>
+  Matches 36243<br><br>
+  Enter a number: <u>00000</u>
+</tt>
+<p>
+
+<p><hr>
+<small>File translated from T<sub><font size="-1">E</font></sub>X by <a href="http://hutchinson.belmont.ma.us/tth/">T<sub><font size="-1">T</font></sub>H</a>, version 2.00.<br>On 16 Apr 1999, 05:45.</small>
+
+</body>
+</HTML>

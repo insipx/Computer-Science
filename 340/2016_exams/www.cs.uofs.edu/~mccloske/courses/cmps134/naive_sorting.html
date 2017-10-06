@@ -1,0 +1,528 @@
+<html>
+<head>
+  <title>CMPS 134 Naive Sorting Algorithms</title>
+</head>
+<body>
+<h2>
+  CMPS 134 (Computer Science 1)<br />
+  Naive (Elementary) Sorting Algorithms
+</h2>
+
+</p><p>
+In computer science, the verb <b>sort</b> means to rearrange a
+list of items so that they end up in either <b>ascending</b> 
+(from least to greatest) or <b>descending</b> (from greatest to least)
+order.  
+There are at least three well known sorting algorithms that, because
+of their simplicity, are often referred to as being <em>naive</em>.
+Here we will describe two of them.  Our descriptions assume that the
+items are to be put into ascending order; the reader should have no
+difficulty in adjusting the algorithms so that the items are put into
+descending order. 
+
+
+
+</p><p>
+<h3>Selection Sort</h3>
+</p><p>
+We are given a list of N items occupying positions 0, 1, 2, ..., N-1.
+We scan the entire list in order to find the smallest item and then we swap
+it with whatever item is at position zero.  Having placed the smallest
+item where it belongs &mdash;at position zero&mdash; it remains to sort
+the items in positions 1 through N-1.
+So we scan those items in order to find the smallest among them,
+and then we swap it with the item at position one.  
+Having done that, it remains to sort the items in positions 2 through N-1.
+So we find the smallest item among those and swap it with whatever item is
+at position 2.  And so on and so on.
+
+</p><p>
+Assuming that the list to be sorted is given in the form of an array
+<tt>a[]</tt>, we can express the algorithm in pseudocode like this:
+
+<center>
+<table border="1" cellpadding="4"
+<tr><td>
+<pre>
+N = a.length;
+for each i in the range 0..N-1 {
+   k = location of smallest value in a[i..N-1]
+   swap values in locations i and k of a[]
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Note that during the last iteration of the loop, when <tt>i</tt>
+has value <tt>N-1</tt>, the location of the smallest element in
+<tt>a[i..N-1]</tt>, which is the one-element array segment
+<tt>a[N-1..N-1]</tt>, is necessarily <tt>N-1</tt>.
+Hence the item at location <tt>N-1</tt> will be swapped with itself,
+which has no effect.
+For this reason, there is no point in performing a loop iteration
+during which the (loop control) variable <tt>i</tt> has value
+<tt>N-1</tt>.  So we can change the specified range to 
+<tt>0..N-2</tt>.
+
+</p><p>
+Translating this into a Java method that sorts an array of <tt>int</tt>'s
+(and that makes use of auxiliary methods for finding the minimum value in 
+an array segment and for swapping two elements of an array, both of which
+were developed during class meetings), we get this:
+
+<center>
+<table border="1" cellpadding="4"
+<tr><td>
+<pre>/* Sorts the given array into ascending order using the Selection Sort
+** algorithm.
+*/
+public static void selectionSort(int[] a)
+{
+   final int N = a.length;
+   for (int i = 0; i < N-1; i = i+1) 
+   {
+      int k = locOfMin(a, i, N);  // find location of min value in a[i..N-1]
+      swap(a,i,k);                // swap values in locations i and k of a[]
+   }
+}
+
+/* Returns a location containing the minimum value in b[low..high-1].
+** More precisely: Returns the smallest value k such that low &le; k &lt; high
+** and no value in b[low..high-1] is less than b[k]. 
+*/
+public static int locOfMin(int[] b, int low, int high)
+{
+   int locOfMinSoFar = low;
+   for (int j = low+1; j < high; j = j+1) {
+      if (b[j] < b[locOfMinSoFar]) {
+         locOfMinSoFar = j;
+      }
+   }
+   return locOfMinSoFar;
+}
+
+/* Swaps the elements at locations m and n of array b[]
+*/
+public static void swap(int[] b, int m, int n) {
+   int temp = b[n]; b[n] = b[m]; b[m] = temp;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+<b>Example:</b>
+Suppose that the given array is
+
+</p><p>
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| 13| 3 | 9 | -2| 6 | 4 |
++---+---+---+---+---+---+</pre>
+</center>
+
+</p><p>
+Then successive iterations of selection sort will have these effects:
+
+</p><p>
+During the first iteration, the elements at locations 0 and 3 are swapped,
+resulting in:
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| -2| 3 | 9 | 13| 6 | 4 |
++---+---+---+---+---+---+</pre>
+</center>
+
+</p><p>
+During the second iteration, the elements at locations 1 and 1 are swapped
+(which has no effect), resulting in:
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| -2| 3 | 9 | 13| 6 | 4 |
++---+---+---+---+---+---+</pre>
+</center>
+
+</p><p>
+During the third iteration, the elements at locations 2 and 5 are swapped,
+resulting in:
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| -2| 3 | 4 | 13| 6 | 9 |
++---+---+---+---+---+---+</pre>
+</center>
+
+</p><p>
+During the fourth iteration, the elements at locations 3 and 4 are swapped,
+resulting in:
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| -2| 3 | 4 | 6 | 13| 9 |
++---+---+---+---+---+---+</pre>
+</center>
+
+</p><p>
+During the fifth (and final) iteration, 
+the elements at locations 4 and 5 are swapped, resulting in:
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| -2| 3 | 4 | 6 | 9 | 13|
++---+---+---+---+---+---+</pre>
+</center>
+
+</p><p>
+<b>Analysis</b>:
+</p><p>
+The loop in the <tt>selectionSort()</tt> method iterates with
+(the loop control) variable <tt>i</tt> assuming the values 0, 1, 2, ..., N-2,
+where <tt>N</tt> is the length of the array <tt>a[]</tt> being sorted.
+During each of those iterations, the method <tt>locOfMin()</tt> is
+called in order to find a location within array segment <tt>a[i..N-1]</tt>
+(which has length <tt>N-i</tt>) containing that segment's minimum value.
+
+</p><p>
+Examining the code in <tt>locOfMin()</tt>, we notice that the number
+of comparisons performed (which is equal to the number of loop iterations)
+is one less than the length of the array segment on which it operates.
+(During its loop iterations, the loop control variable <tt>j</tt> assumes
+the values <tt>low+1</tt> through <tt>high-1</tt>, which is a range of 
+<tt>high-low-1</tt> values, in order to find the minimum value in 
+array segment <tt>b[low..high-1]</tt>, which has length <tt>high-low</tt>.)
+
+</p><p>
+We conclude that, during each iteration of the loop in 
+<tt>selectionSort()</tt>, the call to <tt>locOfMin()</tt> results in the
+latter performing <tt>N-i-1</tt> comparisons (equivalently, loop iterations).
+The following table illustrates this.
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><th>Value of i in<br /><tt>selectionSort()</tt></th>
+    <th># comparisons/iterations<br />performed<br />in <tt>locOfMin()</tt></th>
+<tr><td>0</td><td>N-1</td></tr>
+<tr><td>1</td><td>N-2</td></tr>
+<tr><td>2</td><td>N-3</td></tr>
+<tr><td>.</td><td>.</td>
+<tr><td>.</td><td>.</td>
+<tr><td>N-4</td><td>3</td></tr>
+<tr><td>N-3</td><td>2</td></tr>
+<tr><td>N-2</td><td>1</td></tr>
+</table>
+</center>
+
+</p><p>
+So how many comparisons (equivalently, loop iterations) does the
+<tt>locOfMin()</tt> method perform, in total, including all 
+<tt>N-1</tt> times it is called by <tt>selectionSort()</tt>?
+The answer is the sum of the numbers in the second column of the table.
+It is well known that, for any natural number <tt>N</tt>  the 
+sum <tt>1 + 2 + 3 + ... + (N-2) + (N-1)</tt> has value
+<tt>(N-1)N/2</tt>, or <tt>(N<sup>2</sup>-N)/2</tt>, which,
+for large values of <tt>N</tt>, is close to <tt>N<sup>2</sup>/2</tt>.
+</p><p>
+We conclude that the selection sort algorithm takes time proportional
+to the square of the length of the array that it sorts.
+To give you a sense of how this running time increases with respect
+to array length (i.e., the running time's <b>growth rate</b>), 
+look on the Internet for a graph of the function y = x<sup>2</sup>.  
+Notice that, for nonnegative values of x, as x increases not only does 
+the function increase but its slope increases.  Indeed, the slope of
+the function at each such value of x is 2x (as that is the derivative
+of the function).
+
+</p><p>
+To get a feel for the increase in running time as the array grows in
+length, consider that it will take <b>four</b> times as long to sort an array
+of length <tt>2N</tt> as it will to sort an array of length <tt>N</tt>
+(because (2N)<sup>2</sup> = 4N<sup>2</sup>).  That is, doubling the
+length of the array quadruples the running time.
+
+</p><p>
+It turns out that there are more complicated sorting algorithms having
+running times proportional to <tt>N &times; log N</tt>, which is a
+significant improvement.  Such algorithms are studied in subsequent
+computer science courses.
+
+
+
+</p><p>
+<hr><hr>
+<h3>Insertion Sort</h3>
+
+</p><p>
+We are given a list of N items occupying positions 0, 1, 2, ..., N-1.
+Assume that we have already rearranged the items in positions
+0 through i-1 so that they are in ascending order.  Now we consider
+the item x at position i.  Where should x be inserted, relative to the
+items in positions 0 through i-1, so that x is in its rightful place
+among them?  The answer is that x should be inserted at the first position,
+call it k, containing a value greater than x.  (If there is no such 
+position, x must be greater than the item at position i-1 and therefore
+it belongs where it is already, at position i.)  Of course, 
+if we insert x at position k, the items formerly occupying positions 
+k through i-1 will now occupy positions k+1 through i.
+
+</p><p>
+Assuming that the list to be sorted is given in the form of an array
+<tt>a[]</tt>, we can express the algorithm in pseudocode like this:
+
+</p><p>
+<center>
+<table border="2" cellpadding="4">
+<tr><td><pre>
+N = a.length;
+for each i in the range 1..N-1 {
+   x = a[i]  // store a[i] in a safe place
+   k = smallest number in range 0..i such that either k==i or x < a[k]
+   shift elements in segment a[k..i-1] one place "upward"
+   a[k] = x 
+}</td></tr>
+</table>
+</center>
+
+</p><p>
+Note that there is no reason to carry out an iteration with i=0 because
+nothing of significance would occur during it.
+
+</p><p>
+Translating this into a Java method that sorts an array of <tt>int</tt>'s
+(and that makes use of of auxiliary methods for computing k and for
+shifting an array segment), we get this:
+
+</p><p>
+<center>
+<table border="2" cellpadding="4">
+<tr><td>
+<pre>/* Sorts the given array into ascending order using the Insertion Sort
+** algorithm.
+*/
+public static void insertionSort(int[] a)
+{
+   final int N = a.length;
+   for (int i = 1; i < N; i = i+1)
+   {
+      int x = a[i];                       // store a[i] before it gets overwritten 
+      int k = locOfLeastGreater(a,0,i,x); // find location at which to insert x
+      shiftUp(a,k,i);                     // shift a[k..i-1] one place "upward"
+      a[k] = x;                           // store x into its rightful place
+   }
+}
+
+
+/* Assuming that the elements in b[bottom..top-1] are in ascending order,
+** returns the smallest value m in the interval [bottom,top] such that either
+** m = top or val &lt; b[m].  In other words, it finds the lowest numbered
+** location in b[bottom..top-1] containing a value that is greater than the
+** one given (or top if there are none).
+** The linear search algorithm is employed, with searching going "downwards".
+** Running time is proportional to top-bottom (the length of the array segment).
+** precondition: 0 &le; bottom &le; top &le; b.length &amp;&amp;
+**               elements in b[bottom..top-1] are in ascending order
+*/
+public static int locOfLeastGreater(int[] b, int bottom, int top, int val) 
+{
+   int m = top;
+   // loop invariant: bottom &le; m &le; top &amp;&amp; all elements in a[m..top-1] are &ge; val
+   while (m != bottom  &amp;&amp;  val &ge; b[m-1]) {
+      m = m-1;
+   }
+   return m;
+}
+
+/* This method performs the same service as the one above, but it employs
+** the binary search algorithm.  Its running time is proportional to
+** log<sub>2</sub>(top-bottom).
+*/
+public static int locOfLeastGreater'(int[] b, int bottom, int top, int val) 
+{
+   int low = bottom, high = top;
+   // loop invariant: bottom &le; low &le; high &amp;&amp;
+   //                 all elements in b[bottom..low-1] are &le; val &amp;&amp;
+   //                 all elements in b[high..top-1] are &gt; val &amp;&amp;
+   while (low != high) {
+      int mid = (low + high) / 2;
+      if (val &le; b[mid]) 
+         { low = mid+1; }
+      else  // val &gt; b[mid]
+         { high = mid; }
+   }
+   return low;
+}
+
+/* Shifts the elements in the segment b[bottom..top-1] "upwards" so that,
+** afterwards, they occupy the segment b[bottom+1..top].
+** precondition: 0 &le; bottom &le; top &lt; b.length
+*/
+public static void shiftUp(int[] b, int bottom, int top) 
+{ 
+   for (int j = top; j != bottom; j = j-1) {
+      b[j] = b[j-1];
+   }
+}</td></tr>
+</table>
+</center>
+
+</p><p>
+<b>Example:</b> Suppose that the given array is
+</p><p>
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| 13| 3 | 9 | -2| 6 | 4 |
++---+---+---+---+---+---+</pre>
+</center>
+
+</p><p>
+Then successive iterations of insertion sort will have these effects:
+
+</p><p>
+During the first iteration, the element in segment [0..0] will be
+shifted upward one position and the value that occupied location 1 (3)
+will be placed into location 0, resulting in:
+</p><p>
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| 3 | 13| 9 | -2| 6 | 4 |
++---+---+---+---+---+---+</pre>
+</center>
+
+</p><p>
+During the second iteration, the element in segment [1..1] will be
+shifted upward one position and the value that occupied location 2 (9)
+will be placed into location 1, resulting in:
+</p><p>
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| 3 | 9 | 13| -2| 6 | 4 |
++---+---+---+---+---+---+</pre>
+</center>
+
+During the third iteration, the elements in segment [0..2] will be
+shifted upward one position and the value that occupied location 3 (-2)
+will be placed into location 0, resulting in:
+</p><p>
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| -2| 3 | 9 | 13| 6 | 4 |
++---+---+---+---+---+---+</pre>
+</center>
+
+During the fourth iteration, the elements in segment [2..3] will be
+shifted upward one position and the value that occupied location 4 (6)
+will be placed into location 2, resulting in:
+</p><p>
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| -2| 3 | 6 | 9 | 13| 4 |
++---+---+---+---+---+---+</pre>
+</center>
+
+During the fifth iteration, the elements in segment [2..4] will be
+shifted upward one position and the value that occupied location 5 (4)
+will be placed into location 2, resulting in:
+</p><p>
+<center>
+<pre>0   1   2   3   4   5
++---+---+---+---+---+---+
+| -2| 3 | 4 | 6 | 9 | 13|
++---+---+---+---+---+---+</pre>
+</center>
+
+
+
+</p><p>
+<b>Analysis</b>:
+</p><p>
+The loop in the <tt>insertionSort()</tt> method iterates with the 
+loop control variable <tt>i</tt> assuming the values 1,2,3,...,N-1,
+where <tt>N</tt> is the length of the array <tt>a[]</tt> being sorted.
+During each of those iterations, the methods <tt>locOfLeastGreater()</tt>
+and <tt>shiftUp()</tt> are called in order, respectively, to find the
+location <tt>k</tt> into which the value at location <tt>i</tt> should
+be written and to shift the elements in the segment <tt>a[k..i-1]</tt>
+"upward" by one position.  In both of these methods, the number of 
+loop iterations is essentially <tt>i-k</tt>.  In the worst case,
+<tt>k=0</tt>, which happens when <tt>a[i]</tt> is less than 
+<tt>a[0]</tt>.  In the best case, <tt>k=i</tt>, which happens when
+<tt>a[i]</tt> is found to be greater than <tt>a[i-1]</tt>.
+If we assume that the elements in <tt>a[]</tt> are more or less in
+random order to begin with, it would be reasonable to estimate that,
+on average, we'll have <tt>k = i/2</tt>, corresponding to the
+value of <tt>a[i]</tt> being smaller than about half of the elements
+in <tt>a[0..i-1]</tt>.
+
+<!--
+N-1 times, 
+During each iteration, an array segment <tt>a[k..i-1]</tt> is shifted,
+which requires <tt>i-k</tt> loop iterations within the <tt>shiftUp()</tt>
+method.  In the worst case, we will have <tt>k=0</tt> each time so that
+the number of loop iterations within <tt>shiftUp()</tt> is <tt>i</tt>.
+(This would happen if the original array were in descending order.)
+
+</p><p>
+It follows that the 
+and the element 
+In the worst case, <tt>k==0</tt> so that the length of the segment
+shifted is <tt>i</tt>.  Of course, the cost of shifting an array segment
+is proportional to the length of the segment.  Indeed, let us charge
+one time unit for each array element that is 
+ of length at most <tt>i</tt>
+is shifted.  
+-->
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><th>Value of i in<br /><tt>insertionSort()</tt></th>
+    <th># iterations performed in<br /><tt>locOfLeastGreater()</tt><br /> 
+        and<br /> <tt>shiftUp()</tt><br />Best Case</th>
+    <th># iterations performed in<br /><tt>locOfLeastGreater()</tt><br /> 
+        and<br /> <tt>shiftUp()</tt><br />Worst Case</th>
+    <th># iterations performed in<br /><tt>locOfLeastGreater()</tt><br /> 
+        and<br /> <tt>shiftUp()</tt><br />Average Case</th>
+</tr>
+<tr><td>1</td><td>0</td><td>1</td><td>1/2</td></tr>
+<tr><td>2</td><td>0</td><td>2</td><td>2/2</td></tr>
+<tr><td>3</td><td>0</td><td>3</td><td>3/2</td></tr>
+<tr><td>.</td><td>.</td><td>.</td><td>.</td>
+<tr><td>.</td><td>.</td><td>.</td><td>.</td>
+<tr><td>N-4</td><td>0</td><td>N-4</td><td>(N-4)/2</td></tr>
+<tr><td>N-3</td><td>0</td><td>N-3</td><td>(N-3)/2</td></tr>
+<tr><td>N-2</td><td>0</td><td>N-2</td><td>(N-2)/2</td></tr>
+<tr><td>N-1</td><td>0</td><td>N-1</td><td>(N-1)/2</td></tr>
+</table>
+</center>
+
+</p><p>
+So how many loop iterations are performed by each of the
+<tt>locOfLeastGreater()</tt> and <tt>shiftUp()</tt> methods,
+in total, including all <tt>N-1</tt> times they are called
+by <tt>insertionSort()</tt>?  Summing up the numbers in the
+last three columns of the table, we find that, in the best case,
+zero, in the worst, approximately <tt>N<sup>2</sup>/2</tt>,
+and, in the average case, approximately <tt>N<sup>2</sup>/4</tt>.
+
+</p><p>
+What this tells us is that <tt>insertionSort()</tt> will, like
+<tt>selectionSort()</tt>, typically require time proportional 
+to <tt>N<sup>2</sup></tt> to complete its task.
+However, if the array to be sorted is "almost" in order to begin 
+with, <tt>insertionSort()</tt> can take as little as time 
+proportional to <tt>N</tt>.   This would be the case, for example,
+if there were a constant c such that, in the given array, every
+element was at a location no farther than c locations away from
+where it ended up when sorting was completed.
+
+</body>
+</html>

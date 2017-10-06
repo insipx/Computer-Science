@@ -1,0 +1,67 @@
+IDENTIFICATION DIVISION.
+PROGRAM-ID. MOVE-Behavior.
+AUTHOR.  R. McCloskey.
+INSTALLATION.  U of S.
+DATE-WRITTEN. September 10, 1992.
+
+**************************************************************************
+* Program Abstract:
+*    Program to illustrate the behavior of the MOVE verb, in particular
+*    with respect to MOVEing group items and numeric items.
+***************************************************************************
+
+ENVIRONMENT DIVISION.
+
+DATA DIVISION.
+
+WORKING-STORAGE SECTION.
+
+01 Num-1 PIC 99V99 Value 12.34.
+01 Num-2 PIC 9(8) Value 137.
+01 A.
+   02 B  PIC X(2) Value 'ab'.
+   02 C  PIC X(4) Value 'cdef'.
+01 D.
+   02 E  PIC X(2) Value 'gh'.
+   02 F  PIC X(4) Value 'ijkl'.
+01 G.
+   02 H PIC X(9) Value 'zyxwvutsr'.
+
+
+PROCEDURE DIVISION.
+
+MAIN-PROGRAM.
+    DISPLAY 'Num-1 = ', Num-1
+    DISPLAY 'Num-2 = ', Num-2
+    DISPLAY 'A = ', A, '  B = ', B, '  C = ', C
+    DISPLAY 'D = ', D, '  E = ', E, '  F = ', F
+    DISPLAY 'G = ', G, '  H = ', H
+    MOVE Num-2 to D
+    DISPLAY 'After moving Num-2 to D, D = ', D
+    MOVE A to Num-2
+    DISPLAY 'After moving A to Num-2, Num-2 = ', Num-2
+    MOVE Num-1 to A
+    DISPLAY 'After moving Num-1 to A, A = ', A, '  B = ', B, '  C = ', C
+    MOVE G to Num-1.
+    DISPLAY 'After moving G to Num-1, Num-1 = ' Num-1
+    MOVE H To Num-1.
+    DISPLAY 'After moving H to Num-1 (supposedly illegal), Num-1 = ', Num-1
+    STOP RUN
+    .
+
+END-PROGRAM.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Output:
+
+Num-1 = 1234
+Num-2 = 00000137
+A = abcdef  B = ab  C = cdef
+D = ghijkl  E = gh  F = ijkl
+G = zyxwvutsr  H = zyxwvutsr
+After moving Num-2 to D, D = 000001
+After moving A to Num-2, Num-2 = abcdef  
+After moving Num-1 to A, A = 1234    B = 12  C = 34  
+After moving G to Num-1, Num-1 = zyxw
+After moving H to Num-1 (supposedly illegal), Num-1 = sr00
+

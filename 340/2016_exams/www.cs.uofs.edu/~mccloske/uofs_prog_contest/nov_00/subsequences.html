@@ -1,0 +1,60 @@
+<html>
+<head>
+</head>
+<body>
+<!--
+<H2>1999 U of Scranton Programming Contest II<br>
+    November 3, 1999<br>
+    Problem 1: Shortest Substring Containing a Subsequence
+</H2>
+-->
+<H2>Shortest Substring Containing a Subsequence</H2>
+
+
+<p>
+Let S and T be character strings.
+We say that S is a <b>subsequence</b> of T if the characters that
+comprise S appear in the same order within T, but not necessarily
+adjacent to one another. &nbsp;For example, <b>MOO</b> is a subsequence
+of <b>NONMONOTONIC</b>, because the letters <b>M</b>, 
+<b>O</b>, and <b>O</b> appear within <b>NONMONOTONIC</b>
+as the fourth, fifth, and seventh letters, respectively.
+&nbsp;However, <b>POT</b> is neither a subsequence of <b>LIFTS</b>
+nor of <b>ATROPHY</b>.  In the first case, not all of the letters in
+<b>POT</b> appear in <b>LIFTS</b>; in the second case,
+although all the letters of <b>POT</b> are present in
+<b>ATROPHY</b>, they are not in the proper order.
+
+<p>
+You are to develop a program that takes as input a sequence of
+pairs of character strings.  Each line will contain a single string
+of length no more than 40.  (Thus, the first pair of strings appears
+on lines 1 and 2, the second pair on lines 3 and 4, etc., etc.)
+For each pair of strings S and T, your program is to report whether 
+or not S is a subsequence of T.
+If it is not, your program should simply print "NO"; 
+if it is, your program should print the starting and ending 
+positions of the <b>shortest</b> substring of T containing S 
+as a subsequence.
+(Positions are numbered from left to right starting at 0.)
+If there are two or more shortest substrings of T containing S as a
+subsequence, identify the leftmost such substring.
+
+
+<p>
+<b>Sample Input</b><br>
+<pre>ben
+aboekneno
+pelth
+dgiephwrtlx
+sss
+tstststsstst</pre>
+
+<p>
+<b>Sample Output</b><br>
+<pre>1 5 
+NO 
+5 8</pre>
+
+</body>
+</html>

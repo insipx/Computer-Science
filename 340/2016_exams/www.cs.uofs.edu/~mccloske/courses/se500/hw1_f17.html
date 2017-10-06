@@ -1,0 +1,190 @@
+<html>
+<head>
+  <title>SE 500 &nbsp; Fall 2017 &nbsp; HW # 1</title>
+</head>
+<body>
+<h2>
+SE 500 (Math for SE) &nbsp; Fall 2017 <br />
+HW #1: Textual Substitution, Inference Systems, Boolean Functions
+and Expressions
+ <br />
+Due: 7:20pm, Monday, Aug. 28
+</h2>
+
+</p><p>
+The exercises referred to by number come from
+the Gries &amp; Schneider textbook.
+Exercises from Chapter 1 are found on
+<a href="gries_schneider_pp21-23.pdf">page 21</a>
+and those from Chapter 2 are found on
+<a href="gries_schneider_pp38-39.pdf">pages 38-39</a>.
+
+</p><p>
+<b>1.</b> Do Exercise 1.2, parts (b) through (f).
+   The answer to (a) is  <b>b+2</b>.  Don't forget that textual substitution
+   has higher precedence than any other operator.
+
+</p><p>
+<b>2.</b> Do Exercise 1.3, parts (b) through (f).
+   The answer to (a) is  <b>y*x + 2</b> .
+
+
+</p><p>
+<b>3.</b> Let F be the formal system whose set of <b>well-formed formulas</b>
+(wff's) includes precisely those strings of the form 
+x&Delta;y&Delta;z,
+where each of x, y, and z is a string composed of
+<tt>&lowast;</tt>'s and whose axioms and inference rules are as follows:
+
+
+<center>
+<table border="2" cellpadding="8">
+<tr>
+  <th>Axiom</th>
+  <th>R<sub>1</sub></th>
+  <th>R<sub>2</sub></th>
+</tr>
+<tr>
+  <td><center>&Delta;&Delta;</center></td>
+  <td><center>u<tt></tt>&Delta;v&Delta;w<tt>&lowast;</tt></center>
+      <hr>
+      <center>u&Delta;v<tt>&lowast;</tt>&Delta;w</center>
+  </td>
+  <td><center>u&Delta;v&Delta;w</center>
+      <hr>
+      <center><tt>&lowast;</tt>u&Delta;v&Delta;w<tt>&lowast;</tt></center>
+  </td>
+</tr>
+</table>
+</center>
+
+
+
+</p><p>
+A wff is, in other words, a string of <tt>&lowast;</tt>'s with two
+&Delta;'s thrown in, and the wff that includes no
+<tt>&lowast;</tt>'s is accepted, without proof, as a theorem.
+
+</p><p>
+Rule 1 says, in effect, that if, in a theorem, we transfer one
+<tt>&lowast;</tt> from the end to the region lying between the two 
+&Delta;'s, what we get is another theorem.
+
+</p><p>
+Rule 2 says, in effect, that if, in a theorem, we insert one
+<tt>&lowast;</tt> at the beginning and another at the end,
+what we get is another theorem.
+
+</p><p>
+As an example, here is a proof of 
+<tt>&lowast;&lowast;</tt>&Delta;<tt>&lowast;</tt>&Delta;<tt>&lowast;</tt>:
+
+<table border="0" cellpadding="4">
+<tr>
+  <th>(1)</th>
+  <td>&Delta;&Delta;</td>
+  <td>(axiom)</td>
+</tr>
+<tr>
+  <th>(2)</th>
+  <td><tt>&lowast;</tt>&Delta;&Delta;<tt>&lowast;</tt></td>
+  <td>R<sub>2</sub>, with u,v,w := &lambda;, &lambda;, &lambda; applied to (1)
+  </td>
+</tr>
+<tr>
+  <th>(3)</th>
+  <td><tt>&lowast;&lowast;</tt>&Delta;&Delta;<tt>&lowast;&lowast;</tt></td>
+  <td>R<sub>2</sub>, with u,v,w := <tt>&lowast;</tt>, &lambda; ,<tt>&lowast;</tt> 
+      applied to (2)
+  </td>
+</tr>
+<tr>
+  <th>(4)</th>
+  <td><tt>&lowast;&lowast;</tt>&Delta;<tt>&lowast;</tt>&Delta;<tt>&lowast;</tt>
+  </td>
+  <td>R<sub>1</sub>, with u,v,w := <tt>&lowast;&lowast;</tt>, &lambda;, <tt>&lowast;</tt>
+      applied to (3)
+  </td>
+</tr>
+</table>
+
+</p><p>
+Note that &lambda; refers to the empty string.
+
+</p><p>
+<b>(a)</b>
+Show a proof of 
+<tt>&lowast;&lowast;&lowast;&lowast;</tt>&Delta;<tt>&lowast;&lowast;</tt>&Delta;<tt>&lowast;&lowast;</tt>
+
+</p><p>
+<b>(b)</b>
+Argue for the following claim:
+<blockquote>
+  If k &ge; m &ge; 0, then 
+  <!-- For every k,m satisfying k &ge; m &ge; 0,  -->
+  <tt>&lowast;</tt><sup>k</sup>&Delta;<tt>&lowast;</tt><sup>m</sup>&Delta;<tt>&lowast;</tt><sup>k-m</sup>
+  is a theorem.
+</blockquote>
+By <tt>&lowast;</tt><sup>r</sup> we mean a string of <tt>&lowast;</tt>'s
+of length r.
+
+</p><p>
+<b>Suggested Approach:</b> Provide informal instructions for writing a
+proof of 
+<tt>&lowast;</tt><sup>k</sup>&Delta;<tt>&lowast;</tt><sup>m</sup>&Delta;<tt>&lowast;</tt><sup>k-m</sup>
+for arbitrarily chosen values of k and m that satisfy k &ge; m &ge; 0.
+
+</p><p>
+<b>(c)</b>
+Argue for the following claim:
+<blockquote>
+  If <tt>&lowast;</tt><sup>k</sup>&Delta;<tt>&lowast;</tt><sup>m</sup>&Delta;<tt>&lowast;</tt><sup>n</sup>
+  is a theorem, then k-m = n.
+  <!-- If k, m, and n are natural numbers such that k-m &ne; n, then -->
+  <!--For every k,m,n &ge; 0 such that k-m &ne; n, -->
+  <!--
+  <tt>&lowast;</tt><sup>k</sup>&Delta;<tt>&lowast;</tt><sup>m</sup>&Delta;<tt>&lowast;</tt><sup>n</sup>
+  is <em>not</em> a theorem.
+  -->
+</blockquote>
+
+</p><p>
+<b>Suggested approach:</b> Explain why it must be that every line of
+every proof is such that the wff on that line satisfies the stated condition.
+For one-line proofs, this is easy.  For multiple-line proofs, you need only
+show that the wff on the last line satisfies the stated condition, under
+the assumption that the wff's on all previous lines do.
+
+<hr>
+</p><p>
+<b>4.</b> Let <tt>f : bool &times; bool &rarr; bool</tt> be
+a two-argument boolean function.  We say that <tt>f</tt>
+is <b>reflexive</b> if <tt>f(p,p)</tt> is <b>true</b> 
+for both possible values of <tt>p</tt> (<b>true</b> and <b>false</b>).
+We say that <tt>f</tt> is <b>symmetric</b> if <tt>f(p,q) = f(q,p)</tt>
+for all possible combinations of values of
+<tt>p</tt> and <tt>q</tt> (of which there are four, of course).
+
+</p><p>
+Exactly two among the sixteen two-argument boolean functions
+(see the table in Section 2.1) are reflexive but <b>not</b> symmetric.
+Identify them.
+
+<hr>
+</p><p>
+<b>5.</b> Do Exercise 2.1.
+
+</p><p>
+<b>6.</b> Do parts (e) through (h) of Exercise 2.2.
+
+</p><p>
+<b>7.</b> Do Exercise 2.5 
+  Remember that the first step is to asign 'names' (boolean variables)
+  to the atomic sub-propositions (e.g., "It's raining", "I'll eat my hat").
+
+</p><p>
+<b>8.</b> Do parts (a) and (b) of Exercise 2.6.
+
+</body>
+</html>
+

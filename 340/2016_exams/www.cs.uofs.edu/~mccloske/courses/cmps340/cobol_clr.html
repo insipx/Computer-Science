@@ -1,0 +1,98 @@
+<html>
+<head>
+  <title>COBOL: Compile/Link/Run under VMS</title>
+</head>
+<body>
+<H3>CMPS 340  (File Processing)
+<br>Compiling, linking, and running COBOL programs on the VMS operating system
+</H3>
+
+<p>
+For the purposes of illustration, we assume here that a file named 
+<tt>JUNK.COB</tt> contains the source code of a COBOL program.
+(As is suggested by this name, "<tt>.COB</tt>" is the standard extension
+(under VMS) for a file containing COBOL source code.)
+
+<p>
+To compile this program on VMS, issue the command
+
+<br><br>&nbsp;&nbsp; <tt>$ <b>COBOL JUNK</b></tt>
+
+<p>
+(User input is shown in bold.  The dollar sign is the command line
+prompt given by DCL ("DEC Command Language"), which is VMS's command line
+interface.)
+
+<p>
+Notice that you need not include the extension "<tt>.COB</tt>" 
+in the file name, although you may.
+
+<p>
+More often than not, you will want a listing of your source code to be
+produced during compilation.  (In particular, a listing includes messages
+identifying any syntax errors.)  In that case, you should use the qualifier
+LIS with the COBOL command, as follows:
+
+<br><br><tt>$ <b>COBOL/LIS JUNK</b></tt>
+
+<p>
+The listing will be written into the file <tt>JUNK.LIS</tt>.
+
+<p>
+If compilation results in no errors, "object code" will be written into the
+file <tt>JUNK.OBJ</tt>.
+
+<p>
+Once you have an object code file, you are ready for "linking".  To link, you
+issue the command
+
+<br><br><tt>$ <b>LINK JUNK</b></tt>
+
+<p>
+(You need not include the extension "<tt>.OBJ</tt>".)
+The result of linking is an "executable file", <tt>JUNK.EXE</tt>.
+
+<p>
+To run the executable file, issue the command
+
+<br><br><tt>$ <b>RUN JUNK</b></tt>
+
+<p>
+(As expected, the extension "<tt>.EXE</tt>" can be omitted.)
+
+<p>
+A few points deserve mention.  Firstly, if you are using the language-sensitive
+editor (LSE) (available on TIGER), you can compile from "within it", and it
+will help you find your syntax errors very easily.  In that case, you needn't
+make use of the COBOL command for compiling.
+However (from what students tell me), you can't link from within the editor.
+
+<p>
+Secondly, it may not be clear to you why the linking step is necessary.
+As you probably learned in CMPS 250, the purpose of linking is to make a
+single executable code file from the object code file(s) corresponding to
+your program's (one or more) compilation units.  If your program has only
+one compilation unit (as in the example above), linking is a formality.
+If your program has two or more compilation units, then linking actually
+does something useful!  In COBOL, subprograms are compiled separately
+from "main" programs.  If, for example, we had a main program in
+<tt>JUNK.COB</tt> and two subprograms in <tt>GARBAGE.COB</tt> and 
+<tt>REFUSE.COB</tt>, we would compile them separately (resulting in the
+object files <tt>JUNK.OBJ</tt>, <tt>GARBAGE.OBJ</tt>, and
+<tt>REFUSE.OBJ</tt>) and then we would produce an executable file
+by using the command
+
+<br><br><tt>$ <b>LINK JUNK, GARBAGE, REFUSE</b></tt>
+
+<p>
+Note that the main program should be listed first, followed by any
+subprograms, and that the name of the generated executable will correspond
+to the main program.  In this case, it would be <tt>JUNK.EXE</tt>.
+
+<p>
+Lastly, if it is your wont, you can take advantage of the fact that the 
+compile/link/run sequence can be "automated" using a DCL script (a list
+of DCL commands placed in a file having a "<tt>.COM</tt>" extension).
+
+</body>
+</html>

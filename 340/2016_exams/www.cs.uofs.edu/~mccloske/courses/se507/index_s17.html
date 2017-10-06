@@ -1,0 +1,599 @@
+<html>
+<head>
+<title>SE 507 &nbsp Spring 2017</title>
+</head>
+<body>
+<h2>SE 507 (Software Requirements and Specifications)<br />
+Spring 2017
+</h2>
+
+
+<H3><A HREF="syl_s17.html">Syllabus</A></H3> 
+
+<!--
+<font size=+2><b>Submit/Review System</b></font>
+<em>(For authorized users only)</em>
+<ul>
+  <li><a href="http://www.cs.scranton.edu/~mccloske/Register.cgi?root=spring16&amp;dir=se507">Register</a>
+  </li>
+  <li><a href="http://www.cs.scranton.edu/~mccloske/Update.cgi?root=spring16&amp;dir=se507">Update your registration information</a>
+    (e.g., change password)
+  </li>
+  <li><a href="http://www.cs.scranton.edu/~mccloske/Class.cgi?root=spring16&amp;dir=se507">View Class Roster</a>
+  </li>
+</ul>
+-->
+
+
+<H3>Reading Assignments</H3> 
+<ul>
+  <li>For February 9:
+    <ul>
+      <li>Jackson's <a href="http://mcs.open.ac.uk/mj665/icse17kn.pdf">The 
+          World and the Machine</a> paper.
+      </li>
+      <li>Jackson's <a href="http://mcs.open.ac.uk/mj665/Hoare99a.pdf">The 
+          Real World</a> paper.
+      </li>
+      <li>Jackson's <a href="http://mcs.open.ac.uk/mj665/aserqts5.pdf">
+          The Meaning of Requirements</a> paper.
+      </li>
+      <!-- 
+      <li>both the Preface and Chapter 1 of Jackson's "Problem Frames"</li>
+      -->
+    </ul>
+  </li>
+  <li>For February 16: 
+    <ul>
+      <li>Jackson's and Zave's <a href="http://mcs.open.ac.uk/mj665/FOURDC.pdf">
+          Four Dark Corners of Requirements Engineering</a> paper.
+      </li>
+      <!--
+      <li>Chapter 2 of Jackson's "Problem Frames"</li>
+      <li>Jackson's <a href="http://mcs.open.ac.uk/mj665/icse17kn.pdf">The 
+          World and the Machine</a> paper.
+      </li>
+      -->
+      <li>
+          <a href="lapouchnian_go_re_overview.pdf">Lapouchnian's paper</a> 
+          on Goal-Oriented Requirements Engineering, Sections 1, 2, 3.3,
+          4 (skim), and 5.
+      </li>
+      <li>van Lamsweerde's 
+          <a href="vanLams_kaos_presentation.pdf">Goal-Oriented Requirements
+          Engineering</a> presentation
+      </li>
+      <li><b>Objectiver Requirements Engineering Tool</b>
+        <ul>
+          <li><a href="http://www.objectiver.com/fileadmin/download/documents/Objectiver-WP-EN-2013.pdf">Advertisement 1</a>
+          </li>
+          <li><a href="http://www.respect-it.com/index.php?id=86">Advertisement 2</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>For February 23: 
+    <ul>
+      <li>Jackson's <a href="http://mcs.open.ac.uk/mj665/Icse17rc.pdf">
+          Deriving Specifications from Requirements: An Example</a> paper.
+      </li>
+      <li><a href="deriv_spec_from_req_jackson_lec.html">RWM's Notes</a>
+          on the paper
+      </li>
+    </ul>
+  </li>
+  </p><p>
+  <li>For March 2: 
+     Read first five sections of Harel's 
+     <a href="harel_Statecharts.pdf">Statecharts: A Visual Formalism
+     for Complex Systems</a>
+  </li>
+  <!--
+  <li>For March 3:
+    <ul>
+      <li>Chapter <a href="prob_frames_chap4_figs.pdf">4</a> 
+          of Jackson's "Problem Frames"
+      </li>
+      <li>Jackson's <a href="http://mcs.open.ac.uk/mj665/WG23MJ08.pdf">
+          Aspects of System Description</a> paper.
+      </li>
+    </ul>
+  </li>
+  <li>For March 10:
+    <ul>
+      <li>Jackson's <a href="http://mcs.open.ac.uk/mj665/WG23MJ08.pdf">
+          Aspects of System Description</a> paper. (repeat from last week)
+      </li>
+      <li>Jackson's and Zave's <a href="http://mcs.open.ac.uk/mj665/FOURDC.pdf">
+          Four Dark Corners of Requirements Engineering</a> paper.
+      </li>
+      <li>Jackson's <a href="http://mcs.open.ac.uk/mj665/aserqts5.pdf">
+          The Meaning of Requirements</a> paper.
+      </li>
+    </ul>
+  </li>
+  <li>For April 7:
+    <ul>
+      <li>Heitmeyer's <a href="heitmeyer_scr_2002.pdf">
+          Software Cost Reduction</a>
+      </li>
+      <li>Heitmeyer's <a href="heitmeyer_scr_light_control.pdf">
+          Applying the SCR Requirements Method to the Light Control
+          Case Study</a>
+      </li>
+      <li><a href="light_control_case_study_descrip.pdf">
+          Light Control Case Study: Problem Description</a>
+    </ul>
+  </li>
+  <li>For April 21:
+    <ul>
+      <li><a href="vanLams_goal_oriented_re.pdf">Goal-Oriented Requirements
+          Engineering: A Guided Tour</a> (van Lamsweerde)
+      </li>
+      <li><a href="KAOS_tutorial.pdf">KAOS Tutorial</a></li>
+    </ul>
+  </li>
+  <!--
+  <li>None yet.</li>
+  <li>For February 19, you are to read through Chapter 2 of the
+      van Lamsweerde book and through Chapter 2 of Jackson's
+      <em>Problem Frames</em> book.
+  </li>
+  <li>For February 26, you are to read the <em>Problem Frames</em> and
+      <em>Problem Sensitivity</em> articles in Jackson's <em>SRS</em> book,
+      plus read through Chapter 3 in Jackson's <em>Problem Frames</em> book.
+      Also recommended, especially if you found Chapter 2 of van Lamsweerde 
+      to be difficult, is Alan Davis's <em>Elicitation: How Do the Experts
+      Do It</em>.
+  </li>
+  <li>For March 5, read the following articles from Jackson's <em>SRS</em>
+      book: <em>Designations</em>, <em>Descriptions</em>, 
+      <em>Events and Intervals</em>, <em>Requirements</em>, and
+      <em>Specifications</em>.
+      Plus, read Jackson's and Zave's <em>Deriving Specifications from
+      Requirements: an Example</em> (the paper we are in the middle of
+      discussing) and, optionally, my notes on that paper.
+      Links to these last two items are below, under "Electronic Handouts".
+  </li>
+  <!--
+  <li>For February 4: 
+      <a href="http://www.computer.org/portal/web/swebok/html/contentsch2#ch2">
+      Software Requirements (Chapter 2 of SWEBOK)</a>
+  </li>
+  <li>For Feb. 11: Alan Davis Essays: Introduction (pp. 113-114),
+      Essays 20-22, 24-27. Be prepared to discuss in class.
+  </li>
+  <li>For Feb. 18: Chapters 1-3 in Kovitz plus some entries from Jackson.
+      See HW #2 below.
+  </li>
+  -- >
+  <!--
+    <li>
+    Chapters 1, 2, and 3 of Kovitz and, in Jackson, articles 
+      <em>Introduction</em> (pp. 1-5),
+      <em>Top Down</em> (pp. 196-199),
+      <em>Hierarchical Structure</em> (pp. 92-95),
+      <em>Problem Sensitivity</em> (pp 162-163) 
+      (you can ignore the second- and third-to-last paragraphs),
+      <em>Software</em> (pp. 187-188),
+      <em>Aspects of Software Development</em> (pp. 14-17), and
+      <em>Software Engineering</em> (pp. 188-190).
+  </li>
+  <li>For Feb. 19: Kovitz Chapters 3 and 4 plus related articles in Jackson.
+      See HW #2.
+  </li>
+  <li><a href="reading_assg_feb26_2013.html">For Feb. 26</a>
+      (Kovitz Chapters 5 and 6, related articles in Jackson,
+      plus the "Problem frames approach" article in Wikipedia)
+  </li>
+  <li>For March 5: Kovitz Chapters 7 and 8</li>
+  <li>For March 12 (moved to March 14): 
+      Jackson's and Zave's
+      <em>Deriving Specifications from Requirements: an Example</em>
+      (the Zoo Turnstile paper)
+  </li>
+  <li>For March 19: 
+      Kovitz Chapters 7 and 8 (previously assigned) and 9;<br />
+      Jackson book: articles 
+      <em>Critical Reading</em>, <em>Description</em>, <em>Designations</em>, 
+      <em>Definitons</em>, <em>Refutable Descriptions</em>,
+      <! -- <em>Scope of Description</em>, <em>Span of Description</em>,
+           <em>Predicate Logic</em>,
+      -- >
+      and <em>Events and Intervals</em><br />
+  </li>
+  <!--
+  <li>For March 9: <br />
+      Kovitz Chapters 9 and 10<br />
+  </li>
+  -- >
+  <! --
+  <li><a href="reading_assg_mar3_2011.html">For March 3</a></li>
+  <li>For Mar. 10: Be prepared to discuss Jackson's and Zave's
+      <em>Deriving Specifications from Requirements: an Example</em>
+      (the Zoo Turnstile paper)
+  </li>
+  <li><a href="reading_assg_mar17_2011.html">For March 17</a></li>
+  <li>For March 31: Please read Chapter 6 of Kovitz
+      (<em>Multi-frame Problems</em>) and, from Jackson,
+      <em>A Multi-Frame Problem - 1</em> (pp.128-132) and 
+      <em>A Multi-Frame Problem - 2</em> (pp.132-134) 
+      (It's possible that more readings may be added here.)
+  </li>
+  <li>For April 14: Please read Chapters 7-8 in Kovitz.
+  </li>
+  <li>For April 28: Please read Chapters 9-11 in Kovitz.
+      If you have no experience with Entity-Relational modeling/diagrams,
+      as a prelude to Chapter 9 you may wish to take a look at a book on
+      database systems.  The book by Elmasri &amp; Navathe, which we have
+      used at the U of S for a long time, has a chapter dedicated to this
+      subject.  In the most recent edition of the book (6th), it's Chapter 7.
+      However, in earlier editions the same chapter came earlier.
+      Also, be warned that Elmasri &amp; Navathe use the original notation
+      (introduced by Chen), while Kovitz uses a different one.  The concepts
+      are the same, however.
+  </li>
+  -->
+</ul>
+
+<H3>Homework Assignments</H3> 
+<ul>
+  <li>For February 9: Read as indicated above and prepare a
+      summary of Jackson's "The World and the Machine" paper.
+      Be prepared to discuss the other two papers.
+  </li>
+  <li><a href="hw2_s17.html">HW #2</a></li>
+  <li><a href="hw3_s17.html">HW #3: van Lamsweerde Chapter 7</a></li>
+  <li><a href="hw4_s17.html">HW #4: van Lamsweerde Chapter 8</a></li>
+  <li><a href="hw5_s17.html">HW #5: van Lamsweerde Chapters 9 and 10</a></li>
+  <!--
+  <li>None yet.</li>
+  <li><a href="hw1_s16.html">HW #1: Questions about Preface and Chapter 1 of 
+      Jackson's Problem Frames</a> &nbsp;
+      <a href="http://www.cs.scranton.edu/~mccloske/Submit.cgi?root=spring16&amp;dir=se507&amp;sub=hw1_dir">Submit/Review</a>
+  </li>
+  <li><a href="hw2_s16.html">HW #2: Questions about Chapter 2 of 
+      Jackson's Problem Frames</a> &nbsp;
+      <a href="http://www.cs.scranton.edu/~mccloske/Submit.cgi?root=spring16&amp;dir=se507&amp;sub=hw2_dir">Submit/Review</a>
+  </li>
+  <li><a href="hw3_s16_elevator.html">HW #3: Elevator Control</a> &nbsp;
+      <a href="http://www.cs.scranton.edu/~mccloske/Submit.cgi?root=spring16&amp;dir=se507&amp;sub=hw3_dir">Submit/Review</a>
+  </li>
+  <li><a href="hw4_s16_alg_specs.html">HW #4: Algebraic Specifications</a>
+      &nbsp;
+      <a href="http://www.cs.scranton.edu/~mccloske/Submit.cgi?root=spring16&amp;dir=se507&amp;sub=hw4_dir">Submit/Review</a>
+  </li>
+  -->
+</ul>
+
+
+<H3>Electronic Handouts</H3> 
+<ul>
+  <!--
+  <li><a href="robertson_3e_notes.dir/chap1_notes.html">Robertson 
+      Chapter 1 notes</a>
+  </li>
+  -->
+  <li><A HREF="requirements_intro_lec_jan07.html">Introduction to 
+      Requirements Management/Engineering</A>
+  </li>
+  <!--
+  <li><a href="frailey-SEBestPractices-2013-G.ppt">Dr. Dennis Frailey
+      presentation</a>
+  </li>
+  -->
+  <!--
+  <li><a href="http://mcs.open.ac.uk/mj665/Icse17rc.pdf">Jackson and Zave:
+      <em>Deriving Specifications from Requirements: an Example</em></a>
+      &nbsp;
+      <a href="deriv_spec_from_req_jackson_lec.html">RWM's Notes</a>
+      <br />
+      <!--
+      Related:<br />
+      <a href="http://mcs.open.ac.uk/mj665/FOURDC.pdf">Zave and Jackson:
+       Four Dark Corners of Requirements Engineering</a>
+      <br />
+      <a href="http://mcs.open.ac.uk/mj665/aserqts5.pdf">Jackson:
+       The Meaning of Requirements</a>
+      <br />
+      <a href="http://mcs.open.ac.uk/mj665/RefModel.pdf">Gunter, Gunter,
+        Jackson, and Zave: A Reference Model for Requirements &amp;
+        Specifications</a>
+      -- >
+  </li>
+  <li><A HREF="alg_specs_lec.html">Notes on algebraic specifications</A>
+  <li><A HREF="alg_specs_BST.html">Partial algebraic specifications
+      for binary search trees</A>
+  </li>
+  <!--
+  <li><A HREF="meyer_formalism_in_specs_lec.html">Notes on Meyer's
+      <em>Formalism in Specifications</em> paper</a> 
+  </li>
+  -- >
+  <!--
+  <li><a href="turnstile_statechart.html">Statechart for
+      Jackson's and Zave's Zoo Turnstile Problem</a>
+  </li>
+  <li><A HREF="alg_specs_lec.html">Notes on algebraic specifications</A>
+  </li>
+  <li><A HREF="http://www.kuro5hin.org/story/2005/7/29/04553/9714">A case
+      for formal specifications</A>
+  </li>
+  -- >
+  <!--
+  <li><A HREF="davis_jerm_chap1_lec.html">Notes on Chapter 1 of Davis's
+      <em>Just Enough Requirements Management</em></a> 
+  </li>
+  <li><A HREF="meyer_formalism_in_specs_lec.html">Notes on Meyer's
+      <em>Formalism in Specifications</em> paper</a> 
+  </li>
+  <li><A HREF="davis_jerm_chap2_lec.html">Notes on Chapter 2 of Davis's
+      <em>Just Enough Requirements Management</em></a> 
+  </li>
+  -- >
+  <!--
+  <li>Notes on Jackson's <em>Software Requirements &amp; Specifications</em>
+    <ul>
+      <li><A HREF="jackson_SRS_Intro_notes.html">Introduction</a></li> 
+      <li><A HREF="jackson_SRS_Software_lec.html">Software</a></li>
+      <li><A HREF="jackson_SRS_Software_Engineering_lec.html">Software
+          Engineering</a> 
+       </li>
+       <li><A HREF="jackson_SRS_Problem_Context_lec.html">Problem Context</a>
+       </li>
+       <li><A HREF="jackson_SRS_App_Dom_lec.html">Application Domain</a></li>
+    </ul>
+  </li>
+  -- >
+  <!--
+  <li><A HREF="meyer_formalism_in_specs_lec.html">Notes on Meyer's
+      <em>Formalism in Specifications</em> paper</a> 
+  </li>
+  <li><A HREF="predicate_devel_advice.pdf" target="_blank">Developing
+      Formal Predicates from Informal Statements: A Checklist</A>
+  </li>
+  <li><A HREF="davis_jerm_chap2_lec.html">Notes on Chapter 2 of Davis's
+      <em>Just Enough Requirements Management</em></a> 
+  </li>
+  <li><A HREF="davis_jerm_chap3_lec.html">Notes on Chapter 3 of Davis's
+      <em>Just Enough Requirements Management</em></a> 
+  </li>
+  <li><A HREF="deriv_spec_from_req_jackson_lec.html">Notes on
+      Jackson's and Zave's <em>Deriving Specifications from
+      Requirements: an Example</em></A>
+  </li>
+  <li><A HREF="alg_specs_lec.html">Notes on algebraic specifications</A>
+  </li>
+  <li><A HREF="http://www.kuro5hin.org/story/2005/7/29/04553/9714">A case
+      for formal specifications</A>
+  </li>
+  -->
+  <!--
+  <li><A HREF="relations_lec.html">Notes on Relations</A></li>
+  <li><A HREF="../se500/proofs_with_implicate.txt">On Proofs Involving the
+      Replacement of A by B, where A ==> B</A>
+  </li>
+  <li><A HREF="davis_req_triage_notes.html">Notes on Requirements Triage</A>
+  </li>
+  <li><A HREF="http://www.cs.umd.edu/~smith/induction/">Tutorial on
+      Mathematical Induction (U. of Maryland)</A>
+  </li>
+  <li><A HREF="http://www.cc.gatech.edu/people/home/idris/AlgorithmsProject/ProofMethods/">Tutorial on Methods of Proof (Georgia Tech U.)</A></li>
+  -->
+</ul>
+
+
+<h3>SWEBOK (Software Engineering Body of Knowledge)</h3>
+  <ul>
+    <li><a href="SWEBOKv3.pdf">SWEBOK V3.0 Guide to the Software Engineering
+        Body of Knowledge</a> (large pdf file)
+        (Pages 32-49 are Chapter 1: Software Requirements)
+    </li>
+    <li><a href="http://www.computer.org/portal/web/swebok/html/copyright">main web page</a>
+    </li>
+    <!--
+      <li><a href="http://www.computer.org/portal/web/swebok/html/contentsch2#ch2">Software Requirements (Chapter 2)</a>
+      </li>
+    -->
+  </ul>
+
+<!--
+<H3>Alloy-related links</H3>
+<ul>
+  <li><A HREF="http://alloy.mit.edu/alloy">Alloy Home Page</A>
+    <!-- all the following links no longer work
+    <ul>
+      <li><A HREF="http://alloy.mit.edu/alloy4">Alloy Analyzer 4.0</A> page
+        <ul>
+          <li><A HREF="http://alloy.mit.edu/alloy4/quickguide/a4.html">New
+              Syntactic Features in Alloy 4</A> 
+          </li>
+          <li><A HREF="http://alloy.mit.edu/alloy4/tutorial4/">Tutorial for 
+              Alloy Analyzer 4.0</A>
+          </li>
+          <li><A HREF="http://alloy.mit.edu/alloy4/tutorial/">Alloy 4 
+              Tutorial Materials</A>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    -- >
+  </li>
+  <li><a href="http://www.doc.ic.ac.uk/project/examples/2007/271j/suprema_on_alloy/Web/">A Guide to Alloy</a>
+  </li>
+  <!-- links no longer work
+  <li><A HREF="http://alloy.mit.edu/tutorial3/manual.pdf">Alloy 3.0
+           Reference Manual</A>
+       </li>
+  <li><A HREF="http://alloy.mit.edu/alloy4/quickguide/">Alloy (version 4)
+      Quick Guide</A>
+  </li>
+  -- >
+  <li><A HREF="http://softwareabstractions.org">
+      Resources and Additional Materials for Jackson's
+      <em>Software Abstractions</em> book</A>
+    <ul>
+      <!-- link no longer works
+      <li><A HREF="http://alloy.mit.edu/alloy4/book.html">Updates to book 
+          for Alloy 4</A>
+      </li>
+      -- >
+      <li><A HREF="http://softwareabstractions.org/models/a4-models-index.html">
+          Repository of models from book (Alloy 4)</A>
+      </li>
+    </ul>
+  </li>
+  <li><A HREF="alloy_quantifiers.html">Alloy Quantifiers</A></li>
+  <li><a href="alloy_stuff_iowa.dir/intro-to-alloy_iowa.pdf">Intro to Alloy</a> 
+      (U of Iowa)
+  </li>
+  <li><a href="alloy_stuff_iowa.dir/sets-and-relations_iowa.pdf">Sets and Relations</a>
+      (U of Iowa)
+  </li>
+</ul> 
+<!--  end of Alloy-related links -->
+
+<H3>Michael Jackson links</H3>
+<ul>
+  <li><A HREF="http://mcs.open.ac.uk/mj665/">Michael Jackson's home page</A>
+  </li>
+  <li><A HREF="http://mcs.open.ac.uk/mj665/papers.html#ReqSpecs">
+      papers on Requirements and Specifications</A>
+  </li>
+  <li><A HREF="http://mcs.open.ac.uk/mj665/papers.html#PFrames">
+      papers on Problem Frames</A>
+  </li>
+  <li><a href="http://www.ferg.org/papers/problem_frames_review.html">
+      Book Review</a> (by Stephen Ferg) of Jackson's <em>Problem Frames</em>
+  </li>
+  <li><a href="http://www.jacksonworkbench.co.uk/stevefergspages/pfa/index.html">
+      Problem Analysis and the Problem Frames Approach</a> (page of links)
+  </li>
+</ul>
+
+<h3>KAOS (van Lamsweerde) links</h3>
+  <ul>
+    <li><a href="KAOS_tutorial.pdf">KAOS Tutorial</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/KAOS_(software_development)">
+        KAOS (Wikipedia entry)</a>
+    </li>
+    <li><a href="http://www.cs.toronto.edu/~jm/2507S/Notes04/KAOS.pdf">
+        KAOS presentation (John Mylopoulos, 2004)</a>
+    </li>
+  </ul>
+
+<h3>Leslie Lamport</h3>
+<ul>
+  <li><a href="specifying_systems_lamport.pdf">Specifying Systems (book)</a>
+  </li>
+</ul>
+
+
+<h3>SCR (Software Cost Reduction) links</h3>
+<ul>
+  <li><a href="http://www.nrl.navy.mil/chacs/pubs/02-1221.1-1419.pdf">
+      <em>Software Cost Reduction</em> (SCR)</a>, by C.L. Heitmeyer
+  </li>
+  <li><a href="http://www.nrl.navy.mil/chacs/pubs/04-1226-3131.pdf">
+      <em>Tools for constructing requirements specifications:
+      The SCR toolset at the age of ten</em></a>, by C.L. Heitmeyer,
+      M. Archer, R. Bharadwaj, and R. Jeffords
+      (<em>Int'l Journal of Software and Systems Engineering</em>,
+      20(1): pp. 19-35, Jan. 2005)
+  </li>
+  <li><em>A Strategy for Efficiently Verifying Requirements</em>,
+      by R.D. Jeffords and C.L. Heitmeyer,
+      Proceedings of the 9th European Software Engineering Conference
+      held jointly with 11th ACM SIGSOFT Int'l Symposium on Foudations
+      of Software Engineering, 2003.
+      (Accessible at <a href="http://dl.acm.org/">ACM Digital Library</a>
+      from machines on U of Scranton campus.)
+  </li>
+  <li><a href="http://www.nrl.navy.mil/chacs/pubs/07-1226-1576.pdf">
+      <em>Formal Methods for Specifying, Validating, and Verifying 
+      Requirements</em></a>, Journal of Universal Computer Science
+      vol. 13, no. 5, pp. 607-618.
+  </li>
+  <li><a href="http://www.nrl.navy.mil/chacs/pubs/07-1221-1683.pdf">
+      <em>Applying the SCR Requirements Method to a Simple Autopilot</em></a>
+  </li>
+  <li><a href="http://www.nrl.navy.mil/chacs/pubs/00-1221.1-1557.pdf">
+      <em>Applying the SCR Requirements Method to the Light Control
+      Case Study</em></a>, Journal of Universal Computer Science (JUCS),
+      August 2000. 
+  </li>
+  <li><a href="http://www.nrl.navy.mil/chacs/publications.php">
+      List of publications from Center for High Assurance Computer Systems
+      (Navy Research Lab)</a>
+  </li>
+</ul>
+
+
+
+
+<h3>Alan M. Davis links</h3>
+<ul>
+  <li><A HREF="http://www.reqbib.com/adavis/">Alan M. Davis's
+       home page</A>
+  </li>
+  <li><A HREF="http://www.reqbib.com/index.htm">Alan M. Davis's
+       requirements bibliography</A>
+  </li>
+</ul>
+
+<H3>Statechart (David Harel) links</H3>
+  <ul>
+    <li><a HREF="harel_Statecharts.pdf">Statecharts: A Visual Formalism
+        for Complex Systems</a> (original 1987 paper)  &nbsp;
+    <a href="harel_statechart_figs.pdf">Figures 1-31 from paper</a>
+    </li>
+    <!--<li><A HREF="http://www.wisdom.weizmann.ac.il/~dharel/SCANNED.PAPERS/Statecharts.pdf">Statecharts: A Visual Formalism for Complex Systems</A>
+    </li>
+    -->
+    <li><a HREF="harel_statecharts_in_making.pdf">Statecharts in the
+        Making: A Personal Account</a> (retrospective paper on how
+        Harel developed the concept)
+    </li>
+    <li><a href="http://www.wisdom.weizmann.ac.il/~harel/STM.Book/">
+        Modeling Reactive Systems with Statecharts: The STATEMATE Approach</a>
+        (book from 1998)
+    </li>
+    <li><a href="http://www.wisdom.weizmann.ac.il/~dharel/SCANNED.PAPERS/OOStatecharts.pdf">Executable Object Modeling with Statecharts</a>
+        (IEEE Computer, July 1997, pp. 31-42)
+    </li>
+    <li><a HREF="turnstile_statechart.html">Statechart for Jackson's and
+        Zave's Zoo Turnstile Problem.</a>
+    </li>
+  </ul>
+
+<H3>Wikipedia Links</H3>
+  <ul>
+    <li><a href="http://en.wikipedia.org/wiki/Requirements_analysis">
+        Requirements Analysis</a>
+    </li>
+    <li><a href="http://en.wikipedia.org/wiki/Requirements_management">
+        Requirements Management</a>
+    </li>
+    <li><a href="http://en.wikipedia.org/wiki/Software_requirements_specification">
+        Software Requirements Specification</a>
+    </li>
+    <li><a href="http://en.wikipedia.org/wiki/Problem_Frames_Approach">
+        Problem Frames Approach</a>
+    </li>
+  </ul>
+
+<H3>Miscellaneous Links</H3>
+  <ul>
+    <li><a href="http://www.jacksonworkbench.co.uk/stevefergspages/papers/ferg--whats_wrong_with_use_cases.html">What's Wrong with Use Cases</a>
+    </li>
+    <li><a href="http://www.info.ucl.ac.be/~avl/ReqEng.html">Axel van
+        Lamsweerde and Goal-Driven RE (KAOS Approach)</a>
+    </li>
+    <li><A HREF="http://www.kuro5hin.org/story/2005/7/29/04553/9714">A case
+        for formal specifications</A>
+    </li>
+  </ul>
+
+</body>
+</html>

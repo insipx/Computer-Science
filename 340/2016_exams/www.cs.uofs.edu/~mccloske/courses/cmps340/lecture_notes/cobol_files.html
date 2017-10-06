@@ -1,0 +1,774 @@
+<html>
+<head>
+<title>McCloskey's Notes on COBOL: Using Files</title>
+</head>
+<body>
+
+<H1>COBOL</H1>
+
+<H2>Using Files</H2>
+
+<ul>
+  <li><A HREF="#File_Descrip">File Descriptors</A></li>
+  <li><A HREF="#Org_and_Access">File Organizations and Access Modes</A></li>
+  <li><A HREF="#Modes_and_Verbs">File Open Modes and I/O Operations/Verbs</A>
+  </li>
+  <li><A HREF="#Seq_IO_Ops">I/O operations on SEQUENTIAL files</A></li>
+  <li><A HREF="#Indexed_IO_Ops">I/O operations on INDEXED files</A></li>
+  <li><A HREF="#Random_Access_to_Indexed">Random Access form of 
+               READ, WRITE, and REWRITE for INDEXED files</A></li>
+  <li><A HREF="#Seq_Access_to_Indexed">Sequential Access form of 
+               READ, WRITE, and REWRITE for INDEXED files</A></li>
+  <li><A HREF="#Random_Obser">Random observations based on 
+               program testing</A></li>
+  <li><A HREF="#Ran_Acc_for_Rel">Random Access form of 
+              READ, WRITE, and REWRITE for RELATIVE files</A></li>
+</ul>
+
+<A NAME="File_Descrip">
+<H3>File Descriptors</H3>
+<p>
+The DATA DIVISION of a COBOL (sub)program contains two sections, the FILE
+SECTION and the WORKING-STORGAGE SECTION.  The latter is used to describe,
+via "data description entries" (level numbers, PICTURE clauses, etc.), the
+hierarchical structure of data items that exist during execution of the
+program.  The former is used to describe, in a similar way, the layout of
+records in any files that the program uses.  For each file that the program
+uses, the FILE SECTION contains a "file description entry", the beginning of
+which is signaled by the keyword <b>FD</b>.  The typical form of such an entry
+(the general form includes a number of optional clauses not shown here) is
+as follows:
+<pre>
+      FD &lt;file-name&gt;
+          [RECORD CONTAINS &lt;integer-literal&gt; CHARACTERS]
+          [DATA RECORD IS &lt;data-record-name&gt;].  </pre>
+
+<p>
+<b>Note on notation:</b> Square brackets surrounding an entity indicate that
+its appearance is optional.
+
+<p>
+Immediately after the file description entry comes the "data description entry" 
+for the file's data record (beginning with the level number 01).  Here is a
+typical example:
+<pre>
+    FD Employee-File
+         RECORD CONTAINS 65 CHARACTERS
+         DATA RECORD IS Employee-Rec.
+
+    01 Employee-Rec.
+       02 Employee-ID        PIC X(10).
+       02 Employee-Name.
+          03 Last-Name       PIC X(20).
+          03 First-Name      PIC X(12).
+          03 Middle-Init     PIC X.
+       02 Position.
+          03 Job-Code        PIC X(4).
+          03 Department      PIC X(3).
+          03 Manager-ID      PIC X(10).
+       02 Hourly-Pay         PIC 9(3)V99.  </pre>
+
+<p>
+The above says that <tt>Employee-File</tt> is a file in which each record
+has a length of 65 characters, with the first ten containing an employee ID,
+the next twenty containing an employee's last name, etc., etc.
+
+<p>
+When a COBOL program executes, enough main memory is allocated to hold not
+only the data items described in the WORKING-STORAGE SECTION but also those
+described in the FILE SECTION (i.e., one data record from each file).
+Thus, one could view the data record of a file as being a one-record buffer
+for that file.  When a record is retrieved from a file (via the READ verb),
+it is placed into the file's data record.  Similarly, when a record is
+written to a file (via the WRITE verb), it is the contents of the file's
+data record that are written into the file.
+
+<p>
+<b>Note:</b>
+From class discussion, you should recall that there are also file
+buffers that are not directly accessible by the application programmer.
+An input buffer holds (typically) several records that already have been
+read in (physically) but are waiting to be read in logically (via READ) by
+the COBOL program.  An output buffer holds (typically) several records that
+already have been written logically (via WRITE) by the COBOL program but are
+waiting to be written (physically) into a file.
+
+
+<A NAME="Org_and_Access">
+<H3>File Organization and Access Modes</H3>
+<p>
+COBOL directly supports
+<ol>
+ <li>three file organizations:  SEQUENTIAL, INDEXED, and RELATIVE</li>
+ <li>three file access modes:  SEQUENTIAL, RANDOM, and DYNAMIC</li>
+ <li>four file open modes:  INPUT, OUTPUT, EXTEND, I-O</li>
+ <li>seven I/O operations:  OPEN, CLOSE, READ, WRITE, REWRITE,
+                            DELETE, START</li>
+</ol>
+
+<p>
+A file's organization (i.e., the way it is structured) imposes restrictions
+upon how it can be accessed (i.e., upon which access modes are applicable to
+it).
+
+<p>
+A file whose organization is SEQUENTIAL (which is the default) allows 
+<em>only</em> the SEQUENTIAL access mode, which means that its records may be
+accessed (i.e., read or written) only in logical order, one after another.
+(This restriction makes sense, as such a file has no index (or any other
+auxiliary fast-search-enabling structure) associated with it to allow for
+efficient access to arbitrary records.)
+
+<p>
+An INDEXED file is one for which an index exists, thereby making it possible
+to locate a record quickly, given the value of its <em>key</em> field 
+(i.e., the indexing field).  A RELATIVE file is one that allows access by
+relative record number (RRN).  
+
+<p>
+A file whose organization is INDEXED or RELATIVE allows any of the three 
+access modes to be applied to it: SEQUENTIAL, RANDOM, or DYNAMIC.  The
+notion of SEQUENTIAL access, as it applies to INDEXED and RELATIVE files,
+is the same as with SEQUENTIAL files:  records are accessed in their logical
+order.  In INDEXED files, the logical order of records corresponds to
+increasing order of key field value.  (For example, if <tt>Employee-ID</tt>
+were the key field of the Employee-File described above, then the record
+containing <tt>'Jones00001'</tt> in that field would occur before the record
+containing <tt>'Simpson012'</tt>, as the former value is less than the
+latter according to COBOL's rules for ordering character strings.)
+In RELATIVE files, the logical order of records corresponds to their RRN's,
+with record <em>i</em> coming before record <em>j</em> if and only if
+<em>i &lt; j</em>.
+
+<p>
+As for RANDOM access, in the case of an INDEXED file it means access
+according to the value stored in the field that is specified as the key of
+the file (in the SELECT statement for the file).  (Such a file has an index
+for which its key field is the indexing field.)  For example, if 
+<tt>Employee-File</tt> (see below) has as its key the field 
+<tt>Employee-ID</tt> (an alphanumeric string of length ten),
+we have the ability to READ or WRITE a record whose <tt>Employee-ID</tt>
+field contains a specified value, such as <tt>'Simpson032'</tt>.
+
+<p>
+In the case of a RELATIVE file, RANDOM access means access according to the
+logical position of a record within the file.  A position is given in terms
+of a relative record number (RRN), which is simply a positive integer.  For
+example, we can issue a command to READ or WRITE the record in position 327.
+
+<p>
+DYNAMIC access mode is a combination of both SEQUENTIAL and RANDOM access.
+That is, if a program is to access records from some file both sequentially
+and randomly (e.g., the former in performing a range query and the latter in
+performing a single-record fetch), DYNAMIC access mode is appropriate.
+
+<p>
+The organization of a file and the access mode to be used on that file by a
+particular COBOL program are specified in a SELECT statement appearing in the
+FILE-CONTROL paragraph of the INPUT-OUTPUT SECTION in the ENVIRONMENT DIVISION.
+The form taken by the SELECT statement depends upon the file's organization.
+(Note:  In order to keep things simple, we do not describe the SELECT statement
+in all its generality.)  For a sequential file, it looks like this:
+
+<pre>
+   SELECT [OPTIONAL] &lt;file-name-in-program&gt;
+      ASSIGN TO &lt;file-name-on-computer-system&gt;
+      [ORGANIZATION IS SEQUENTIAL]
+      [ACCESS MODE IS SEQUENTIAL]
+      [FILE STATUS IS &lt;data-name&gt;]  </pre>
+
+<p>
+The default organization is SEQUENTIAL, so that if we omit the ORGANIZATION
+clause, COBOL will interpret this to mean that the file is SEQUENTIAL.
+The presence of the optional keyword <tt>OPTIONAL</tt> indicates that the
+file may or may not already exist (when the program begins execution).
+(<tt>OPTIONAL</tt> files may be opened in any mode except <tt>OUTPUT</tt>.)
+
+<p>
+The data item specified in the FILE STATUS clause should be one defined with
+a <tt>PIC X(2)</tt> picture clause.  Each time an I/O operation is performed
+on the file, a two-digit code, called the file status code, is placed into
+this data item.  The file status code indicates whether the operation
+completed successfully (value "00") or whether something "unusual" occurred
+(e.g., value "41" indicates an attempt to OPEN a file that was already open,
+"10" indicates the end-of-file condition, etc., etc.).  For more details, see
+page 301 of <em>Comprehensive COBOL</em>.
+
+<p>
+The form taken by the SELECT statement when the file has INDEXED organization
+is this:
+<pre>
+   SELECT [OPTIONAL] &lt;file-name-in-program&gt;
+      ASSIGN TO &lt;file-name-on-computer-system&gt;
+      ORGANIZATION IS INDEXED 
+      [ACCESS MODE IS {SEQUENTIAL, RANDOM, DYNAMIC}]
+      RECORD KEY IS  &lt;data-name&gt;
+      [FILE STATUS IS &lt;data-name&gt;] </pre>
+
+<b>Note on notation:</b>
+A list of items in curly braces indicates that exactly one of them is
+to be chosen.
+
+<p>
+For example, the SELECT statement for the Employee file mentioned above
+might look like this:
+<pre>
+   SELECT Employee-File
+      ASSIGN TO "Employees.dat"
+      ORGANIZATION IS INDEXED 
+      ACCESS MODE IS RANDOM
+      RECORD KEY IS Employee-ID.</pre>
+
+<p>
+The data-name specified in the RECORD KEY clause must be one of the fields
+within the file's data record; it must be (or becomes, if the file doesn't
+yet exist) an indexing field of the file (which is to say that, if the
+file already exists, so must an index on that field).
+
+<p>
+The form taken by the SELECT statement when the file has RELATIVE organization
+is one of these two:
+<pre>
+   SELECT [OPTIONAL] &lt;file-name-in-program&gt;
+      ASSIGN TO &lt;file-name-on-computer-system&gt;
+      ORGANIZATION IS RELATIVE
+      ACCESS MODE IS SEQUENTIAL
+      [RELATIVE KEY IS &lt;data-name&gt;] 
+      [FILE STATUS IS &lt;data-name&gt;]
+</pre>
+or
+<pre>
+   SELECT [OPTIONAL] &lt;file-name-in-program&gt;
+      ASSIGN TO &lt;file-name-on-computer-system&gt;
+      ORGANIZATION IS RELATIVE
+      ACCESS MODE IS {RANDOM, DYNAMIC}
+      RELATIVE KEY IS &lt;data-name&gt;
+      [FILE STATUS IS &lt;data-name&gt;]
+</pre>
+
+<p>
+That is, for a RELATIVE file, if SEQUENTIAL access mode is chosen, specifying
+its RELATIVE KEY is optional (and seemingly useless!), but specifying the
+RELATIVE KEY is mandatory if the access mode is RANDOM or DYNAMIC.  Whenever
+random access is made to a RELATIVE file, the contents of the field that was
+identified as its RELATIVE KEY are taken to be the RRN of the record to be
+accessed.
+
+<p>
+<b>Note:</b> Simply including the clause ORGANIZATION IS INDEXED (or RELATIVE),
+when SELECT-ing a file, does not magically transform the specified file
+into one having the appropriate structure.  If, for example, you created
+a file using a standard file editor and then tried to SELECT it using the
+ORGANIZATION IS INDEXED (or RELATIVE) clause within the SELECT statement,
+you would not achieve the desired results.  Rather, to construct an INDEXED
+(or RELATIVE) file, you would create it via the execution of some COBOL
+program in which the file is opened for OUTPUT and records are written to
+that file.
+For an example, see
+<A HREF="/~mccloske/courses/cmps340/indexed_file_creation.cob">this
+program</A>, which creates a new INDEXED file, populating it with the
+records in an already-existing text file.
+<b>End of Note.</b>
+
+
+<A NAME="Modes_and_Verbs">
+<H3>File Open Modes and I/O Operations/Verbs</H3>
+
+<p>
+There are four "file open modes": INPUT, OUTPUT, EXTEND, and I-O.  A COBOL
+program "announces its intention" to access a file by opening it, via the
+OPEN verb.  When opening a file, one of these four modes must be specified,
+as in
+<p>
+<tt><center>OPEN INPUT Course-File</center></tt>
+
+<p>
+When the program is finished using a file (perhaps only temporarily) it
+closes it via the CLOSE verb, as in
+<p>
+<tt><center>CLOSE Course-File</center></tt>
+
+<p>
+A file opened in INPUT mode is one that may be accessed only via the READ
+verb (plus the START verb, if the file is INDEXED or RELATIVE).  A file
+opened in OUTPUT mode is one that may be accessed only via the WRITE verb;
+furthermore, if the file existed prior to being opened, its contents are
+destroyed (so that, when execution ends, the file contains only those records
+written to the file during execution of the program).  A file opened in
+EXTEND mode, which applies only to SEQUENTIAL files, is one that may be
+accessed only via the WRITE verb; furthermore, the file must have existed
+prior to being opened (unless the word <tt>OPTIONAL</tt> appeared in the
+<tt>SELECT</tt> statement for that file), and any records written to it 
+during execution are placed <em>after</em> the ones already there.
+(<b>Note:</b>   A file opened in I-O mode
+is one on which both reading and writing of records may be carried out,
+via the READ and REWRITE verbs.  (The WRITE and START verbs may be applied,
+too, if the file is INDEXED or RELATIVE.)
+
+<p>
+Note that a file may be opened more than once during execution of a program,
+possibly with different open modes each time.  However, a file that is
+open must be closed (via the CLOSE verb) before it can be opened again.
+For example, a program may open a file for OUTPUT, write records into it, 
+close it, open it for INPUT, and then read records from it.
+
+<A NAME="Seq_IO_Ops">
+<H3>I/O operations on SEQUENTIAL files</H3>
+
+<p>
+The OPEN and CLOSE verbs were described above (although not in full
+generality---see a COBOL reference for more details).
+
+<p>
+Here we consider the remaining verbs that may be applied to a SEQUENTIAL
+file: READ, WRITE, and REWRITE.  Which of these three operations are
+applicable to a file depends upon the mode into which the file was opened:
+<pre>
+          +--------------------------------------+
+          |               M o d e                |
+Operation |                                      |
+          |  INPUT     OUTPUT    EXTEND     I-O  |
+          +---------+---------+----------+-------+
+READ      |    x    |         |          |   x   |
+          +---------+---------+----------+-------+
+WRITE     |         |    x    |    x     |       |
+          +---------+---------+----------+-------+
+REWRITE   |         |         |          |   x   |
+          +---------+---------+----------+-------+
+
+<b>Allowed operations on a file declared to be accessed SEQUENTIAL-ly</b>
+</pre>
+
+<p>
+Syntactic format of the READ verb applied to a file declared to
+be accessed in SEQUENTIAL mode
+(and thereby necessarily opened in INPUT or I-O mode):
+<pre>
+      READ &lt;file-name&gt; [NEXT] [INTO data-name]
+         AT END &lt;imperative statement&gt;
+         [NOT AT END &lt;imperative statement&gt;]
+      END-READ
+</pre>
+
+<p>
+Example:
+<pre>
+     READ Employee-File
+        AT END SET Employee-Eof TO TRUE
+        NOT AT END PERFORM Process-Employee
+     END-READ
+</pre>
+
+The effect of this command is as follows:
+<ol>
+  <li> If the end-of-file condition is off, then:
+    <ol>
+      <li>If there is no "next" record (e.g., because the file is empty or
+          its last record was previously read in), the end-of-file condition
+          is turned on and the imperative statement following the AT END
+          clause is executed.
+      </li>
+      <li>If there is a "next" record, it is read into the file's data record
+          (and then copied into the data item specified in the INTO clause,
+          if it is present).  Also, if the NOT AT END clause is present,
+          the imperative statement there is executed.
+      </li>
+    </ol>
+  </li>
+  <li>If the end-of-file condition is on (e.g., because a previous attempt at
+      READing turned it on), the program aborts.
+  </li>
+</ol>
+
+<p>
+<b>Note:</b> As mentioned above, by the file's "data record" we mean the
+01-level data item declared in the data description entry immediately
+following the file's file description entry (the stuff coming
+after the keyword <b>FD</b>).  In the example above, the data record
+is <tt>Employee-Rec</tt>.
+
+<p>
+The presence or absence of the word <tt>NEXT</tt> within this form of the
+<tt>READ</tt> statement makes no difference.
+
+<p>
+Note that, in COBOL, the end-of-file condition does not become true until
+an attempt is made to READ beyond the last record in the file.  (When this
+attempt is made, the imperative statement following the AT END clause of the
+READ statement is executed.)  This is in contrast to Ada and Pascal, in which
+the end-of-file condition becomes true immediately after the last record has
+been read.  For this reason, a typical file processing loop in COBOL has a
+somewhat different form than an equivalent loop in Ada or Pascal.
+Consider this Ada-like pseudocode:
+<pre>
+                 WHILE not End_of_File(f) LOOP
+                    Get(f, rec);  --read next record of file f into rec
+                    &lt;code to process rec&gt;
+                 END LOOP;
+</pre>
+
+The "equivalent" code segment in COBOL would be written in either of these
+two forms (given in COBOL-like pseudocode):
+
+<pre>
+   SET eof TO FALSE               |      SET eof TO FALSE
+   READ f                         |      PERFORM UNTIL eof
+      AT END SET eof TO TRUE      |         READ f
+   END-READ                       |            AT END     SET eof TO TRUE
+   PERFORM UNTIL eof              |            NOT AT END &lt;code to process rec&gt;
+      &lt;code to process rec&gt;       |         END-READ
+      READ f                      |      END-PERFORM
+         AT END SET eof TO TRUE   |
+      END-READ                    |
+   END-PERFORM                    |
+</pre>
+
+<p>
+In order to make the program on the left a little more concise, we could
+place the READ statement into a separate paragraph ---call it
+<tt>Read-f-Rec</tt>--- and then replace each of the two occurrences of the
+READ statement by <tt>PERFORM Read-f-Rec</tt>.
+
+<p>
+Syntactic format of the WRITE verb applied to a SEQUENTIAL file (necessarily
+opened in OUTPUT or EXTEND mode):
+<p>
+<tt><center>WRITE &lt;data-record-name&gt; [FROM &lt;data-name&gt;]
+</center></tt>
+
+<p>
+Example:
+<tt>WRITE Employee-Rec FROM Temp-Empl-Rec</tt>
+<p>
+The effect is that the file's data record (after the specified data item
+has been copied into it, if the FROM clause is present) is written at the
+end of the file (i.e., after the last record in the file).
+Recall that opening a file in OUTPUT mode destroys
+the file's previous contents, whereas opening a file in EXTEND mode leaves
+its contents intact, allowing the program to write new records after the ones
+already there.
+
+<p>
+Note that the WRITE verb cannot be applied to a SEQUENTIAL file opened in
+I-O mode, as this mode allows REWRITE-ing but not WRITE-ing.
+
+<p>
+Syntactic format of REWRITE verb applied to a SEQUENTIAL file (necessarily
+opened in I-O mode):
+
+<p>
+<tt><center>REWRITE &lt;data-record-name&gt; [FROM &lt;data-name&gt;]
+</center></tt>
+
+<p>
+The effect is that the file's data record (or, if the FROM clause is present,
+the specified data item) is written to the file, replacing the record most
+recently read from the file.  An example program that uses the REWRITE verb
+appears within the course web pages.
+
+<p>
+Note that, for reasons that I have never seen explained anywhere, the READ
+verb refers to the file whereas the WRITE and REWRITE verbs refer to the
+file's data record.
+
+<A NAME="Indexed_IO_Ops">
+<H3>I/O operations on INDEXED files</H3>
+
+<p>
+As noted above, an INDEXED file may have any of three access modes
+---SEQUENTIAL, RANDOM, or DYNAMIC--- and may be opened in any of three modes
+---INPUT, OUTPUT, or I-O.  Which I/O operations are applicable to an INDEXED
+file depend upon both its access mode and its open mode:
+<pre>
+           +-------------------------------------+
+File       |         |     O p e n   M o d e     |
+Access     |         |                           |
+Mode       |   Verb  |  INPUT     OUTPUT    I-O  |
+           +---------+---------+---------+-------+
+SEQUENTIAL |    READ |    x    |         |   x   |   (sequential form only)
+           |   WRITE |         |    x    |       |   (sequential form only)   
+           | REWRITE |         |         |   x   |   (sequential form only)
+           |  DELETE |         |         |   x   |
+           |   START |    x    |         |   x   |   (surprising!)
+           +---------+---------+---------+-------+
+RANDOM     |    READ |    x    |         |   x   |   (random form only)
+           |   WRITE |         |    ?    |   x   |   (random form only) 
+           | REWRITE |         |         |   x   |   (random form only)
+           |  DELETE |         |         |   x   |
+           |   START |         |         |       |
+           +---------+---------+---------+-------+
+DYNAMIC    |    READ |    x    |         |   x   |   (either form)
+           |   WRITE |         |    x    |   x   |   (either form)
+           | REWRITE |         |         |   x   |   (either form)
+           |  DELETE |         |         |   x   |
+           |   START |    x    |         |   x   |
+           +---------+---------+---------+-------+
+</pre>
+
+<p>
+As suggested in the remarks to the right of the table above, each of the
+READ, WRITE, and REWRITE verbs has two forms, one for sequential access
+and one for random access.
+
+<A NAME="Random_Access_to_Indexed">
+<H3>Random Access form of READ, WRITE, and REWRITE for INDEXED files</H3>
+
+<p>
+This section pertains to an INDEXED file for which, in the program under
+consideration, the ACCESS MODE has been specified to be either RANDOM or
+DYNAMIC.
+
+<p>
+To read a record ---with a specified value in its key field--- from an
+INDEXED file opened in either INPUT or I-O mode: 
+<ol>
+  <li> Place desired value into the key field (in the file's data record)</li>
+  <li><pre>
+READ &lt;file-name&gt; [INTO data-name]
+   [INVALID KEY      &lt;imperative statement&gt;]
+   [NOT INVALID KEY  &lt;imperative statement&gt;]
+END-READ </pre>
+  </li>
+</ol>
+
+For example,
+<pre>     DISPLAY 'Enter course ID:' WITH NO ADVANCING
+     ACCEPT Course-ID
+     READ Course-File
+        INVALID KEY DISPLAY 'No such record'
+        NOT INVALID KEY PERFORM Display-Course-Rec
+     END-READ </pre>
+
+<p>
+The effect is that, if a record with the specified value in the key field
+exists in the file, that record is read into the file's data record (and is
+then copied into the data item specified in the INTO clause, if present), and,
+if present, the imperative statement in the NOT INVALID KEY clause is executed.
+Otherwise, if the INVALID KEY clause is present, the imperative statement there
+is executed.
+
+<p>
+To write a record into an INDEXED file opened in I-O (or OUTPUT??) mode: 
+<ol>
+  <li>Place desired contents into file's data record (or the data item
+      specified in the FROM clause).</li>
+  <li><pre>
+WRITE &lt;data-record&gt;  [FROM data-name]
+   [INVALID KEY      &lt;imperative statement&gt;]
+   [NOT INVALID KEY  &lt;imperative statement&gt;]
+END-WRITE </pre></li>
+</ol>
+
+<p>
+Example:
+<pre>
+     WRITE Employee-Rec FROM Temp-Empl-Rec
+        INVALID KEY DISPLAY 'Cannot WRITE; record with same key exists'
+        NOT INVALID KEY DISPLAY 'WRITE is successful'
+     END-WRITE
+</pre>
+<p>
+The effect is that, if the file contains no record whose key field matches
+that currently in the file's data record (or, in the case that the FROM
+clause is present, that currently in the specified data item), the data
+record is written, as a new record, into the file, and, if the NOT INVALID
+KEY clause is present, the imperative statement there is executed.  Otherwise
+(i.e., there exists a record in the file whose key field equals that of the
+data record), if the INVALID KEY clause is present, the imperative statement
+there is executed.
+
+<p>
+To replace a record in an INDEXED file opened in I-O mode: 
+<ol>
+  <li>READ the record to be replaced (into the file's data record).</li>
+  <li>Change the contents of the data record (but not the key field).</li>
+  <li><pre>
+REWRITE &lt;data-record-name&gt;  [FROM data-name]
+   [INVALID KEY      &lt;imperative statement&gt;]
+   [NOT INVALID KEY  &lt;imperative statement&gt;]
+END-REWRITE  </pre></li>
+</ol>
+
+<p>Example:
+<pre>
+     REWRITE Employee-Rec
+        INVALID KEY  DISPLAY 'Cannot REWRITE; no record with that key exists'
+        NOT INVALID KEY DISPLAY 'Record rewritten successfully'
+     END-REWRITE
+</pre>
+<p>
+The effect is that, if there exists a record in the file having the same value
+in its key field as the file's data record (or, in the case that the FROM
+clause is present, the data item specified there), that record is replaced by
+the contents of the data record (or the FROM data item) and the NOT INVALID KEY
+clause's imperative statement is executed.  Otherwise, the INVALID KEY
+clause's imperative statement is executed.
+
+<p>
+The difference between REWRITE and WRITE is that the former can only replace
+an existing record whereas the latter can only insert a new record.
+
+<p>
+To delete a record in an INDEXED file opened in I-O mode: 
+<ol>
+  <li>READ the record (into the file's data record)
+       (Question: Depending upon the implementation, it may suffice to place
+       the desired value into the key field of the file's data record, without
+       necessarily doing so by reading the corresponding record.  However,
+       it is a good idea to READ first anyway, just to verify that the record
+       to be deleted is really there.)
+   </li>
+   <li><pre>
+DELETE &lt;file-name&gt;
+   [INVALID KEY      &lt;imperative statement&gt;]
+   [NOT INVALID KEY  &lt;imperative statement&gt;]
+END-DELETE </pre>
+   </li>
+</ol>
+
+<p>Example:
+<pre>     DISPLAY 'Enter Course ID of course to be cancelled:'
+     ACCEPT Course-ID
+     DELETE Course-File
+        INVALID KEY CONTINUE
+        NOT INVALID KEY DISPLAY 'Record deleted successfully'
+     END-DELETE
+</pre>
+
+<p>
+The effect is that, if the file contains a record whose key field matches that
+of the file's data record, that record is deleted from the file and the
+imperative statement in the NOT INVALID KEY clause, if present, is executed.
+Otherwise, the imperative statement in the INVALID KEY clause, if present, is
+executed.
+
+<p>
+Note that, in order to apply either the REWRITE or DELETE verb to a record,
+the most recent I/O operation must have been a successful READ of that record.
+(Warning: This statement may be incorrect.)
+
+<A NAME="Seq_Access_to_Indexed">
+<H3>Sequential Access form of READ, WRITE, and REWRITE for INDEXED files</H3>
+
+<p>
+This section pertains to an INDEXED file for which, in the program under
+consideration, the ACCESS MODE has been specified to be either SEQUENTIAL or
+DYNAMIC.
+
+<p>
+To position the file pointer (i.e., to seek) to the first record satisfying a
+specified condition in an INDEXED file opened in I-O or INPUT mode:
+
+<pre>
+      START &lt;file-name&gt; KEY IS { =, &gt;, NOT &lt;, &gt;= } &lt;data-name&gt;
+         [INVALID KEY &lt;imperative statement&gt;]
+         [NOT INVALID KEY &lt;imperative statement&gt;]
+      END-START </pre>
+
+<p>
+<b>NOTE:</b> Some compilers may require that <tt>data-name</tt> 
+be declared as the RECORD KEY of the file (in the SELECT clause in the
+ENVIRONMENT DIVISION).  Some compilers require the INVALID KEY clause
+to be present.
+
+<p>
+Example:
+<pre>
+     MOVE 'Jones00001' TO Employee-ID
+     START Employee-File KEY IS NOT &lt; Employee-ID
+        INVALID KEY DISPLAY 'something wrong'
+        NOT INVALID KEY CONTINUE
+     END-START </pre>
+<p>
+The effect is to place the file pointer to the first record (i.e., the one
+having smallest key value) satisfying the condition specified, so that a
+sequential READ will cause that to be the record read in.  If no record
+satisfies the specified condition (e.g., the key value sought is larger
+than any in the file), the imperative statement in the INVALID KEY clause,
+if present, is executed.  Otherwise, the imperative statement in the
+NOT INVALID KEY clause, if present, is executed.
+
+
+<p>
+To read "the next" record (i.e., the one following the record most recently
+read, or the one "found" by an application of the START verb) in an INDEXED
+file opened in either INPUT or I-O mode: 
+
+<pre>
+       READ &lt;file-name&gt; NEXT RECORD [INTO data-name]
+          [AT END     &lt;imperative statement&gt;]
+          [NOT AT END &lt;imperative statement&gt;]
+       END-READ  </pre>
+
+<p>
+Example:
+<pre> 
+     MOVE 'Jones00001' TO Employee-ID
+     START Employee-File KEY IS NOT &lt; Employee-ID
+        INVALID KEY DISPLAY '*** Error ***'
+        NOT INVALID KEY
+           PERFORM UNTIL Finished OR (Employee-ID > 'Smith99999')
+              READ Employee-File NEXT RECORD
+                 AT END SET Finished TO TRUE
+                 NOT AT END PERFORM Process-Empl-Rec
+              END-READ
+           END-PERFORM
+     END-START </pre>
+
+
+<p>
+To replace the record most recently read from an INDEXED file opened in I-O
+mode:
+
+<pre>
+      REWRITE &lt;data-record-name&gt; [FROM data-name]        
+</pre>
+
+<p>
+To write a new record (necessarily having a larger key than any already in
+the file??) into an INDEXED file opened in I-O (or OUTPUT?) mode:
+
+<pre>
+      WRITE &lt;data-record-name&gt; [FROM data-name]         ????
+</pre>
+<A NAME="Random_Obser">
+<H3>Random observations based on program testing</H3>
+<p>
+A syntax error occurs if you attempt to open an INDEXED file in EXTEND mode.
+
+<p>
+When a file whose SELECT clause specifies DYNAMIC ACCESS mode is
+opened in OUTPUT or I-O mode:
+<ul>
+  <li>SEQUENTIAL WRITE seems to place the record in the "right" place
+      (according to its key value), rather than at the end of file.</li>
+  <li>Sequential REWRITE replaces the record at the current file pointer
+       position (i.e., the position of the last record read in by either
+       sequential or random READ, or the one found via START)</li>
+  <li>If sequential REWRITE immediately follows START, then a sequential READ
+      will read in the rewritten record!  However, if REWRITE follows a READ
+      (seq or ran), the next record read by a SEQ READ is the following one.
+  </li>
+  <li>REWRITE (both kinds) need not be preceded by a READ of the record to be
+      rewritten.  There seems to be no difference between the two kinds of
+      REWRITEs!  Oddly, trying to REWRITE with a non-present key field causes
+      ia run-time error, rather than the INVALID KEY clause being fired.
+  </li>
+  <li>When in SEQUENTIAL ACCESS mode, for some reason the program must include
+      a random WRITE and/or REWRITE, if there is a sequential one.  However,
+      I could not get WRITE (sequential or random) to work at all.
+      Each time, a run-time error occurred.  However, both random and
+      sequential REWRITE works! 
+      (However, the key of new record must match that of record just read in.
+      Having seeked to a record via START is not enough.)
+  </li>
+</ul>
+
+<A NAME="Ran_Acc_for_Rel">
+<H3>Random Access form of READ, WRITE, and REWRITE for RELATIVE files</H3>
+
+<p>
+Omitted for the moment.  See Chapter 21 of <em>Comprehensive COBOL</em>.
+
+</body>
+</html>

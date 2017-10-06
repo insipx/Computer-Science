@@ -1,0 +1,217 @@
+<html>
+<head>
+</head>
+<body>
+<h2>
+SE 504 (Formal Methods and Models) <br />
+Reasoning about programs with assignments to array elements
+</h2>
+
+</p><p>
+Let b be an array whose elements are of type T, let i satisfy
+0&le;i&lt;#b, and let E be an expression of type T.  Then the expression 
+<p><center> b(i:E)</center>
+
+</p><p>
+denotes the array that is "the same as b except at location i, where its
+value is E".  (An alternative notation, used by David Gries in his 1981
+book "Science of Programming", is "(b; i:E)".)
+
+<H3>Array Element Evaluation Law:</H3>
+We have, in all states
+</p><p>
+<center>
+<table border="0" cellpadding="0">
+<tr><td rowspan="2">b(i:E).j &nbsp;=&nbsp;</td><td>{ E&nbsp;</td><td>if i=j</td></tr>
+<tr><td>{ b.j&nbsp;</td><td>otherwise</td></tr>
+</table>
+</center>
+
+</p><p>
+It is usually more convenient, at least in the context of performing
+calculations, to express this law using an <b>if</b> function, as follows:
+
+</p><p><center><tt>b(i:E).j  =  if(i=j, E, b.j)</tt></center>
+
+</p><p>
+In order to reason about programs in which assignments are made to elements
+of an array, it is helpful to regard the assignment <tt>b.i := E</tt>
+as being <!-- , in real life,--> 
+an abbreviation for the more accurate <tt>b := b(i:E)</tt>.
+
+</p><p>
+By doing so, our old friend, the wp assignment law, can be applied to
+array assignment, as follows:
+
+</p><p><center><tt>wp.(b := b(i:E)).Q  =  Q(b := b(i:E)) </tt></center>
+which is in accord with said law.
+     
+<H3>wp Array Element Assignment Law</H3>
+If you would prefer to think of an assignment to an array element in
+the more usual way, we must introduce this law: 
+</p><p><center><tt>wp.(b.i := E).Q  =  Q(b := b(i:E))</tt></center>
+
+<H3>Calculation Examples</H3>
+</p><p>
+Here are some examples of calculating weakest preconditions of the form 
+wp.(b.i := E).Q.  Due to the proliferation of parentheses in the expressions,
+textual substitution will be denoted using square brackets rather than
+parentheses, as in [x := x+1].
+
+</p><p>
+<b>Example 1:</b>
+<pre>
+    wp.(b.(b.k):=k).(b.k = k)
+
+ =     < wp array element assignment law >
+
+    (b.k = k)[b:=b(b.k : k)]
+
+ =     < textual sub >
+
+    b(b.k : k).k = k
+
+ =     < array element evaluation rule  >
+
+    if(b.k = k,k,b.k) = k
+
+ =     < (if.2), with a:=z, E:=b.k, F:=k, b:=b.k >
+
+    if(b.k = k,b.k,b.k) = k
+
+ =     < (if.1) >
+
+    b.k = k
+</pre>
+
+</p><p>
+An alternative way to finish the above (beginning with the third-to-last
+formula) is as follows:
+
+<pre>
+    if(b.k = k,k,b.k) = k
+
+ =     < if.3a >
+
+    if(b.k = k, k = k, b.k = k)
+
+ =     < if.4a >
+
+    (b.k = k  ==&gt;  k = k)  &and;  (&not;(b.k = k)  ==&gt;  b.k = k)
+
+ =     < = is reflexive; Theorem: (&not;p ==&gt; p) &equiv; p (easy to prove) >
+
+    (b.k = k  ==&gt;  true)  &and;  b.k = k
+
+ =     < (3.72) >
+
+    true &and; b.k = k
+
+ =     < (3.39) >
+
+    b.k = k
+</pre>
+
+</p><p>
+<b>Example 2:</b>
+<pre>
+    wp.(b.(b.k):=k).(b.k &ne; k)
+
+ =     < wp array assignment rule >
+
+    (b.k &ne; k)[b:=b(b.k : k)]
+
+ =     < textual sub >
+
+    b(b.k : k).k &ne; k
+
+ =     < array element evaluation rule  >
+
+    if(b.k = k,k,b.k) &ne; k
+
+ =     < (if.3a), with p:="b.k=k", a:=k, b:=b.k, c:=k, and &oplus;:= "&ne;" >
+
+    if(b.k = k, k&ne;k, b.k&ne;k)
+
+ =     < (if.4b), with p:="b.k=k", a:="k&ne;k", b:="b.k&ne;k" >
+
+    (b.k = k  &and;  k &ne; k)  &or;  (&not;(b.k = k)  &and;  b.k &ne; k)
+
+ =     < (3.10): &not;(x=y) &equiv; x&ne;y >
+
+    (b.k = k  &and;  k &ne; k)  &or;  (b.k &ne; k  &and;  b.k &ne; k)
+
+ =     < (3.14) and (3.15); idempotence of &and; (3.38) >
+
+    (b.k = k  &and;  false)  &or;  b.k &ne; k
+  
+ =     < (3.40) zero of &and; >
+
+    false  &or;  b.k &ne; k
+
+ =     < identity of &or; (3.30) >
+
+    b.k &ne; k
+</pre>
+
+</p><p>
+<b>Example 3:</b>
+<pre>
+    wp.(b.k := i).(b.j = b.(b.k))
+
+ =     < wp array element assignment rule >
+
+    (b.j = b.(b.k))[b := b(k:i)]
+
+ =     < textual sub >
+
+    b(k:i).j = b(k:i).(b(k:i).k)
+
+ =     < array element evaluation rule, twice >
+
+    if(k=j,i,b.j) = b(k:i).(if(k=k,i,b.k))
+
+ =     < reflexivity of =, (if.0a) >
+
+    if(k=j,i,b.j) = b(k:i).i
+
+ =     < array element evaluation rule >
+
+    if(k=j,i,b.j) = if(k=i,i,b.i)
+
+ =     < (if.3a, with p:="k=j", a:=i, b:=b.j, c:=if(k=i,i.b.i), op:="=" >
+
+    if(k=j, i=if(k=i,i,b.i), b.j=if(k=i,i,b.i))
+
+ =     < (if.4b), with p:="k=j", a:="i=if(k=i,i.b.i)", b:="b.j=if(k=i,i,b.i)" >
+
+    (k=j  &and;  i = if(k=i,i,b.i))  &or;  (&not;(k=j)  &and;  b.j = if(k=i,i,b.i))
+
+ =     < (if.3b), twice >
+
+    (k=j  &and;  if(k=i,i=i,i=b.i))  &or;  (&not;(k=j)  &and;  if(k=i,b.j=i,b.j=b.i))
+
+ =     < (if.4b), twice >
+
+    (k=j &and;  ((k=i &and; i=i) &or; (&not;(k=i) &and; i=b.i)))  &or; (&not;(k=j) &and; ((k=i &and; b.j=i) &or; (&not;(k=i) &and; b.j=b.i)))
+
+ =     < (3.10) &not;(x=y) &equiv; x&ne;y; reflexivity of =, (3.39) (identity of &) >
+
+    (k=j &and;  (k=i &or; (k&ne;i &and; i=b.i)))  &or; (k&ne;j  &and;  ((k=i &and; b.j=i) &or; (k&ne;i &and; b.j=b.i)))
+
+ =     < distributivity of &or; over &and; >
+
+    (k=j &and;  (k=i &or; k&ne;i) &and; (k=i &or; i=b.i))  &or; (k&ne;j  &and;  ((k=i &and; b.j=i) &or; (k&ne;i &and; b.j=b.i)))
+
+ =     < (k=i &or; k&ne;i)&equiv;true, (3.39) (identity of &) >
+
+    (k=j  &and; (k=i &or; i=b.i))  &or; (k&ne;j &and; ((k=i &and; b.j=i) &or; (k&ne;i &and; b.j=b.i)))
+</pre>
+
+</p><p>
+There may be a way to transform this into something simpler, but, if so,
+it would appear that any such transformation would rely entirely upon
+material from SE 500, as opposed to anything introduced here.
+
+</body>
+</html>

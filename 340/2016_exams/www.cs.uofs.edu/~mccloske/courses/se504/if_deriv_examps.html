@@ -1,0 +1,377 @@
+<html>
+<head>
+</head>
+<body>
+<h2>SE 504 &nbsp; Two Examples of Deriving Selection Commands</h2>
+
+<h3>Computing the Maximum</h3>
+<p>
+Consider this Hoare Triple, where <tt>E</tt> is an unknown expression:
+</p><p><center><tt>{true} z := E {z = x max y}</tt></center>
+
+</p><p>
+We shall assume that our programming language has no <b>max</b> operator,
+or else we would choose E to be <tt><b>x max y</b></tt>, 
+making the solution trivial.
+
+</p><p>
+As there seems to be no other avenue to pursue, let's make use of the
+definition of <b>max</b> in order to rewrite the postcondition.
+
+</p><p>
+<b>Definition</b>: <tt>(c = a max b)  &equiv;
+                      ((c=a &or; c=b) &and; c&ge;a &and; c&ge;b)</tt>
+
+</p><p>
+Restating the postcondition after applying this definition, our Hoare Triple
+becomes
+</p><p><center><tt>
+{true} z := E {(z=x &or; z=y) &and; z&ge;x &and; z&ge;y}
+</tt></center>
+
+<!--
+  </p><p>
+  By distributivity of conjunction over disjunction, we can write the
+  postcondition as  (z=x & z>=x & z>=y) v (z=y & z>=x & z>=y).
+-->
+
+</p><p>
+The postcondition, call it <tt>Q</tt>, suggests (due to its including
+as subexpressions <tt><b>z=x</b></tt> and <tt><b>z=y</b></tt>) 
+two possible solutions, namely <tt><b>E:x</b></tt> and 
+<tt><b>E:y</b></tt>.
+Recognizing that neither solution works in all circumstances, we
+attempt to calculate, for each one, a predicate characterizing those
+circumstances in which it <em>does</em> work.
+That is, we seek predicates <tt>P1</tt> and <tt>P2</tt>
+truthifying the Hoare Triples 
+</p><p><center>
+<tt>{P1} z:=x {Q}</tt> &nbsp;&nbsp;and&nbsp;&nbsp; <tt>{P2} z:=y {Q}</tt>. 
+</center>
+
+</p><p>
+Calculation (using the wp assignment law) reveals that the
+weakest solution for <tt>P1</tt> is <tt>x&ge;y</tt> and the
+weakest solution for <tt>P2</tt> is <tt>y&ge;x</tt>.
+(See Appendix 1 for details.)
+That is, we have established
+</p><p><center>
+<tt>{x &ge; y} z := x {Q}</tt>  &nbsp;&nbsp;and&nbsp;&nbsp; 
+<tt>{y &ge; x} z := y {Q}</tt>
+</center>
+
+</p><p>
+Embedding them in a selection command (with guards to be determined),
+we obtain
+<pre>
+      {true}
+      if B0  --->  {x&ge;y} z:=x {Q}
+      [] B1  --->  {y&ge;x} z:=y {Q}
+      fi
+      {Q}
+</pre>
+</p><p>
+Recall that, in proving the correctness of a selection command, for each
+of its guarded commands <b><tt>Bi ---> Si</tt></b> we must prove 
+</p><p><center>
+  <b><tt>{P &and; Bi} Si {Q}</tt></b>
+</center>
+</p><p>
+where <b><tt>P</tt></b> and <b><tt>Q</tt></b> are the pre- and postconditions,
+respectively, of the selection command.
+
+</p><p>
+In our example, <b><tt>P &and; B0</tt></b> is <b><tt>x&ge;y</tt></b> and
+<b><tt>P</tt></b> is <b><tt>true</tt></b>, which leads us to choose
+<b><tt>B0</tt></b> to be <b><tt>x&ge;y</tt></b>.
+By similar reasoning, we choose 
+<b><tt>B1</tt></b> to be <b><tt>y&ge;x</tt></b>, and we obtain
+<pre>
+      {true}
+      if x&ge;y  --->  {x&ge;y} z:=x {Q}
+      [] y&ge;x  --->  {y&ge;x} z:=y {Q}
+      fi
+      {Q}
+</pre>
+
+</p><p>
+All that remains (in order to prove the correctness of this selection command)
+is to verify that, in every state, at least one of the two guards is true.
+But this is obvious!  (For a rigorous proof, see Appendix 2.)
+</p>
+
+<hr>
+<h3>Squaring x while Preserving the value of x<sup>y</sup><tt>&sdot;</tt>z</h3>
+
+<p>
+Consider the Hoare Triple
+</p><p><center><tt>
+          {P &and; y&gt;0} x,y,z := x<sup>2</sup>, E, F {P}
+</tt></center>
+</p><p>
+<!-- where <tt>x<sup>2</sup></tt> is an abbreviation for <tt>x*x</tt> and -->
+where <tt>P: C = x<sup>y</sup>&sdot;z</tt>, <tt>E</tt> and <tt>F</tt> are
+unknown expressions, and all variables are of type <tt>int</tt>.
+
+</p><p>
+Let us try to calculate E and F.
+Following the usual approach, we attempt to carry out a
+proof of <tt> P &and; y&gt;0 &rArr; wp.(x,y,z := x<sup>2</sup>,E,F).P </tt>,
+along the way choosing appropriate expressions for E and F.
+<pre>
+   Assume P &and; y&gt;0 (where P : C = x<sup>y</sup> &sdot; z)
+
+   wp.(x,y,z := x<sup>2</sup>,E,F).P
+
+ =    < wp assignment law, defn of P, text. sub. >
+
+   C = (x<sup>2</sup>)<sup>E</sup>&sdot;F
+
+ =    < algebra: (a<sup>b</sup>)<sup>c</sup> = a<sup>bc</sup> >
+
+   C = x<sup>2E</sup>&sdot;F
+
+ =    < assumption C = x<sup>y</sup>&sdot;z >
+
+   x<sup>y</sup>&sdot;z = x<sup>2E</sup>&sdot;F
+</pre>
+
+</p><p>
+At this point, we recognize that if we choose expressions for E and F that
+satisfy y = 2E and F = z, we have a solution.  In the case that y/2 is an
+integer (i.e., isEven.y), this is possible, as then we can choose E to be
+<b><tt>y div 2</tt></b> and F to be <b><tt>z</tt></b>.
+(Note that the expression that we choose for E must be of type <tt>int</tt>,
+which means that we need to use <b><tt>div</tt></b> rather than
+<b><tt>/</tt></b>, as the latter yields a result of type <tt>real</tt>.)
+</p><p>
+That is, had we assumed, in addition to <tt>P &and; y>0</tt>, that
+<tt>isEven.y</tt>, we could have continued the proof as follows:
+<pre>
+   x<sup>y</sup>&sdot;z = x<sup>2E</sup>&sdot;F
+
+ =    < choose E : y div 2  and  F : z >
+
+   x<sup>y</sup>&sdot;z = x<sup>2(y div 2)</sup>&sdot;z
+
+ =    < y div 2 = y/2 is equivalent to the assumption isEven.y >
+
+   x<sup>y</sup>&sdot;z = x<sup>2(y/2)</sup>&sdot;z
+
+ =    < theorem: 2(a/2) = a >
+
+   x<sup>y</sup>&sdot;z = x<sup>y</sup>&sdot;z
+
+ =    < reflexivity of = >
+
+   true
+</pre>
+</p><p>
+One of our steps made use of the theorem 
+<tt>isEven.a &nbsp;&equiv;&nbsp; a div 2 = a/2</tt>,
+which relates integer division by 2 with real division by 2
+in the case of the dividend being even.
+
+</p><p>
+What we have just shown is
+</p><p><center><tt>
+P &and; y>0 &and; isEven.y &nbsp;&rArr;&nbsp; 
+wp.(x,y,z := x<sup>2</sup>,y div 2,z).P
+</tt></center>
+</p><p>
+which, of course, is equivalent to the Hoare Triple
+<tt>{P &and; y>0 &and; isEven.y} x,y,z := x<sup>2</sup>,y div 2,z {P}</tt>
+
+</p><p>
+Now consider the case &not;isEven.y. 
+The relevant theorem relating integer division by 2 and
+real division by 2 when the dividend is positive but not even is this:
+</p><p><center><tt>
+a&gt;0 &and; &not;isEven.a
+&nbsp;&nbsp;&equiv;&nbsp;&nbsp; a div 2 = (a-1)/2
+</tt></center>
+</p><p>
+Let's explore the possibility that, in this case too, there
+exists a solution in which E is <tt>y div 2</tt>.
+Continuing from where we had left off (and taking <tt>&not;isEven.y</tt>
+as an "extra" assumption), we get
+<pre>
+     x<sup>y</sup>&sdot;z = x<sup>2E</sup>&sdot;F
+
+ =     < choose E to be y div 2 >
+
+     x<sup>y</sup>&sdot;z = x<sup>2(y div 2)</sup>&sdot;F
+
+ =     < y div 2 = (y-1)/2  is equivalent to assumption &not;isEven.y &and; y>0 >
+
+     x<sup>y</sup>&sdot;z = x<sup>2((y-1)/2)</sup>&sdot;F
+
+ =     < algebra: 2(a/2) = a >
+
+     x<sup>y</sup>&sdot;z = x<sup>y-1</sup>&sdot;F
+
+ =     < algebra: If k>0, a<sup>k</sup> = a<sup>k-1</sup>&sdot;a >
+
+     (x<sup>y-1</sup>&sdot;x)&sdot;z = x<sup>y-1</sup>&sdot;F
+
+ =     < associativity of &sdot; >
+
+     x<sup>y-1</sup>&sdot;(x&sdot;z) = x<sup>y-1</sup>&sdot;F
+
+ =     < choose F : x&sdot;z >
+
+     x<sup>y-1</sup>&sdot;(x&sdot;z) = x<sup>y-1</sup>&sdot;(x&sdot;z)
+
+ =     < reflexivity of = >
+
+     true
+</pre>
+</p><p>
+What we have just proved is the Hoare Triple
+</p><p><center><tt>
+  {P &and; y>0 &and; &not;isEven.y} x,y,z := x<sup>2</sup>,y div 2,x&sdot;z {P}
+</tt></center>
+
+</p><p>
+Summarizing, what we've found is that, if y is even, choosing <tt>y div 2</tt>
+for E and <tt>z</tt> for F yields a solution, while if y is not even,
+choosing <tt>y div 2</tt> for E and <tt>x&sdot;z</tt> for F yields a solution.
+This leads us to replace the assignment command in our original Hoare Triple
+with a selection command, as follows:
+
+<pre>
+  {P &and; y>0}
+  if isEven.y  ---> {P &and; y>0 &and; isEven.y} x,y,z := x<sup>2</sup>, y div 2, z {P}
+  [] &not;isEven.y ---> {P &and; y>0 & &not;isEven.y} x,y,z := x<sup>2</sup>, y div 2, x&sdot;z {P}
+  fi
+  {P}
+</pre>
+<!--
+</p><p>
+Each guard was chosen so that conjuncting it with the precondition (of the
+selection command) yielded the precondition of the corresponding guarded
+command (within the selection command).
+-->
+
+</p><p>
+Our obligation of showing that the precondition implies the disjunction
+of the guards is trivial, since the two guards are negations of each
+other.
+
+</p><p>
+The above is a perfectly good solution.  However, a finicky programmer,
+observing that the assignments to <tt>x</tt> and <tt>y</tt> in the
+two branches are identical, may feel the urge to "factor out" that
+common part, putting it in a separate assignment command and leaving
+only the assignments to <tt>z</tt> within the selection command.
+Given that the values assigned to <tt>x</tt> and <tt>y</tt> don't depend 
+upon <tt>z</tt>, but that the guards of the selection command depend upon
+<tt>y</tt> and the assignment in one branch of the selection depends upon
+<tt>x</tt>, the only sensible ordering of commands is to put the selection
+command first, followed by the (simultaneous) assignment to <tt>x</tt> and
+<tt>y</tt>.  We get this program:
+<pre>
+  {P &and; y>0}
+  if isEven.y  ---> {P &and; y>0 &and; isEven.y} z := z {R}
+  [] &not;isEven.y ---> {P &and; y>0 &and; &not;isEven.y} z := x&sdot;z {R}
+  fi
+  {R}
+  ;x,y := x<sup>2</sup>, y div 2;
+  {P}
+</pre>
+
+</p><p>
+Of course, <tt>P</tt> is no longer a proper postcondition for the
+selection command, as its execution cannot possibly change the values
+of either <tt>x</tt> or <tt>y</tt>, but may change the value of <tt>z</tt>,
+which would result in a state in which <tt>P</tt> is false.
+So then what is the appropriate choice for <tt>R</tt>?
+
+</p><p>
+But of course, <tt>R</tt> should be 
+<tt>wp.(x,y := x<sup>2</sup>, y div 2).P</tt>, which is
+<tt>P(x,y := x<sup>2</sup>, y div 2)</tt>, or, if you prefer
+(after a little algebra on the exponents)
+</p><p><center><tt>C = x<sup>2(y div 2)</sup>&sdot;z</tt></center>
+
+</p><p>
+Recognizing that the assignment <tt>z := z</tt> is silly, we replace it
+with the equivalent <tt>skip</tt>.  We get the annotated program
+
+<pre>
+  {P &and; y>0}
+  if isEven.y  ---> {P &and; y>0 &and; isEven.y} skip {P(x,y:=x<sup>2</sup>, y div 2)}
+  [] &not;isEven.y ---> {P &and; y>0 &and; &not;isEven.y} z := x&sdot;z {P(x,y:=x<sup>2</sup>, y div 2)}
+  fi
+  {P(x,y:=x<sup>2</sup>, y div 2)}
+  ;x,y := x<sup>2</sup>, y div 2;
+  {P}
+</pre>
+
+</p><p>
+To verify that our (intuition-based) transformation of the program is
+correct, we need only prove each of the two Hoare Triples nested inside
+the selection command, which is easy and is left to the reader.
+
+<hr>
+<h3>Appendix 1</h3>
+<p>
+Here we calculate <b><tt>wp.(z:=x).Q</tt></b> &mdash;which, of course, is
+the weakest solution to <b><tt>Y : {Y} z := x {Q}</tt></b>&mdash;
+where <b><tt>Q : (z=x &or; z=y) &and; z&ge;x &and; z&ge;y</tt></b>.
+The calculation of <b><tt>wp.(z:=y).Q</tt></b> is analogous.
+<pre>
+   wp.(z:=x).Q
+
+=    < defn of Q >
+
+   wp.(z:=x).((z=x &or; z=y) &and; z&ge;x &and; z&ge;y)
+
+=    < wp assignment law >
+
+   ((z=x &or; z=y) &and; z&ge;x &and; z&ge;y)(z:=x)
+
+=    < textual substitution >
+
+   (x=x &or; x=y) &and; x&ge;x &and; x&ge;y
+
+=    < both = and &ge; are reflexive >
+
+   (true &or; x=y) &and; true &and; x&ge;y
+
+=    < true is the "zero" of &or; > and the identity of &and; (twice) >
+
+   true &and; true &and; x&ge;y
+
+=    < (3.39), true is identity of &and; >
+
+   x&ge;y
+</pre>
+
+<hr>
+<h3>Appendix 2</h3>
+<p>
+We accept as a theorem of number theory the following:
+</p><p>
+<b>Theorem:</b> For all real numbers <em>x</em> and <em>y</em>,
+<em>x&gt;y</em> &nbsp;&or;&nbsp; <em>y&gt;x</em> &nbsp;&or;&nbsp; <em>x=y</em>
+
+</p><p>
+Now we prove that <tt>x&ge;y &or; y&ge;x</tt>:
+<pre>
+   x&ge;y &or; y&ge;x
+
+=    < defn of &ge; >
+
+   (x&gt;y &or; x=y) &or; (y&gt;x &or; y=x)
+
+=    < symmetry of =; associativity, symmetry, and idempotence of &or; >
+
+   x&gt;y &or; y&gt;x &or; x=y    ------Theorem above
+</pre>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,873 @@
+<html>
+<head>
+  <title>Stacks</title>
+</head>
+<body>
+<H2>
+<!-- CMPS 144<br> -->
+The Stack ADT/Collection Class
+</H2>
+
+
+<a href="#concept">The Concept</a><br />
+<a href="#applications">Applications</a><br />
+<a href="#implementation_ary">Array-based 
+   Implementation/Data Representation</a><br />
+<a href="#implementation_ref">Referenced-based 
+   Implementation/Data Representation</a><br />
+
+
+<a name="concept">
+<h3>The Concept</h3>
+<p>
+You're waiting in line to eat at the cafeteria.  As you draw nearer to the
+service counter, you pass by a stack of trays.  Following the lead of those
+ahead of you in line, you grab the tray on top.
+
+</p><p>
+After obtaining your meal, you happen to sit at a table not far from the
+waiting line.  You notice that a cafeteria employee
+&mdash;who has emerged from the kitchen walking alongside a
+battery-powered cart of freshly-washed trays&mdash;
+is about to replenish the stack of trays, which by now has become
+quite low.  The employee, who is old and frail, can lift only one tray at
+a time.  She places the freshly-washed trays onto the top of the stack,
+one by one.
+
+</p><p>
+From these experiences, you make the following observations:
+When a tray is removed from a stack, it is the one that was on top.  
+When a tray is placed onto a stack, it is placed on top.  
+After considering the implications of this, you arrive at the following
+conclusion:  Among all the trays on a stack at a given moment, the one 
+among them that will be <em>removed first</em> is the one that was 
+<em>placed onto the stack last</em>.
+(This is not quite as trivial as it may sound, because any number of
+insertions/removals may occur in the meantime.) 
+That is, a stack of trays obeys a <b>LIFO</b> ("last in, first out") 
+insertion/deletion pattern.
+
+</p><p>
+The concept of a stack in computer science is analogous to a stack of trays
+in a cafeteria.  A stack is simply a collection of items such that arrivals
+and departures conform to a LIFO pattern.  Another way to look at it is this:
+A stack is a sequence of items such that all insertions and deletions occur
+at the same end.  Keeping the cafeteria trays in mind, we call this end the
+"top" of the stack.
+
+</p><p>
+Commonly, it is also taken as part of the definition that, among the items
+currently on a stack, the only one that can be observed is the one at the
+top.  (Imagine that each cafeteria tray has a serial number etched into it,
+such that it is visible only if no other tray is sitting on top of it.)
+We shall not follow this approach, however.  Rather, we will assume that
+any item on the stack can be observed, and that each of them is referred
+to by its position on the stack (with the item at the top having position
+zero, the one below that having position one, etc.).
+
+</p><p>
+For historical reasons, the add/insert operation on stacks is usually called
+<b>push</b> and the remove/delete operation is usually called <b>pop</b>.
+Modeling this stack concept as a generic Java interface (where the generic
+type parameter indicates the data type of the items to be inserted into 
+the stack), we get the following:
+
+</p><p>
+<center>
+<table border="1" cellpadding="10">
+<tr><td><pre><code>
+/** An instance of a class implementing this interface represents a stack
+**  capable of holding items of the specified type T (the generic type
+**  parameter).
+**
+**  Author: R. McCloskey
+**  Date: March 2012
+*/
+public interface Stack&lt;T&gt; {
+
+
+   /*  <<<<<  o b s e r v e r s  >>>>>  */
+
+   /** Returns the number of items on the stack.
+   **  pre: none
+   */
+   public int sizeOf(); 
+
+   /** Returns true if the stack is empty, false otherwise.
+   **  pre: none
+   */
+   public boolean isEmpty(); 
+
+
+   /** Returns (a reference to the) item at the top of the stack.
+   **  pre: !this.isEmpty()
+   */
+   public T topOf();
+
+
+   /** Returns (a reference to) the k-th item on the stack
+   **  (counting starting at zero from the top).
+   **  pre: 0 <= k < sizeOf()
+   */
+   public T item(int k);
+
+
+   /*  <<<<<  m u t a t o r s  >>>>>  */
+
+
+   /** Places the specified item onto the top of the stack.
+   **  pre:  let s == this
+   **  post: this.topOf() == item  &&  s == this.pop()
+   */
+   public void push(T item);
+
+
+   /** Removes the item at the top of the stack.
+   **  pre: !this.isEmpty()  &&  let this == s
+   **  post: this.push(s.topOf()) == s
+   */
+   public void pop();
+
+}
+</code></pre>
+</td></tr>
+</table>
+</center>
+
+
+<a name="applications">
+<h3>Applications of Stacks:</h3>
+<p>
+You may find it surprising to learn that, despite the simplicity of the
+concept, stacks are quite useful in practice.
+
+<H4>Managing Program Execution</H4>
+<p>
+A stack is used for managing the flow of execution every time
+you run a program.  You are aware of the fact that, when a method is
+called, the caller's execution is suspended while the method executes.
+When the called method terminates, execution resumes within the caller at
+the command immediately following the one making the call.
+(The address of this command is called the <em>return address</em>.)
+This sounds fairly simple, but what happens when a method, having been called,
+calls another one (or even itself), which calls another one, which calls
+yet another, etc., etc.?  Some systematic method for keeping track of
+return addresses is needed in order to ensure that, as each method terminates,
+execution resumes at the appropriate place.
+It turns out that the information necessary for keeping track of all this
+can be stored (and accessed) in a quite orderly manner:  by using a stack that
+holds the return addresses.
+
+<p>
+As an example, suppose that we have a program
+<pre>
+Method A:         Method B:           Method C:          Method D:
+--------          --------            --------           --------
+    ...               Call C;            ...                ...
+    ...            B1:...                ...                ...
+    Call B;           ...                 Call D;           End;
+ A1:...               Call C;          C1:...
+    ...            B2:End;                End;
+    Call C;
+ A2:...
+    End;
+</pre>
+
+The labels <tt>A1</tt>, <tt>A2</tt>, <tt>B1</tt>, and <tt>C1</tt>
+indicate the addresses of the commands at which execution should resume
+after the method called on the preceding line finishes.  Each time a
+call occurs, the corresponding return address is pushed onto the run-time
+stack.  Each time a method terminates execution, the return address at the
+top of the run-time stack is popped and execution resumes at the location
+that it indicates.  During execution of the example program above, the
+run-time stack will take on the following configurations (with elements
+written from bottom to top):
+
+<pre>
+   contents        last change
+-------------------------------------------------
+ 1. A1              A calls B; return address is pushed
+ 2. A1 B1           B calls C; return address is pushed
+ 3. A1 B1 C1        C calls D; return address is pushed
+ 4. A1 B1           D terminates; C1 is popped; execution resumes there
+ 5. A1              C terminates; B1 is popped; execution resumes there
+ 6. A1 B2           B calls C (again); return address is pushed
+ 7. A1 B2 C1        C calls D; return address is pushed
+ 8. A1 B2           D terminates; C1 is popped; execution resumes there
+ 9. A1              C terminates; B2 is popped; execution resumes there
+10. [empty]         B terminates; A1 is popped; execution resumes there
+11. A2              A calls C; return address is pushed
+12. A2 C1           C calls D; return address is pushed
+13. A2              D terminates; C1 is popped; execution resumes there
+14. [empty]         C terminates; A2 is popped; execution resumes there
+</pre>
+
+
+
+<H4>Evaluating Arithmetic Expressions</H4>
+<p>
+Another application of stacks is in the evaluation of arithmetic expressions.
+In order to keep things simple, here we will focus upon so-called 
+<em>fully-parenthesized infix arithmetic expressions</em>, 
+abbreviated "FPAIE".
+In such an expression, only infix operators that apply to numbers
+can appear (which excludes unary <tt>+</tt> and <tt>-</tt>).
+By "fully-parenthesized", we mean that the expression contains a mated pair
+of parentheses for every occurrence of an operator symbol.  That is, the
+left operand of each operator is immediately preceded by
+&nbsp;<tt>(</tt>&nbsp; and the right operand is immediately followed by 
+&nbsp;<tt>)</tt>&nbsp;. 
+An example of such an expression, annotated to show the connections 
+between parentheses and operators, is
+
+</p><p>
+<center>
+<table border="0">
+<tr><td>
+<pre>
+             (((15 - 1) + 2) + (3 * ((6 + 0) / (1 + 2))))
+             |||___|__| |  | | |  | ||__|__| | |__|__||||
+             ||_________|__| | |  | |________|________|||
+             |               | |__|____________________||
+             |_______________|__________________________|</pre>
+</td></tr>
+</table>
+</center>
+
+<p>
+We can define FPAIE's (recursively) as follows: 
+
+<p>
+An FPAIE is either
+<ol>
+   <li>a numeric literal, or </li>
+   <li>an expression of the form &nbsp;<tt>( F op G )</tt>&nbsp;</li>
+</ol>
+where <tt>F</tt> and <tt>G</tt> are themselves FPAIE's and <tt>op</tt> is 
+an infix arithmetic operator (e.g., <tt>+</tt>, <tt>-</tt>, etc.).
+We refer to FPAIE's of the first form as <em>atomic</em> and
+those of the second form as <em>compound</em>.
+
+<p>
+Using a context-free grammar, we can state the definition like this:
+<pre>
+   &lt;FPAIE&gt;     --->  &lt;numeric literal&gt;
+   &lt;FPAIE&gt;     --->  ( &lt;FPAIE&gt; &lt;operator&gt; &lt;FPAIE&gt; )
+   &lt;operator&gt; ---> +  <b>|</b>  -  <b>|</b>  *  <b>|</b>  /
+</pre>
+
+<p>
+<!-- <b>Notes:</b> -->
+<b>Note:</b>
+<!--(1)-->The boldfaced vertical bars are used for separating
+alternatives.  Hence, the third line of the grammar says that an
+operator is either a plus sign, or a minus sign, or etc., etc.
+<!--
+<br />
+(2) This definition allows only binary operators, and thus
+excludes unary <tt>+</tt> and <tt>-</tt> (as in <tt>-4</tt>).  
+We could repair this, but, to keep matters as simple as possible, we won't.
+-->
+</b>End of note.</b>
+
+</p><p>
+How does one evaluate such an expression?  Most likely, you would find an
+<em>immediately evaluable</em> compound subexpression (i.e., one of the
+form <tt>(A op B)</tt>, where <tt>A</tt> and <tt>B</tt> are numeric literals),
+you would evaluate it, and then you would replace it by the corresponding
+numeric literal.  You would repeat this until the original expression
+had been reduced to a single numeric literal constituting the final result.
+
+</p><p>
+For the sake of making this precise, observe that, in an FPAIE, the
+leftmost immediately evaluable subexpression is always the one ending with
+the leftmost right parenthesis.  Suppose that we always choose that
+subexpression as the one to evaluate next.  Applying this strategy to the
+FPAIE given above, we get, on successive iterations:
+
+</p><p>
+<center>
+<table border="0">
+<tr><td>
+<pre>   ((<u>(15 - 1)</u> + 2) + (3 * ((6 + 0) / (1 + 2))))
+
+=  (<u>(   14    + 2)</u> + (3 * ((6 + 0) / (1 + 2))))
+
+=  (         16    + (3 * (<u>(6 + 0)</u> / (1 + 2))))
+
+=  (         16    + (3 * (   6    / <u>(1 + 2)</u>)))
+
+=  (         16    + (3 * <u>(   6    /    3   )</u>))
+
+=  (         16    + <u>(3 *          2         )</u>)
+
+=  <u>(         16    +    6                     )</u>
+
+=                 22</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+In each expression, the leftmost immediately evaluable subexpression is
+underlined.
+
+</p><p>
+Using our human common sense, this was easy.  But how can we give precise
+instructions to a computer &mdash;which has absolutely no sense&mdash;
+that would make it correctly evaluate such an expression?
+Letting E denote the FPAIE to be evaluated, our approach may be expressed
+in pseudocode as follows:
+</p><p>
+<center>
+<table border="1" cellpadding="10">
+<tr><td>
+<pre>set a pointer to the beginning of E;
+while (E is not a numeric literal) {
+   advance the pointer until encountering a right parenthesis;
+   evaluate the subexpression ending at that right parenthesis 
+   replace that subexpression with the corresponding numeric literal;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+<p>
+Although this is still somewhat vague, it provides a basis for a more
+precise algorithm.   Among the details to be worked out is how the program
+determines, upon encountering a right parenthesis, which subexpression is
+to be evaluated.  One way would be to scan to the left (i.e., backwards)
+until encountering the matching left parenthesis.
+Necessarily, between the two parentheses there would be a numeric literal,
+an operator, and another numeric literal.  (Either or both of those numeric
+literals could be the result of having evaluated a complicated subexpression
+earlier.)  How does the program scan to the left?  In what kind of storage
+structure do the values of already-evaluated subexpressions reside?
+
+</p><p>
+One way to store them is by using two stacks, which we refer to as the
+<em>operand stack</em> and <em>operator stack</em>, respectively.
+As we scan the expression from left to right, on the latter we store the
+operator symbols and on the former we store the values of the operands.
+Upon encountering a right parenthesis (which, as noted before, indicates
+that we have reached the end of the leftmost immediately evaluable
+compound subexpression), we pop an operator symbol off one stack and
+two values from the other stack, we apply that operator to those two values,
+and then we push the result back onto the operand stack.
+After the last token of the FPAIE has been processed, its value 
+will be the lone value remaining on the operand stack.
+
+</p><p>
+In order to prove that this works, we can show that each time a right
+parenthesis is encountered, the operator to which it corresponds is at
+the top of the operator stack and the (values of the) two operands to which
+it corresponds are the top two numbers on the operand stack. 
+Such a proof is omitted, but the reader is encouraged to do several
+examples, after which he should be convinced of the claim's plausibility.
+<!-- (The exceptionally ambitious reader is encouraged to supply a proof!) -->
+
+</p><p>
+We formalize the above with the following Java-like method.
+It assumes the existence of classes <tt>Expr</tt>, <tt>Token</tt>,
+and <tt>Operator</tt> having the instance methods that are invoked
+and a class <tt>StackX</tt> that implements the interface <tt>Stack</tt>
+shown above.  For simplicity, it also assumes that all numeric literals 
+describe integers.
+
+</p><p>
+<center>
+<table border="1" cellpadding="10">
+<tr><td>
+<pre>/* pre:  e is a syntactically correct FPAIE
+   post: value returned is that obtained by evaluating e
+*/
+public Integer evaluate( Expr e ) {
+
+   Stack&lt;Integer&gt; operandStk = new StackX&lt;Integer&gt;();
+   Stack&lt;Operator&gt; operatorStk = new StackX&lt;Operator&gt;();
+   Token t = e.firstToken();
+
+   while (e.hasMoreTokens()) {
+      t = e.nextToken();
+      if (t is a left parenthesis)       { }
+      else if (t is an integer literal)  { operandStk.push(t); }
+      else if (t is an operator)         { operatorStk.push(t); }
+      else if (t is a right parenthesis) {
+         Integer y = operandStk.topOf();
+         operandStk.pop();
+         Integer x = operandStk.topOf();
+         operandStk.pop();
+         Operator op = operatorStk.topOf();
+         operatorStk.pop();
+         operandStk.push( op.apply(x,y) ); // apply op to x and y; push result
+      }
+   }
+   return operandStk.topOf();
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+As indicated by its precondition, the method above assumes that its
+parameter is a syntactically correct FPAIE.
+Interestingly, it will work "correctly" even if there are certain
+syntactic "irregularities".
+For example, left parentheses are optional!
+(Which tells us that left parentheses are not really needed and
+serve only as visual cues to the reader.)
+As another example, in a subexpression whose left (respectively, right)
+operand is a numeric literal, no harm will result from the operator 
+appearing before (resp., after) that literal.
+Examples: <tt>5 + 3) - 2)</tt>;&nbsp; 
+<tt>( + 5 (3 - 2))</tt>; &nbsp; <tt>((5 + 3) 2 -))</tt>.
+
+</p><p>
+<b>Note:</b>
+If we wanted the method to detect syntax errors in the given expression,
+an appropriate approach would be to use only one stack rather than two.
+In scanning the expression from left-to-right, all tokens would be
+pushed onto the stack, except for <b>)</b>'s.  Upon encountering
+one of these, we would pop the stack four times, the expectation
+being that the four items popped would be, in order,
+<ol>
+  <li>the right operand of the subexpression ended by that <b>)</b></li>
+  <li>the operator of that subexpression</li>
+  <li>the left operand of that subexpression</li>
+  <li>the right parenthesis's mate</li>
+</ol>
+If any of the popped items were not of the right type (e.g., a <b>(</b>
+rather than a number), or if the stack became empty before the fourth pop,
+that would signal a syntax error in the original FPAIE.
+</p><p>
+Conceptually, this is simple, but, depending upon the programming language,
+it may not be trivial to implement because it requires that the stacks be 
+heterogeneous (i.e., have the ability to hold items of different data types).
+In Java, we could do this by instantiating the Stack class with the type
+Object and, each time a pop occurs, using a cast to convert the popped
+item into a value of the expected type.  If such a cast could not be
+carried out due to a type mismatch, an exception would be thrown,
+allowing us to detect a syntax error. 
+<b>End of note.</b>
+
+<!--
+It is not hard to augment the method in order to give it the ability 
+to detect when its parameter is not syntactically correct.
+To accomplish this, use the two stacks to hold not only operand and 
+operator values, respectively, but also left parentheses.  
+(<b>Note:</b> Conceptually, this is simple, but, depending upon the
+programming language, it may not be trivial to implement because it requires
+that the stacks be heterogeneous (i.e., have the ability to hold items of
+different data types).
+(In Java, we could do this by instantiating the Stack class with the type
+Object.)
+When a left parenthesis is encountered, push it onto both stacks.
+When a right parenthesis is encountered, do as specified above, but also
+do an extra pop on both stacks.  If the extra tokens popped are not both
+left parentheses, the original FPAIE was syntactically invalid.
+-->
+
+
+<a name="implementation_ary">
+<h3>An Array-based Implementation/Data Representation</h3>
+
+<p>
+The most obvious way to represent a stack using an array turns out to be
+a good way of doing it.  We simply store
+&mdash;in elements 0, 1, etc., of the array (call it <tt>contents</tt>)&mdash;
+the items that are currently on the stack, from bottom to top.
+In order to perform a <tt>pop</tt> or <tt>push</tt>, there must be some
+way to tell which location of the array corresponds to the top 
+of the stack.  To fulfill this purpose, we use an instance variable of type
+<tt>int</tt>, <tt>numItems</tt>, whose value indicates the number of items
+currently occupying the stack.  That is, the values occupying 
+<tt>contents[0..numItems-1]</tt> should correspond to the items on the stack. 
+In particular, the item stored in <tt>contents[numItems-1]</tt> (assuming
+that <tt>numItems > 0</tt>) is the item at the top of the stack.
+
+<p>
+Under this representation scheme, each method in the class can be written
+using code that is very simple (for a reader to follow) and very
+efficient (for a computer to execute).
+
+<p>
+As an example, suppose that we have a stack of creatures from the class
+<tt>Animal</tt>.  For simplicity, each animal will be denoted by its name
+(e.g., COW).  The picture below corresponds to the representation of a
+stack with five animals on it.  The values in array elements
+<tt>5, 6, ..., N-1</tt> (where <tt>N == contents.length</tt>) are shown
+as "---", which is intended to indicate that they are irrelevant.
+
+<pre>
+        +-----+
+     N-1| --- |
+      . |  .  |
+      . |  .  |
+      . |  .  |
+      6 | --- |
+      5 | --- |
+      4 | DOG |
+      3 | CAT |
+      2 | BUG |       
+      1 | EEL |     +-----+
+      0 | COW |     |  5  |
+        +-----+     +-----+
+        contents    numItems </pre>
+
+<p>
+The only serious question that arises in implementing this approach is 
+what to do in response to a <tt>push</tt> when the array 
+<tt>contents</tt> is "full" (i.e., the number of items on the stack 
+is equal to <tt>contents.length</tt>).
+One reasonable answer is to create a larger array, copy the elements
+of <tt>contents[]</tt> into that array, and then make <tt>contents[]</tt>
+refer to the new array.  In effect, this lengthens <tt>contents[]</tt>
+at a cost (in running time) that is proportional to its current
+length (i.e., its length before lengthening it!).
+<p>
+But by how much should we lengthen the array?  By one element?  By 10?
+Actually, it turns out that, in order to ensure that the total cost of
+all lengthenings is (at worst) proportional to the total number
+of <tt>push</tt> operations performed upon the stack during its lifetime,
+we should lengthen the array each time by some fraction of its current
+length.
+<!-- (The reasoning behind this claim is beyond the scope of the course.) -->
+A good fraction to use is 1, which would mean that the array is
+doubled in length each time.
+<!-- It turns out that one good strategy is to double the size of the array.
+This ensures that, in the long run, the time used for lengthening the
+array (possibly many times) cannot exceed that used in placing new elements
+into it. -->
+
+</p><p>
+In order to avoid wasting space, the <tt>pop</tt> method should
+detect when the number of items on the stack has become so few, relative
+to <tt>contents.length</tt>, that <tt>contents[]</tt> should be
+contracted (i.e., made shorter in length).
+It turns out that one good strategy is to cut the array in half whenever
+a pop reduces the number of items on the stack to less than a fourth of
+the array's length.
+
+</p><p>
+The resulting class would look much like the following.
+
+</p><p>
+<center>
+<table border="1" cellpadding="12">
+<tr><td>
+<pre><code>/** An instance of this class represents a stack capable of holding items
+**  of the specified type T (the generic type parameter).
+**  The implementation is based upon storing the stack items in an array.
+**
+**  Author: R. McCloskey
+**  Date: March 2012
+*/
+
+public class StackViaArray&lt;T&gt; implements Stack&lt;T&gt; {
+
+
+   /*  i n s t a n c e    v a r i a b l e s  */
+
+   private int numItems;  // # items occupying the stack
+   private T[] items;     // holds (references to) the items on the stack
+
+
+   /*  s y m b o l i c   c o n s t a n t  */
+
+   private static final int DEFAULT_INIT_CAPACITY = 8;
+
+
+   /*  c o n s t r u c t o r s  */
+
+   public StackViaArray(int initCapacity)
+   {
+      numItems = 0;
+      items = (T[])(new Object[initCapacity]);
+   }
+
+   public StackViaArray() { this( DEFAULT_INIT_CAPACITY); }
+
+
+   /*  o b s e r v e r s  */
+
+   public boolean isEmpty() { return sizeOf() == 0; }
+
+   public int sizeOf() { return numItems; }
+
+   public T topOf() { return item(0); }
+
+   public T item(int k) { return items[numItems-1-k]; }
+
+   public String toString()
+   {
+      StringBuilder s = new StringBuilder();
+      for (int i=0; i != sizeOf(); i++)
+      {
+         s.append(item(i).toString() + ",");
+      }
+      return s.substring(0,Math.max(0, s.length()-1));
+   }
+
+
+   /*  m u t a t o r s  */
+
+   public void push( T item )
+   {
+      if (numItems == items.length)
+      {
+         // items[] is full, so double its length by creating a new array
+         // (having double the length), copying the values from items[]
+         // into the new array, and then making items[] refer to the new array
+         T[] temp = (T[])(new Object[2 * items.length]);
+         arrayCopy(items, temp, numItems);
+         items = temp; 
+      } 
+      items[numItems] = item;
+      numItems = numItems + 1;
+   }
+
+
+   public void pop()
+   {
+      items[numItems-1] = null;  // to aid garbage collection
+      numItems = numItems - 1;
+
+      if (items.length > DEFAULT_INIT_CAPACITY  && items.length > 4 * numItems)
+      { 
+         // The length of items[] is greater than the default initial capacity
+         // and more than four times the stack's size, so cut the length of
+         // items[] in half.
+         T[] temp = (T[])(new Object[items.length / 2]);
+         arrayCopy(items, temp, numItems);
+         items = temp;
+      }
+   }
+
+   /*  u t i l i t y  */
+
+   /** Copies values in source[0..length-1] into dest[0..length-1]
+   */
+   private void arrayCopy(T[] source, T[] dest, int length)
+   {
+      System.arraycopy(source, 0, dest, 0, length);
+      // alternative:
+      // for (int i=0; i != length; i++)
+      //    { dest[i] = source[i]; }
+   }
+} </code></pre>
+</td></tr>
+</table>
+</center>
+
+
+<a name="implementation_ref">
+<h3>A Reference-Based Implementation/Data Representation</h3>
+
+One of the less attractive features of using an array as the basis
+upon which to represent a stack is that, when the stack's size becomes
+"incompatible" with the size of the array (i.e., when either the
+stack has become too large to fit into the array or it has become
+so small that a significant portion of the array is unused),
+it becomes necessary/wise to create a new, differently-sized array
+and to copy all the relevant data into it from the old array.
+In order to ensure that this "size-change" operation does not
+dominate the time required to process stack operations,
+the new array's size should be significantly different from the old one.
+(In our implementation, the new array is made to be either double
+or half the size of the old one.)
+</p><p>
+Hence, although the abstract stack structure is growing and shrinking
+in small increments, the underlying structure used to represent it is
+growing and shrinking in large increments.
+
+</p><p>
+A concrete representation that makes use of references, rather than an
+array, can conveniently grow and shrink incrementally, just like the
+abstract structure that it represents.
+
+The idea is to make use of a (generic) class that provides one-directional
+linking capabilities.  We shall call this class <em>Link1&lt;T&gt;</em>.
+An object of this class can be depicted as
+
+</p><p>
+<center>
+<table border="1" cellpadding="10">
+<tr><td>
+<pre>
+  item   next
++------+------+
+|   x  |   x--+----> another Link1&lt;T&gt; object
++---+--+------+
+    |
+    |
+    v
+  +----+
+  |    | (object of type T)
+  +----+
+</td></tr>
+</table>
+</center>
+
+</p><p>
+That is, a <em>Link1&lt;T&gt;</em> object contains a reference to an
+object (of type <tt>T</tt>) and a reference to
+another object of type <em>Link1&lt;T&gt;</em>.  An implementation of
+this class is as follows:
+
+</p><p>
+<center>
+<table border="1" cellpadding="12">
+<tr><td>
+<pre><code>/** An instance of this class contains a reference to an object of the
+**  specified type T (the generic type parameter) and a reference to
+**  an object of the same kind (i.e., Link1<T>).  The idea is that objects
+**  of this class can be used as building blocks of one-directional linked
+**  structures (i.e., one-way lists).
+*/
+public class Link1&lt;T&gt; { 
+
+   /*  instance variables  */
+
+   private T item;
+   private Link1&lt;T&gt; next;
+
+   /*  constructors  */
+
+   public Link1(T item, Link1&lt;T&gt; next)
+   { 
+      this.item = item; this.next = next;
+   }
+
+   public Link1(T item) { this(item, null); }
+
+   public Link1() { this(null, null); }
+
+
+   /*  observers  */
+
+   public T getItem() { return item; }
+   public Link1&lt;T&gt; getNext() { return next; }
+
+
+   /*  mutators  */
+
+   public void setItem(T newItem) { item = newItem; }
+   public void setNext(Link1&lt;T&gt; newNext) { next = newNext; }
+
+}
+</code></pre>
+</tr></td>
+</table>
+</center>
+
+
+</p><p>
+Using <tt>Link1</tt> as a basis, we can represent the stack containing
+COW, CAT, DOG, BUG, and ANT objects (going from top to bottom) as follows,
+where <tt>top</tt> is the lone instance variable comprising the state
+of the stack and it points to the Link1&lt;T&gt; object corresponding
+to the top item on the stack:
+<pre>
++-----+---+     +-----+---+     +-----+---+     +-----+---+     +-----+---+
+| COW | x-+---->| CAT | x-+---->| DOG | x-+---->| BUG | x-+---->| ANT | x-+--!
++-----+---+     +-----+---+     +-----+---+     +-----+---+     +-----+---+
+     ^
+     |
+     |
+   +-+-+
+   | x |
+   +---+
+    top </pre>
+    
+</p><p>
+For simplicity, we have simply written each <em>Link1</em> object's
+animal name inside (the box representing) its first field.
+In reality, each such field is a reference (i.e., pointer) to the
+corresponding animal object.
+
+<p>
+Following this approach, here is the stack class that we derive:
+
+</p><p>
+<center>
+<table border="1" cellpadding="12">
+<tr><td>
+<pre><code>/** An instance of this class represents a stack capable of holding items
+**  of the specified type T (the generic type parameter).
+**  The underlying implementation makes use of a linked structure of
+**  objects arising from the Link1 class.
+**
+**  Author: R. McCloskey
+**  Date: March 2012
+*/
+public class StackViaLink1&lt;T&gt; implements Stack&lt;T&gt; {
+
+   /*  i n s t a n c e    v a r i a b l e s  */
+
+   private Link1&lt;T&gt; top;  // reference to Link1 object holding top item on stack
+   private int numItems;  // # of items on the stack
+
+
+   /*  c o n s t r u c t o r s  */
+
+   public StackViaLink1() 
+   { 
+      top = null;  numItems = 0;
+   }
+
+
+   /*  o b s e r v e r s  */
+
+   
+   public int sizeOf() { return numItems; }
+
+   public boolean isEmpty() { return sizeOf() == 0; }
+
+   public T topOf() 
+   { 
+      return top.getItem();  // alternative: return item(0)
+    }
+
+   public T item(int k)
+   {
+      Link1&lt;T&gt; x = top;           // have x begin at the top
+      for (int i=0; i!=k; i++) {  // follow next references k times
+         x = x.getNext();
+      }
+      return x.getItem();         // return the item there
+   }
+
+
+   public String toString()
+   {
+      StringBuilder s = new StringBuilder();
+      for (int i=0; i != sizeOf(); i++)
+      {
+         s.append(item(i).toString() + ",");
+      }
+      return s.substring(0,Math.max(0, s.length()-1));
+   }
+
+
+   /*  m u t a t o r s  */
+
+   public void push( T item )  
+   { 
+      top = new Link1&lt;T&gt;( item, top );
+      numItems = numItems + 1;
+   }
+
+   public void pop()
+   { 
+      top = top.getNext(); 
+      numItems = numItems - 1;
+   }
+
+}</code></pre>
+</td></tr>
+</table>
+</center>
+
+
+</body>
+</html>

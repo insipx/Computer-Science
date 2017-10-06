@@ -1,0 +1,250 @@
+<html>
+<head>
+<title>CMPS 134: Java Methods to Compute a Maximum</title>
+</head>
+<body>
+<h2>CMPS 134 <br />
+    Examples of Java methods to compute a maximum
+</h2>
+
+</p><p>
+The following are four versions of a method to calculate the maximum of
+two values of type <tt>int</tt>.<sup><a href="#footnote1">1</a></sup>
+From Java's point of view, the four are identical to one another.
+From the human reader's point of view, they differ in formatting details.
+
+</p><p>
+The formatting style used in the <tt>if</tt> statement in the first two
+(i.e., the two leftmost versions) are suitable when the bodies of the
+"then" branch and the "else" branch are single statements (or at least
+fit easily on one line).  The two versions on the right are also suitable
+when the two branches of the <tt>if</tt> include multiple statements.
+
+</p><p>
+<center>
+<table  border ="1" cellpadding = "4">
+  <tr>
+    <td><pre>int maxOf2(int x, int y)
+{
+   int result;
+   if (x > y) { result = x; }
+   else { result = y; }
+   return result;
+} </pre>
+    </td>
+    <td><pre>int maxOf2(int x, int y)
+{
+   int result;
+   if (x > y)
+      { result = x; }
+   else
+      { result = y; }
+   return result;
+} </pre>
+    </td>
+    <td><pre>int maxOf2(int x, int y)
+{
+   int result;
+   if (x > y) {
+      result = x;
+   }
+   else {
+      result = y;
+   }
+   return result;
+}</pre>
+    </td>
+    <td><pre>int maxOf2(int x, int y)
+{
+   int result;
+   if (x > y)
+   {
+      result = x;
+   }
+   else
+   {
+      result = y;
+   }
+   return result;
+}</pre>
+    </td>
+  </tr>
+</table>
+</center>
+
+</p><p>
+Of course, if we replace each occurrence of <tt>int</tt> with, say,
+<tt>double</tt> in the method, we get a method to compute the maximum
+of two given values of type <tt>double</tt>.  (The same can be said for
+any of the other primitive types of Java, which are
+<tt>byte</tt>, <tt>short</tt>, <tt>long</tt>, <tt>float</tt>,
+<tt>char</tt>, and <tt>boolean</tt>.)
+
+</p><p>
+To compute the maximum of three values of type <tt>int</tt>, we can
+make use of <tt>maxOf2</tt>:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr>
+  <td><pre>int maxOf3(int x, int y, int z)
+{
+   int result;
+   if (x > y) {
+      result = maxOf2(x,z);
+   }
+   else {  // x <= y
+      result = maxOf2(y,z);
+   }
+   return result;
+}</pre>
+  </td>
+  <td><pre>int maxOf3(int x, int y, int z)
+{
+   return maxOf2(maxOf2(x,y), z);
+}</pre>
+  </td>
+</tr>
+</table>
+</center>
+
+</p><p>
+The solution on the right is clearly superior to that on the left.
+
+</p><p>
+Inferior solutions are shown below (in three versions differing only in
+formatting style), simply for the purpose of illustrating that each of the
+"then" and "else" branches of an <tt>if</tt> statement may include
+"complex" code, including other <tt>if</tt> statements.
+
+</p><p>
+<center>
+<table border="1"  cellpadding="4">
+  <tr>
+    <td><pre>int maxOf3(int x, int y, int z)
+{
+   int result;
+   if (x > y) {
+      if (x > z)
+         { result = x; }
+      else  // x>y but x<=z
+         { result = z; }
+   }
+   else {  // x<=y
+      if (y > z)
+         { result = y; }
+      else  // x<=y and y<=z
+         { result = z; }
+   }
+   return result;
+}</pre>
+    </td>
+    <td><pre>int maxOf3(int x, int y, int z)
+{
+   int result;
+   if (x > y) {
+      if (x > z) {
+         result = x;
+      }
+      else {  // x>y but x<=z
+         result = z;
+      }
+   }
+   else {  // x<=y
+      if (y > z) {
+         result = y;
+      }
+      else {  // x<=y and y<=z
+         result = z;
+      }
+   }
+   return result;
+}</pre>
+    </td>
+    <td><pre>int maxOf3(int x, int y, int z)
+{
+   int result;
+   if (x > y) 
+   {
+      if (x > z)
+      {
+         result = x;
+      }
+      else  // x>y but x<=z
+      {
+         result = z;
+      }
+   }
+   else  // x<=y
+   {  
+      if (y > z)
+      {
+         result = y;
+      }
+      else  // x<=y and y<=z
+      {
+         result = z;
+      }
+   }
+   return result;
+}</pre>
+    </td>
+  </tr>
+</table>
+</center>
+
+</p><p>
+For the purpose of illustrating the use of Java's Conditional-AND
+operator (written <tt>&amp;&amp;</tt>), as well as an <tt>if</tt>
+statement that has "more than two" branches, here are two versions
+(differing only in formatting style) of yet another way to write
+<tt>maxOf3</tt>:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+  <tr>
+    <td><pre>int maxOf3(int x, int y, int z)
+{
+   int result;
+   if (x >= y &amp;&amp; x >= z) {
+      result = x;
+   }
+   else {  // either y or z is the max
+      if (y >= z) {
+         result = y;
+      }
+      else {  // neither x nor y is larger than z
+         result = z;
+      }
+   }
+   return result;
+} </pre>
+    </td>
+    <td><pre>int maxOf3(int x, int y, int z)
+{
+   int result;
+   if (x >= y &amp;&amp; x >= z) {
+      result = x;
+   }
+   else if (y >= z) {
+      result = y;
+   }
+   else {  // neither x nor y is larger than z
+      result = z;
+   }
+   return result;
+} </pre>
+    </td>
+  </tr>
+</table>
+</center>
+
+<hr>
+<h3>Footnote</h3>
+<a name="footnote1">
+[1] Because the <tt>Math.max()</tt> method is in Java's standard library,
+in real life there would be no reason to develop such a method.
+</body>
+</html>

@@ -1,0 +1,358 @@
+<html>
+<head><title>SE 504 Spring 2017 HW #6</title>
+</head>
+<body>
+<h2>SE 504 Spring 2017<br />
+HW #5: Repetition and Invariants <br />
+Due: 5pm, Friday, March 24
+</h2>
+
+</p><p>
+Consider a Hoare Triple <b>{P} S<sub>init</sub>; LOOP {Q}</b>
+in which <b>S<sub>init</sub></b> is an assignment command
+(used for initialization) and <b>LOOP</b> is a repetition command
+annotated with a loop invariant and bound function, as in this template:
+
+</p><p>
+<center>
+<table border="0" cellpadding="4">
+<tr>
+  <td>
+   {loop invariant I&nbsp;: ... }<br />
+   {bound function t&nbsp;: ... }<br />
+   <b>do</b> B<sub>1</sub> &rarr; S<sub>1</sub><br />
+   [] &nbsp;&nbsp;B<sub>2</sub> &rarr; S<sub>2</sub><br />
+   [] &nbsp;&nbsp;<b>...</b><br />
+   [] &nbsp;&nbsp;B<sub>m</sub> &rarr; S<sub>m</sub><br />
+   <b>od</b>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+To prove the Hoare Triple, 
+you show each of the five items on the <em>loop checklist</em>:
+<ol type="i">
+  <li>{P} S<sub>init</sub> {I},
+      which guarantees that the initialization establishes the loop invariant
+      (just before the loop's first iteration).
+  </li>
+  <li>{I &and; B<sub>i</sub>} S<sub>i</sub> {I} &nbsp;
+      (for each i satisfying 1&le;i&le; m),
+      which guarantees that each iteration of the loop preserves
+      the truth of the loop invariant.
+  </li>
+  <li>[I &and; &not;BB &nbsp;<tt>&rArr;</tt>&nbsp; Q] &nbsp;
+      (where BB is B<sub>1</sub> &or; ... &or; B<sub>m</sub>,
+      the disjunction of the loop guards),
+      which guarantees that, if the loop terminates, the postcondition
+      will hold at that time.
+  </li>
+  <li>[I &and; BB &nbsp;<tt>&rArr;</tt>&nbsp; t&gt;0] &nbsp;
+      (where again BB is the disjunction of the loop guards),
+      which guarantees that, as long as more iterations are to occur,
+      the bound function has not yet descended to its threshold of zero.
+  </li>
+  <li>{I &and; B<sub>i</sub> &and; t=C} S<sub>i</sub> {t &lt; C} &nbsp;
+      (for each i satisfying 1&le;i&le;m),
+      which guarantees that each iteration of the loop causes the value
+      of the bound function to decrease.
+  </li>
+</ol>
+
+</p><p>
+Items (<em>i</em>) and (<em>ii</em>) together show that <b>I</b> is, 
+as claimed, an invariant of the loop.
+Item (<em>iii</em>) shows that, if and when the loop terminates,
+the postcondition Q holds. 
+Items (<em>iv</em>) and (<em>v</em>) together show that the 
+loop eventually terminates.
+
+</p><p>
+Note that any precondition regarding only constants (e.g., N &ge; 0) can
+be considered as an implicit part of the loop invariant.
+
+
+<hr>
+</p><p>
+<b>1.</b> Prove that the following program is correct.
+Notice that the loop guard and the main conjunct of the loop invariant
+were derived (using the "delete a conjunct" heuristic) from the
+strengthened version Q' of the postcondition, which was obtained from
+the original postcondition Q using the "replace a constant by a variable"
+heuristic.
+
+<font size="+1">
+<pre><code>   |[ con N : int;
+      var k,m : int;
+      {P: N &ge; 0}
+      k,m := 0,0;
+      {loop invariant I: m = k<sup>2</sup> &and; 0&le;k&le;N}
+      {bound function t: N - k}
+      do k &ne; N &xrarr; k,m := k+1,m+k+k+1
+      od
+      {Q': m = k<sup>2</sup> &and; k=N }
+      {Q: m = N<sup>2</sup> }
+   ]|
+</code></pre>
+</font>
+
+<hr>
+</p><p>
+<b>2.</b> Prove this program's correctness:
+
+<font size="+1">
+<pre><code>   |[ con X, Y : int;
+      var x,y,z : int;
+      {P: X &ge; 0  &and;  Y &ge; 0}
+      x,y,z := X,Y,0;
+      {loop invariant I: z = 2(Y-y) + (X-x)  &and;  x &ge; 0  &and;  y &ge; 0 }
+      {bound function t: 2y + x}
+      do x &gt; y  &rarr;  x,z := x-1,z+1
+      [] y &gt; 0  &rarr;  x,y := x+1,y-1; z := z+1
+      od
+      {Q: z = 2Y + X }
+   ]|
+</code></pre>
+</font>
+
+</p><p>
+In completing the proof, you may appeal to "obvious" theorems of
+number theory.  For example:
+
+</p><p><center><tt>
+m&ge;0 &and; n&ge;0 &and; (m&gt;0 &or; n&gt;0) &rArr; m+n &gt; 0<br /><br />
+a&gt;0 &rArr; (r&gt;0 &rArr; a&times;r &gt; 0)<br /><br />
+m&gt;n &and; n&ge;0 &rArr; m&gt;0
+</tt></center>
+
+</p><p>
+You may also find that Contrapositive (3.61) is useful in showing
+item (iii) on the loop checklist.
+
+
+<hr>
+</p><p>
+<b>3.</b> (List Reversal)<br />
+Prove the correctness of the following program, which reverses a list.
+Regarding notation,
+<ul>
+  <li><tt>empty</tt> denotes the empty list;</li>
+  <li><tt>[b]</tt> denotes the list containing the lone element <tt>b</tt>;</li>
+  <li><tt>head.z</tt> (which is defined only if <tt>z &ne; empty</tt>)
+      denotes the first element of the list <tt>z</tt>;
+  </li>
+  <li><tt>tail.z</tt> (which is defined only if <tt>z &ne; empty)</tt>
+      denotes the list obtained by removing the head of <tt>z</tt>.
+  </li>
+  <li>The vertical bar, <tt>|</tt>, denotes list catenation, which
+      has higher precedence than <tt>=</tt> but lower than function
+      application (<tt>.</tt>)
+ </li>
+</ul>
+
+<!-- Note that Theorem 4 is "needed" to prove (ii) on loop checklist
+     due to the particular way in which the invariant is written.  
+     The alternative way would make Theorem 4 unnecessary, I think.
+     Also note that Theorem 4 really ought to be Axiom 6c and that
+     axiom should be a theorem, which would then be proved by
+     induction.
+-->
+
+</p><p>
+You may make use of the following axioms and theorems.
+
+</p><p>
+For all &nbsp;<tt>b:elem</tt>&nbsp; and 
+&nbsp;<tt>z,z1,z2 : list of elem</tt>&nbsp;:
+
+<!--
+  Make a one-cell table, simply for the purpose of putting a border
+  around the table nested within that cell.
+-->
+<table border="1">
+<tr><td>
+<table border="0" cellpadding="2">
+<tr>
+  <td><b>Axiom 1:</b></td>
+  <td><tt>empty | z  =  z</tt></td>
+  <td>(empty: left identity of &nbsp;|&nbsp;)</td>
+</tr>
+<tr>
+  <td><b>Axiom 2:</b></td>
+  <td><tt>z | empty  =  z</tt></td>
+  <td>(empty: right identity of &nbsp;|&nbsp;)</td>
+</tr>
+<tr>
+  <td><b>Axiom 3:</b></td>
+  <td><tt>head.([b] | z) = b</tt></td>
+  <td>(definition of head)</td>
+</tr>
+<tr>
+  <td><b>Axiom 4:</b></td>
+  <td><tt>tail.([b] | z) = z</tt></td>
+  <td>(definition of tail)</td>
+</tr>
+<tr>
+  <td><b>Axiom 5:</b></td>
+  <td><tt>(z &ne; empty) &rArr; (z = [head.z] | tail.z)</tt></td>
+  <td>(universality of head/tail)</td>
+</tr>
+<tr>
+  <td><b>Axiom 6a:</b></td>
+  <td><tt>rev.empty = empty</tt></td>
+  <td>(definition of rev)</td>
+</tr>
+<tr>
+  <td><b>Axiom 6b:</b></td>
+  <td><tt>rev.([b] | z) = rev.z | [b]
+  <!-- <td><tt>rev.[b] = [b]</tt></td> -->
+  <td>(definition of rev)</td>
+</tr>
+<!--
+<tr>
+  <td><b>Axiom 6c:</b></td>
+  <td><tt>(z&ne;empty) &rArr; (rev.z = rev.(tail.z) | [head.z])</tt></td>
+  <td>(definition of rev)</td>
+</tr>
+-->
+<tr>
+  <td><b>Axiom 7a:</b></td>
+  <td><tt>length.empty = 0</tt></td>
+  <td>(definition of length)</td>
+</tr>
+<tr>
+  <td><b>Axiom 7b:</b></td>
+  <td><tt>length.([b] | z) = 1 + length.z</tt></td>
+  <td>(definition of length)</td>
+</tr>
+<tr>
+  <td><b>Theorem 1:</b></td>
+  <td><tt>(z1 | z2) | z3  =  z1 | (z2 | z3)</tt></td>
+  <td>(associativity of &nbsp;|&nbsp;)</td>
+</tr>
+<tr>
+  <td><b>Theorem 2:</b></td>
+  <td><tt>length.z &ge; 0</tt></td>
+  <td>(length lower bound)</td>
+</tr>
+  <td><b>Theorem 3:</b></td>
+  <td><tt>(z&ne;empty) &rArr; (length.z = 1+length.(tail.z))</tt></td>
+  <td>(length induction)</td>
+</tr>
+</tr>
+  <td><b>Theorem 4:</b></td>
+  <td><tt>rev.(z1 | z2) = rev.z2 | rev.z1</tt></td>
+  <td>(rev distributes over catenation)</td>
+</tr>
+</table>
+</td></tr>
+</table>
+
+<!--  The old way to show the axioms
+<pre>
+  Axiom 1:   empty | z  =  z                           (empty: left id of |)
+  Axiom 2:   z | empty  =  z                           (empty: right id of |)
+  Axiom 3:   head.([b] | z) = b                        (defn of head)
+  Axiom 4:   tail.([b] | z) = z                        (defn of tail)
+  Axiom 5:   z &ne; empty ==> z = [head.z] | tail.z       (universality of head/tail)
+  Axiom 6a:  rev.empty = empty                         (defn of rev)
+  Axiom 6b:  rev.[b] = [b]                             (defn of rev)
+  Axiom 6c:  rev.(z1 | z2) = rev.z2 | rev.z1           (defn of rev)
+  Axiom 7a:  length.empty = 0                          (defn of length)
+  Axiom 7b:  length.([b] | z) = 1 + length.z           (defn of length)
+  Theorem 1: (z1 | z2) | z3  =  z1 | (z2 | z3)         (associativity of |)
+  Theorem 2: length.z >= 0                             (length lower bound)
+  Theorem 3: z &ne; empty ==> length.z = 1 + length.(tail.z) 
+</pre>
+-->
+
+</p><p>
+Here is the program:
+<font size="+1">
+<pre>  |[ var x, y : list of elem  {x = X};
+     y := empty;
+     {invariant I: rev.x | y = rev.X}  <!-- {alternative: X = rev.y | x} -->
+     {bound t: length.x}
+     do x != empty &xrarr; x,y := tail.x, [head.x] | y
+     od
+     {y = rev.X}                       <!-- {alternative: X = rev.y} -->
+  ]| </pre>
+</font>
+
+<hr>
+</p><p>
+<b>4.</b>
+Apply the <em>replace a constant by a variable</em> heurisic to rewrite the
+postcondition <tt>Q</tt> in the program below.  Specifically, replace 0 by
+the variable <tt>k</tt> and add the new conjunct <tt>k=0</tt> to obtain a
+stronger postcondition <tt>Q'</tt>.  (<b>Repeating:</b> Replace <b>0</b> by
+<tt>k</tt>; <b>do not</b> replace <tt>#B</tt> by <tt>k</tt>.)
+
+</p><p>
+<!--
+Then develop code (in place of the label <tt>Compute_Ary_Prod</tt>)
+so that the resulting program is correct.
+Clearly, such code should include a loop.
+-->
+Then take one of the conjuncts of <tt>Q'</tt> to be a loop invariant and
+the negation of the other conjunct to be the loop guard.
+(That is, apply the "delete a conjunct" heuristic.)
+
+</p><p>
+Complete the pre-loop assignment command so that <tt>k</tt> and <tt>prod</tt>
+are initialized in such a way as to truthify the loop invariant.
+Then complete the assignment command forming the loop body so that its
+execution preserves the truth of the invariant and "makes progress towards
+termination".
+(Derive the right-hand side of the assignment to <tt>prod</tt> via
+calculation.)
+To show the latter will require you to describe a bound function,
+and to show that this function cannot go below zero without falsifying the
+loop guard may require you to include in the loop invariant a conjunct that
+imposes lower and upper bounds upon <tt>k</tt>.
+
+</p><p>
+Show your completed program and a proof of its correctness.
+<!--  and an account of the steps you made in developing it. -->
+
+<font size="+1">
+<pre><code>   |[ con B : array of int;
+      var prod : int;
+      var k : int;
+
+      k,prod := ?,?;
+      {loop invariant I: ?}
+      {bound function t: ?}
+      do ? &rarr;
+         k,prod := ?,?;
+      od
+      { Q:  prod = (&times;j | 0&le;j&lt;#B : B.j) }
+   ]|</code></pre>
+</font>
+
+<hr>
+</p><p>
+<b>5.</b> Define function g : &naturals; &rarr; &naturals; as follows:
+<tt>g.0 = 1</tt>, <tt>g.1 = 2</tt>, and
+<tt>g.(n+2) = 3&times;g.(n+1) - 2&times;g.n</tt> (for <tt>n&ge;0</tt>).
+
+</p><p>
+Derive a solution (and provide an accompanying narrative) to the
+following programming problem:
+<font size="+1">
+<pre><code>|[ con N : int;  { N&gt;0 }
+   var z : int;
+
+   &lt;compute g.N&gt;
+
+   {Q: z = g.N }
+]| </code></pre>
+</font>
+
+</p><p>
+You should find useful the <em>strengthen the loop invariant</em>
+heuristic.
+
+</body>
+</html>

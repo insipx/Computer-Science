@@ -1,0 +1,54 @@
+<html>
+<head>
+<title>McCloskey's notes on COBOL: ENVIRONMENT DIVISION</title>
+<body>
+<H1>COBOL</H1>
+
+<H2>ENVIRONMENT DIVISION</H2>
+
+<p>
+The second division occurring within a COBOL (sub)program is the
+ENVIRONMENT DIVISION, which supplies installation-specific information
+regarding what computer equipment is needed to run the program.
+
+<p>
+Its two sections are the CONFIGURATION SECTION, which is just
+about useless, and the INPUT-OUTPUT SECTION, in which is 
+established the mapping from file names used in the program to 
+actual files on the computer system.  Specifically, this occurs in
+the FILE-CONTROL paragraph.
+
+<p>
+A typical example of what appears in this division is
+
+<tt><pre>
+      ENVIRONMENT DIVISION.
+      INPUT-OUTPUT SECTION.
+      FILE-CONTROL.
+          SELECT Data-File ASSIGN TO "data.dat".
+          SELECT Output-File ASSIGN TO SYS$OUTPUT.  </pre></tt>
+
+<p>
+Here, we have mapped the file referred to in the program by the data-name 
+<tt>Output-File</tt> to standard output (which, in the VMS operating system,
+is indicated by SYS$OUTPUT).  Similarly, the file referred to inside the
+program as <tt>Data-File</tt> is mapped to the file with name 
+<tt>data.dat</tt> on the computer system.  
+It is possible to map internal files to programmer-defined logical
+names (which themselves can be linked to the names of actual files via
+scripts, or command files, or JCL, or whatever), thereby making the program
+more flexible (e.g., by allowing it to access different files each time it
+is run, without having to recompile it).
+
+<p>
+Notice that a <tt>SELECT</tt> clause may not intersect with "Area A";
+that is, they must be indented to at least the fifth position on the line.
+(Area A includes columns 1-4 on each line, which only certain syntactic
+entities may occupy.)
+
+<p>
+For more information regarding the ENVIRONMENT DIVISION, see
+page 105 of <em>Comprehensive COBOL</em>.
+
+</body>
+</html>

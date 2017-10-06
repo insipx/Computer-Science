@@ -1,0 +1,300 @@
+<html>
+<head><title>Java Programming Exercise: Comparing Strings</title>
+</head>
+<body>
+<h2>CMPS 134<br />
+    Java Programming Exercise: Comparing Strings 
+</h2>
+
+</p><p>
+Here we consider the problem of determining the relationship between
+two <tt>String</tt> objects <tt>s1</tt> and <tt>s2</tt>: exactly
+one among <tt>s1 &lt; s2</tt>, <tt>s1 = s2</tt>, and <tt>s1 &gt; s2</tt>
+must hold.
+
+</p><p>
+We are adopting as our definition of <em>less-than</em> the usual
+one, as is used in ordering the words in a dictionary.
+(This is called <b>lexicographic</b> ordering, of which 
+<b>alphabetical ordering</b> is, more or less, a special case.)
+Specifically, if <tt>s = x<sub>1</sub>x<sub>2</sub>...x<sub>m</sub></tt> and
+<tt>t = y<sub>1</sub>y<sub>2</sub>...y<sub>n</sub></tt> are strings
+(where each <tt>x<sub>i</sub></tt> and <tt>y<sub>j</sub></tt> is a single
+character), then <tt>s < t</tt> if and only if either
+<ol>
+  <li><tt>s</tt> is a proper prefix of <tt>t</tt> or</li>
+  <li>x<sub>k</sub> < y<sub>k</sub>, where <tt>k</tt> is the
+      first position at which <tt>s</tt> and <tt>t</tt> disagree
+      (which is to say that <tt>x<sub>i</sub> = y<sub>i</sub></tt>
+      for all <tt>i</tt> in the range <tt>1..k-1</tt>).
+  </li>
+</ol>
+
+</p><p>
+Of course, the above definition assumes that we already have 
+<tt><</tt> defined on individual characters.  For this, we adopt
+Java's ordering on the <tt>char</tt> data type.
+
+</p><p>
+Our task is to develop a Java method that, given two 
+<tt>String</tt> objects via parameters, returns a value to the caller
+indicating which one of the three relationships &mdash;<em>less-than</em>,
+<em>equal-to</em>, or <em>greater-than</em>&mdash; holds between them.
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<caption align="bottom">Version 1</caption>
+<tr><td>
+<pre>/* Returns a value indicating which one of the following is true:
+* s1 < s2, s1 = s2, or s1 > s2.
+*/
+public static ?? strCompare(String s1, String s2)</pre>
+</td></tr>
+</table>
+</center>
+
+
+</p><p>
+What should the return type of the method be?
+The <tt>boolean</tt> data type has only two values, so it isn't viable.
+A more appropriate data type would be one having exactly three members
+in its "universe of values", perhaps described by the literals
+<tt>LESS_THAN</tt>, <tt>EQUAL_TO</tt>, and <tt>GREATER_THAN</tt>.
+But there is nothing like this among Java's primitive types nor is there 
+a class (as far as I know) in Java's standard library defining such a 
+data type.  
+To its credit, Java <em>does</em> have a feature (called 
+<b>enum</b>eration) by which a programmer can create
+such a data type.  But we will not pursue that possibility here.
+
+</p><p>
+What about the <tt>char</tt> data type?  We could, for example,
+associate the <tt>char</tt> values <b><tt>'L'</tt></b>, <b><tt>'E'</tt></b>,
+and <b><tt>'G'</tt></b>, respectively, with the outcomes <em>less-than</em>,
+<em>equal-to</em>, and <em>greater-than</em>.  
+That would be reasonable.
+Or we could use the Strings <b><tt>"Less Than"</tt></b>, 
+<b><tt>"Equal To"</tt></b>, and <b><tt>"Greater Than"</tt></b>.
+
+</p><p>
+But the convention that has been adopted by Java programmers is
+to use values of type <tt>int</tt>.
+Specifically, a negative integer value indicates that the
+relationship is <em>less-than</em>, zero indicates <em>equal-to</em>,
+and a positive value indicates <em>greater-than</em>.
+Following suit, we refine our method's specification to the following:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<caption align="bottom">Version 2</caption>
+<tr><td>
+<pre>/* Returns a negative value if s1 < 2, zero if s1 = s2, and
+*  a positive value if s1 > s2.
+*/
+public static int strCompare(String s1, String s2)</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+So now we have to work out the logic and express it in the method's
+body.  The first thing that we recognize is that, unlike in the 
+<a href="string_equals_lec.html"><tt>strEqual()</tt></a> method,
+here it will not be very helpful to initially distinguish between
+the cases when the two given Strings have the same length and when
+they don't.  That's because a difference in length tells us 
+that the two Strings are not equal, but it doesn't tell us 
+which one is the lesser of the two.
+
+</p><p>
+Hence, we recognize that the correct approach is to use a loop to 
+scan the two Strings character by character (starting at position zero)
+until either we reach the end of the shorter String 
+<!-- (meaning both Strings if their lengths are equal)  -->
+or we find a position at which the two Strings disagree in the characters
+that occur there.
+
+</p><p>
+It will be important to be able to ascertain, when the loop terminates, 
+which condition caused the termination.  If the loop terminated because a 
+position was found at which the two Strings disagree, then one can compare
+the characters at that position to determine which one is less than the other.
+The String containing the lesser of the two characters at that position is 
+the lesser String, of course.
+As an example, consider "gargantuan" vs. "gaseous".  The first 
+difference is at position two, where the characters are 'r' vs. 's'.
+Because 'r' < 's', we have that "gargantuan" < "gaseous".
+
+</p><p>
+If, on the other hand, the loop terminated because the end of the 
+shorter String was reached without a disagreement having been found,
+then it must be either that the two Strings are equal or that one
+is a proper prefix of the other.  
+
+</p><p>
+Following this logic, we arrive at the following code:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<caption align="bottom">Version 3</caption>
+<tr><td>
+<pre>/* Returns a negative value if s1 < 2, zero if s1 = s2, and
+* a positive value if s1 > s2.
+*/
+public static int strCompare(String s1, String s2)
+{
+   int result;
+   boolean equalSoFar = true;
+   final int SHORTER_LEN = Math.min(s1.length(), s2.length());
+
+   int i = 0;
+   while (i != SHORTER_LEN  &amp;&amp;  equalSoFar)
+   {
+      if (s1.charAt(i) == s2.charAt(i)) {
+         i = i+1;
+      }
+      else {
+         equalSoFar = false;  // mismatching chars found at position i
+      }
+   }
+   // At this point in execution (the loop having just terminated), 
+   // exactly one among i == SHORTER_LEN and !equalSoFar must be true, 
+   // which is to say that i == SHORTER_LEN and equalSoFar must be equal
+   // to each other (i.e., either both true or both false).
+   assert (i == SHORTER_LEN) == equalSoFar;
+
+   if (equalSoFar) {  // no mismatches exist
+      final int LENGTH_DIFF = s1.length() - s2.length();
+      if (LENGTH_DIFF < 0) { result = -1; }     // s1 is shorter, so s1 < s2
+      else if (LENGTH_DIFF > 0) { result = 1; } // s1 is longer, so s1 > s2
+      else { result = 0; }                      // lengths are equal, so s1 = s2
+   } 
+   else {  // first mismatch is at position i 
+      if (s1.charAt(i) < s2.charAt(i)) { result = -1; }
+      else { result = 1; }
+   }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+The above was written as though the method were obligated to return either 
+-1, 0, or 1 to the caller.  But that is not so.  Any negative value 
+suffices in place of -1 and any positive value in place of 1.
+With this freedom, we can simplify the <tt>if-else</tt> statement 
+following the loop:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<caption align="bottom">Version 4</caption>
+<tr><td>
+<pre>/* Returns a negative value if s1 < 2, zero if s1 = s2, and
+* a positive value if s1 > s2.
+*/
+public static int strCompare(String s1, String s2)
+{
+   int result;
+   boolean equalSoFar = true;
+   final int SHORTER_LEN = Math.min(s1.length(), s2.length());
+   int i = 0;
+   while (i != SHORTER_LEN  &amp;&amp;  equalSoFar)
+   {
+      if (s1.charAt(i) == s2.charAt(i)) {
+         i = i+1;
+      }
+      else {
+         equalSoFar = false;  // mismatching chars found at position i
+      }
+   }
+   // At this point in execution (the loop having just terminated), 
+   // exactly one among i == SHORTER_LEN and !equalSoFar must be true, 
+   // which is to say that i == SHORTER_LEN and equalSoFar must be equal
+   // to each other (i.e., either both true or both false).
+   assert (i == SHORTER_LEN) == equalSoFar;
+
+   if (equalSoFar) {   // no mismatches exist
+      <font color="red">result = s1.length() - s2.length();</font>
+   }
+   else {  // first mismatch is at position i 
+      <font color="red">result = s1.charAt(i) - s2.charAt(i);</font>
+   }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+In case you are confused by the expression
+<tt>s1.charAt(i) - s2.charAt(i)</tt>, note that, in Java,
+certain arithmetic operations can be applied to values of
+type <tt>char</tt>.  Among these is to compute the difference
+between two <tt>char</tt> values.  If <tt>c1</tt> and <tt>c2</tt>
+are of type <tt>char</tt>, then <tt>c1 - c2</tt> will be
+negative precisely if <tt>c1 < c2</tt>, just as with numbers.
+
+</p><p>
+Next we observe that we don't really need the <tt>equalSoFar</tt> variable.
+Why not?  Well, regarding the code following the loop, we can replace its
+lone occurrence by the boolean expression <tt>i == SHORTER_LEN</tt>.  
+After all, the value of this expression necessarily will be equal to that of
+<tt>equalSoFar</tt> at that point in time, as asserted in Version 4.
+As for the loop itself, now its only purpose is to advance the value of
+<tt>i</tt> until either <tt>i</tt> points to the position at which a mismatch
+occurs or, absent the existence of any mismatches, <tt>i</tt> reaches the
+length of the shorter String.  As illustrated in Version 8 of the 
+<a href="string_equals_lec.html#Version8"><tt>strEqual()</tt></a> method, this can
+be accomplished using a while-loop in which the body is nothing but an
+increment of <tt>i</tt> and the loop guard is a conjunction, the second 
+conjunct of which is a comparison between the characters at position <tt>i</tt>
+of the two Strings. We get:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<caption align="bottom">Version 5</caption>
+<tr><td>
+<pre>/* Returns a negative value if s1 < 2, zero if s1 = s2, and
+* a positive value if s1 > s2.
+*/
+public static int strCompare(String s1, String s2)
+{
+   int result;
+   boolean equalSoFar = true;
+   final int SHORTER_LEN = Math.min(s1.length(), s2.length());
+   int i = 0;
+   while (i != SHORTER_LEN  &amp;&amp;<font color="red">  s1.charAt(i) == s2.charAt(i)</font>) {
+      i = i+1;
+   }
+   // At this point in execution (the loop having just terminated), exactly one among
+   // i == SHORTER_LEN and (i &lt; SHORTER_LEN &amp;&amp; s1.charAt(i) != s2.charAt(i)) is true.
+   // If the former is true, either the two strings are equal or one is a proper prefix
+   // of the other.  In the latter is true, i is the lowest-numbered position at which
+   // the two strings fail to match.
+   assert (i == SHORTER_LEN) != (i &lt; SHORTER_LEN &amp;&amp; s1.charAt(i) != s2.charAt(i));
+
+   if (<font color="red">i == SHORTER_LEN</font>) {  // no mismatches exist
+      result = s1.length() - s2.length();
+   }
+   else {  // first mismatch is at position i 
+      result = s1.charAt(i) - s2.charAt(i);
+   }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Although the loop is a bit more concise in Version 5, the post-loop
+reasoning (as expressed in the <b>assertion</b>) is a bit more
+complicated.
+
+</body>
+</html>

@@ -1,0 +1,415 @@
+<html>
+<head>
+   <title>&nbsp Notes on Chapter 3 (6th edition) of Elmasri &amp;
+    Navathe</title>
+</head>
+<body>
+<h2>Notes on Chapter 3 of Elmasri &amp; Navathe (6th edition):
+   The Relational Data Model and Relational Database Constraints
+   and Relational Algebra
+</h2>
+
+
+<h3>Origins</h3>
+</p><p>
+British mathematician
+<A HREF="http://en.wikipedia.org/wiki/Edgar_F._Codd">E.F. (Ted) Codd</A>
+of IBM first proposed the relational data model in a seminal paper in 1970 
+(<em>A Relational Model for Large Shared Data Banks</em>,
+Communications of the ACM, June 1970), which led to a revolution
+in the field of database management.
+It is based upon the mathematical concepts of <b>relations</b>,
+<b>set theory</b> and <b>predicate logic</b>.
+Codd, who died in 2003, went on to write extensively about the subject.
+As a result of his achievements, Codd was awarded the highest honor
+in computer science, the ACM Turing Award, in 1981.
+
+</p><p>
+The first commercial implementations of the relational model became
+available in the early 1980's (e.g., SQL/DS by IBM and Oracle DBMS)
+and, since then, the model has been implemented in a large number
+of commerical systems.  Currently popular DBMS's based upon the relational
+model include DB2 (IBM), Oracle, SQL Server (Microsoft), and PostgreSQL.
+(How about MySQL?)
+
+</p><p>
+<a href="elmasri_navathe.dir/en_6e_fig_3-6.pdf" target="_blank">Here</a> 
+is an image of a snapshot of the COMPANY relational database that we will 
+use as a case study throughout the semester.
+
+<h3>3.1 Relational Model Concepts</h3>
+
+<ul>
+  <li><b>Domain</b>: A (usually named) set/universe of <em>atomic</em>
+      values, where by "atomic" we mean simply that, from the point of
+      view of the database, each value in the domain is indivisible
+      (i.e., cannot be broken down into component parts).
+      <p>
+      Examples of domains (some taken from page 61):
+      <ul>
+        <li>USA_phone_number: string of digits of length ten</li>
+        <li>SSN: string of digits of length nine</li>
+        <li>Name: string of characters beginning with an upper case letter</li>
+        <li>GPA: a real number between 0.0 and 4.0</li>
+        <li>Sex: a member of the set { female, male } </li>
+        <li>Dept_Code: a member of the set
+            { CMPS, MATH, ENGL, PHYS, PSYC, ... } </li>
+      </ul>
+      </p><p>
+      These are all <em>logical</em> descriptions of domains.
+      For implementation purposes, it is necessary to provide descriptions
+      of domains in terms of concrete <b>data types</b> (or <b>formats</b>)
+      that are provided by the DBMS (such as <tt>String</tt>, <tt>int</tt>,
+      <tt>boolean</tt>), in a manner analogous to how programming languages
+      have intrinsic data types.
+  </li>
+  </p><p>
+  <li><b>Attribute</b>: the <em>name</em> of the role played by some value
+      (coming from some domain) in the context of a <b>relational schema</b>.
+      The domain of attribute <tt>A</tt> is denoted <tt>dom(A)</tt>.
+  </li>
+  </p>
+  <li><b>Tuple</b>: A tuple is a mapping from attributes to
+      values drawn from the respective domains of those attributes.
+      A tuple is intended to describe some entity (or relationship between
+      entities) in the miniworld.
+      </p><p>
+      As an example, a tuple for a PERSON entity might be
+      </p><p>
+      <center><tt>{ Name --&gt; "Rumpelstiltskin",
+          &nbsp; Sex --&gt; Male,
+          &nbsp; IQ --&gt; 133 }
+      </tt></center>
+  </li>
+  </p>
+  <li><b>Relation</b>: A (named) set of tuples all of the same form (i.e.,
+      having the same set of attributes).
+      The term  <b>table</b> is a loose synonym.
+      (Some database purists would argue that a table is "only" a 
+      physical manifestation of a relation.)
+  </li>
+  </p>
+  <li><b>Relational Schema</b>: used for describing (the structure of)
+      a relation.
+      E.g., <tt>R(A<sub>1</sub>, A<sub>2</sub>,
+      ..., A<sub>n</sub>)</tt> says that <tt>R</tt> is a relation
+      with <em>attributes</em> <tt>A<sub>1</sub></tt>, ...
+      <tt>A<sub>n</sub></tt>.  The <b>degree</b> of a relation
+      is the number of attributes it has, here <em>n</em>.
+      </p><p>
+      Example: <tt>STUDENT(Name, SSN, Address)</tt>
+      </p><p>
+      (See Figure 3.1, page 63, for an example of a STUDENT relation/table
+      having several tuples/rows.)
+      </p><p>
+      <b>Note:</b> One would think that, for completeness, a relational schema
+      should also specify the domain of each attribute. <b>End of note.</b>
+  </li>
+  </p>
+  <li><b>Relational Database</b>: A collection of <b>relations</b>,
+      each one consistent with its specified relational schema.
+  </li>
+</ul>
+
+<h3>3.1.2 Characteristics of Relations</h3>
+<p>
+<b>Ordering of Tuples</b>: A relation is a <em>set</em> of tuples;
+hence, there is no order associated with them.  That is, it makes no
+sense to refer to, for example, the 5th tuple in a relation.
+When a relation is depicted as a table, the tuples are necessarily listed
+in <em>some</em> order, of course, but you should attach no significance
+to that order.
+Similarly, when tuples are represented on a storage device, they must
+be organized in <em>some</em> fashion, and it may be advantageous,
+from a performance standpoint, to organize them in a way that depends upon
+their content. 
+
+</p><p>
+<b>Ordering of Attributes</b>: A tuple is best viewed as a mapping
+from its attributes (i.e., the names we give to the roles played by
+the values comprising the tuple) to the corresponding values.
+Hence, the order in which the attributes are listed in a table is
+irrelevant.
+(Note that, unfortunately, the set theoretic operations in
+relational algebra (at least how E&amp;N define them) 
+make implicit use of the order of the attributes.
+Hence, E&amp;N view attributes as being arranged as a sequence
+rather than a set.)
+
+</p><p>
+<b>Values of Attributes</b>: For a relation to be in 
+<em>First Normal Form</em>, each of its attribute domains must 
+consist of atomic (neither composite nor multi-valued) values.
+Much of the theory underlying the relational model was based upon this
+assumption.
+Chapter 15 (on functional dependencies, etc.) addresses the issue of
+including non-atomic values in domains.
+(Note that in the latest edition of C.J. Date's book, he explicitly
+argues against this idea, admitting that he has been mistaken in the past.)
+
+</p><p>
+The <b>Null</b> value: used for <em>don't know</em>, <em>not applicable</em>.
+
+</p><p>
+<b>Interpretation of a Relation</b>: Each relation can be viewed as
+a <b>predicate</b> and each tuple in that relation can be viewed as
+an assertion for which that predicate is satisfied 
+(i.e., has value <b>true</b>) for the combination of
+values in it.  In other words, each tuple represents a fact.
+Example (see Figure 3.1): The first tuple listed means: 
+There exists a student having name <tt>Benjamin Bayer</tt>,
+having SSN <tt>305-61-2435</tt>, having age 19, etc.
+</p><p>
+Keep in mind that some relations represent facts about entities
+(e.g., students)
+whereas others represent facts about relationships (between entities).
+(e.g., students and course sections).
+
+</p><p>
+The <b>closed world assumption</b> states that the only true facts
+about the miniworld are those represented by whatever tuples currently
+populate the database.
+For example, if the tuple 
+<tt>{ Name --&gt; "Spock", Sex --&gt; Male, IQ --&gt; 210 }</tt>
+is not a member of the (aforementioned) PERSON relation,
+then it must be that, in whatever miniworld is being modeled by the
+database of which this relation is a part, there is no person 
+satisfying all three conditions of being named "Spock", being male, and
+having an IQ of 210.
+
+</p><p>
+<b>3.1.3 Relational Model Notation</b>: (pages 66-67)
+<p>
+<ul>
+  <li><em>R(A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>n</sub>)</em>
+      is a relational schema of degree <em>n</em> denoting that
+      there is a relation <em>R</em> having as its attributes 
+      <em>A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>n</sub></em>.
+  </li>
+  <li>By convention, <em>Q</em>, <em>R</em>, and <em>S</em>
+      denote relation names.
+  </li>
+  <li>By convention, <em>q</em>, <em>r</em>, and <em>s</em>
+      denote relation states.  For example, <em>r(R)</em> 
+      denotes one possible state of relation <em>R</em>.
+      If <em>R</em> is understood from context, this could be
+      written, more simply, as <em>r</em>.
+  </li>
+  <li>By convention, <em>t</em>, <em>u</em>, and <em>v</em>
+      denote tuples.
+  </li>
+  <li>The "dot notation" <em>R.A</em> (e.g., <tt>STUDENT.Name</tt>)
+      is used to qualify an attribute name, usually for the purpose
+      of distinguishing it from a same-named attribute in a different
+      relation (e.g., <tt>DEPARTMENT.Name</tt>).
+  </li>
+  <li>If <em>t</em> is a tuple in a relation with attributes
+      <em>A<sub>1</sub></em> through <em>A<sub>n</sub></em>,
+      <em>t[A<sub>i</sub>]</em> (or <em>t.A<sub>i</sub></em>) refers
+      to the value of attribute <em>A<sub>i</sub></em> in <em>t</em>.
+  </li>
+  <li>To describe such a tuple <em>t</em> in its entirety, we could say
+      <em>t = &lt;v<sub>1</sub>,v<sub>2</sub>,...,v<sub>n</sub>&gt;</em>,
+      meaning that, for each <em>i</em>,
+      <em>t[A<sub>i</sub>] = v<sub>i</sub></em>. 
+      For example, we might say <em>t</em> = &lt;"Rumplestiltskin",
+      135, "black"&gt; to describe a tuple from a relation with
+      attributes <em>Name</em>, <em>Age</em>, and <em>FavoriteColor</em>.
+  </li>
+</ul>
+
+<h3>3.2 Relational Model Constraints and Relational Database Schemas</h3>
+<p>
+Constraints on databases can be categorized as follows:
+<ul>
+  <li><b>inherent model-based</b> (or <b>implicit</b>): constraints
+      that are inherent in the definition/assumptions of a particular
+      data model hold in <em>every</em> database having that 
+      data model as its underpinning.
+      <b>Example:</b> In the relational model, no two tuples in a relation
+      can be duplicates.
+      <b>Why?</b> Because a relation is a <em>set</em> of tuples, as
+      opposed to a bag/multiset or a sequence. 
+  </li> 
+  <li><b>schema-based:</b> can be expressed using DDL (data definition
+      language); this kind is the focus of this section.
+  </li>
+  <li><b>application-based:</b> are specific to the "business rules"
+      of the miniworld and are typically difficult or impossible to express
+      and enforce within the data model.  Hence, it is left to application
+      programs to enforce.  <b>Example:</b> No employee may have a salary
+      greater than that of her supervisor.
+  </li>
+</ul>
+
+</p><p>
+Elaborating upon <b>schema-based constraints</b>:
+
+</p><p>
+<b>3.2.1 Domain Constraints</b>:
+Each attribute value must be either <b>null</b> (which is really a
+<em>non-value</em>) or drawn from the domain of that attribute.
+Note that some DBMS's allow you to impose the <b>not null</b>
+constraint upon an attribute, which is to say that no tuple
+(in the relevant relation) is allowed to have the (non-)value 
+<b>null</b> in that attribute.
+
+</p><p>
+<b>3.2.2 Key Constraints</b>: A relation is a <em>set</em> of tuples,
+and each tuple's "identity" is given by the values of its attributes.
+Hence, it makes no sense for two tuples in a relation to be identical
+(because then the two tuples are actually one and the same tuple).
+That is, no two tuples may have the same combination of values in their
+attributes.
+</p><p>
+Usually the miniworld dictates that there be (proper) subsets of attributes
+for which no two tuples may have the same combination of values.
+Such a set of attributes is called a <b>superkey</b> of its relation.
+From the fact that no two tuples can be identical, it follows that the
+set of all attributes of a relation constitutes a superkey of that relation.
+</p><p>
+A <b>key</b> is a <em>minimal superkey</em>, i.e., a superkey such
+that, if we were to remove any of its attributes, the resulting set
+of attributes would fail to be a superkey.
+</p><p>
+<b>Example</b>: Suppose that we stipulate that a faculty member is
+uniquely identified by <em>Name</em> and <em>Address</em> and also
+by <em>Name</em> and <em>Department</em>, but by no single one of the three
+attributes mentioned.  Then <em>{ Name, Address, Department }</em> is a
+(non-minimal) superkey and each of <em>{ Name, Address }</em> and
+<em>{ Name, Department }</em> is a key (i.e., minimal superkey).
+
+<p><b>Candidate key</b>: any key!  (Hence, it is not clear what
+distinguishes a key from a candidate key.)
+
+<p><b>Primary key</b>: a key chosen to act as the means by which
+to identify tuples in a relation.  Typically, one prefers a primary
+key to be one having as few attributes as possible.
+
+<h3>3.2.3 Relational Databases and Relational Database Schemas</h3>
+<p>
+A <b>relational database schema</b> is a set of schemas for its relations
+(see Figure 3.5, page 71) together with a set of 
+<b>integrity constraints</b>.
+</p><p>
+A <b>relational database state/instance/snapshot</b> is a set of states
+of its relations such that no integrity constraint is violated.
+(See Figure 3.6, page 72, for a snapshot of COMPANY.)
+
+<h3>3.2.4 Entity Integrity, Referential Integrity, and Foreign Keys</h3>
+<p>
+<b>Entity Integrity Constraint</b>: In a tuple, none of the values of 
+the attributes forming the relation's primary key may have the (non-)value
+<b>null</b>.  Or is it that at least one such attribute must have a
+non-null value?  In my opinion, E&amp;N do not make it clear!
+
+</p><p>
+<b>Referential Integrity Constraint</b>: (See Figure 3.7, page 75.)
+A <b>foreign key</b> of relation <em>R</em> is a set of its attributes 
+intended to be used (by each tuple in <em>R</em>) for identifying/referring to
+a tuple in some relation <em>S</em>.
+(<em>R</em> is called the <em>referencing</em> relation and
+<em>S</em> the <em>referenced</em> relation.)
+For this to make sense, the set of attributes of <em>R</em>
+forming the foreign key should "correspond to" some superkey of <em>S</em>.
+Indeed, by definition we require this superkey to be the primary key of
+<em>S</em>.
+
+</p><p>
+This constraint says that, for every tuple in <em>R</em>, the tuple in
+<em>S</em> to which it refers must actually be in <em>S</em>.
+<!-- and fact that a tuple referenced (via
+   foreign key) by another <em>must exist</em>.
+-->
+Note that a foreign key may refer to a tuple in the same relation
+and that a foreign key may be part of a primary key (indeed, for
+weak entity types, this will always occur).
+A foreign key may have value <b>null</b> (necessarily in all its
+attributes??), in which case it does not refer to any tuple in the
+referenced relation.
+
+</p><p>
+<b>Semantic Integrity Constraints</b>: application-specific restrictions
+that are unlikely to be expressible in DDL.  Examples:
+<ul>
+  <li>salary of a supervisee cannot be greater than that of her/his
+      supervisor
+  </li>
+  <li>salary of an employee cannot be lowered</li>
+  <li>a department manager cannot be less than 35 years old</li>
+</ul>
+
+<h3>3.3 Update Operations and Dealing with Constraint Violations</h3>
+<p>
+For each of the <em>update</em> operations (Insert, Delete, and Update),
+we consider what kinds of constraint violations may result from applying
+it and how we might choose to react.
+
+</p><p>
+<b>3.3.1 Insert</b>: 
+<ul>
+  <li>domain constraint violation: some attribute value is not of
+           correct domain
+  </li>
+  <li>entity integrity violation: some attribute within a key of 
+      the new tuple has "value" <b>null</b>
+  </li>
+  <li>key constraint violation: key of new tuple is same as key of
+      already-existing tuple
+  </li>
+  <li>referential integrity violation: foreign key of new tuple refers
+       to non-existent tuple
+  </li>
+</ul>
+Ways of dealing with it: reject the attempt to insert!
+<!--  Or give user opportunity to try again with different attribute values.-->
+
+</p><p>
+<b>3.3.2 Delete</b>: 
+<ul>
+  <li>referential integrity violation: a tuple referring to the deleted
+       one exists.
+  </li>
+</ul>
+Three options for dealing with it:
+<ul>
+  <li>Reject the deletion</li>
+  <li>Attempt to <b>cascade</b> (or <b>propagate</b>) by deleting
+      any referencing tuples (plus those that reference them, etc., etc.)
+  </li>
+  <li>modify the foreign key attribute values in referencing tuples to
+      <b>null</b> or to some valid value referencing a different tuple
+  </li>
+</ul>
+
+</p><p>
+<b>3.3.3 Update</b>:
+<ul>
+  <li>Key constraint violation: primary key is changed so as to become
+        same as another tuple's
+  </li>
+  <li>referential integrity violation:
+      <ul>
+        <li>foreign key is changed and new one refers to nonexistent tuple
+        </li>
+        <li>primary key is changed and now other tuples that had referred
+            to this one violate the constraint
+        </li>
+      </ul>
+  </li>
+</ul>
+
+</p><p>
+<b>3.3.4 Transactions</b>:
+This concept is relevant in the context where multiple users and/or
+application programs are accessing and updating the database concurrently.
+A transaction is a logical unit of work that may involve several accesses
+and/or updates to the database (such as what might be required to reserve
+several seats on an airplane flight).  The point is that, even though
+several transactions might be processed concurrently, the end result
+must be as though the transactions were carried out sequentially.
+(Example of simultaneous withdrawals from same checking account.) 
+
+</body>
+</html>
+

@@ -1,0 +1,1273 @@
+<html>
+<head>
+  <title>Introduction to Loop Invariants</title>
+</head>
+<body>
+<H2>Loop Invariants</H2>
+
+<!-- This version uses P,I, and Q as precondition, loop invariant, and
+     postcondition, resp.
+     Also, it gets rid of the textual substitution stuff.
+-->
+
+<p>
+<H3>Overview</H3>
+<p>
+A loop invariant is a condition that is true immediately before
+and immediately after each iteration of a loop.  (Note that this says
+nothing about its truth or falsity part way through an iteration.)
+
+<p>
+For example, in Java, a <tt>while</tt> loop has the following form, where 
+<tt>B</tt> is a boolean expression (that we shall call the <b>guard</b> 
+of the loop) and <tt>S</tt> is a sequence of commands/instructions 
+(that we shall call the <b>body</b> of the loop).
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>while (B) { S }</pre>
+</td></tr>
+</table>
+</center>
+
+<p>
+A flow chart that indicates the steps taken in executing such a loop is
+as follows:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+                        +-------+
+                        | start |
+                        +-------+
+                            |
+                            | <--- P (the precondition) holds here (assumption)
+                            |
++-------------------------> * <--- I (the invariant) holds here (every time)
+|                           |
+|                           |
+|                           v
+|                          / \
+|                         /   \
+|                 true   /  B  \   false
+|               +<------ \     / -------->+
+|     I &and; B --->|         \   /           |
+|     holds     |          \ /            | <---- I &and; &not;B  holds here
+|     here      v                         |
+|             +---+                       | <---- Q (postcondition)
+|             | S |                       v       is to hold here
+|             +---+                    +------+
+|               |                      | stop |
+|               |                      +------+
++<--------------+
+</pre>
+</td></tr>
+</table>
+</center>
+
+<p>
+<b>Note:</b>  In what follows, we assume that evaluation of <tt>B</tt> has no 
+"side effects", which is to say that it results in no changes to values of
+variables (including instance variables, which determine the state of an
+object) in the program.  It is a good idea to follow this practice, even
+if the programming language does not enforce it (few do), in order to 
+make it easier to reason about your programs.
+<b>End of note.</b>
+
+<p>
+The flow chart is annotated to indicate the "locations" at which
+<ol>
+  <li>we assume that the precondition <tt>P</tt> holds,</li>
+  <li>we want the postcondition <tt>Q</tt> to hold, and</li>
+  <li>we want the loop invariant <tt>I</tt> to hold.</li>
+</ol>
+It also indicates locations (or points in time, if you prefer) at which
+<tt>I&and;&not;B</tt> holds and at which
+<tt>I&and;B</tt> holds, assuming that <tt>I</tt> holds every time execution
+reaches the "critical location" on the graph (i.e., the spot immediately
+above the diamond-shaped box indicating the evaluation of <tt>B</tt>).
+It is easy to choose a <tt>I</tt> that is an invariant of a loop,
+i.e., that always holds at the critical location.
+(For example, choosing <tt>I</tt> to be <b>true</b> works.)
+However, it is not always easy to choose a <tt>I</tt> that, in addition,
+is useful in demonstrating that <tt>Q</tt> must hold when the loop terminates.
+To be useful, the invariant <tt>I</tt> that we seek should be such that 
+
+<p><center><tt>I &and; &not;B &rArr; Q</tt></center>
+
+<p>
+(i.e., the truth of <tt>I</tt> together with the falsity of the loop's guard,
+<tt>B</tt>, guarantees the truth of <tt>Q</tt>).  Why?  Because then we can
+be sure that, when the loop terminates (at which point <tt>I&and;&not;B</tt>
+must hold), <tt>Q</tt>, too, must hold, as desired.  
+Later we will demonstrate heuristics (i.e., techniques/strategies that often
+work) that can be used in choosing loop invariants that not only satisfy
+<tt>I &and; &not;B &rArr; Q</tt> but also that can help to guide the
+development of the loop.
+<!--  (and the initialization code preceding it). -->
+
+
+<p>
+<b>How do you show that an invariant really is one?</b>
+<br />
+A question that may have occurred to you is this:  How do you show that a
+chosen condition <tt>I</tt> is actually true every time execution reaches
+the critical location?  Usually, it is done as follows:
+
+<p>
+First, you show that <tt>P &rArr; I</tt> (i.e., the truth of the precondition
+guarantees the truth of <tt>I</tt>), from which you may conclude that
+<tt>I</tt> holds the first time execution reaches the critical location.
+
+</p><p>
+<b>Note:</b> Because almost every loop is immediately preceded by a
+small code segment (typically, one or two assignment statements) having
+as its purpose to initialize variables used in the loop, in practice
+what we usually do is to show that the initialization code, if executed
+beginning in a state in which <tt>P</tt> is true, will finish with the
+loop invariant <tt>I</tt> being true.
+Indeed, we can think of the initialization code as having exactly that
+as its goal.
+<b>End of note.</b>
+
+</p><p>
+Second, you show that <tt>I</tt> holds each subsequent time the critical
+location is reached.  To accomplish this, it suffices to show that,
+if <tt>S</tt> (the loop body) is executed beginning in a state in which
+<tt>I&and;B</tt> holds, then <tt>I</tt> will necessarily hold when 
+<tt>S</tt> is finished executing.
+
+<p>
+In effect, this amounts to a proof by mathematical induction on the number
+of loop iterations executed.  The first step is the base case, which shows
+that <tt>I</tt> holds the first time execution reaches the critical location
+(i.e., after zero iterations).  The second step is the inductive step,
+in which it is shown that, if, for any positive number <em>n</em>, 
+<tt>I</tt> holds the <em>n</em>-th time execution reaches the critical spot
+(i.e., after exactly <em>n-1</em> iterations), then it must also hold the 
+(<em>n+1</em>)-st time (i.e., after exactly <em>n</em> iterations).
+
+<p>
+<b>How do you show that a loop terminates?</b>
+<p>
+To show that a loop must eventually terminate (i.e., after finitely many
+iterations), we show that each iteration <em>makes progress towards
+termination</em> in some way. 
+Technically, this amounts to showing that there is some integer function of
+the program variables, called a <b>bound function</b> (or a <b>variant</b>),
+that
+<ol>
+  <li>decreases on each iteration and</li>
+  <li>is such that the function's value must be greater than zero
+      in order for another loop iteration to occur (or, equivalently,
+      the truth of <tt>I&and;B</tt> guarantees that the function's value
+      is greater than zero).
+  </li>
+</ol>
+
+</p><p>
+Note that, at the beginning of each loop iteration, the value of a
+bound function is an upper bound on the number of iterations remaining
+to be executed.
+
+<p>
+For example, take the following loop:
+<p><center><tt>while (i &lt; n) { i = i+1; }</tt></center>
+
+<p>
+Then, taking <em>g</em> to be the function defined by the expression 
+<tt>n-i</tt>, we have that the value of <em>g</em> decreases on 
+each iteration (due to the fact that <tt>i</tt> increases on 
+each iteration but <tt>n</tt> doesn't change).
+We also have that the truth of the loop guard, 
+<tt>i&lt;n</tt>, guarantees that the value of <em>g</em> exceeds zero.
+
+</p><p>
+To illustrate the usefulness of the loop invariant concept, we discuss a
+few amusing puzzles.
+
+<H3>Red and Blue Marbles in a Jar:</H3>
+
+Suppose you have a jar of one or more marbles, each of which is either RED
+or BLUE in color.  You also have an unlimited supply of RED marbles off to
+the side.  You then execute the following "procedure":
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>while (# of marbles in the jar > 1)  {
+   choose (any) two marbles from the jar;
+   if (the two marbles are of the same color)  {
+      toss them aside;
+      place a RED marble into the jar;
+   }
+   else {   // one marble of each color was chosen
+      toss the chosen RED marble aside;
+      place the chosen BLUE marble back into the jar;
+   }
+} </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+By examining the procedure, you can easily verify that the number of 
+marbles in the jar decreases by exactly one on each iteration of the loop.
+Thus, if initially the jar contained N marbles, then after N-1 iterations
+of the loop, exactly one marble will remain.  What we have just done is
+to make an informal, but persuasive, argument that the loop terminates after
+finitely many iterations.  To be a bit more precise, we could explicitly
+define <em>g</em> to be the function that, applied to a jar of marbles,
+yields the number of marbles in that jar.  Then we would argue that the
+value of <em>g</em> decreases on each iteration of the loop, and,
+furthermore, that if the loop guard holds (which is to say that there are
+at least two marbles in the jar), <em>g</em>'s value is greater than zero.
+
+<p>
+Suppose we know how many RED and BLUE marbles were in the jar, initially.
+Armed with that information, can we predict, with certainty, the color of the
+last marble remaining in the jar?  (Note that, by virtue of the assumption
+that the jar was initially non-empty and the fact that the number of marbles
+decreases by exactly one on each iteration, it is not possible to end up with
+an empty jar.)
+
+<p>
+To state it more formally:
+<p>
+Does there exist a function 
+<em>f: N &times; N &rarr; {BLUE, RED}</em>
+(meaning that the domain of <em>f</em> is the set of ordered pairs of
+natural numbers and the range is the set {BLUE, RED}) that satisfies
+the following condition:
+
+<blockquote>
+        For all non-negative integers <em>K</em> and <em>M</em>
+        (such that at least one of them is non-zero),
+        if we begin with <em>K</em> RED marbles and <em>M</em>
+        BLUE marbles in the jar, then the procedure described above
+        terminates with the jar containing one marble, the color
+        of which is necessarily <em>f(K,M)</em>.
+</blockquote>
+
+<p>
+It turns out that such a function exists!  The key to identifying it is to
+first identify an invariant of the loop having to do with the number of
+BLUE marbles in the jar. 
+
+<p>
+Consider the effect that a single iteration of the loop has upon the number
+of BLUE marbles in the jar.  In the case that both marbles chosen were of
+the same color, the number of BLUE marbles either decreases by two (if both
+marbles chosen were BLUE) or stays the same (if both marbles chosen were RED).
+In the case that the marbles chosen were of different colors, the number of
+BLUE marbles remains the same.
+
+<p>
+It follows that a single loop iteration has no effect upon whether the number
+of BLUE marbles is odd or even.  (That is, the number of BLUE marbles in the
+jar either remains odd or remains even as a result of the execution of a
+single iteration of the loop.)  But then the same property holds with
+respect to any number of iterations of the loop.
+Letting <em>K</em> and <em>k</em> denote,
+respectively, the number of BLUE marbles occupying the jar initially and
+currently, respectively, we conclude that 
+<blockquote><b><em>k</em> is odd if and only if <em>K</em> is odd</b>
+</blockquote>
+is an invariant of the loop.
+In case you find any of them easier to comprehend, here are three
+different ways of expressing the same thing:
+<blockquote>
+<b>(both <em>K</em> and <em>k</em> are odd) or 
+(both <em>K</em> and <em>k</em> are even)<br />
+The parity of K = the parity of k<br />
+K mod 2 = k mod 2</b>
+</blockquote>
+
+</p><p>
+
+
+
+<p>
+Suppose that, initially, the number of BLUE marbles in the jar, <em>K</em>,
+were odd, and that the loop has just terminated.  
+(And recall that, because a loop invariant holds at the end of every
+iteration, it holds, in particular, at the end of the last iteration.)
+Then the lone marble remaining in the jar must be BLUE, because otherwise 
+we'd have <em>k = 0</em>, which is even.  
+By a similar argument, we conclude that, if <em>K</em> were even, then
+the remaining marble must be RED, because otherwise we'd have
+<em>k = 1</em>, which is odd.
+
+<p>
+Thus, the function <em>f</em> mentioned above is as follows:
+<pre>
+                <em>f(K,M)</em> = { RED   if <em>K</em> is even
+                         { BLUE  otherwise (i.e., if <em>K</em> is odd)
+</pre>
+
+Interestingly, the color of the last remaining marble does not depend at
+all upon the number of RED marbles initially in the jar.
+
+
+<hr>
+
+<H3>Closed Curve Grid Game:</H3>
+
+There are two players, call them Red and Blue.  The game is played on a 
+rectangular grid of points, such as illustrated below.
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+    1 2 3 4 5 6 7 
+6   . . . . . . . 
+5   . . . . . . . 
+4   . . . . . . . 
+3   . . . . . . . 
+2   . . . . . . . 
+1   . . . . . . . </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+The rows and columns have been numbered so that we can refer to the point in
+row i and column j using the ordered pair (i,j).
+
+<p>
+Red and Blue take alternating turns, with Red going first.  Red takes a
+turn by drawing a red line segment, either horizontal or vertical, connecting
+any two adjacent points on the grid that are not yet connected by any line
+segment.  Blue takes a turn by doing the same thing, except that the line
+segment drawn is blue.  Red's goal is to form a closed curve (i.e., a 
+sequence of (three or more) distinct line segments starting at some point
+and returning to that point) comprised entirely of red line segments.  Blue's
+goal is to prevent Red from doing so.  The game ends when either Red has
+formed a closed curve or there are no more line segments to draw.
+
+<p>
+Making an analogy with a computer program, we can view the game as follows:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>while (more line segments can be drawn) { 
+   Red draws line segment;
+   Blue draws line segment;
+} </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+(For simplicity, we have assumed that the # of possible line segments is
+even; otherwise the game might end with a RED line being drawn.)
+
+<p>
+<b>Question:</b> Does either Red or Blue have a "winning strategy", i.e., a
+game plan that, if followed faithfully, guarantees victory?
+
+<p>
+<b>Answer:</b>  Yes!  Blue is guaranteed to win the game by responding to each
+turn by Red in the following manner:
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>if (Red drew a horizontal line segment) {
+   let i and j be such that Red's line segment connects (i,j) with (i,j+1) 
+   if (i>1) {
+      draw a vertical line segment connecting (i-1,j+1) with (i,j+1)
+   } else {
+      draw a line segment anywhere
+   }
+} else  // Red drew a vertical line segment
+   let i and j be such that Red's line segment connects (i,j) with (i+1,j) 
+   if (j>1) {
+      draw a horizontal line segment connecting (i+1,j-1) with (i+1,j)
+   } else  {
+      draw a line segment anywhere
+   }
+}
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Informally, Blue responds to Red by making sure that the line segment just
+drawn by Red can never occur as one of the two line segments forming an 
+"upper right corner" of a closed curve of red segments.  Note that any
+closed curve of red line segments must include at least one such corner.
+Thus, if Blue adheres to this strategy, Red can never form a closed curve!
+
+<p>
+Assuming that Blue follows this strategy, the following statement is true
+after each step in the playing of the game:
+<blockquote>
+<b>There does not exist on the grid a pair of red 
+   line segments that form an upper right corner.</b>
+</blockquote>
+
+<p>
+That is, the above statement is an invariant (assuming Blue follows the
+specified strategy) with respect to the playing of the game.
+
+<p>
+Of course, there is nothing special about upper right corners.  Blue could
+have just as easily chosen to prevent Red from forming any of the other
+three kinds of corners instead.
+
+Significantly, when the game ends (i.e., the loop terminates), the
+invariant will hold, and Red will not have formed an upper right corner.
+Which means that Red must not have won, so Blue must have won.
+
+<hr>
+
+<H3>Daisy Petal Game</H3>
+
+Imagine a daisy (or any other flower) having 16 petals.
+Two players take alternating moves.  A move involves removing either
+one petal or two adjacent petals from the daisy, at the player's choice.
+The winner is the one removing the last petal.
+(Note: By "adjacent" petals, we mean two petals that were adjacent to
+one another before any petals were removed.)
+
+<p>
+<b>Question:</b>  Does either player have a winning strategy?
+<p>
+<b>Answer:</b>  Left as an exercise for the reader.
+
+<hr>
+
+<p>
+Now for some examples that come from computer programming.
+
+
+<H3>Computing Factorials</H3>
+
+Recall that, for <tt>n</tt> satisfying <tt>n&gt;0</tt>,
+
+</p><p>
+<center><tt>n! = 1 &times; 2 &times; ... &times; n</tt></center>
+
+<!--
+</p><p>
+(When <tt>n=0</tt>, the right-hand side corresponds to an empty product
+and hence has value 1.)
+-->
+
+</p><p>
+Suppose that we wish to develop a program that, given as input a
+positive integer <tt>n</tt>, assigns to <tt>r</tt> the value <tt>n!</tt>.
+That is, we are to develop a code segment having as its pre- and
+post-conditions <tt>P</tt> and <tt>Q</tt>, respectively, where
+
+<p><center><tt>P: n&gt;0</tt>  &nbsp; and &nbsp; <tt>Q: r = n!</tt></center>
+
+</p><p>
+It seems clear that some kind of iteration is needed.
+In this situation, using the following heuristics often helps in
+the development of a loop that solves the problem:
+
+</p><p>
+<b>Step 1:</b> Form a modified postcondition <tt>Q'</tt> by
+replacing a constant (or a variable) in <tt>Q</tt> by a fresh variable and
+adding as a new conjunct that the two are equal. 
+
+</p><p>
+In our example, taking <tt>n</tt> to be the constant and <tt>k</tt>
+to be the fresh variable, we get
+</p><p>
+<center><tt>Q' : r = k! &nbsp;&and;&nbsp; k = n</tt></center>
+
+</p><p>
+Note that <tt>n</tt>, although a variable, is constant in the
+sense that it is an input value not subject to being changed by our
+program.
+
+</p><p>
+<b>Step 2:</b> Choose the guard of the loop to be the negation of
+the "new" conjunct in <tt>Q'</tt> while taking the rest of <tt>Q'</tt>
+to be (the core of) the loop invariant <tt>I</tt>.
+
+</p><p>
+We get the following program "skeleton":
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>// P : n&gt;0
+&lt; initialization of k and n to "truthify" I &gt;
+// loop invariant I: r = k!
+while (k &ne; n)  {
+   // I
+   &lt; loop body that preserves truth of I while making progress towards termination &gt;
+   // I
+}
+// Q': r = k! &nbsp;&and;&nbsp; k = n
+// Q:  r = n!
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Descriptions of code that needs to be inserted are nested between
+angle brackets.
+Wherever there is a comment that states a condition
+(e.g., <tt>P</tt>, <tt>I</tt>, <tt>Q</tt>, <tt>Q'</tt>)
+it serves as an assertion that, whenever execution reaches that position
+in the code, that condition is true.  In particular, the precondition
+<tt>P</tt> is (assumed to be) true initially, the postcondition <tt>Q</tt>
+is true at the end of execution, and the loop invariant <tt>I</tt> is true
+just before the loop is reached and just before and just after each time the
+loop body is executed.
+
+</p><p>
+Our assertion that <tt>Q'</tt> is true upon termination of the loop
+follows from the fact that it is simply the conjunction of <tt>I</tt>
+(which will be true after every loop iteration, including the last)
+and the negation of the loop guard (which must be true upon termination
+of the loop &mdash;indeed, it was precisely the falseness of the 
+loop guard that caused the loop to terminate in the first place!).
+As for <tt>Q</tt>, note that it follows from <tt>Q'</tt>, as was
+pointed out when <tt>Q'</tt> was first introduced.
+
+</p><p>
+It remains for us to supply the two code segments that will serve
+as the initialization and the loop body, respectively.
+
+</p><p>
+As for the initialization code, we must assign values to
+<tt>k</tt> and <tt>r</tt> that truthifies (i.e., makes true)
+<tt>I : r = k!</tt>.
+There are, of course, an infinity of possible choices.
+For example, <tt>5! = 120</tt>, so we could do this:
+
+</p><p><center><tt>k = 5; r = 120</tt></center>
+
+</p><p>
+This doesn't seem like a good choice, however.
+Indeed, it seems rather arbitrary.
+</p><p>
+So what might be a better choice?
+Well, if we notice that the precondition is <tt>n&gt;0</tt>
+and that the loop guard is <tt>k&ne;n</tt>, what they suggest is
+that we initialize <tt>k</tt> to the smallest possible value of
+<tt>n</tt> (<tt>1</tt>) and that we confer upon the loop body the
+responsibility to make <tt>k</tt> increase until it is equal to <tt>n</tt>.
+
+</p><p>
+If we are going to initialize <tt>k</tt> to <tt>1</tt>, we must
+&mdash;in order to truthify <tt>I</tt>&mdash; initialize <tt>r</tt> to
+<tt>1!</tt>, which is <tt>1</tt>.  Hence, we propose that
+the initialization code be
+</p><p><center><tt>k = 1; r = 1;</tt></center>
+
+</p><p>
+Now we turn to the loop body.
+Its purpose is to make progress towards termination while at the same
+time preserving the truth of the invariant <tt>I : r=k!</tt>.
+The obvious way to make progress toward termination is to increment
+<tt>k</tt> so that the distance between its value and <tt>n</tt>
+(which is just <tt>n-k</tt>, of course) decreases by one.
+(Once that distance hits zero, the loop will terminate, after all.)
+This reasoning also tells us that a good choice for a bound function
+is <tt>n-k</tt>, as this expression satisfies the two properties that 
+we desire, namely that its value decreases on each iteration and that
+its value cannot go below zero before the loop guard becomes false.
+Just to make the second point explicit, we should augment our 
+loop invariant <tt>I</tt> to include as a new conjunct 
+<tt>0&lt;k&le;n</tt>, so that we now have
+</p><p>
+<center><tt>I : r = k! &and; 0&lt;k&le;n</tt>
+</center>
+
+</p><p>
+Our program skeleton has been refined to the following:
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>// P : n&gt;0
+k = 1;  r = 1;
+// loop invariant I: r = k! &and; 0&lt;k&le;n
+// bound function: n-k
+while (k &ne; n)  {
+   // I
+   k = k+1;
+   r = <b>??</b>;
+   // I
+}
+// Q': r = k! &nbsp;&and;&nbsp; k = n
+// Q:  r = n!
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+We have chosen to place the assignment to <tt>r</tt> (inside the 
+loop body) after that to <tt>k</tt>, which was somewhat arbitrary.
+But what should the right-hand side of that assignment statement be?  
+</p><p>
+Consider that, by incrementing <tt>k</tt> in a state in which
+<tt>I</tt> (and therefore <tt>r = k!</tt>) is true,
+we enter a state in which <tt>r = (k-1)!</tt> is true!
+If that confuses you, consider as an example the state
+in which <tt>k = 4</tt> and <tt>r = 24 = 4! = k!</tt>.
+If, in that state, we increment <tt>k</tt>, we enter a state in which
+<tt>k = 5</tt> and <tt>r = 24 = 4! = (5-1)! = (k-1)!</tt>
+
+</p><p>
+So what we need to determine is what value to assign to <tt>r</tt>
+in order to go from a state in which <tt>r = (k-1)!</tt> 
+to a state in which <tt>I</tt> is true, and, specifically, <tt>r = k!</tt>.
+Well, what is the relationship between <tt>k!</tt> and <tt>(k-1)!</tt>?
+That's simple: <tt>k! = k &times; (k-1)!</tt>. 
+Which means that the value we want to assign to <tt>r</tt> is 
+<tt>k</tt> multiplied by <tt>r</tt>'s "current" value, <tt>(k-1)!</tt>.
+Hence, an appropriate assignment is <tt>r = k * r</tt>.
+Our completed program is then:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>// P : n&gt;0
+k = 1;  r = 1;
+// loop invariant I: r = k! &and; 0&lt;k&le;n
+// bound function: n-k
+while (k &ne; n)  {
+   // I
+   k = k+1;
+   // r = (k-1)!
+   r = k * r;
+   // I
+}
+// Q': r = k! &nbsp;&and;&nbsp; k = n
+// Q:  r = n!
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Suppose that we had chosen, in developing the loop body, to place
+the assignment to <tt>k</tt> <em>after</em> that to <tt>r</tt>,
+rather than before.  Then the annotated loop body would have looked
+like this:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+// I
+r = (k+1) * r;
+// r = (k+1)!
+k = k+1;
+// I
+</pre>
+</td></tr>
+</table>
+</center>
+
+<hr>
+
+<H3>Finding a Maximum Element in an Array</H3>
+</p><p>
+Suppose we have an array <tt>a[]</tt> (where <tt>N = a.length &gt; 0</tt>)
+of, say, integers, and we want to determine the maximum among the values
+in <tt>a[]</tt>.  Using <tt>maxVal</tt> as the output variable,
+the desired postcondition is 
+
+</p><p><center><tt>Q : maxVal == Max({a[0], a[1], ... , a[N-1]})</tt></center>
+
+</p><p>
+For brevity, henceforth we shall abbreviate the array segment 
+<tt>&lt;a[0], a[1], ..., a[k]&gt;</tt> by <tt>a[0..k]</tt>.)
+Using the approach described above, we replace constant <tt>N</tt>
+in the postcondition by fresh variable <tt>k</tt> in order to obtain 
+a modified postcondition
+</p><p><center><tt>Q' : maxVal == Max(a[0..k-1]) &and; k = N</tt></center>
+
+</p><p>
+Choosing the first conjunct of <tt>Q'</tt> as the candidate loop invariant
+and the negation of the second conjunct as the loop guard, we derive this
+program skeleton:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+// precondition P: N > 0  (where N = a.length)
+&lt; initialization code to establish I &gt;
+// loop invariant I: maxVal == Max(a[0..k-1])
+while ( k != N )  {
+   &lt; loop body &gt;
+}
+// Q' : maxVal == Max(a[0..k-1]) &and; k == N
+// Q  : maxVal == Max(a[0..N-1])
+</pre>
+</table>
+</center>
+
+</p><p>
+For initialization, we choose <tt>k = 1; maxVal = a[0];</tt>.
+To verify that this establishes <tt>I</tt>, plug in <tt>1</tt> for
+<tt>k</tt> and <tt>a[0]</tt> for <tt>maxVal</tt> in <tt>I</tt> and 
+we get
+
+</p><p><center><tt>a[0] = Max(a[0..0])</tt></center>
+
+</p><p>
+which is obviously true.
+(If a set has only one value, clearly that value is the set's maximum!)
+
+</p><p>
+We initialized <tt>k</tt> to one rather than to zero because, otherwise,
+we would have had to initialize <tt>maxVal</tt> to <tt>Max(a[0..-1])</tt>,
+which is undefined.  (An empty collection of numbers has no maximum!) 
+This also explains why the precondition is <tt>N&gt;0</tt> rather
+than <tt>N&ge;0</tt>.
+
+<!--
+<b>Note:</b> 
+Rather than initializing <tt>k</tt> to <tt>0</tt>, we used <tt>1</tt>.
+The main reason is that establishing <tt>I(k:=0)</tt> is problematic,
+because it is not clear how to set maxVal to the maximum value of 
+<tt>a[0..-1]</tt>, which is an empty segment.  One idea is to set it to
+negative infinity, which works in the abstract, but which (at least in
+many circumstances) has no obvious counterpart in a computer program.
+Also, due to the fact that the precondition guarantees <tt>n&gt;0</tt>,
+we are justified in starting <tt>k</tt> at <tt>1</tt>.
+<b>End of note.</b>
+
+Having set <tt>k</tt> to 1, to establish <tt>I(k:=1)</tt> requires simply
+that <tt>maxVal</tt> be initialized to <tt>Max(a[0..0])</tt>, which is
+obviously <tt>a[0]</tt>.
+
+<p>
+As for establishing <tt>I(k:=k+1)</tt> inside the loop before incrementing
+<tt>k</tt>, consider that, at this point, we have <tt>I</tt> 
+(i.e., <tt>maxVal == Max(a[0..k-1])</tt>) and that we want to change 
+<tt>maxVal</tt> to establish <tt>maxVal == Max(a[0..k])</tt>. 
+-->
+
+</p><p>
+It remains to fill in the loop body, which must update <tt>k</tt>
+and <tt>maxVal</tt> so as to preserve the truth of <tt>I</tt> while
+also making progress towards termination.  Given that we initialized
+<tt>k</tt> to <tt>1</tt> and that the loop terminates only when
+<tt>k = N</tt> becomes true, the obvious way to modify <tt>k</tt>
+is to increment it, thereby reducing the distance <tt>N - k</tt>
+between <tt>k</tt> and <tt>N</tt>.  
+
+</p><p>
+Let <tt><b>K</b></tt> be the value of <tt>k</tt> at the beginning of a given
+loop iteration.  Then, according to the loop invariant <tt>I</tt>,
+we have (at the beginning of that iteration) that
+<tt>maxVal = Max(a[0..<b>K</b>-1])</tt>.
+Because we are going to increase <tt>k</tt>'s value by one 
+(thereby making its value <tt><b>K</b>+1</tt>) during the
+iteration (as proposed in the preceding paragraph), we must, in order
+to preserve the truth of <tt>I</tt>, ensure that <tt>maxVal</tt>'s
+value at the end of the iteration is <tt>max(a[0..<b>K</b>])</tt>.
+
+</p><p>
+So we consider the relationship between <tt>max(a[0..<b>K</b>-1])</tt> and
+<tt>max(a[0..<b>K</b>])</tt>.  Clearly, that relationship is that
+<tt>max(a[0..<b>K</b>])</tt> is the larger of <tt>max(a[0..<b>K</b>-1])</tt> 
+and <tt>a[<b>K</b>]</tt>.
+Choosing to update <tt>k</tt> after updating <tt>maxVal</tt> in
+the loop body (rather than before), we propose the following as our
+loop body:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+// I : maxVal = max(a[0..k-1])  (and k=<b>K</b>)
+maxVal = larger of Max(a[0..<b>K</b>-1]) and a[<b>K</b>]
+// maxVal = Max(a[0..<b>K</b>])
+k = k+1;
+// I </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Of course, this is only pseudo-code, because <tt><b>K</b></tt> is not a
+program variable, <tt>Max(a[0..<b>K</b>-1])</tt> is not a legal expression
+(even putting aside that it includes an occurrence of <tt><b>K</b></tt>),
+and "larger of" is not a legal operator.
+
+</p><p>
+But we can refine this pseudo-code into actual code as follows:
+</p><p>
+Because we are assuming that <tt>k=<b>K</b></tt> holds as the loop body
+begins execution, any occurrence of <tt><b>K</b></tt> appearing before
+the assignment to <tt>k</tt> can be replaced by <tt>k</tt> without
+changing the effect.  Since every occurrence of <tt><b>K</b></tt> comes
+before that assignment, we can replace all of them.
+(Had there been any occurrences of <tt><b>K</b></tt> after the assignment
+to <tt>k</tt>, we would have been justifed in replacing each one by
+<tt>k-1</tt> because, at that point in execution, <tt>k-1 = <b>K</b></tt>
+would be true.)
+
+</p><p>
+In particular, the assignment to <tt>maxVal</tt> becomes
+</p><p><center><tt>maxVal = larger of Max(a[0..k-1]) and a[k]
+</tt></center>
+
+</p><p>
+But the loop invariant tells us that <tt>maxVal = Max(a[0..k-1])</tt>
+is true as the loop body begins execution.  Hence, we can replace
+<tt>Max(a[0..k-1])</tt> by <tt>maxVal</tt>, which yields the assignment
+</p><p><center><tt>maxVal = larger of maxVal and a[k]
+</tt></center>
+
+</p><p>
+This can be refined to either
+
+</p><p><center><tt>maxVal = Math.max(maxVal, a[k])</tt></center>
+
+</p><p>
+or
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+if (maxVal &ge; a[k])
+   { maxVal = maxval; }
+else
+   { maxVal = a[k]; }
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Clearly, the latter is better written as follows:
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+if (maxVal &lt; a[k]) { 
+   maxVal = a[k];
+} </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Adopting this as our assignment to <tt>maxVal</tt>, the entire program
+is as follows:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+// precondition P: N > 0  (where N = a.length)
+k = 1; maxVal = a[0];
+// loop invariant I: maxVal == Max(a[0..k-1])
+while ( k != N )  {
+   // I
+   if (maxVal &lt; a[k]) { 
+      maxVal = a[k];
+   }
+   // maxVal = Max(a[0..k])
+   k = k+1;
+   // I
+}
+// Q' : maxVal == Max(a[0..k-1]) &and; k == N
+// Q  : maxVal == Max(a[0..N-1])
+</pre>
+</td></tr>
+</table>
+</center>
+
+
+<hr>
+
+<H3>2-Color Partitioning Problem</H3>
+<!-- <H3>2-Color Dutch National Flag Problem</H3> -->
+<p>
+Given an array <tt>a[0..N-1]</tt> (again, <tt>N</tt> abbreviates
+<tt>a.length</tt>) each of whose elements can be classified
+as either RED or BLUE, assign to <tt>k</tt> the number of occurrences
+of RED values in <tt>a[]</tt> and rearrange <tt>a[]</tt>'s elements
+(via swapping, but no other operation)
+so that all RED values end up in <tt>a[0..k-1]</tt>
+and all BLUE values end up in <tt>a[k..N-1]</tt>
+
+</p><p>
+In picture form, the desired postcondition <tt>Q</tt> is
+<center>
+<table>
+<tr><td>
+<pre>   0                 k                N
+  +-----------------+----------------+
+a |     all RED     |    all BLUE    |
+  +-----------------+----------------+ </pre>
+</td></tr>
+</table>
+</center>
+
+That is, <tt>Q: a[0..k-1] is RED  &and; a[k..N-1] is BLUE</tt>
+
+</p><p>
+It is fairly obvious that any solution will involve a loop.
+In order to obtain candidates for the loop's invariant and guard, we 
+first rewrite the postcondition <tt>Q</tt> as the slightly stronger
+<p><tt><center>Q' : a[0..k-1] is RED &and; a[k..m-1] is BLUE &and; m = N
+</tt></center>
+<p>
+Note that <tt>Q'</tt> was obtained from <tt>Q</tt> by replacing 
+<tt>N</tt> by <tt>m</tt> in the second conjunct and adding 
+<tt>m = N</tt> as a new third conjunct.
+It should be clear to the reader that any state satisfying <tt>Q'</tt>
+also satisfies <tt>Q</tt>.
+
+</p><p>
+Following our usual approach, as a loop guard we propose using
+<tt>m != N</tt>, which is the negation of the third conjunct of <tt>Q'</tt>.
+As a loop invariant <tt>I</tt>, we propose using the rest of <tt>Q'</tt>
+(i.e., its first two conjuncts).
+That gives us
+
+<p><center><tt>
+I: a[0..k-1] is RED  &and;  a[k..m-1] is BLUE
+</tt></center>
+
+<p>
+which, as a picture, looks like this:
+
+<center>
+<table>
+<tr><td>
+<pre>   0            k             m           N
+  +------------+-------------+-----------+
+a |  all RED   |  all BLUE   |     ?     |
+  +------------+-------------+-----------+ </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Notice how these choices for <tt>I</tt> (the loop invariant) and 
+<tt>B</tt> (the loop guard) automatically give us
+<p><center><tt>I &and; &not;B &rArr; Q'</tt></center>
+
+</p><p>
+which is vital in showing that, when the loop terminates,
+the postcondition holds.
+
+</p><p>
+Notice also that <tt>I</tt> says nothing about the contents of array segment
+<tt>a[m..N-1]</tt>, which is why we label it in the picture by
+<tt><b>?</b></tt> (which is supposed to indicate that we are asserting
+nothing about the colors of the elements there).
+
+</p><p>
+Given the above, we sketch our solution as follows:
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>k = ?;  m = ?;  // initialize k and m to truthify I
+// invariant I : a[0..k-1] is RED &and; a[k..m-1] is BLUE 
+while ( m != N )  {
+   &lt; code to preserve I while also making progress toward termination &gt;
+}
+//  I &and; m = N, from which Q' follows, from which Q follows 
+</pre>
+</td></tr>
+</table>
+</center>
+
+
+</p><p>
+Let us consider to which values our variables <tt>k</tt> and
+<tt>m</tt> should be initialized.
+Recall that the loop invariant requires that all elements in the
+segment <tt>a[0..k-1]</tt> be RED and that all elements in 
+<tt>a[k..m-1]</tt> be BLUE.
+As we have no way of knowing
+&mdash;until <b>after</b> we've examined it&mdash;
+what color any particular array element might have, the only way
+that we can ensure that every element in these two segments is of the
+right color is to give values to <tt>k</tt> and <tt>m</tt> making those
+segments empty!!
+(Note that all values occurring in an empty array segment are RED.
+And all of them are BLUE, too!!  In general, if <tt>D</tt> is
+any property at all, and <tt>a[p..q]</tt> is an empty segment
+(because <tt>p &gt; q</tt>), then the statement 
+"All elements in <tt>a[p..q]</tt> have property <tt>D</tt>" is true!)
+
+</p><p>
+To make <tt>a[0..k-1]</tt> empty, we set <tt>k</tt> to zero.
+Given that choice, in order to make <tt>a[k..m-1]</tt> empty we
+must set <tt>m</tt> to zero as well.
+(The result, of course, is that the RED and BLUE segments are empty
+and the <b>?</b> segment covers the entire array!)
+
+</p><p>
+Our still rather sketchy solution has been refined to this:
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>k = 0;  m = 0;  // initialize k and m to truthify I
+// { invariant I : a[0..k-1] is RED &and; a[k..m-1] is BLUE }
+while ( m != N )  {
+   &lt; code to preserve I while also making progress toward termination &gt;
+}
+// I &and; m=N, from which Q' follows, from which Q follows 
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+At this point we observe that, since <tt>m</tt> is initialized to zero
+and must finish with value <tt>N</tt> (in order to falsify the loop guard,
+thereby causing the loop to terminate), it would seem that a reasonable way
+to achieve the goal of "making progress toward termination" on each iteration
+would be for the body of the loop to cause <tt>m</tt>'s value to increase.
+Indeed, this would correspond to a decrease in the length of the
+<b><tt>?</tt></b>-segment, which has length <tt>N - m</tt>.
+(And when the loop guard becomes false (i.e., <tt>m = N</tt> becomes true),
+that corresponds to the length of the <b><tt>?</tt></b>-segment becoming zero,
+at which point the postcondition has been established!)
+
+</p><p>
+It would seem sensible that the loop body should examine one of the
+elements in the <b><tt>?</tt></b>-segment and, according to its color,
+take action necessary to place that value into the appropriate segment
+(either RED or BLUE).
+Suppose that, among the elements in the <b><tt>?</tt></b>-segment, 
+we choose to examine the first (i.e., leftmost) one, which is <tt>a[m]</tt>.
+(An exercise below explores the possibility of making a different choice.)
+
+</p><p>
+So our loop body has this logic:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>if (isRed(a[m])) {
+   place a[m] into RED segment
+}
+else { // isBlue(a[m]) 
+   place a[m] into BLUE segment
+}
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+The case of <tt>a[m]</tt> being BLUE is the simpler, in that to
+"absorb" that element into the BLUE segment requires nothing other
+than to increment <tt>m</tt>!  To reason through this in a more
+technical fashion, we can argue as follows:
+
+</p><p>
+Let <tt><b>M</b></tt> be the value of <tt>m</tt> at the beginning of
+the loop iteration in question.  Then the loop invariant tells us that
+all elements in <tt>a[0..k-1]</tt> are RED and 
+all elements in <tt>a[k..M-1]</tt> are BLUE.
+If, as we are assuming, <tt>a[m]</tt> (i.e., <tt>a[M]</tt>) is BLUE,
+then we have that all elements in <tt>a[k..M]</tt> are BLUE.
+If we then increase <tt>m</tt> by one, we arrive in a state in which
+<tt>m-1 = M</tt> and so all elements in <tt>a[k..m-1]</tt> are BLUE,
+which is consistent with the loop invariant.  Because <tt>k</tt> was
+not modified, in the new state it is still the case that all elements
+in <tt>a[0..k-1]</tt> are RED.  Hence, the invariant holds after
+incrementing <tt>m</tt>.
+
+</p><p>
+How about the case in which <tt>a[m]</tt> is RED?
+In order to place that element into the RED segment, we can swap it
+with <tt>a[k]</tt>, which is where the BLUE segment begins.
+In effect, this shifts the BLUE segment "to the right" by one position
+(from <tt>a[K..M-1]</tt> to <tt>a[K+1..M]</tt>, where <tt><b>K</b></tt>
+and <tt><b>M</b></tt> are the values of <tt>k</tt> and <tt>m</tt> at
+the beginning of this iteration) and it extends the RED segment one
+place "to the right" (from <tt>a[0..K-1]</tt> to <tt>a[0..K]</tt>.
+But this means that, after the swap, if we increment both <tt>k</tt> and
+<tt>m</tt>, we end up in a state in which <tt>k-1=K</tt> and
+<tt>m-1=M</tt> so that all elements in <tt>a[0..k-1]</tt> are RED
+and all elements in <tt>a[k..m-1]</tt> are BLUE, which is consistent
+with the invariant!
+
+</p><p>
+Assuming the existence of a method <tt>swap()</tt> that swaps the elements
+at the two specified locations of the specified array, a suitable loop body
+is thus
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>if (isRed(a[m])) {
+   swap(a,k,m); k = k+1; m = m+1;
+}
+else { // isBlue(a[m]) 
+   m = m+1;
+}
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+If we "factor out" the assignment to <tt>m</tt> appearing at the end
+of each branch of the if-statement, we get
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>if (isRed(a[m])) {
+   swap(a,k,m); k = k+1; 
+}
+else { // isBlue(a[m]) 
+}
+m = m+1;
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Since the else-branch is "empty" we can simplify to this:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>if (isRed(a[m])) {
+   swap(a,k,m); k = k+1; 
+}
+m = m+1;
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+The full solution is then
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>k = 0; m = 0;
+// invariant I : a[0..k-1] is RED &and; a[k..m-1] is BLUE 
+while ( m != N )
+{
+   if (isRed(a[m])) {
+      swap(a,k,m); k = k+1; 
+   }
+   m = m+1;
+}
+// I &and; m=N (i.e., Q')
+// Q (follows from Q')
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+&nbsp;
+
+<hr>
+<b>Exercise 0:</b>
+Modify the given solution to the 2-Color Partitioning Problem in such
+a way that the loop invariant remains as it is but so that
+the element of <tt>a[]</tt> examined during each loop iteration
+is the one at location <tt>N-1</tt> (rather than <tt>m</tt>).
+Find one such solution in which a single swap occurs during each iteration
+and another one in which two swaps occur during any iteration in which
+<tt>a[N-1]</tt> is found to be RED.  (Be careful about the order in which
+the two swaps are carried out.)
+
+</p><p>
+<b>Exercise 1:</b>
+Develop an alternative solution to the 2-Color Partitioning problem
+based upon obtaining a candidate loop invariant and loop guard by
+replacing the second occurrence of <tt>k</tt> in the postcondition
+by fresh variable <tt>m</tt>, rather than by replacing <tt>N</tt>.
+We obtain <tt>k != m</tt> as a candidate loop guard and this as the
+candidate loop invariant:
+</p><p>
+<center>
+<table>
+<tr><td>
+<pre>
+   0             k         m              N
+  +-------------+---------+--------------+
+a |   all RED   |    ?    |   all BLUE   |
+  +-------------+---------+--------------+</pre>
+</td></tr>
+</table>
+</center>
+
+<b>Exercise 2:</b>
+Repeat the previous exercise, but this time replace <tt>0</tt> by
+fresh variable <tt>m</tt>.
+We obtain <tt>m!=0</tt> as a candidate loop guard and this as a
+candidate loop invariant:
+</p><p>
+<center>
+<table>
+<tr><td>
+<pre>
+   0           m             k              N
+  +-----------+-------------+--------------+
+a |     ?     |   all RED   |   all BLUE   |
+  +-----------+-------------+--------------+ </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+<b>Exercise 3:</b>
+The <b>3-Color Partitioning Problem</b> generalizes the 2-color problem
+by adding a third color, WHITE.  Here is a graphical depiction of the
+postcondition:
+
+</p><p>
+<center>
+<table>
+<tr><td>
+<pre>
+   0             k               m              N
+  +-------------+---------------+--------------+
+a |   all RED   |   all WHITE   |   all BLUE   |
+  +-------------+---------------+--------------+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+In text:
+</p><p><center><tt>
+Q: a[0..k-1] is RED  &and; a[k..m-1] is WHITE &and; a[m..N-1] is BLUE
+</tt></center>
+
+</p><p>
+<b>(a)</b>
+Develop a solution based upon obtaining a loop guard and loop invariant
+by replacing <tt>N</tt> by fresh variable <tt>r</tt>.
+
+</p><p>
+<b>(b)</b>
+Develop a solution based upon obtaining a loop guard and loop invariant
+by replacing the second occurrence of <tt>m</tt> by fresh variable <tt>r</tt>.
+
+</p><p>
+<b>(c)</b>
+Develop a solution based upon obtaining a loop guard and loop invariant
+by some replacement other than those indicated in (a) or (b).
+
+
+</body>
+</html>

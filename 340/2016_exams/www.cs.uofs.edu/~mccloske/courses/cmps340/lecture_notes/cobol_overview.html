@@ -1,0 +1,172 @@
+<html>
+<head>
+<title>McCloskey's notes on COBOL: Overview</title>
+<body>
+<H1>COBOL</H1>
+
+<H2>Overview</H2>
+
+<H3>History, Significance, Purpose</H3>
+<p>
+The original version of COBOL was designed in 1959 (by a committee)
+and was intended to be used for data processing applications (as
+opposed to scientific applications).  Hence, its name: 
+<b>CO</b>mmon <b>B</b>usiness <b>O</b>riented <b>L</b>anguage.
+In 1968, the organization that would later become known as ANSI
+(the American National Standards Institute) certified the first
+official COBOL standard.  Revised standards appeared in 1974 and 1985.
+Object-oriented versions of COBOL have appeared in recent years,
+and in 2002 ISO appproved a COBOL standard supporting OO features.
+
+<p>
+In view of its intended purpose, one must conclude that COBOL has
+been wildly successful.  It has been estimated that, of all
+computer programming code written in history (i.e., during the past
+55 years), over half of it is in COBOL!
+That much of this code is still in use is evidenced by the fact that,
+during the recent Y2K "crisis", thousands of programmers were hired 
+to patch old COBOL programs in order to make them "Y2K-compliant".
+We see, then, that COBOL is still an important programming language.
+See the March/April 2000 issue of <em>IEEE Software</em> (Vol. 17, No. 2)
+for several articles that speculate upon what the future holds for COBOL.
+
+<p>
+Despite COBOL's long-standing success in industry, it long ago
+became passe among the snobbish element of the computer science community,
+who view it (not without reason) as a "dinosaur".
+It is not clear, however, with respect to building data processing
+applications, whether any of the more modern languages (such as Ada,
+Java, or C++) is superior to, or even the equal of, COBOL.  Robert Glass
+argues precisely this point in his <em>Practical Programmer</em> column 
+(titled "COBOL -- A Contradiction and an Enigma") in the September
+1997 issue of <em>Communications of the ACM</em>.  Also see Glass's
+<em>Loyal Opposition</em> column (titled "COBOL: A Historic Past,
+a Vital Future?") in the July/August issue of <em>IEEE Software</em>
+(Vol. 16, No. 4).
+
+<p>
+One of the persons often cited, inaccurately, as a co-designer of COBOL
+is Grace Murray Hopper (1906-1992), who rose to the rank of admiral in
+the U.S. Navy.
+It is true that <em>Flow-Matic</em>, the first programming language geared
+towards business data processing and the development of which was led by
+Hopper, served as a model to those who designed COBOL, but she had no
+direct participation in the creation of COBOL.
+(See "The Real Creators of COBOL", by Jean E. Sammet, <em>IEEE Software</em>,
+March/April 2000, pp. 30-32.)
+Also, Hopper's work on compilers in the 1950's was instrumental in
+convincing those in the computing industry of the viability of using
+high-level languages (rather than only assembly or machine languages),
+which helped to pave the way for COBOL to become widely used.
+
+<p>
+For more information, see pages 1-4 of <em>Comprehensive COBOL</em>,
+by Philippakis and Kazmier.
+
+
+<H3>Syntactic Characteristics (and Oddities)</H3>
+<p>
+Given your programming experience (probably with languages such as Java),
+<!-- Pascal, Ada, and BASIC), -->
+you might find COBOL's syntax a bit strange, in at least two ways.
+One is that its statements tend to resemble (imperative) sentences written
+in English (e.g., <tt>ADD Num-Items TO Total-Items</tt>).
+This makes COBOL code readable, to some degree, by non-programmers.
+It also tends to make COBOL programs annoyingly verbose.
+Another aspect of COBOL syntax that seems odd, at least to young programmers,
+is that, unlike more modern languages, it is not "free format".
+That is, there are strict rules regarding where, on each line,
+code may be placed.
+For example, an executable statement may not begin before the fifth
+position on a line.  In earlier versions of the language, the first six
+positions on each line were reserved for line numbers, and executable 
+statements could not begin before the 12th position on a line.
+
+<p>
+You should keep in mind that COBOL's syntax reflects the typical computing
+environment that existed at the time it was designed.  Back then, programmers
+did not enter source code into a file using text editors (e.g., vi, emacs,
+MS Notepad) or word processors (e.g., MS Word), but rather they used
+a card punch machine to punch holes in cards.  Each card corresponded to a
+single line of code in a program.  To compile/execute a program, the
+programmer had to take a stack of cards (comprising the program) to the
+computer operator, who would then feed them into a card reader, which was
+the standard input device by which computers were given the programs they
+were to execute.  If you were to accidently drop your stack of cards onto
+the floor, you would have had a very hard time putting them back into correct
+order were it not for the line numbers encoded on the (first six columns of
+the) cards!
+
+<p>
+The hierarchy of syntactic units in COBOL is, from highest to lowest: 
+(sub)program, division, section, paragraph, sentence, statement, clause, word,
+and character.  That is, (sub)programs are composed of divisions, 
+divisions are composed of sections, sections are composed of paragraphs,
+etc., etc.  Luckily, you needn't memorize much of this!
+
+<p>
+There are approximately 300 reserved words in COBOL (e.g., <tt>IF</tt>,
+<tt>ADD</tt>, <tt>PERFORM</tt>, <tt>ZERO</tt>, etc.).
+Our convention will be to write these entirely in upper case.
+Words introduced by the programmer, such as names of data items 
+(called data-names), will usually be written as a hyphenated sequence
+of words, with the first letter in each word in upper case.  Examples
+are <tt>Gross-Pay</tt>, <tt>Counter</tt>, <tt>Num-Overtime-Hours</tt>.
+A data-name may be up to 30 characters in length and may include
+alphabetic and numeric characters, as well as hyphens.  A data-name
+may not begin with a hyphen, however.  (<em>Note:</em> Some compilers
+do not distinguish between hyphens and underscores used within a data-name.)
+
+<p>
+For more information, see pages 26-28 of <em>Comprehensive COBOL</em>.
+
+
+<H3>The Four Divisions of a COBOL (Sub)Program</H3>
+
+<p>
+Every COBOL (sub)program is composed of four divisions, occuring in this
+order: IDENTIFICATION, ENVIRONMENT, DATA, and PROCEDURE.
+Their roles are as follows:
+<ul>
+  <li><b>IDENTIFICATION</b>:  contains information that helps to identify
+     the program, such as program name (the only required piece of info),
+     author, date written, etc. </li>
+  <li><b>ENVIRONMENT</b>:  supplies installation-specific information;
+     that is, it tells what computer equipment is needed to run the program.
+     Its two sections are the <b>configuration section</b>, which is just
+     about useless, and the <b>Input-Output section</b>, in which is 
+     established the mapping from file names used in the program to 
+     actual files on the computer system.</li>
+  <li><b>DATA</b>:  data used by the program is declared/described. 
+     The <b>file section</b> describes the record structures of files used
+     by the program; the <b>working-storage section</b> describes temporary
+     (i.e., non-persistent) data, which exists only during program execution.
+     The data division of a subprogram also includes a <b>linkage section</b>,
+     which is where the formal parameters (called "arguments" in COBOL
+     terminology) are described.</li>
+  <li><b>PROCEDURE</b>:  contains executable instructions!  Execution
+     begins with the first paragraph, which is thus usually designed to act
+     as the "main" program.  To make an analogy to Ada/Pascal, each paragraph
+     is like a parameter-less procedure subprogram having no local data.</li>
+</ul>
+
+<p>
+For more information, see page 19 of <em>Comprehensive COBOL</em>.
+
+<!--
+<H3>Sample Programs</H3>
+
+<ul>
+  <li><A HREF="gpa_handout.txt">GPA calculation program</A></li>
+  <li><A HREF="../rewrite_examp.cob">Program that modifies a sequential
+       file in place</A></li>
+</ul>
+
+<H3>Template</H3>
+
+  <li><A HREF="../template.cob">COBOL program template</A></li>
+
+-->
+
+</body>
+</html>

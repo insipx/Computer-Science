@@ -1,0 +1,80 @@
+<html>
+<head>
+<title>
+</title>
+
+<body>
+<!--
+<H2>1999 U of S Programming Contest<br>
+Problem 1: Decimal Representation of Rational Numbers</H2>
+-->
+<H2>Decimal Representation of Rational Numbers</H2>
+
+<p>
+A rational number is one that can be expressed as a fraction 
+<b>k/m</b>, where k and m are integers and m is nonzero.
+It turns out that these are also the numbers than can be 
+expressed in <em>repeating decimal</em> form.
+That is, every rational number can also be written in the form
+<p>
+<center>p.d<sub>1</sub> d<sub>2</sub> d<sub>3</sub> 
+... d<sub>n-r</sub> <b>(</b>
+d<sub>n-r+1</sub> d<sub>n-r+2</sub> ...  d<sub>n</sub> <b>)</b>
+</center>
+<br>
+where p is an integer, each d<sub>i</sub> is a digit between 0 and 9, and
+the parentheses around the last r digits indicate that that sequence of 
+digits repeats forever.
+
+<p>
+Notice that the repeating decimal representation of a rational number
+is not unique.  For example, the rational number <b>13/6</b> is represented
+by each of <b>2.1(6)</b>, <b>2.16(6)</b>, and <b>2.1(66)</b> 
+(as well as infinitely many other such expressions).
+We say that a repeating decimal representation is in <em>simplest form</em>
+if the number of digits appearing after its decimal point is the minimum
+possible.  Thus, for example, the simplest repeating decimal representation
+of <b>13/6</b> is <b>2.1(6)</b>.
+As another example, the simplest repeating decimal representation of 
+<b>40/4</b> is <b>10.(0)</b>.
+
+<p>
+You are to develop a program that can translate a given rational number
+into its simplest repeating decimal form.
+The input will consist of a sequence of rational numbers, each given on
+one line by a pair of nonnegative integers, the first representing a 
+numerator and the second a denominator.
+For each rational number given as input, your program should produce a
+line of output containing its simplest repeating decimal representation.
+
+<p>
+In order to simplify the task of producing output, your results are to be
+written in the form 
+<p>
+<center>p.d<sub>1</sub> d<sub>2</sub> 
+<font face=symbol>¼</font> d<sub>n</sub> &nbsp;&nbsp;&nbsp;r, 
+</center>
+
+<p>
+where r indicates the length of the repeating sequence of digits.
+(See sample output below.)
+
+<!--
+<p>
+You may assume that any rational number used in testing your program
+is such that its simplest repeating decimal representation
+has no more than fifty digits appearing after the decimal point.
+-->
+
+<p>
+<b>Sample Input</b><br>
+<pre>14 5
+131 350</pre>
+
+<p>
+<b>Sample Output</b><br>
+<pre>2.80 1
+0.37428571 6</pre>
+
+</body>
+</HTML>

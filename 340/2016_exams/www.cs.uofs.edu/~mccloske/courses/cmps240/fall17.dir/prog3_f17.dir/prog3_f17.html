@@ -1,0 +1,117 @@
+<html>
+<head>
+  <title>CMPS 240  Fall 2017  Programming Assignment #3</title>
+</head>
+<body>
+<h2>
+  CMPS 240  Fall 2017<br />
+  Programming Assignment #3: Generic 3-Color Partitioning<br />
+  Due: 11:59pm, Monday October 2
+</h2>
+
+<h3>Requirements</h3>
+
+</p><p>
+In lecture was presented 
+<a href="../../two_color_partition.dir/" target="_blank">Java code</a> 
+(in the form of one interface, four "instance classes", 
+and one application) that implements 2-color array partitioning.
+For this assignment, you are to modify that code so as to implement
+3-color array partitioning.
+
+</p><p>
+Specifically, you are responsible for producing the following
+Java program units:
+
+<ul>
+  <li><b><tt>RedWhiteBlueClassifier</tt>:</b> 
+      generic Java interface analogous to <tt>RedBlueClassifier</tt>, 
+      it is to include an <tt>isWhite()</tt> method.
+  </li>
+  <li><b><tt>NegZeroPosClassifier</tt>:</b> 
+      Java class implementing <tt>RedWhiteBlueClassifier</tt> and 
+      analogous to <tt>NegPosClassifier</tt>, differing in that it 
+      classifies zero as White.
+  </li>
+  <li><b><tt>YoungMiddleOldClassifier</tt>:</b>
+      Java class implementing <tt>RedWhiteBlueClassifier</tt> and 
+      classifying <a href="Person.java"><tt>Person</tt></a> 
+      objects as being either young (Red), middle-aged (White), 
+      or old (Blue).  By default, young means 25 years old or less,
+      old means 60 years old or more, and middle-aged is what's left
+      between.  However, the client creating an object of this class
+      must be able to specify the young/middle and middle/old boundaries
+      by passing parameters to a constructor.
+  </li>
+  <li><b><tt>RedWhiteBluePartitioner</tt>:</b>
+      generic Java class analogous to <tt>RedBluePartitioner</tt>, 
+      differing in that it performs 3-color partitioning rather than 2-color.
+      Of course, there being three post-partition array segments of interest,
+      and hence two boundaries between them, this class needs two methods
+      for returning boundary information (<tt>redWhiteBoundary()</tt> and
+      <tt>whiteBlueBoundary()</tt>) rather than only one.
+      </p><p>
+      The <tt>partition()</tt> method in the <tt>RedBluePartitioner</tt> 
+      class provided to you includes <tt>assert</tt> statements for the 
+      purpose of verifying the truth of its stated loop invariant after
+      each loop iteration.  It is expected that your code will include
+      analogous <tt>assert</tt> statements.
+  </li>
+</ul>
+
+</p><p>
+For all but the <tt>YoungMiddleOldClassifier</tt> class, it is recommended that
+you make a copy of the analogous interface/class used in 2-partitioning and
+modify it to suit your needs.  Make sure to update the comments appropriately.
+For <tt>YoungMiddleOldClassifier</tt>, make a copy of
+<tt>NegZeroPosClassifier</tt> and modify it.
+
+</p><p>
+For testing purposes, you can use the Java application
+<a href="Partition3App.java"><tt>Partition3App</tt></a>.
+If it doesn't work correctly, there is almost certainly
+something wrong with your code.
+</p><p>
+Java's <tt>assert</tt> statement is a useful tool that aids the 
+program testing process.  Oddly, however, by default
+<tt>assert</tt> statements are ignored when a Java application
+is executed.  Thus, to make use of them, you have to "turn on" 
+assertion checking.
+In jGrasp, you click on the <b>Build</b> menu and then click on
+the Enable Assertions box (so that a check mark appears in it).
+
+
+<h3>Program Submission</h3>
+
+Submit your four source code files, namely 
+<tt>RedWhiteBlueClassifier.java</tt>,
+<tt>NegZeroPosClassifier.java</tt>,
+<tt>YoungMiddleOldClassifier.java</tt>, and
+<tt>RedWhiteBluePartitioner.java</tt>
+(and <b>no others</b>) from the course web
+page using the <b>Submit/Review</b> link that is
+adjacent to the link that brought you to this page.
+
+</p><p>
+Make sure to augment the comments near the top of each class to identify
+yourself and to point out any flaws of which you are aware.
+In at least one of them, list the names of any persons who aided 
+you in developing your solution.
+
+</p><p>
+Be aware that you can submit source code files more than one time.
+If, after submitting your work, you make corrections or improvements in one of
+your source code files, submit only that file for a second (or whatever) time.
+In other words, there is no point in submitting a file if it has not changed
+since the last time you submitted it! 
+
+</p><p>
+After submitting a file, you can verify that it was copied into the proper
+folder by "reviewing" it.  Just refresh the "Submit Page" and links to
+all files that you have submitted will appear under your name near the
+top left of the page.   Note that when a file with the same name as a
+previously-submitted file is submitted, the older file is renamed so
+that a time stamp is in its name.
+
+</body>
+</html>

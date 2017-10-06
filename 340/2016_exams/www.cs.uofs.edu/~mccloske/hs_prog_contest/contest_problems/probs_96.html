@@ -1,0 +1,407 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>1996 U of S Programming Contest Problems</TITLE>
+<H2>University of Scranton 1996 High School Programming Contest Problems
+</H2>
+</HEAD>
+
+<BODY>
+
+<A HREF="#Calendar_Creation">Problem 1: Calendar Creation</A><br />
+<A HREF="#Regular_Expressions">Problem 2: Regular Expressions</A><br />
+<A HREF="#Complex_Numbers">Problem 3: Complex Numbers</A><br />
+<A HREF="#FCFS_Scheduling">Problem 4: 
+         First-Come-First-Served Scheduling</A><br />
+<A HREF="#Kill_Your_Neighbor">Problem 5: Kill Your Neighbor</A><br />
+<A HREF="#Zeckendorf_Theorem">Problem 6: Zeckendorf's Theorem</A>
+
+
+<p>&nbsp;
+<p>
+<A NAME="Calendar_Creation">
+<hr>
+<b>Problem 1: Calendar Creation</b></A>
+
+<p>
+Develop a program to create a calendar for one month.  Your program will
+accept two inputs.  The first input is the number of the month for which you
+will create the calendar.  January is represented by 1, February by 2, and
+so on.  The second input is the year for which you will create the calendar.
+The year is any positive integer between 1500 and 9999, inclusive.  Your
+program should display a calendar representing that month, in the same form
+as shown in the example below. Your program should accept input and provide
+output until the user enters 0 as the month.</P>
+
+<P>For our purposes, you are to assume that any year divisible by 4 is a
+leap year and that the Gregorian calendar applies all the way back to the
+year 1500.  In the output, it is not necessary for the month name and year
+(<B>March, 2012</B> in the example below) to be centered exactly above your
+calendar, but it should appear above the calendar.  It may be helpful to
+note that January 1, 1500, was a Thursday and that the number of days in
+each month is as follows:
+January, March, May, July, August, October, and December each have 31;
+April, June, September, and November each have 30; February has 28 in
+non-leap years and 29 in leap years.
+
+<p>
+<b>Sample Program Execution:</b>
+<p>
+<tt>
+Enter Month: <u>3</u><br />
+Enter Year: <u>2012</u><br />
+<br />
+<pre>       March, 2012
+  S   M   T   W   T   F   S
+                  1   2   3
+  4   5   6   7   8   9  10
+ 11  12  13  14  15  16  17
+ 18  19  20  21  22  23  24
+ 25  26  27  28  29  30  31
+</pre>
+Enter Month: <u>0</u>
+</tt>
+
+<p> &nbsp;
+<p>
+<A NAME="Regular_Expressions">
+<hr>
+<b>Problem 2: Regular Expressions</b></A>
+
+<p>
+In theoretical computer science, a regular expression is a sequence of 
+characters that denotes a set of strings.  In the regular expressions that
+we consider here, the letters <I>a</I> and <I>b</I> are literals; meanwhile,
+parentheses,  <I>(</I>  and  <I>) </I>, indicate repetition.  For example,
+the expression <I>(ab)</I> denotes the set of strings</P>
+<P ALIGN="CENTER">{ab, abab, ababab, . . . }.</P>
+<P ALIGN="CENTER"></P>
+<P>This set includes any string that can be formed by repeating <I>ab</I> 
+one or more times. Another example is <I>bba(aa)bab</I>, which denotes the
+set</P>
+
+<P ALIGN="CENTER">{bbaaabab, bbaaaaabab, . . . }.</P>
+<P ALIGN="CENTER"></P>
+<P>This set includes any string that begins with <I>bba</I>, ends with 
+<I>bab</I>, and has one or more repetitions of <I>aa</I> in between.
+An even more complicated example is <I>b(ab)b(ba)</I>, which denotes the
+set</P>
+
+<P ALIGN="CENTER">{babbba, bababbba, babbbaba, . . . }.</P>
+<P ALIGN="CENTER"></P>
+<P>This set includes any string that begins with<I> b</I>, which is followed
+by one or more repetitions of <I>ab</I>, which is followed by <I>b</I>, which
+is followed by one or more repetitions of <I>ba</I>.</P>
+
+<P>A string is said to <I>match</I> a regular expression if it is a member of
+the set denoted by the regular expression.  You are to develop a program that
+tells whether or not a given string matches a given regular expression.  The
+first input is a regular expression (of a certain restricted form--see below
+for details).  The second input is a nonnull string containing only the
+letters <I>a</I> and <I>b</I>.  Your program should accept input and provide
+output until the user enters a null string for the regular expression.</P>
+
+<P>To make the problem a little easier, we restrict attention to regular
+expressions of a certain form.  Specifically, you may assume that any
+regular expression given as input is of the form</P>
+<I><P ALIGN="CENTER">r<SUB>1</SUB> r<SUB>2</SUB> 
+                     r<SUB>3</SUB> … r<SUB>k</P>
+</I>
+</SUB><P>where <I>k</I>&gt;0 and where, for each <I>j</I>
+satisfying 0&lt;<I>j</I>&lt;=<I>k</I>, r<SUB>j</SUB> is a nonnull string
+of <I>a</I>’s and <I>b</I>’s, possibly surrounded by a pair of
+parentheses.  (In other words, you need not concern yourself with regular
+expressions in which some parenthesized sub-expression is nested inside
+another, as in the expression <I>(ab(ba)b)</I>).  Furthermore, you may
+assume that, if <I>r<SUB>j</I></SUB> is of the form <I>(x)</I>, then <I>x</I>
+is not a prefix of any string that matches the regular expression 
+<I><P ALIGN="CENTER">r<SUB>j+1</SUB> r<SUB>j+2</SUB> … r<SUB>k</I></SUB></P>
+For example, <I>ab(aa)(b)abba</I> is a valid input, as <I>aa</I> is NOT a 
+prefix of any string matching the expression <I>(b)abba</I> and <I>b </I>is
+NOT a prefix of any string matching the expression <I>abba</I>.
+However, <I>abba(aa)b(bbb)b(b)aab</I> is not valid input, because <I>bbb</I>
+IS a prefix of a string matching the expression <I>b(b)aab</I>.</P>
+
+<I><P>Hint:</I> Break the regular expression into parts.  For example,
+break <I>aab(bb)abab</I> into the sub-expressions <I>aab</I>, <I>(bb)</I>,
+and <I>abab</I>.  Then, starting with the first sub-expression, compare the
+sub-expression to the appropriate part of the test string.</P>
+
+<p>
+<b>Sample Program Execution:</b>
+<p>
+<tt>
+Regular Expression: <u>aab(ba)bb(a)b</u><br />
+Test String: <u>aabbababbab</u><br />
+<br />
+The test string matches the regular expression<br />
+<br />
+Regular Expression: <u>bba(bb)aa</u><br />
+Test String: <u>bbabbbbbba</u><br />
+<br />
+The test string does NOT match the regular expression<br />
+<br />
+Regular Expression: <u></u>
+</tt>
+
+<p> &nbsp;
+<p>
+<A NAME="Complex_Numbers">
+<hr>
+<b>Problem 3: Complex Numbers</b></A>
+
+<P>A complex number is a number a+b<I>i</I> where <I>i </I>= square root of -1.
+<I>a</I> is the real part of the complex number and <I>b</I> is the imaginary
+part of the complex number.  When multiplying two complex numbers together,
+remember the acronym FOIL ("first times first, outer times outer,
+inner times inner, last times last").  That is, </P>
+
+<P ALIGN="CENTER">(a+b<I>i</I>)(x+y<I>i</I>) = (ax - by) + <I>i</I>(ay + bx)</P>
+
+<P>Write a program that evaluates a complex number raised to a given power.
+The first input is an integer representing the real part of the complex number.
+The second input is an integer representing the imaginary part of the complex
+number.  The third input is an integer greater than or equal to 1 and
+represents the power to which the complex number is to be raised.  Your
+program should accept input and provide output until the user enters -100
+for the real part of the complex number.</P>
+
+<p>
+<b>Sample Program Execution:</b>
+<p>
+<tt>
+Real Part: <u>5</u><br />
+Imaginary Part: <u>-2</u><br />
+Power: <u>3</u><br />
+<br />
+65 - 142i<br />
+<br />
+Real Part: <u>-100</u>
+</tt>
+
+<p> &nbsp;
+<p>
+<A NAME="FCFS_Scheduling">
+<hr>
+<b>Problem 4: First-Come-First-Served Scheduling</b></A>
+
+<P>In operating systems, a process is defined as a program that is running
+in memory.  Even though a computer can run multiple processes at the same
+time, only one process can actually be using the CPU at any given time. 
+As a result, operating systems theory provides several methods of scheduling
+or allocating CPU time to each process.  The simplest of these is called the
+First-Come-First-Served algorithm.  This algorithm works by taking the first
+process to arrive and letting it run until it finishes.  The second process
+in line cannot use the CPU until the first process has finished.  A process
+is said to arrive when it is loaded into memory and begins looking for CPU
+time.  When a process has arrived but is waiting to use the CPU, it is said
+to be in a wait state. </P>
+
+<P>For example, let Process1 have an arrival time of 3 and a running time of
+4 time units.  Let Process 2 have an arrival time of 5 and a running time of
+5 time units.  Since Process1 arrived before Process2, it will go first.
+Since Process2 arrived while Process1 is running, it has to wait.  The chart
+below gives a graphical representation of the two processes running where
+R=process running and W=process waiting.</P>
+
+<tt>
+<pre>
+                       1
+             1 3 5 7 9 1
+Process1       RRRR
+Process2         WWRRRRR  
+</pre>
+</tt>
+
+<P>Your job is to implement a program that will simulate
+First-Come-First-Served scheduling and display the chart as shown in the
+example on the next page.  The first input is an integer less than or equal to
+10 representing the number of processes you will have to schedule.  Then,
+starting with the first process, accept the arrival time of the process and
+then the running time of that process.  The arrival time of the process is an
+integer greater than or equal to 1 and represents the time at which a process
+begins looking for CPU time.  The running time is an integer greater than or
+equal to 1 and represents the number of time units a process needs to run.
+
+<P>Assume that all processes are always entered in the order they arrive.
+Therefore, Process1 will always arrive before or at the same time Process2
+arrives.  Also, if two process have the same arrival time, then the process
+entered first will go first.  In other words, if Process2 and Process3 both
+arrive at time 12, then Process2 will run first since it was entered first
+in the input.</P>
+
+<P>Assume that the space immediately following the colon (see example on next
+page) represents time 1, the second space represents time 2, and so on.
+Therefore, if a process is running at time 5, then an <I>R</I>  should be in
+the fifth space following the colon.  If a process is waiting, then display
+a <I>W</I> in that space.  If a process is neither running nor waiting then
+display nothing for that space.  Your program should accept input and provide
+output until the user enters 0 for the number of processes.</P>
+
+<p>
+<b>Sample Program Execution:</b>
+<p>
+<tt>
+Number of Processes: <u>5</u><br />
+<br />
+Starting Time for Process 1: <u>1</u><br />
+Running &nbsp;Time for Process 1: <u>2</u><br />
+Starting Time for Process 2: <u>2</u><br />
+Running &nbsp;Time for Process 2: <u>4</u><br />
+Starting Time for Process 3: <u>2</u><br />
+Running &nbsp;Time for Process 3: <u>6</u><br />
+Starting Time for Process 4: <u>13</u><br />
+Running &nbsp;Time for Process 4: <u>3</u><br />
+Starting Time for Process 5: <u>15</u><br />
+Running &nbsp;Time for Process 5: <u>2</u><br />
+<pre>
+1: RR
+2:  WRRRR
+3:  WWWWWRRRRRR
+4:             RRR
+5:               WRR
+</pre>
+Number of Processes: <u>0</u><br />
+</tt>
+
+<p> &nbsp;
+<p>
+<A NAME="Kill_Your_Neighbor">
+<hr>
+<b>Problem 5: Kill Your Neighbor</b></A>
+
+<p>
+The planet Zendar is inhabited by beings (Zendarians)
+who are distinguishable from one another only by way of two attributes:
+<em>murderousness</em> and <em>mortalness</em>.
+With respect to the murderousness attribute, each Zendarian is either
+<b>murderous</b> or <b>gentle</b>.  As for mortalness, each Zendarian is
+either <b>mortal</b> or <b>immortal</b>.
+A murderous Zendarian is capable of killing a mortal Zendarian.
+A gentle Zendarian is incapable of killing.  An immortal Zendarian cannot
+be killed.
+
+<p>
+On the annual Feast of Zendar, a group of Zendarians is drafted
+to play the game <b>Kill Your Neighbor</b>.
+It works as follows.  The players form a circle, with one player 
+designated to be at position #1.
+Starting there, the positions are numbered consecutively going clockwise 
+around the circle.  The player at position #1 is first to take a turn.
+In taking a turn, a player behaves as follows:  If he is gentle, he
+does nothing; if he is murderous, he walks around the circle, in
+the clockwise direction, until encountering a mortal Zendarian,
+whom he immediately kills.  Then he returns to his original position.
+The next player entitled to take a turn is the first still-living
+Zendarian encountered in walking around the circle, 
+in the clockwise direction, from the position of the 
+Zendarian who just finished his turn.
+Note that at most one killing takes place on each turn, and
+no one commits suicide.  (That would be immoral, after all.)
+
+<p>
+The game ends when stability is reached, i.e., when no more killings
+can occur.
+
+<p>
+To illustrate how the game is played, the table below shows the
+"history" of one game involving six Zendarians.  The initial configuration
+of the game is shown, as is the situation resulting from each turn in 
+which someone was killed.  The two-character code describing each
+still-living player is described in the paragraph below.
+A player who has died is represented by a <tt>D</tt>.
+<pre>
+    1   2   3   4   5   6
+   -----------------------
+1. MM  GM  GM  MM  GI  MI   initial configuration
+2. MM   D  GM  MM  GI  MI   1 killed 2
+3.  D   D  GM  MM  GI  MI   4 killed 1
+4.  D   D   D  MM  GI  MI   6 killed 3
+5.  D   D   D   D  GI  MI   6 killed 4  </pre>
+
+<p>
+Write a program that, given as input the initial configuration of a
+game of Kill Your Neighbor, reports which players remain alive at the
+end of the game.
+The first input is the number of Zendarians involved in the game.
+This number will be at least one but no more than 20.
+For each player, the program will prompt the user to
+enter a two-character string describing him.
+The user must enter either <b>M</b> or <b>G</b> (for <b>murderous</b> or
+<b>gentle</b>, respectively) as the first character and either 
+<b>M</b> or <b>I</b> as the second (for <b>mortal</b> or <b>immortal</b>,
+respectively).
+
+<p>
+<b>Sample Program Execution:</b>
+<p>
+<tt>
+Number of Zendarians: <u>10</u><br />
+<br />
+Zendarian 1: <u>MM</u><br />
+Zendarian 2: <u>GI</u><br />
+Zendarian 3: <u>MI</u><br />
+Zendarian 4: <u>MI</u><br />
+Zendarian 5: <u>GM</u><br />
+Zendarian 6: <u>MM</u><br />
+Zendarian 7: <u>MM</u><br />
+Zendarian 8: <u>GM</u><br />
+Zendarian 9: <u>MM</u><br />
+Zendarian 10: <u>MI</u><br />
+<br />
+Zendarians alive at the end:  2 3 4 10<br />
+<br />
+Number of Zendarians: <u>0</u>
+</tt>
+
+
+
+<p> &nbsp;
+<p>
+<A NAME="Zeckendorf_Theorem">
+<hr>
+<b>Problem 6: Zeckendorf's Theorem</b></A>
+
+<p>
+Recall that the Fibonacci Sequence (0, 1, 1, 2, 3, 5, 8, 13, . . . ) 
+is the sequence having 0 and 1 as its first two elements and in which each 
+subsequent element in the sequence is the sum of the two preceding elements.</P>
+According to a theorem by Zeckendorf, any positive integer can be expressed
+as the sum of one or more Fibonacci numbers such that
+<ul>
+  <li> no number occurs more than once in the sum, and</li>
+  <li> no two numbers occurring in the sum appear consecutively
+       (i.e., one immediately after the other) in the Fibonacci sequence.</li>
+</ul>
+
+For example, the (only) Zeckendorf sum of 14 is 13 + 1.  
+Although 5+3+2+2+2&nbsp;=&nbsp;14, 
+it is <em>not</em> a Zeckendorf sum, on at least
+two separate grounds.
+First, 2 is used three times, while the definition prohibits even two
+occurrences of the same number.
+Second, 3 and 5 are consecutive Fibonacci numbers, while the definition
+prohibits the use of two such numbers. 
+<p>
+<P>Develop a program that accepts as input a nonnegative integer and that
+produces as output a Zeckendorf sum of that integer.  The values in the
+sum should be written in decreasing order, with plus signs ("+") between
+them (as illustrated below).
+Your program should repeat until the user enters -1.
+<p>
+<b>Sample Program Execution:</b>
+<p>
+<tt>
+Enter a number: <u>30</u><br />
+<br />
+21 + 8 + 1 <br />
+<br />
+Enter a number: <u>515</u><br />
+<br />
+377 + 89 + 34 + 13 + 2 <br />
+<br />
+Enter a number: <u>-1</u><br />
+</tt>
+</BODY>
+</HTML>

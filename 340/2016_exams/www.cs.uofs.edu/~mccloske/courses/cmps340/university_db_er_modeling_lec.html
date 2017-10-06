@@ -1,0 +1,80 @@
+<html>
+<head>
+  <title>ER Modeling of University database in Elmasri/Navathe</title>
+</head>
+<body>
+<H3>Development of University database via ER modeling</H3>
+<p>
+Adapting the example introduced in Section 1.2 of <em>Fundamentals of
+Database Systems</em> (6th edition) by Elmasri and Navathe, let's use
+ER modeling (as described in Chapter 7 (of the 6th edition of that book,
+but Chapter 3 in previous editions) to design a (very modest) database
+for a university.
+
+</p><p>
+Suppose that requirements analysis has resulted in the following (informal)
+description of the (entity types that exist in the) UNIVERSITY miniworld:
+
+</p><p>
+Each student 
+<ul>
+  <li>has a name (composed of a first name, last name, and middle initial)
+  </li>
+  <li>has a unique ID number (a Royal Number at the U of S)</li>
+  <li>is in some class (either freshman, sophomore, junior, or senior)</li>
+  <li>has one or more majors</li>
+</ul>
+Each course
+<ul>
+  <li>has a name (e.g., "File Processing")</li>
+  <li>has a unique identifier (e.g., "CMPS 340")</li>
+  <li>is worth some number of credit hours</li>
+  <li>is offered by some academic department</li>
+  <li>has zero or more prerequisite courses</li>
+</ul>
+Each course section
+<ul>
+  <li>was (or "is" or "will be") an offering of some course</li>
+  <li>has a number (e.g., 2)</li>
+  <li>was offered during some semester (e.g., fall)</li>
+  <li>was offered during some year (e.g., 2007)</li>
+  <li>had some faculty member who was its instructor</li>
+  <li>was taken by some set of students, each of whom earned some grade</li>
+</ul>
+Note that a course section is uniquely identified by the first four
+attributes listed.
+<hr>
+<p>
+Using the above informal description, we obtain as a preliminary design 
+the following schema (which would be better displayed as an ER diagram):
+
+<ul>
+  <li>STUDENT(Name(First,Last,MI), <u>Number</u>, Class, {Major})</li>
+  <li>COURSE(Name, <u>ID</u>, Credits, Dept, {Prerequisite})</li>
+  <li>SECTION(<u>Course, Number, Semester(Season, Year)</u>, Instructor,
+      {GradeReports(Student,Grade)})
+  </li>
+</ul>
+
+<p>
+A <b>relationship</b> captures the idea of there being associations between
+(usually two, but sometimes more) entities.
+<p>
+If some attribute refers to an entity, it indicates the existence of such
+a relationship.
+In this example, the attributes referring to entities are
+Course (in SECTION), Student (in SECTION), and Prerequisite (in COURSE).
+
+<p>
+We refine the entities-only ER diagram to obtain one that depicts the
+relationships (by replacing attributes that refer to entities by 
+relationships).  
+Notion of relationships having cardinality and participation constraints.
+
+<p>
+Now use procedure spelled out in Chapter 9 (of 6th editon, but Chapter 7 in
+previous editions) to translate the ER diagram into a relational schema.
+
+</body>
+</html>
+

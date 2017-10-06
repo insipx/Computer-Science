@@ -1,0 +1,1010 @@
+<html>
+<head>
+<title>McCloskey's notes on COBOL: DATA DIVISION</title>
+<body>
+<H1>COBOL</H1>
+
+<H2>Under Construction</H2>
+
+<H2>DATA DIVISION</H2>
+
+<ul>
+  <li><A HREF="#Overview">Overview</A></li>
+  <li><A HREF="#Data_Names">Data Names</A></li>
+  <li><A HREF="#structure_of_data">
+      Structure of Data in COBOL</A></li>
+  <li><A HREF="#Numeric_Data">Picture Characters for Numeric Data</A></li>
+  <li><A HREF="#VALUE_clause">Initializing an Elementary Data Item via
+               a VALUE clause</A>
+  </li>
+  <li><A HREF="#Constants">Constants</A></li>
+  <li><A HREF="#AnonymousData">Anonymous Data (FILLER)</A></li>
+  <li><A HREF="#REDEFINES">REDEFINES Clause</A></li>
+  <li><A HREF="#Reference_Modification">Reference Modification</A></li>
+  <li><A HREF="#Qualification">Qualification (Or, What to do when
+       two data items have the same name)</A></li>
+  <li><A HREF="#Tables">Tables (i.e., Arrays)</A></li>
+  <li><A HREF="#Conditional">Conditional (i.e., boolean) Data </A></li>
+</ul>
+
+<hr>
+<A NAME="Overview">
+<H3>Overview</H3></A>
+<p>
+The third division in a COBOL (sub)program is the DATA DIVISION, in which 
+the data used by the (sub)program is declared/described.  
+The DATA DIVISION of a subprogram contains three sections --FILE,
+WORKING-STORAGE, and LINKAGE-- while that of a (main) program contains
+only the first two.
+
+<p>
+The <b>FILE SECTION</b> describes the record structures of files used
+by the (sub)program.
+In effect, for each file, it sets up a one-record <em>buffer</em> (in RAM)
+that is used for holding the record most recently read in (if the file is
+an input file) or for holding the data that is "waiting" to be written out
+(if the file is an output file).
+
+<p>
+<b>Remark</b>:  COBOL is best-suited for dealing with files whose
+structure conforms to the classic file-record-field-character hierarchy,
+in which a file is a sequence of uniformly-formatted records, each of
+which is a sequence of fields, each of which is a character string.
+(To be fair, COBOL does a good job of handling files containing records
+of different formats, as long as the number of formats is fairly small.)
+
+<p>
+The <b>WORKING-STORAGE SECTION</b> describes temporary (i.e., non-persistent)
+data, which exists only during program execution.
+
+<p>
+<b>Remark</b>: When a file has records of a number of different formats
+(such as a "generic" output file through which all output is written),
+it is often convenient to use the <tt>WORKING-STORAGE</tt> section to
+describe the various record formats.
+<!-- <p>
+For example, suppose that all output is written to Out-File
+-->
+<b>End of remark.</b>
+
+
+<p>
+The data division of a subprogram also includes a <b>LINKAGE SECTION</b>,
+which is where the formal parameters (called "arguments" in COBOL)
+are described.
+
+
+
+<hr>
+<A NAME="Data_Names">
+<H3>Data Names</H3></A>
+
+<p>
+A <em>data-name</em> in COBOL is analogous to what is called a
+<em>variable</em> in most programming languages.
+A data-name may be up to 31 characters in length and may include
+alphabetic characters, numeric characters (i.e., digits such as '4'),
+and hyphens.
+(Some compilers allow underscores and, in fact, do not distinguish
+them from hyphens.)
+At least one character in a data-name must be alphabetic,
+and a hyphen may not appear as the first or last character.
+None of COBOL's approximately 300 reserved words may be used as a
+data-name.
+
+<p>
+In contrast to most programming languages, a data-name in COBOL
+may begin with a numeric character, so that, e.g., <tt>4-Dead-In-Ohio</tt>
+is a legal data-name.  In the COBOL culture, it is common for data-names
+to be lengthy.  
+
+<p>
+For more on data-names, see pages 19-20 of <em>Comprehensive COBOL</em>.
+
+
+
+
+
+<hr>
+<A NAME="structure_of_data">
+<H3>Structure of Data in COBOL</H3></A>
+
+<p>
+Each data item in COBOL is either a <b>group</b> item or an 
+<b>elementary</b> item.
+A group data item is one that is composed of one or more (subordinate)
+data items.
+An elementary data item is one having no subordinates.
+Hence, an elementary data item in COBOL is somewhat analogous to a value
+of a primitive type (e.g., <tt>int</tt> or <tt>char</tt>) in Java,
+whereas a group data item is more like an object, which typically contains
+several pieces of data (i.e., instance variables) within it.
+(An even closer similarity can be drawn with a <em>struct</em> in C
+or a <em>record</em> in Pascal or Ada.)
+<p>
+A group data item may itself be subordinate to a higher-level group item.
+Thus, in COBOL we are able to describe data having a multi-level
+hierarchical (i.e., tree) structure.
+
+<p>
+As an example, suppose that a client is described by her name, address,
+date of birth, and the state of her account. 
+Refining this further, suppose that a name is composed of a last name
+and a first name, an address is composed of a street address, city,
+and zip code, the last of which is composed of a regular 5-digit part
+and a 4-digit extension.
+A date of birth is given by a month, day, and year.
+Finally, the state of an account is given by a string serving as its ID
+and by a numeric balance.  Presenting this in familiar outline form, we get
+<pre>
+Client-Record
+   I. Name
+      A. Last-Name 
+      B. First-Name
+   II. Home-Address
+      A. Street-Addr 
+      B. City       
+      C. Zip-Code
+         1. Zip-Regular 
+         2. Zip-Extension 
+   III. Date-of-Birth
+      A. Month 
+      B. Day
+      C. Year
+   IV. Account-Info
+      A. Account-ID
+      B. Account-Balance
+</pre>
+
+<p>
+In COBOL, a declaration of a client record would look much like the
+outline above.  Not surprisingly, however, COBOL does not recognize
+the numbering scheme typically used in outlines, nor does it
+pay attention to code indentation.
+Rather, to indicate a record's hierarchical structure
+(i.e., which fields are nested within which fields), one uses (two-digit)
+<b>level numbers</b>.  Although the programmer is given some freedom
+in choosing level numbers, we recommend 
+<!-- the use of consecutive numbers beginning at <tt>01</tt>.-->
+that each data item be assigned a level number that is one greater than
+that of its parent.  
+Data items that are siblings of one another <em>must</em> have the same
+level number, and a data item not nested within another one <em>must</em>
+have a level number of either <tt>01</tt> or <tt>77</tt>, the latter of
+which may be used only for data items that are elementary.
+In order to provide visual cues to aid human comprehension, we continue
+to employ indentation.  The above becomes
+<pre>
+01 Client-Record
+   02 Name
+      03 Last-Name 
+      03 First-Name
+   02 Home-Address
+      03 Street-Addr 
+      03 City       
+      03 Zip-Code
+         04 Zip-Regular 
+         04 Zip-Extension 
+   02 Date-of-Birth
+      02 Month 
+      02 Day
+      02 Year
+   02 Account-Info
+      03 Account-ID
+      03 Account-Balance
+</pre>
+
+<p>
+What remains is to declare, for each elementary item, its data type.
+Well, sort of.  
+In COBOL, elementary data items are declared to be in one of two major
+varieties, called <b>modes</b>: <b>display</b> and <b>computational</b>.
+The former, which stipulates that the data item is to be represented
+by a character string (and hence is suitable for displaying in a
+human-readable form), is the default, even for numeric data items.
+The latter applies only to numeric data and is used in order to
+improve efficiency in the storage and manipulation of such data.
+A numeric item declared to be in computational mode is
+stored not as a string of digit characters but rather in a format
+(e.g., binary or binary-coded decimal) that requires less space and 
+allows arithmetic operations to be performed more efficiently
+(and hence is more suitable for computation).
+Unfortunately, computational data in COBOL tends not to be very
+portable, as the representation schemes offered by different compilers
+tend to be suited specifically to the respective underlying
+machine architectures.
+
+<p>
+In this discussion, all data items will be declared (implicitly, as it
+is the default) to be in display mode.
+
+<p>
+Returning to our client record example (and keeping in mind that all data
+items will be in display mode, meaning that we can think of them as 
+character strings), it remains to give precise descriptions of the
+elementary data items.
+Such a description is provided by a <b>picture clause</b>,
+which indicates the length (# of characters) of the string and which
+type(s) of characters are intended to occur within it.  The choices are
+<b>alphanumeric</b>, <b>alphabetic</b>, and <b>numeric</b>, which are
+denoted, respectively, by the <b>picture characters</b> 
+<tt>X</tt>, <tt>A</tt>, and <tt>9</tt>.
+An alphanumeric field is intended to contain characters of any kind.
+An alphabetic field is intended to contain only letters and spaces.
+A numeric field is intended to represent a number and hence should
+contain only numeric characters (i.e., '0', '1', ..., '9').
+(There are some exceptions, however, as will be discussed below.)
+
+<!--
+, except that, to encode a negative number,
+typically the  code for either the first or last digit is 
+adjusted in some specific way.
+-->
+
+<p>
+<b>Remark:</b>  There seems to be little advantage in declaring a field
+to be alphabetic rather than alphanumeric:  few, if any, COBOL compilers
+will produce code that generates a run-time error when non-alphabetic
+data is placed into an alphabetic field.
+For similar reasons, there is little reason to use a "mixed" picture
+clause (e.g., <tt>PIC 999X99X9999</tt> for a social security number)
+specifying that some characters must be numeric whereas others are
+unrestricted.
+Indeed, it would seem that the only circumstance in which COBOL balks
+at the contents of a data field is when (at run time) there is an
+attempt to perform an arithmetic operation involving a field containing
+non-numeric data.  An attempt to perform an arithmetic operation upon
+anything but an elementary field declared to be "purely" numeric will
+be flagged at compile time.
+<b>End of remark.</b>
+
+<!--
+<p>
+Just to make it clear in case you missed it: in COBOL, numbers are,
+by default, represented as character strings containing only numeric
+characters (i.e., ones from the set {'0', '1', ..., '9'}).
+(To allow negative numbers, the representational details get a bit more
+tricky.  Typically, a number that is negative has that information encoded
+within the byte representing either its first or last digit.)
+Notice the phrase "by default" in the prior sentence, which is an
+allusion to the fact that, in COBOL, all elementary data items are
+declared to be in one of two modes: DISPLAY or COMPUTATIONAL.
+(Or is there a 3rd mode?)
+The former is the default and the latter is applicable only to numeric
+data items.   A numeric item declared to be in COMPUTATIONAL mode is
+stored not as a string of digits but rather in a format (usually binary,
+but possibly binary-coded decimal) that requires less space and that
+allows arithmetic operations to be performed more efficiently.
+(Unfortunately, COMPUTATIONAL data in COBOL tends not to be very
+portable, as different COBOL compilers give programmers different
+options.)
+-->
+<p>
+To complete our client record declaration, we insert picture clauses
+(and periods, which COBOL requires at the end of each field's declaration).
+The notes in italics to the right are not part of the program;
+they are simply to aid the reader.  The example uses picture characters
+<tt>V</tt> and <tt>S</tt> that will be discussed afterwards.
+
+<pre>
+01 Client-Record.
+   02 Name.
+      03 Last-Name   PIC A(20).        <em>alphabetic field of length 20</em>
+      03 First-Name  PIC A(12).
+   02 Home-Address.
+      03 Street-Addr  PIC X(25).       <em>alphanumeric field of length 25</em>
+      03 City         PIC X(18).
+      03 Zip-Code.
+         04 Zip-Regular    PIC 9(5).   <em>(unsigned) numeric field of length 5</em>
+         04 Zip-Extension  PIC 9(4).
+   02 Date-of-Birth.
+      03 Month  PIC 99.                <em>(unsigned) numeric field of length 2</em>
+      03 Day    PIC 99.                <em>equivalent to PIC 9(2)</em>
+      03 Year   PIC 9999.              <em>equivalent to PIC 9(4)</em>
+   02 Account-Info
+      03 Account-ID      PIC X(10).
+      03 Account-Balance PIC S9(5)V99. <em>(signed) numeric field of length 7
+                                       with two digits after the decimal
+                                       point and five before</em>
+</pre>
+
+
+<!--
+<p>
+NOTE: Here we should include some info about PICTURE characters, such as V for
+decimal point, S for sign, and numeric edited stuff.
+See p. 80-.. of Compreshensive COBOL book.
+-->
+<hr>
+<A NAME="Numeric_Data">
+<H3>Picture Characters for Numeric Data</H3></A>
+<p>
+<!--As noted above, data in display mode may be thought of as being in the
+form of a character string.  This includes numeric data.
+-->
+<H4>The <tt>V</tt> Picture Character</H4>
+A (display mode) numeric data item can be viewed as a sequence of digit
+characters.  In order to specify where the decimal point lies,
+<!-- lies the boundary between digits to the left of the decimal point
+ and digits to the right,-->
+one uses the <tt>V</tt> picture character.  Here are some examples:
+<pre>
+01 Cntr  PIC 9(6).               <em>six digits to left, none to right</em>
+01 Cntr-2 PIC 9(6)V.             <em>equivalent to above</em>
+01 Gross-Pay  PIC 9(4)V99 .      <em>four digits to left, two to right</em>
+01 PI  PIC 9V9(5) VALUE 3.14159. <em>one digit to left, five to right</em>
+01 Tax-Rate  PIC V99 VALUE 0.06. <em>no digits to left, two to right</em> 
+</pre>
+The decimal point is "invisible" in the sense that, if such a data item
+is displayed (via the <tt>DISPLAY</tt> verb) or written to an output file
+as part of a record, only its digits will appear, absent any indication of 
+where the decimal point lies.
+Similarly, if such a data item is part of an input record, the characters
+read into it should not include a decimal point.
+
+<H4>The <tt>S</tt> Picture Character</H4>
+To declare a numeric data item to be <b>signed</b> (meaning capable of
+assuming negative values), one begins its picture clause with the
+character <tt>S</tt>.  
+
+<H3>Edited Numeric Data</H3>
+<p>
+When numbers are to be displayed or printed as output intended for
+human consumption, rarely does one want minus signs or decimal points
+to be omitted or leading zeroes to appear.  Yet that's what will
+happen if one outputs a "plain" numeric data item.  In order to get
+numeric data into a format fit for human consumption, one uses
+edited numeric data items, whose picture clauses determine how numeric
+data will be "edited" when placed into them.
+
+
+<H4>The <tt>.</tt> (decimal point) Picture Character</H4>
+
+
+<H4>The <tt>Z</tt> (leading zero suppression) Picture Character</H4>
+<H4>The <tt>-</tt> (minus sign) Picture Character</H4>
+<H4>The <tt>+</tt> (plus sign) Picture Character</H4>
+<H4>The <tt>$</tt> (dollar sign) Picture Character</H4>
+
+
+
+<hr>
+<A NAME="VALUE_clause">
+<H3>Initializing an Elementary Data Item via a VALUE Clause</H3></A>
+<p>
+An elementary data item can be initialized using a <tt>VALUE</tt>
+clause, as in the following examples:
+<pre>
+01 Counter PIC 9(3) VALUE 0.
+01 My-Name PIC X(16) VALUE 'Rumpelstiltzkin'.
+</pre>
+
+<p>
+Be warned that data items declared in subprograms are, by default,
+static (to use C's terminology), meaning that their values are
+preserved between calls.  In effect, then, the initialization
+specified in a <tt>VALUE</tt> clause occurs only once, before the
+first call to the subprogram, and not before each time it executes
+as a result of being invoked.
+
+<p>
+In order to override the default and force the initializations
+specified by <tt>VALUE</tt> clauses to take effect upon each
+invocation of a subprogram, the subprogram should be declared to
+be <tt>INITIAL</tt>.  This is done in the <tt>PROGRAM-ID</tt>
+paragraph, by inserting the phrase <tt>IS INITIAL</tt> (in which
+the word <tt>IS</tt> is optional) immediately after the subprogram's
+name, as illustrated here:
+<p><center><tt>
+PROGRAM-ID. Some-Subprogram IS INITIAL.
+</tt></center>
+
+<p>
+For more examples of the use of the <tt>VALUE</tt> clause, 
+see the next two sections.
+
+<hr>
+<A NAME="Constants">
+<H3>Constants</H3></A>
+
+<p>
+There are three kinds of constants in COBOL: <em>numeric literals</em>,
+<em>nonnumeric literals</em>, and <em>figurative constants</em>.
+
+<p>
+<b>Numeric literals</b> in COBOL are like those in other programming languages.
+Examples include <tt>-542</tt> and <tt>3.14159</tt>.
+
+<p>
+<b>Nonnumeric literals</b> are what in other languages are called string
+literals.  Examples are <tt>'Telephone #'</tt> and <tt>'3.14159'</tt>.
+Here we have used single quotes as delimiters.  Some compilers may
+require the use of double quotes instead, as in <tt>"Telehpone #"</tt>.
+Other compilers may recognize both kinds of quotes.
+
+<p>
+<b>Figurative constants</b> are reserved words that represent
+commonly-used numeric or string values.
+These include <tt>ZERO</tt> (or its equivalent <tt>ZEROES</tt>),
+<tt>SPACE</tt> (or its equivalent <tt>SPACES</tt>), and <tt>HIGH-VALUES</tt>.
+As an example of usage, below we declare an alphanumeric data-item
+<tt>Junk</tt> and use a <tt>VALUE</tt> clause and a figurative constant
+to initialize it with spaces:
+<p>
+<center><tt>01 Junk PIC X(13) VALUE SPACES.</tt></center>
+
+<p>
+Figurative constants may be referred to in the PROCEDURE DIVISION as well,
+as in
+<p>
+<center><tt>MOVE ZERO TO Counter</tt></center>
+
+<p>
+which gives the value zero to <tt>Counter</tt> (which we are assuming
+is a numeric data item).
+
+<p>
+In COBOL (unlike many languages), there is no way to indicate that a
+data-name is to act as a <em>symbolic constant</em>, i.e., that the
+value associated with it cannot be changed.  Thus, for example, we might
+include the declaration
+<p><center><tt>01 PI   PIC 9V9(5)  VALUE 3.14159.</tt></center>
+
+<p>
+but there is no way to say that <tt>PI</tt>'s value cannot be changed
+during execution.
+Nevertheless, it is a good practice to use such "symbolic constants"
+rather than using the corresponding literal value each time it occcurs
+
+<p>For more, see pages 65-66 of <em>Comprehensive COBOL</em>.
+
+<hr>
+<A Name="AnonymousData">
+<H3>Anonymous Data</H3></A>
+<p>
+In COBOL, it is not uncommon to declare data items to which no direct
+references are ever made.  To relieve the programmer of the nuisance
+of devising data-names for such data items, COBOL provides a way of 
+declaring anonymous data items.  The reserved word <tt>FILLER</tt>
+is used, in place of a data-name, for this purpose.  Here is an example:
+<p><pre>
+01 Out-Rec.
+   02 Out-Name     PIC X(20).
+   02 FILLER       PIC X(5) VALUE SPACES.
+   02 Out-Birthdate.
+      03 Out-Month    PIC 9(2).
+      03 FILLER       PIC X VALUE '/'.
+      03 Out-Day      PIC 9(2).
+      03 FILLER       PIC X VALUE '/'.
+      03 Out-Year     PIC 9(4).
+</pre>
+
+<p>
+Note that the term <tt>FILLER</tt> is optional, so that either of
+the two anonymous data items at the <tt>03</tt> level above could have
+been described by the line
+<pre>
+      03              PIC X VALUE '/'.</pre>
+
+
+
+<hr>
+<A Name="REDEFINES">
+<H3>REDEFINES Clause</H3></A>
+<p>
+This feature makes it possible to interpret the same chunk of storage in
+two or more ways.  This is useful if, for example, the records in a file
+are not of a uniform structure. 
+It is similar to the variant record construct in Pascal,
+or the union type construct in C.  (In Ada, a somewhat more general
+capability is offered by using a discriminated record type.)
+
+<p>
+Suppose, for example, that a particular file contains data regarding
+a particular collection of published works, among them being books,
+articles (from journals and magazines), and PhD theses.
+Each record in the file describes one such work.  The difficulty 
+here is that for different kinds of works we wish to maintain different
+sets of attributes.  For books, we want the attributes <tt>author</tt>,
+<tt>title</tt>, <tt>publisher</tt>, <tt>year published</tt>, and
+<tt>edition</tt>.  For articles, we want <tt>author</tt>, <tt>title</tt>,
+<tt>journal</tt>, <tt>month published</tt>, <tt>starting page</tt>,
+and <tt>ending page</tt>.  For PhD theses, we want <tt>author</tt>,
+<tt>title</tt>, <tt>school</tt>, and <tt>year published</tt>.
+Hence, records representing two different kinds of works 
+(e.g., one representing a book and the other representing an article)
+should have different formats.
+To accommodate this, COBOL includes the <tt>REDEFINES</tt> feature.
+Here is an illustration:
+
+<pre>
+01 Published-Work.
+   02 Author          PIC X(16).     --these fields are
+   02 Title           PIC X(20).     --common to all three
+   03 FILLER          PIC X.         --types of published works
+      88 Is-Book     VALUE 'B'.
+      88 Is-Article  VALUE 'A'.
+      88 Is-Thesis   VALUE 'T'.
+   02 Rest-of-Fields  PIC X(34).
+   02 Rest-of-Book  REDEFINES Rest-of-Fields.   --remaining fields for books
+      03 Publisher   PIC X(18).
+      03 B-Year      PIC 9(4).
+      03 Edition     PIC 9.
+      03 FILLER      PIC X(11).
+   02 Rest-of-Article REDEFINES Rest-of-Fields. --remaining fields for articles
+      03 Journal     PIC X(20).
+      03 Date.
+         04 Month    PIC 9(2).
+         04 A-Year   PIC 9(4).
+      03 Pages.
+         04 Start-Page  PIC 9(4).
+         04 End-Page    PIC 9(4).
+   02 Rest-of-Thesis REDEFINES Rest-of-Fields.   --remaining fields for theses
+      03 School     PIC X(20).
+      03 T-Year     PIC 9(4).
+      03 FILLER     PIC X(10).  </pre>
+
+<p>
+The data declaration above for <tt>Published-Work</tt> indicates that
+its first 16 bytes hold an <tt>Author</tt> field, its next 20 bytes
+hold a <tt>Title</tt> field, and the next byte holds a character indicating
+whether the data occupying it describes a book, article, or thesis.
+Following that are 34 bytes allocated to something called 
+<tt>Rest-of-Fields</tt>.  Notice that the declarations for 
+<tt>Rest-of-Book</tt>, <tt>Rest-of-Article</tt>, and
+<tt>Rest-of-Thesis</tt>
+specify that each of them <b>REDEFINES</b>
+<tt>Rest-of-Fields</tt>, which is to say that each of them
+<em>occupies the same 34 bytes</em> as the <tt>Rest-of-Fields</tt>
+field!  In other words, each of these four fields describes a different
+way of interpreting those same 34 bytes.
+(Note that all four fields occur at the same level (namely, 02) 
+of the hierarchy; this was necessary: if one field <tt>REDEFINES</tt>
+another, the two must be at the same hierarchical level and be declared
+"consecutively".)
+
+<p>
+Suppose that the data currently occupying <tt>Published-Work</tt> describes
+an article.
+Then the data declarations subordinate to <tt>Rest-of-Article</tt> tell us
+that the 34 bytes comprising it are (assumed to be) organized as follows:
+the first 20 contain the name of the journal in which the article appears,
+the next six contain the date (month and year) of publication, and the
+next eight bytes hold the starting and ending page numbers (4 bytes each).
+
+<p>
+Notice that the "meaningful" fields within <tt>Rest-of-Book</tt> occupy
+only 23 bytes.  As <tt>Rest-of-Book</tt> must be 34 bytes in length
+(because the lengths of a field and another one that <tt>REDEFINES</tt> 
+it must be the same), we "correct" this by padding it with an 11-byte
+anonymous data item.  For similar reasons, <tt>Rest-of-Thesis</tt> is
+padded with a 10-byte anonymous field.
+
+<p>
+A sketch of a paragraph that processes a <tt>Published-Work</tt> record
+could be as follows.  Note that it examines the byte indicating which kind
+of published work is described in order to determine in what manner to
+treat the record.  For example, if the byte says that the data describes
+a book, it makes sense to access the <tt>Edition</tt> field but it does
+not make sense to access the <tt>Journal</tt> or <tt>School</tt> fields.
+Indeed, conceptually, neither the <tt>Journal</tt> nor the <tt>School</tt>
+field even exists if the record's contents describes a book.
+(COBOL does not disallow access to these "non-existent" fields, however.
+In contrast, Pascal's <em>variant</em> record construct and Ada's
+<em>discriminated</em> record construct are such that access to logically
+non-existent fields within the record results in a run-time error.)
+<pre>
+Process-Rec.
+   IF Is-Book
+      [code referring to fields Author, Title,  ]
+      [and ones nested in Rest-of-Book, but not ]
+      [to ones nested in Rest-of-Article/Thesis ]
+
+   ELSE IF Is-Article
+      [code referring to fields Author, Title,   ]
+      [and ones nested in Rest-of-Article, but   ]
+      [not to ones nested in Rest-of-Book/Thesis ]
+ 
+   ELSE IF Is-Thesis
+      [code referring to fields Author, Title,    ]
+      [and ones nested in Rest-of-Thesis, but not ]
+      [to ones nested in Rest-of-Book/Article     ]
+
+   END-IF END-IF END-IF </pre>
+
+<p>
+As another illustration of the <tt>REDEFINES</tt> clause, here is a
+clever use of it for the purpose of constructing a 
+<A HREF="#Tables">table</A> (i.e., array)
+containing the names of the months of the year.
+
+<pre>
+01 Month-Values.
+   02 FILLER  PIC X(9) VALUE 'January  '.
+   02 FILLER  PIC X(9) VALUE 'February '.
+   02 FILLER  PIC X(9) VALUE 'March    '.
+   02 FILLER  PIC X(9) VALUE 'April    '.
+   02 FILLER  PIC X(9) VALUE 'May      '.
+   02 FILLER  PIC X(9) VALUE 'June     '.
+   02 FILLER  PIC X(9) VALUE 'July     '.
+   02 FILLER  PIC X(9) VALUE 'August   '.
+   02 FILLER  PIC X(9) VALUE 'September'.
+   02 FILLER  PIC X(9) VALUE 'October  '.
+   02 FILLER  PIC X(9) VALUE 'November '.
+   02 FILLER  PIC X(9) VALUE 'December '.
+
+01 Month-Table  REDEFINES Month-Values.
+   02 Month  PIC X(9) OCCURS 12 TIMES.
+</pre>
+<p>
+As a result of these declarations, we have <tt>Month(1) = 'January  '</tt>,
+<tt>Month(2) = 'February '</tt>, etc., which makes it easy to translate
+from a numeric representation of a month (e.g., 1 stands for January)
+to its string representation.
+
+
+<p>
+For more information about <tt>REDEFINES</tt>,
+see pages 468-469 of <em>Comprehensive COBOL</em>.
+
+
+<hr>
+<A Name="Reference_Modification">
+<H3>Reference Modification</H3></A>
+<p>
+This feature makes it possible to refer to any desired segment of
+any data field (other than numeric data in COMPUTATIONAL mode).
+In effect, it allows any such data field to be viewed as an
+array of characters.
+
+<p>
+For example, if Junk has been declared by the picture clause 
+<tt>PIC X(12)</tt>, then the expression Junk(4:6) refers to the
+segment of Junk of length 6 beginning at position 4.  Such an
+expression can be used as the source or destination of the <tt>MOVE</tt>
+verb, for example.
+
+<p>
+See pages 471-474 of <em>Comprehensive COBOL</em>.
+
+<hr>
+<A Name="Qualification">
+<H3>Qualification (Or, What to do when two data items have the same name)</H3>
+</A>
+<p>
+See pages 201-203 of <em>Comprehensive COBOL</em>.
+
+
+<hr>
+<A Name="Tables">
+<H3>Tables (i.e., Arrays)</H3></A>
+<p>
+In COBOL terminology, we use the term <em>table</em> to refer to what in
+most other programming languages are called <em>arrays</em>.  A table is
+declared using an <tt>OCCURS</tt> clause.  For example, the declaration
+<pre>
+01 A-Table.
+   02 Junk  PIC X(4)  OCCURS 10 TIMES.
+</pre>
+corresponds to the following storage structure (in which <tt>Junk</tt>
+has been abbreviated to <tt>J</tt>), in which sample (Star Trek-related)
+data is shown:
+<pre>
+         J(1) J(2) J(3) J(4) J(5) J(6) J(7) J(8) J(9) J(10)
+        +----+----+----+----+----+----+----+----+----+----+
+A-Table |kirk|sulu|gorn|beam| me | up |worf|data|star|trek|
+        +----+----+----+----+----+----+----+----+----+----+
+</pre>
+That is, the declaration above
+describes a field called <tt>A-Table</tt> that contains a table called
+<tt>Junk</tt>, which has ten elements, each of which is an alphanumeric
+string of length four.  (<em>Note:</em> The <tt>PIC</tt>ture and
+<tt>OCCURS</tt> clauses can be placed in either order.)
+To refer to, for example, the 5-th element of
+<tt>Junk</tt> ---which can be treated just as any other 4-byte
+alphanumeric field--- we could write <tt>Junk(5)</tt>.
+Assuming that <tt>Cntr</tt>, say, is a numeric data item,
+we could use it as a subscript by writing <tt>Junk(Cntr)</tt>.
+We could even use expressions such as <tt>Cntr + 1</tt>
+as subscripts, but COBOL does not allow general arithmetic expressions to
+be used.  (<b>Note: I do not know the exact limitations/restrictions.</b>)
+
+<p>
+<b>Warning:</b> Depending upon the compiler you use and the options you
+have set in that compiler, subscript-out-of-bounds errors may or may not
+be detected at run-time.  For example, if subscript-out-of-bounds errors
+are not being detected and <tt>Cntr</tt> has value 15,
+the expression <tt>Junk(Cntr)</tt> refers to the 4-byte block that begins
+16 bytes after the end of the last element of <tt>Junk</tt> (i.e., in
+the space that would have been occupied by <tt>Junk(15)</tt> had the
+table been at least 15 elements in length).
+
+<p>
+In COBOL, one cannot use the name of a table without including a subscript.
+That is, anywhere that <tt>Junk</tt> appears, it must be followed by
+a parenthesized subscript.  In most other languages, an array name without
+a subscript refers to the entire array (as one unit of data), as opposed
+to a particular element of it.  In COBOL, to refer to a table as a single
+unit of data we must use the enclosing data-name; in our example this
+would be <tt>A-Table</tt>.  That is, <tt>A-Table</tt> is, in some sense,
+the name of the table; the data-name <tt>Junk</tt> is used only for accessing
+individual elements of it.
+
+
+<p>
+In our example, <tt>Junk</tt> is a table of elementary data items.
+Suppose that we wanted to form a table of group-level items (or, what in
+Ada or C we might refer to as an array of records or structs, respectively).
+Here is an example, set in a relevant context:
+<pre>
+01 Course.
+   02 Name-of-Course PIC X(12).
+   02 Student-Table.
+      03 Student  OCCURS 25 TIMES.
+         04 Name.
+            05 Last-Name  PIC X(15).
+            05 First-Name PIC X(9).
+         04 Major  PIC X(4).
+   02 Name-of-Instructor PIC X(20).
+</pre>
+Embedded inside a larger record is a table, called <tt>Student</tt>,
+each 28-byte element of which contains a <tt>Name</tt> field (which itself
+contains two subordinate fields) and a <tt>Major</tt> field.
+To refer to, for example, the <tt>Name</tt> field within the 13th element
+of <tt>Student</tt>, we would say <tt>Name(13)</tt>. 
+(If you are familiar with Ada, C, or Java, you might have expected the 
+answer to be <tt>Student(13).Name</tt>.)
+A similar syntax is used for fields nested arbitrarily deeply;
+for example, the <tt>Last-Name</tt> field within the 13th element
+of <tt>Student</tt> is referred to by the expression <tt>Last-Name(13)</tt>.
+
+<p>
+A different way of organizing the data in a <tt>Course</tt> record is
+as follows:
+<pre>
+01 Course.
+   02 Name-of-Course PIC X(12).
+   02 Student-Name-Table.
+      03 Student-Name  OCCURS 25 TIMES.
+         04 Name.
+            05 Last-Name  PIC X(15).
+            05 First-Name PIC X(9).
+   02 Student-Major-Table.
+      03 Student-Major OCCURS 25 TIMES.
+         04 Major  PIC X(4).
+   02 Name-of-Instructor PIC X(20).
+</pre>
+Here, instead of a single table in which each element contains both a name
+and a major, we have described two "parallel" tables, one holding names and
+the other holding majors.  (The intent here is that, for all <tt>i</tt>,
+the student whose name is stored in <tt>Student-Name(i)</tt> is the
+same one whose major is stored in <tt>Student-Major(i)</tt>.)
+
+<p>
+<b>Warning:</b>
+Strangely, COBOL does not allow a table to be declared at the 01 level.
+Thus, the following is illegal:
+<pre>
+01 Junk  PIC X(4)  OCCURS 10 TIMES.   <--- ILLEGAL </pre>
+
+<p>
+<b>Note:</b> Here should include a discussion of variable-length tables.
+
+<p>
+For more information on <b>tables</b>, see Chapter 12 of 
+<em>Comprehensive COBOL</em>.
+
+
+<hr>
+<A Name="Conditional">
+<H3>Conditional (i.e., boolean) Data </H3>
+<p>
+In COBOL, the term <em>boolean</em> is not used; instead, we refer to 
+any expression that evaluates to either <b>true</b> or <b>false</b>
+(e.g., <tt>Num < 10</tt>) as a <em>condition</em>.
+Conditions are used in <tt>IF</tt> statements (to determine which of two
+alternative code segments to execute) and in loops (to determine when
+termination occurs).
+
+<p>
+As in other programming languages, one way to generate a true/false
+value is via an expression involving one or more operators by which
+data items are compared against one another.  In COBOL, we refer to
+such expressions as a <em>relation condition</em> (which is
+consistent with the fact that, with respect to some other languages,
+such operators are called <em>relational</em> operators).
+
+<p>
+The syntax of a relation condition is 
+<pre>
+     &lt;item-1&gt; &lt;relational-op&gt; &lt;item-2&gt;
+</pre>
+
+where each of <tt>item-1</tt> and <tt>item-2</tt> is either an
+identifier (i.e., name of a data item), a literal (e.g., <tt>40</tt>,
+<tt>'stupid'</tt>), an arithmetic expression (e.g., <tt>Cntr + 1</tt>,
+or an index name.  (An index is a special kind of numeric data item.)
+
+<p>
+The relational operators (some of which are words, some of which are
+comprised of symbols) are as follows:
+<tt>GREATER</tt>, <tt>&gt;</tt>, <tt>LESS</tt>, <tt>&lt;</tt>,
+<tt>EQUAL</tt>, <tt>&gt;</tt>, <tt>=</tt>, 
+<tt>GREATER OR EQUAL</tt>, <tt>&gt;=</tt>,
+<tt>LESS OR EQUAL</tt>, <tt>&lt;=</tt>.
+In addition, any of these may be preceded by the optional word
+<tt>IS</tt>, and any except for the last four may be preceded
+by the negation operator <tt>NOT</tt> (which goes after <tt>IS</tt>
+if that word is present).  Also, the word <tt>THAN</tt> may be
+included immediately following any occurrence of <tt>GREATER</tt>
+or <tt>LESS</tt> and the word <tt>TO</tt> may be placed after
+any occurrence of <tt>EQUAL</tt>.  To illustrate, all the following
+are equivalent:
+<center><tt>
+  &gt;=<br>
+  GREATER OR EQUAL<br>
+  GREATER THAN OR EQUAL<br>
+  GREATER OR EQUAL TO<br>
+  GREATER THAN OR EQUAL TO<br>
+  IS GREATER THAN OR EQUAL TO<br>
+  NOT &lt;<br>
+  NOT LESS<br>
+  NOT LESS THAN<br>
+  IS NOT LESS THAN<br>
+</tt></center> 
+</pre>
+
+
+<p>
+As all data in COBOL is either numeric, alphanumeric, or alphabetic,
+there is no way to use a picture clause to "directly" declare a data item
+as being a condition (i.e., what in Ada or Pascal we would refer to as 
+being of type boolean).  However, using what are called
+<b>condition-name conditions</b> (which are declared using the special
+level number 88), we can achieve the desired effect.
+
+<p>
+For example, suppose we make the following declaration:
+<pre>
+    01 End-of-File  PIC X.
+       88 Eof  VALUE 'T'.  </pre>
+
+Then, at any moment during execution, the value of <tt>Eof</tt> is either
+<b>true</b> or <b>false</b>, according to the following rule:
+If <tt>End-of-File</tt> has value 'T', then <tt>Eof</tt> has value <b>true</b>;
+otherwise, <tt>Eof</tt> is <b>false</b>.
+
+<p>
+Here is how you might write a loop to process a file without using the
+condition name <tt>Eof</tt>:
+<pre>
+          PERFORM UNTIL End-of-File = 'T'
+             READ In-File
+                AT END     MOVE 'T' TO End-of-File
+                NOT AT END PERFORM Process-Record
+             END-READ
+          END-PERFORM </pre>
+
+(For an explanation of the <tt>READ</tt> construct, click
+<A HREF="cobol_files.html#Seq_IO_Ops">here</A>.)
+Here's how you could write it using the condition name <tt>Eof</tt>:
+<pre>
+          PERFORM UNTIL Eof
+             READ In-File
+                AT END     MOVE 'T' TO End-of-File
+                NOT AT END PERFORM Process-Record
+             END-READ
+          END-PERFORM </pre>
+
+This is somewhat confusing, however, because the value of <tt>Eof</tt> is 
+being changed implicitly by changing the value of <tt>End-of-File</tt>.
+By using the <b>SET</b> verb, we can avoid this by writing the above as
+<pre>
+          PERFORM UNTIL Eof
+             READ In-File
+                AT END     SET Eof TO TRUE
+                NOT AT END PERFORM Process-Record
+             END-READ
+          END-PERFORM </pre>
+<p>
+The effect of <tt>SET Eof TO TRUE</tt> is to change the value of 
+<tt>End-of-File</tt> to 'T', thereby giving <tt>Eof</tt> the value <b>true</b>.
+But now a similar criticism can be made, namely that the value of
+<tt>End-of-File</tt> is being changed without explicit reference to it!
+The answer to this is that we follow the rule that no reference is ever 
+made to <tt>End-of-File</tt>, except in its declaration.  That is, all 
+manipulation suffered by <tt>End-of-File</tt> is as a result of applying the
+<tt>SET</tt> verb to one or another of its subordinate 88-level items.
+In fact, we <em>never</em> need to reference <tt>End-of-File</tt>, even in a
+declaration, because we can choose to make it an anonymous data item
+(using <tt>FILLER</tt> instead of a data-name).
+The declaration would now be as follows:
+<pre>
+       01 FILLER  PIC X VALUE 'F'.
+          88 Eof  VALUE 'T'.  </pre>
+<p>
+Note that you <em>may not</em> write <tt>SET Eof TO FALSE</tt>.
+That is, you may set a condition-name to <b>true</b>, but not to <b>false</b>!
+(To get that effect, you would need at least one other condition-name
+subordinate to the same data item, which you could set to true in order
+to make the former false.)
+
+<p>
+Here is an example in which several condition-names, under a single
+data item, are employed:
+<pre>
+         01 Student.
+            02 Name.
+               ...
+               ...
+            02 Standing  PIC 9.
+               88 Freshman  VALUE 1.
+               88 Sophomore VALUE 2.
+               88 Junior    VALUE 3.
+               88 Senior    VALUE 4.
+            02 ... </pre>
+
+<p>
+Now you can write code such as:
+<pre>
+          IF Freshman
+             some code (e.g., possibly SET Sophomore TO TRUE)
+          ELSE IF Sophomore
+             some code
+          ELSE IF Junior
+             some code
+          ELSE IF Senior
+             some code
+          ELSE
+             some code
+          END-IF
+          END-IF
+          END-IF
+          END-IF </pre>
+<p> 
+The values associated to condition-names need not be singular; that is,
+you can associate a set of different values to a given condition-name.
+The simplest kind of set, aside from a single value, is a contiguous
+range of values.  Example:
+<pre>
+         01 Student.
+            02 Name.
+               ...
+               ...
+            02 Grade-Level PIC 99.
+               88 Elementary VALUES 0 THRU 5.
+               88 Middle     VALUES 6 THRU 8.
+               88 High       VALUES 9 THRU 12.
+               88 College    VALUES 13 THRU 25.
+               88 Sentinel   VALUE 99.
+            02 ... </pre>
+<p>
+The value of <tt>High</tt>, for example, is <b>true</b> when
+(and only when) the value of <tt>Grade-Level</tt> is 9, 10, 11, or 12.
+Note that it <em>is</em> legal for distinct condition-names to have
+overlapping TRUE sets (if we may call them that).  For example, according
+to the following definitions, both <tt>Good</tt> and <tt>Average</tt> are
+<b>true</b> when <tt>Evaluation</tt> has value 6.
+<pre>
+         01 Evaluation PIC 9.
+            88 Excellent VALUE  9.
+            88 Good      VALUES 6 THRU 9.
+            88 Average   VALUES 4 THRU 6.
+            88 Poor      VALUES 2 THRU 4.
+            88 Lousy     VALUES 0 THRU 2. </pre>
+<p>
+Allowing a condition name to be associated with a set of values, as opposed
+to a single value, raises the following.
+<b>Question:</b> What is the result of executing, for example,
+ &nbsp;<tt>SET Average TO TRUE</tt>&nbsp;?
+<b>Answer:</b> The convention COBOL follows is to change the value
+of <tt>Evaluation</tt> to the smallest value in the set associated to 
+<tt>Average</tt>, which is 4.
+
+
+<p>
+See Chapters 5 and 8 of <em>Comprehensive COBOL</em> for more about
+conditional (i.e., boolean) data in COBOL.
+
+</body>
+</html>

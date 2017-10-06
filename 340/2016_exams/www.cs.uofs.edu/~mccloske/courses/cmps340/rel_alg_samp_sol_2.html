@@ -1,0 +1,532 @@
+<html>
+<head>
+  <title>CMPS 340  Some more sample Relational Algebra Queries</title>
+</head>
+<body>
+<h2>
+CMPS340 <br />
+Some More Sample Relational Algebra Queries<br />
+</h2>
+
+</p><p>
+With respect to the SCHOOL database (from the web page introducing
+relational algebra) devise solutions, in Relational Algebra, to the
+following informally-stated queries.
+
+</p><p>
+The SCHOOL database has three relations/tables: <b>Student</b>,
+<b>EnrolledIn</b>, and <b>Teaches</b>.
+The key of <b>Student</b> is <b>ID</b>.  The key of each other 
+table is the set of all its attributes.
+
+</p><p>
+Here is a possible snapshot of the database:
+
+<center>
+<table cellpadding="20"> 
+<tr>
+  <td>  <!-- Student table -->
+    <table border="1" cellpadding="4">
+      <tr><th colspan="4"><font size="+1"><b>Student</b></font></th></tr>
+      <tr><th>ID</th><th>Name</th><th>Sex</th><th>Class</th></tr>
+      <tr><td>2</td><td>Mary</td><td>F</td><td>2</td>
+      <tr><td>6</td><td>John</td><td>M</td><td>4</td>
+      <tr><td>9</td><td>Carol</td><td>F</td><td>3</td>
+      <tr><td>7</td><td>Mary</td><td>F</td><td>4</td>
+      <tr><td>1</td><td>Ann</td><td>F</td><td>1</td>
+      <tr><td>13</td><td>Mike</td><td>M</td><td>2</td>
+      <tr><td>8</td><td>Helen</td><td>F</td><td>4</td>
+      <tr><td>5</td><td>Jim</td><td>M</td><td>1</td>
+      <tr><td>16</td><td>Mike</td><td>M</td><td>3</td>
+    </table>
+  </td>
+  <td>  <!-- EnrolledIn table -->
+    <table border="1" cellpadding="4">
+      <tr><th colspan="4"><font size="+1"><b>EnrolledIn</b></font></th></tr>
+      <tr><th>StuID</th><th>CourseID</th>
+      <tr><td>2</td><td>CIL 102</td>
+      <tr><td>2</td><td>MATH 2</td>
+      <tr><td>1</td><td>HIST 7</td>
+      <tr><td>7</td><td>MATH 2</td>
+      <tr><td>1</td><td>ENGL 4</td>
+      <tr><td>1</td><td>MATH 2</td>
+      <tr><td>13</td><td>HIST 7</td>
+      <tr><td>5</td><td>HIST 7</td>
+      <tr><td>5</td><td>CIL 102</td>
+      <tr><td>16</td><td>ENGL 4</td>
+    </table>
+  </td>
+  <td>  <!-- Teaches table -->
+    <table border="1" cellpadding="4">
+      <tr><th colspan="4"><font size="+1"><b>Teaches</b></font></th></tr>
+      <tr><th>CID</th><th>FacID</th>
+      <tr><td>CIL 102</td><td>Smith</td>
+      <tr><td>MATH 2</td><td>Jones</td>
+      <tr><td>HIST 7</td><td>Sarek</td>
+      <tr><td>ENGL 4</td><td>Gorn</td>
+      <tr><td>CIL 102</td><td>Jones</td>
+    </table>
+  </td>
+</tr>
+</table>
+</center>
+
+</p><p>
+<b>1.</b>
+List the name and class of each student who is a female and either
+a junior or senior.
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT Name, Class
+FROM RESTRICT Student
+     WHERE Sex = 'F' AND (Class = 3 OR Class = 4)
+</pre>
+
+<hr>
+</p><p>
+<b>2.</b>
+List the name of each student enrolled in <tt>MATH 2</tt>.
+
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT Name
+FROM JOIN Student
+     WITH (RESTRICT EnrolledIn WHERE CourseID = 'MATH 2')
+     WHERE ID = StuID </pre>
+
+<hr>
+</p><p>
+<b>3.</b>
+List the IDs of all faculty who teach a course in which a student 
+named <em><b>Rumplestiltskin</b></em> is enrolled.
+
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT FacID
+FROM JOIN Teaches
+     WITH (JOIN (RESTRICT Student WHERE Name = 'Rumplestiltskin')
+           WITH EnrolledIn
+           WHERE ID = StuID
+          )
+     WHERE CID = CourseID</pre>
+
+
+<hr>
+</p><p>
+<b>4.</b>
+List the ID's of students enrolled in a course in which a student
+named <em><b>Rumplestiltskin</b></em> is enrolled.
+
+</p><p>
+<b>Solution:</b>
+<pre>
+PROJECT StuID
+FROM JOIN EnrolledIn AS e
+     WITH (JOIN EnrolledIn
+           WITH RESTRICT Student WHERE Name = 'Rumplestiltskin' 
+           WHERE StuID = ID
+          ) AS f
+     WHERE e.CourseID = f.CourseID
+</pre>
+
+<!--  Inferior solution:
+<pre>PROJECT StuID
+FROM JOIN 
+        PROJECT CourseID AS CrsID
+        FROM JOIN (RESTRICT Student 
+                   WHERE Name = 'Rumplestiltskin'
+                  )
+             WITH EnrolledIn
+             WHERE ID = StuID
+     WITH EnrolledIn
+     WHERE CrsID = CourseID</pre>
+-->
+
+<hr>
+</p><p>
+<b>5.</b>
+List all names common to multiple (i.e., at least two) students.
+
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT s1.Name
+FROM JOIN Student AS s1 
+     WITH Student AS s2
+     WHERE s1.Name = s2.Name  AND  s1.ID &ne; s2.ID</pre>
+
+</p><p>
+The above solution illustrates the AS-clause, which is a
+table aliasing feature.
+The solution below is the same, but it uses attribute renaming
+instead.
+
+</p><p>
+<pre>PROJECT Name
+FROM JOIN Student
+     WITH Student(ID&rarr;SID, Name&rarr;Sname, Sex&rarr;Ssex, Class&rarr;Sclass)
+     WHERE Name = Sname AND ID &ne; SID
+</pre>
+
+<hr>
+</p><p>
+<b>6.</b>
+List names of students not enrolled in CIL 102.
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT Name 
+FROM NAT_JOIN Student
+     WITH     PROJECT ID FROM Student
+              MINUS
+              (PROJECT ID 
+               FROM RESTRICT EnrolledIn(StuId&rarr;ID) 
+                    WHERE CourseID = 'CIL 102'
+              )</pre>
+
+</p><p>
+The NAT_JOIN operator indicates a <b>natural join</b>, which is a
+special, but very common, case of a JOIN in which the JOIN condition
+is that all pairs of attributes having the same name must have equal 
+values.  In the table that results, the pairs of attributes having
+the same name are merged into a single attribute/column with that
+name.
+To illustrate, suppose that table S has attributes A, B, X, Y, and Z
+and that table T has attributes C, D, X, Y, and Z.  So they have
+the X, Y, and Z attributes in common.
+Then <tt>NAT_JOIN S WITH T</tt> is equivalent to
+</p><p>
+<center>
+<table border="0" cellpadding="4">
+<tr><td>
+<pre>
+PROJECT A,B,C,D,X,Y,Z
+FROM JOIN S AS s
+     WITH T(X&rarr;X', Y&rarr;Y', Z&rarr;Z') AS t
+     WHERE s.X = t.X' AND s.Y = t.Y' AND s.Z = t.Z'</tt></pre>
+</td></tr>
+</table>
+</center>
+
+
+</p><p>The next "solution" is <b>wrong</b> because its result
+fails to include the name of a student who is not enrolled in 
+CIL 102 if there is another student of the same name who <b>is</b>
+enrolled in CIL 102!
+</p><p>
+<pre>(PROJECT Name FROM Student)
+MINUS
+(PROJECT Name FROM
+ JOIN Student
+ WITH (RESTRICT EnrolledIn WHERE CourseID = 'CIL 102')
+ WHERE ID = StuID
+) </pre>
+
+<!--
+<hr>
+</p><p>
+<b>7.</b> List the IDs of students enrolled in courses taught by either 
+Sarek or Gorn.
+
+</p></p>
+<b>Solution:</b>
+<pre>
+PROJECT ID FROM JOIN Student
+                 WITH RESTRICT EnrolledIn WHERE CourseID = 'MATH 2'
+                 WHERE ID = StuID
+UNION
+</pre>
+-->
+
+<!--
+<pre>
+PROJECT CID FROM RESTRICT EnrolledIn WHERE CourseID = 'MATH 2'
+UNION
+PROJECT CID FROM JOIN (RESTRICT Student WHERE Name = 'Rumplestiltskin')
+                 WITH EnrolledIn
+                 WHERE ID = StuID
+</pre>
+-->
+
+
+<hr>
+</p><p>
+<b>7.</b>
+<b>(a)</b> List the number of female students.
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE COUNT(*)
+FROM (RESTRICT Student WHERE Sex = 'F') </pre>
+
+</p><p>
+<b>(b)</b> List the number of students of each sex.
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE Sex, COUNT(*)
+FROM Student 
+GROUP BY Sex </pre>
+
+</p><p>
+<b>(c)</b> List the number of students who are currently enrolled in
+at least one course, by class and sex.  (In other words, for each
+combination of Sex and Class values, indicate how many students
+are currently enrolled in a course.)
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE Class, Sex, COUNT(ID)
+FROM PROJECT ID, Class, Sex
+     FROM JOIN Student 
+          WITH EnrolledIn
+          WHERE ID = StuID
+GROUP BY Class, Sex</pre>
+
+</p><p>
+<b>(d)</b> For each course, indicate the number of students 
+enrolled in that course.
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE CourseID, COUNT(StuID)
+FROM EnrolledIn
+GROUP BY CourseID</pre>
+
+</p><p>
+<b>(e)</b> For each course, indicate the number of female students 
+enrolled in that course.
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE CourseID, COUNT(StuID)
+FROM JOIN (RESTRICT Student WHERE Sex = 'F')
+     WITH EnrolledIn
+     WHERE ID = StuID
+GROUP BY CourseID</pre>
+
+</p><p>
+<b>(f)</b> For each course and sex, indicate the number of students 
+of that sex enrolled in that course.
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE CourseID, Sex, COUNT(StuID)
+FROM JOIN Student 
+     WITH EnrolledIn 
+     WHERE ID = StuID
+GROUP BY CourseID, Sex</pre>
+
+</p><p>
+<b>(g)</b> For each course, indicate the number of distinct classes
+represented by students enrolled in it.  (E.g., If only juniors
+and seniors are enrolled in a course, the answer is two for that course.)
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE CourseID, COUNT(Class)
+FROM JOIN Student
+     WITH EnrolledIn
+     WHERE ID = StuID
+GROUP BY CourseID</pre>
+
+</p><p>
+<b>(h)</b> For each student (including ones not enrolled in any
+courses), list the student's ID and the # of courses in which
+(s)he is enrolled.
+
+</p><p>
+<b>Solution:</b>
+<pre>
+To appear ...
+</pre>
+
+<!-- 
+%%%%%%%%
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT Lname, Bdate
+FROM (RESTRICT Employee 
+      WHERE Sex = 'M' AND (40000 &lt;= Salary AND Salary &lt;= 60000)
+     );</pre>
+
+<hr>
+
+</p><p>
+<b>2.</b>
+Report the first and last names of any female employee 
+who works on project 7 at least ten hours per week.
+
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT Fname, Lname
+FROM JOIN (RESTRICT Employee WHERE Sex = 'F')
+     WITH (RESTRICT Works_On WHERE Pno = 7 AND Hours >= 10)
+     WHERE Ssn = Essn; </pre>
+
+</p><p>
+Note that either or both of the RESTRICTs could have been done
+<em>after</em> the join, as in
+<pre>PROJECT Fname, Lname
+FROM RESTRICT (JOIN Employee WITH Works_On WHERE Ssn = Essn)
+     WHERE Sex = 'F' AND Pno = 7 AND Hours >= 10; </pre>
+
+<hr>
+
+</p><p>
+<b>3.</b>
+Report the first and last names of any employee whose salary is
+at least $30,000 and who does <em>not</em> work on project 7.
+
+</p><p>
+<b>Solution:</b>
+The following answer is <b>wrong</b>, as it results in the names of
+employees who work on <em>at least one project other than project 7</em>
+and who have a salary of at least $30,000.  Hence, it will incorrectly
+include some employees (namely, those who work on project 7 in addition to
+working on at least one other one) and incorrectly exclude others
+(namely, those who work on no projects).
+
+<pre><b>Below is WRONG!</b>
+PROJECT Fname, Lname
+FROM JOIN (RESTRICT Employee WHERE Salary >= 30000)
+     WITH (RESTRICT Works_On WHERE Pno != 7)
+     WHERE Ssn = Essn;
+<b>Above is Wrong!</b> </pre>
+
+<p>
+Using the multi-step approach, here is one possible answer:
+<pre>
+// get SSN's of all employees
+AllSsn &larr; PROJECT Ssn FROM Employee;
+
+// get SSN's of employees who work on project 7 and rename the
+// attribute so that it matches the attribute of AllSsn
+Proj7Ssn &larr; PROJECT Essn AS Ssn FROM (RESTRICT Works_On WHERE Pno=7);
+
+// use set difference operator to get SSN's of those who don't work on project 7
+Non7Ssn &larr; AllSsn - Proj7Ssn;
+
+// Now result is at hand!
+Result &larr; 
+   PROJECT Fname, Lname
+   FROM JOIN (RESTRICT Employee WHERE Salary >= 30000) AS e
+        WITH Non7Ssn AS f
+        WHERE e.Ssn = f.Ssn; </pre>
+
+<p>
+Here is the corresponding "one-line" query:
+
+<pre>PROJECT Fname, Lname 
+FROM JOIN (RESTRICT Employee WHERE Salary >= 30000) AS e
+     WITH ((PROJECT Ssn FROM Employee) - 
+           (PROJECT Essn AS Ssn FROM (RESTRICT Works_On WHERE Pno=7))
+          ) AS f
+     WHERE e.Ssn = f.Ssn; </pre>
+
+<p>
+Note that in SQL the set difference operator is written as the word
+<tt>EXCEPT</tt> rather than as a minus sign.
+
+<hr>
+
+<p>
+<b>4.</b>
+For each employee <tt>e</tt> and each project <tt>p</tt> on which <tt>e</tt>
+works, report <tt>e</tt>'s last name, <tt>p</tt>'s name, and the number of
+hours per week that <tt>e</tt> works on <tt>p</tt>.
+
+<p>
+<b>Solution:</b>
+<pre>PROJECT Lname, Pname, Hours
+FROM JOIN (JOIN Employee WITH Works_On WHERE Ssn = Essn)
+     WITH Project 
+     WHERE Pno = Pnumber; </pre>
+
+
+<hr>
+<b>5.</b>
+For each employee <tt>e</tt> and each project <tt>p</tt> on which
+<tt>e</tt> works, report <tt>e</tt>'s last name, <tt>p</tt>'s name,
+and the name of the department that controls <tt>p</tt>.
+(The <tt>Dnum</tt> attribute in <tt>Project</tt>
+identifies each project's controlling department.)
+
+<p>
+<b>Solution:</b>
+<pre>PROJECT Lname, Pname, Dname
+FROM JOIN Employee
+     WITH (JOIN Works_On 
+           WITH (JOIN Project WITH Department WHERE Dnum = Dnumber)
+           WHERE Pno = Pname
+          )
+     WHERE Ssn = Essn); </pre>
+
+<hr>
+<p>
+<b>6.</b>
+Report the number of dependents of the employee having SSN 987654321.
+
+<p>
+<b>Solution:</b>
+<pre>AGGREGATE COUNT(*)
+FROM (RESTRICT Dependents WHERE Essn = '987654321');</pre>
+
+<hr>
+<b>7.</b>
+Report each employee's first and last names together with her/his 
+number of dependents.
+
+<p>
+<b>Solution:</b>
+<pre>AGGREGATE Fname, Lname, COUNT(*)
+FROM (JOIN Employee WITH Dependent WHERE Ssn = Essn)
+GROUP BY Fname, Lname, Ssn; </pre>
+
+<p>
+Note that every item listed in the aggregate clause (i.e., between
+the words <tt>AGGREGATE</tt> and <tt>FROM</tt>) must be either an
+application of an aggregate function (e.g., <tt>SUM</tt>, <tt>COUNT</tt>)
+or an attribute that is also listed in the group-by clause.
+
+<hr>
+<b>8.</b>
+<b>(a)</b> 
+Report, for each department (identified by its number), the number of
+employees who work for it.
+
+<p>
+<b>Solution:</b>
+<pre>AGGREGATE Dno, COUNT(*)
+FROM Employee
+GROUP BY Dno; </pre>
+
+<p>
+<b>(b)</b> 
+Report, for each department (identified by its name), the number of
+employees who work for it.
+
+<p>
+<b>Solution:</b>
+<pre>AGGREGATE Dname, COUNT(*)
+FROM (JOIN Employee WITH Department WHERE Dno = Dnumber)
+GROUP BY Dname;</pre>
+
+<p>
+Note that this solution assumes that <tt>Dname</tt> is a key of the
+<tt>Department</tt> table, which it is, according to the discussion
+in Chapter 3? where the <tt>COMPANY</tt> database schema was designed.
+
+<p>
+<b>(c)</b>
+Report, for each department (identified by its number), the total
+number of dependents of employees who work for it.
+
+<p>
+<b>Solution:</b>
+<pre>AGGREGATE Dno, COUNT(*)
+FROM (JOIN Employee WITH Dependent WHERE Ssn = Essn)
+GROUP BY Dno </pre>
+
+-->
+</body>
+</html>
+

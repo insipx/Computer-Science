@@ -1,0 +1,793 @@
+<html>
+<head>
+  <title>C/IL 102 &nbsp;  Data Representation in Computers</title>
+</head>
+
+<body>
+<H2>C/IL 102<br />
+Data Representation in Digital Computers<br />
+Dr. McCloskey
+</H2>
+
+<H2>Introduction</H2>
+
+<p>
+To introduce this subject, let us consider an example that may help you
+to understand more clearly the idea of representing one thing by another.
+Take the word <b>cat</b>.  It refers to a class of animals,
+often kept as pets by humans, whose members have certain common
+characteristics, such as that they have claws, fur, and make purring
+noises.  It is unlikely that you would ever confuse the word <b>cat</b>
+with the species that it represents or with any particular member of that
+species.  
+
+<p>
+<em>Digression:</em>
+At the risk of becoming pedantic, let us go one step farther.
+Consider that which appears, centered on the screen (or page), between
+here and the next paragraph.
+
+<p>
+<font size=+2>
+<center>cat</center>
+</font>
+
+<p>
+Is what appears immediately above the word <b>cat</b> itself,
+or is it just a <em>representation</em> of that word,
+formed by a pattern of black and white pixels on your computer screen
+(or ink stains on a sheet of paper, if you're reading a "hard copy"
+version of this document)?
+The point is that one could reasonably view each occurrence of the 
+character sequence <tt>cat</tt> (or any similar sequence that spells
+some word) appearing on a page, or a computer screen, or a blackboard, etc.,
+as simply a representation of the corresponding word.
+<em>End of Digression.</em>
+
+<p>
+Few people would confuse the word <b>cat</b> with the type of animal to
+which it refers, but many people routinely confuse <b>numerals</b>
+with the <b>numbers</b> that they represent.  For example, consider
+<p>
+<font size=+2>
+<center>35024</center>
+</font>
+
+<p>
+This is a five-digit numeral that represents the same number as is
+represented by the phrase <b>thirty-five thousand twenty-four</b>
+(which can also be considered to be a numeral!).
+Just as words refer to (or represent) objects, actions, and various
+other concepts, numerals refer to (or represent) numbers.
+In our day-to-day lives, most of us rarely need to make such subtle 
+distinctions.  But because computers store representations of concepts,
+and manipulate those representations, a good understanding of computers
+requires that you appreciate the difference between a thing and a
+representation thereof.
+
+<p>
+<!-- Electronic digital computers-->
+Computers are capable of storing and processing data
+of many different kinds.
+Among the most common types of data are <b>numeric</b>, 
+<b>textual</b> (comprised of characters), 
+<b>logical</b> (i.e., true and false values),
+<b>visual</b> (i.e., images), and <b>audio</b> (i.e., sound).
+Yet computers store all data in terms of only 0's and 1's!
+(Or at least that's the point of view taken by computer scientists.
+The physical manifestation of those 0's and 1's (i.e., by what means the
+0's and 1's are represented on whatever physical medium they are stored!)
+is the concern of people who work at levels of abstraction closer to
+physical reality, such as electronics engineers and physicists.)
+<p>
+How can so many different kinds of data all be expressed in terms of 0's
+and 1's??  The answer lies in <b>encoding schemes</b>!
+
+
+<H2>Numeric Data</H2>
+<H3>Unsigned Integers</H3>
+We begin by considering unsigned (i.e., nonnegative) integers,
+or the so-called natural numbers.
+Most peoples of the world employ the <b>decimal</b> (or <b>base ten</b>)
+<b>numeral system</b>.
+In this system, the ten distinct symbols <b>0</b>, <b>1</b>, <b>2</b>, 
+..., <b>9</b> (also called the decimal <b>digits</b>) represent the 
+numbers zero through nine.  To express larger numbers, we form sequences
+of digits and follow the convention that the "worth" of each digit in
+such a sequence depends not only upon which digit it is (i.e., 5 vs. 7)
+but also upon its position within the sequence.
+(Sometimes this is called <b>positional</b> notation.)
+
+<p>
+More specifically, the positions become increasingly <b>significant</b>
+as we go from right to left.
+We say that the rightmost digit is in the 1's column, its neighbor
+to the left is in the 10's column, the next digit to the left is in
+the 100's column, the next is in the 1000's column, etc., etc.
+That is, the <b>weights</b>, or <b>place values</b>, of the columns are
+the powers of 10.  (i.e., 1 (or 10<sup>0</sup>), 10 (or 10<sup>1</sup>),
+100 (or 10<sup>2</sup>), 1000 (or 10<sup>3</sup>), etc.).
+Here is an illustration for the numeral 7326:
+
+<pre>
+   column weights:                1000 100  10   1
+   sequence of (decimal) digits:     7   3   2   6 </pre>
+
+<!-- To say it in yet another way,-->
+This numeral means the same thing as
+<p>
+<center>
+  (7 &times; 1000)  +  (3 &times; 100)  +  (2 &times; 10)  + (6 &times; 1)
+</center>
+<p>
+That is, the 7, being in the in the 1000's column, represents 
+<tt>7&times;1000</tt>;
+the 3, being in the 100's column, represents <tt>3&times;100</tt>;
+the 2, being in the 10's column, represents <tt>2&times;10</tt>;
+and the 6, being in the 1's column, represents <tt>6&times;1</tt>. 
+
+<p>
+This system works quite nicely because <em>every</em> nonnegative integer
+can be expressed as a sum of the form
+<center>(d<sub>k</sub> &times; 10<sup>k</sup>) + 
+        (d<sub>k-1</sub> &times; 10<sup>k-1</sup>) + ... + 
+        (d<sub>1</sub> &times; 10<sup>1</sup>) + 
+        (d<sub>0</sub> &times; 10<sup>0</sup>)
+</center>
+<br />
+for some natural number k, where each d<sub>i</sub> is a decimal digit
+(i.e., one of 0, 1, 2, ..., 9).
+Hence, each such number can be represented by the corresponding numeral
+<br />
+<center>d<sub>k</sub> d<sub>k-1</sub> ... d<sub>1</sub> d<sub>0</sub>
+</center>
+
+<p>
+Moreover, if we ignore numerals with leading 0's, each natural number
+has a <em>unique</em> representation of this form.
+
+<p>
+Why do we use ten as the base of our numeral system?
+Is there something inherent about ten that makes it better than any other
+choice?  <b>No!</b>
+Rather, it has been widely speculated that we use ten as the base 
+simply because humans have ten fingers.
+<!-- But there is nothing special about ten! -->
+
+</p><p>
+We could, for example, just as well use eight as the base
+(giving rise to the <b>octal</b> system) or 16 (giving rise to
+the <b>hexadecimal</b> system) or any other integer greater than 1.
+(There is such a thing as the base&nbsp;1 (or unary) system, although
+it is not entirely analogous.)
+
+<p>
+As an example, consider the octal (i.e., base 8) system.
+In this system, numerals are formed from the (eight) digits 
+<tt>0</tt> through <tt>7</tt> and the column weights are the
+powers of eight (1 = 8<sup>0</sup>, 8 = 8<sup>1</sup>, 64 = 8<sup>2</sup>,
+512 = 8<sup>3</sup>, etc.).
+Take, for example, the octal numeral 5207:
+<pre>
+   column weights:                 512 64  8  1
+   sequence of (octal) digits:       5  2  0  7</pre>
+
+<p>
+Analogous to the decimal numeral example above, we calculate (using
+base 10 numerals!) that the number represented by the octal numeral 5207 is
+<br />
+<center>(5 &times; 512) + (2 &times 64) + (0 &times 8) + (7 &times 1)
+</center>
+<br />
+which works out to <tt>2695</tt> (expressed in decimal!!).
+That is, we have 
+<p>
+<center>5207<sub>8</sub> = 2695<sub>10</sub></center>
+<br />
+Note that we place a subscript to the right of a numeral in order to
+indicate its base explicitly.
+
+<p>
+As noted earlier, computers are built in such a way that each atomic unit
+of memory/storage is a <b>switch</b>, meaning that, at any moment in time,
+it is in one of two possible states.
+By convention, we refer to these states as <b>0</b> and <b>1</b>, which,
+of course, correspond to the two digits that are available in the
+<b>binary</b> (or <b>base 2</b>) numeral system.
+One might call each of these a <b><u>b</u>inary dig<u>it</u></b>,
+from which we get the contraction <b>bit</b>.  
+It would seem natural, then, for computers to employ the binary numeral
+system for representing numbers.
+<!-- And switches can be produced cheaply in great numbers. -->
+
+<p>
+As an example, take the binary numeral 10100110<sub>2</sub>:
+
+<pre>   column weights:                 128 64 32 16  8  4  2  1
+   sequence of (binary) digits:      1  0  1  0  0  1  1  0 </pre>
+                                        
+Notice that the column weights are the powers of two.  Analogous to the
+examples above, we have that 10100110<sub>2</sub> represents
+the number corresponding to the sum (expressed in decimal numerals)
+<p><center>
+   (1 &times; 128) + (0 &times; 64) + (1 &times; 32) + (0 &times; 16) + 
+   (0 &times; 8) + (1 &times; 4) + (1 &times; 2) + (0 &times; 1)</center>
+<p>
+which comes out (in decimal) to 166.
+
+<p>
+In general, to translate a binary numeral into its decimal equivalent,
+do exactly as we did in arriving at 166 in the above example: simply add
+up the weights of the columns in which the binary numeral contains 1's.
+
+<p>
+Translating from decimal to binary is only a little more difficult.
+Perhaps the most intuitively appealing approach is to
+find the powers of two that sum up to the desired number.
+We illustrate this with an example:  Suppose that we want to express
+the number 75 (here expressed in decimal notation, as usual)
+in binary notation.
+First find the largest power of two that is less than or equal to 75.
+That would be 64 (or 2<sup>6</sup>), because the next higher power of two
+is 128, which is too big.
+<!--   It follows that the
+    binary representation of 75 has a 1 in the 64's column (and 0's in
+    all columns to the left, which we omit).
+-->
+As 75 &minus; 64 = 11, it remains to find powers of two that sum to 11.
+As before, find the largest power of two no greater than 11.
+That would be 8 (or 2<sup>3</sup>).
+<!-- Hence, we place a 1 in the 8's column. -->
+As 11 &minus; 8 = 3, it remains to find powers of two summing to 3.  
+The largest power of two no greater than 3 is 2 (or 2<sup>1</sup>).
+As 3 &minus; 2 = 1, it remains to find powers of two summing to 1.  The
+largest power of two no greater than 1 is 1 (or 2<sup>0</sup>).
+As 1 &minus; 1 = 0, we are done.  What we have determined is that 75 can be
+written as the sum of powers of two as follows:
+<p>
+<center>75 = 64 + 8 + 2 + 1</center>
+<br>
+which is to say that the binary representation of 75 has 1's in the
+64's, 8's, 2's and 1's columns and 0's in every other column.
+Omitting leading 0's (in the columns with weights greater than 64),
+this yields 
+<pre>   column weights:                 64 32 16  8  4  2  1
+   sequence of (binary) digits:     1  0  0  1  0  1  1 </pre>
+
+<!-- <p><center>1001011<sub>2</sub></center> -->
+<p>That is, the binary numeral we seek is 1001011<sub>2</sub>.
+
+<H4>Arithmetic Operations</H4>
+<p>
+For a computer to be useful as a "number cruncher", it needs not only
+to be able to encode integer values, but also to be able to perform
+arithmetic operations upon them.  How can addition, for example, be
+carried out upon numbers encoded using the binary numeral system?
+Well, it turns out that addition, as well as the other arithmetic
+operations, can be performed in binary (or any other base)
+similarly to how humans perform it in decimal.
+
+<p>
+Here is an example:
+<pre>
+                  &sup1; &sup1;   &sup1; &sup1;
+                    1 1 0 1 1 0
+                +   0 1 0 1 1 0
+                  -------------
+                  1 0 0 1 1 0 0
+</pre>
+Just as in decimal addition, we work from least significant digit towards
+most significant, or right-to-left.  In the 0's column, we have 0+0 = 0,
+so we record a 0 in that column in the result, and we carry zero to the
+2's column.
+<p>
+In the 2's column, we have 0+1+1 = 2 (the zero corresponding to the
+incoming carry).  But 2<sub>10</sub> =  10<sub>2</sub>.  Hence, we
+record the 0 in the result and carry a 1.  (This is analogous to,
+in decimal, having a column with, say 8 and 6 in it, which yields 14,
+so we record the 4 and carry the 1.) 
+<p>
+In the 4's column, we have 1+1+1=3, or 11<sub>2</sub>.  Hence, we
+record the 1 in the result and carry a 1.
+<p>
+We leave it to the reader to make sense of what happened in the 8's and 16's
+columns.
+<p>
+In the 32's column, we have 1+1+0, which yields 10<sub>2</sub>,
+so we record 0 and carry 1 to the next column.  As the 64's column does
+not exist in the two addends, implicitly the bits there are both 0.
+Hence, in the 64's column we have 1+0+0 = 1 = 01<sub>2</sub>, 
+so we record the 1 and carry a 0. 
+Obviously, all remaining columns to the left will have 0's, so we are done.
+
+
+<H3>Signed Integers</H3>
+<p>
+So far, our discussion has included only natural numbers, i.e., nonnegative
+integers.  Obviously, we would like to be able to encode (and perform
+arithmetic upon) negative integers, too.
+
+<p>
+Our standard way of writing a decimal numeral representing a negative number
+is to place a minus sign in front of its digits.  For example, we read
+&minus;53 as "negative fifty-three". 
+We typically write positive fifty-three as 53, with no sign,
+but if we want to emphasize that it is positive, we could write it
+as +53.
+The point is that every decimal numeral begins, 
+either implicitly or explicitly, with a symbol indicating its sign,
+which is followed by a sequence of digits that represent its magnitude
+(i.e., a "distance" from zero).  We could reasonbly call this the
+<b>sign-magnitude</b> representation scheme.
+
+<p>
+As there are two signs, + and &minus;, a very natural way to
+incorporate the notion of a sign in a binary numeral is to use a single bit
+to encode it.  For example, we could encode + by 0 and &minus;
+by 1.  If we further decide to place the sign first (i.e., use the first bit
+to encode the sign), then, for example, the binary numeral <tt>110110</tt>
+would represent <tt>-22</tt>.  (The 1 in the first bit indicates that 
+the number is negative; the other three 1's are in the 16, 4, and 2 columns,
+and so yield a magnitude of 22.)
+
+<p>
+The sign-magnitude approach may be the most natural for humans, but it 
+turns out that an alternative scheme, called <b>two's complement</b>,
+is what most computers use.  Under this scheme, the weight (or place value)
+of the most significant bit is negative.  For example, suppose we have an
+8-bit numeral.  Then the column weights are as usual, except that the
+weight associated to the leftmost column is <tt>-(2<sup>7</sup>)</tt>
+rather than <tt>+(2<sup>7</sup>)</tt>.  Hence, the binary numeral
+<tt>11001001</tt> represents
+
+<p><center><tt>
+(1 &times; -128) + (1 &times; 64) + (1 &times; 8) + (1 &times; 1) = -55
+</tt></center>
+
+
+
+<H3>Computer Storage of Integers</H3>
+Generally speaking, computers store numerals in fixed-length chunks of memory.
+For integers, this is typically either two bytes (16 bits) or four bytes
+(32 bits).  In order to make the numbers somewhat smaller (and hence
+easier to deal with), let's suppose that we're using only one byte 
+(8 bits) to store an integer.  Recall that the number of distinct bit
+strings of length <em>k</em>, for any natural number <em>k</em>, is
+<em>2<sup>k</sup></em>.  Plugging in 8 for <em>k</em>, we get 256.
+Hence, by deciding to store integers in single bytes, we limit ourselves
+to a universe of at most 256 different integers that we can encode/represent.
+
+<p>
+In the case of our unsigned binary numeral encoding scheme (the first one
+discussed above), the range of integer values that can be represented
+goes from 0 (using the bit string <tt>00000000</tt> of eight zero's) up to
+255 (using the bit string <tt>11111111</tt> of eight one's). 
+
+<p>
+With the two's complement scheme, the range goes from 
+&minus;128 (using the bit string <tt>10000000</tt>) to
++127 (using <tt>01111111</tt>).
+
+<p>
+Using the sign-magnitude approach, the range goes from
+&minus;127 (using <tt>11111111</tt>) to
++127 (using <tt>01111111</tt>).
+It's interesting that this range has only 255 distinct values in it,
+rather than 256.  The reason?  Because zero has two different
+representations, <tt>00000000</tt> (i.e., +0) and <tt>10000000</tt> 
+(i.e., &minus;0)!
+
+<p>
+The larger point being made here is that, regardless of how many bits are
+chosen as being the "standard size" for representing integers (or any other
+type of data), the set of values that is encodable inside any
+fixed-length chunk of storage is finite.  
+Hence, if the (accurate) result of some particular computation is outside
+this set, the result that actually gets stored will be in error.
+For example, if we are working in the realm of 8-bit numerals represented
+using the 2's complement scheme and we try to add 95
+(<tt>01011111<sub>2</sub></tt> and 67 (<tt>01000011<sub>2</sub></tt>),
+we cannot get the correct result (162), simply because that value is outside
+the range (namely, -128 to +127) of values representable using 2's complement
+8-bit numerals.
+
+
+<!--
+  In the case of 16 bits, this limits the number of distinct
+values that can be represented to 2<sup>16</sup>.  (Recall that the
+number of distinct bit strings of length k is 2<sup>k</sup>.)
+Using the standard representation scheme described earlier, a 16-bit
+integer can have any value between 0 and 2<sup>16</sup> - 1 (i.e.,
+65535).  32-bit integers have a much larger range of possible values
+(namely, between 0 and 2<sup>31</sup> - 1),
+but the point here is that, regardless of the number of bits, the
+range of values that can be represented by any fixed-length chunk of
+memory is necessarily finite.  Hence, if the (actual) result of some
+particular computation is outside this range, the result that actually
+gets stored will be in error.
+-->
+
+<!-- Now introduce negative numbers: first use a sign bit, then do
+   2's complement
+
+   Then do floating point.  Review real numbers.  That is, show that
+   the positional numeral systems include columns (to the right of and
+   separated from the others by a dot) whose weights are the negative
+   powers of the base.
+   Then review scientific notation using decimal #'s, and explain
+   that this notation helps to avoid having to write lots of zeros.
+   Could explain notion of significant digit.
+   Then describe how a base-10 computer might store real num's using this
+   scheme, where a certain # of digits is used to store the exponent and
+   a certain number to store the mantissa.
+-->
+
+<H3>Real Numbers</H3>
+A detailed discussion of how real numbers are encoded is omitted for now.
+But we note that, like integers, real numbers are typically stored
+in fixed-length chunks of memory, typically either 32 or 64 bits.  
+As with integers, this limits the range of possible values that can
+be represented.  In addition, however, it limits the <em>precision</em>
+or <em>accuracy</em> with which real numbers can be stored.
+For example, in the most common 32-bit representation scheme for real numbers
+(called <b>single-precision floating point</b>), we cannot accurately
+represent numbers with more than seven significant (decimal) digits.
+Hence, for example, the closest we could come
+(using 32 bits) to representing the number 53.000006372
+(having eleven significant digits) might be something
+closer to 53.00001 (which has only seven digits and is rounded to the
+nearest one hundred thousandth).
+Indeed, if the computer were instructed to add 53.0 and 0.000006372, 
+the result would likely be 53.00001. 
+
+</p><p>
+The main point to remember is that the results produced by computations
+involving real numbers (stored in fixed-length chunks of memory) are 
+(generally speaking) only approximations and should not be interpreted
+as providing exact answers.
+
+<hr>
+
+<H2>Text</H2>
+<p> 
+A discussion omitted for now, except to point out that, among several
+standards that exist, the one most widely used is probably 
+<A HREF="http://www.neurophys.wisc.edu/comp/docs/ascii.html">ASCII</A>
+(American Standard Code for Information Interchange).  The ASCII
+standard simply assigns to each of 128 distinct characters a
+distinct code in the form of a bit string of length seven.
+(Note that 2<sup>7</sup> is 128, not accidentally.)
+Among the 128 characters found in ASCII are those you would expect:
+upper and lower case (Roman) letters (52 of them), the ten digits
+(i.e., 0,1,2,...9),
+several punctuation characters (period, comma, semicolon, etc.),
+and several special characters (e.g., parentheses, ampersand, asterisk,
+dollar sign, etc.).  Also included are about thirty "characters" that
+are not characters as most people would think of them; rather, they
+are intended to be used as codes for computers or other devices
+(e.g., printers) that deal with textual data.  An example is the
+"carriage return" character, which is used to signal a printing
+device that it should move to the beginning of the line before
+continuing.
+
+<p>
+<A HREF="http://www.cdrummond.qc.ca/cegep/informat/Professeurs/Alain/files/ascii.htm">Extended ASCII</A>
+extends regular ASCII by using an eighth bit, thereby resulting in a 
+coding scheme for 256 (2<sup>8</sup>) different characters.
+
+</p><p>
+In recent years, in an attempt to create a character encoding standard
+that acknowledges the existence of the non-English-speaking world
+by including characters found in the various alphabets that they use
+(e.g., Hebrew, Greek, Russian, etc.),
+the <A HREF="http://www.unicode.org/charts/">Unicode</A> standard 
+has been introduced.  Due to the large number of characters it seeks
+to include, Unicode specifies a 16-bit code for each character.
+This gives it the capability of accommodating 2<sup>16</sup> (65536)
+different characters!
+(This is actually an over-simplification, but one that suffices for
+our purposes.)
+
+
+
+<!--  Here, consider the problem of developing a mapping from a set of
+  symbols/characters to bit strings.  To avoid ambiguity, the mapping
+  should be injective.  To make parsing easy, all bit strings should be
+  of the same length.  How to choose that length?  
+  That would depend upon the cardinality of the desired character set,
+  because the number of bit strings of a given length depends upon that
+  length, getting larger as the length grows.  Indeed, the # of bit
+  strings of length k is 2^k.
+  Hence, we would need the length to be at least the minimum k such that
+  2^k >= cardinality of character set.  To avoid wasting bits, we would
+  want the length to be no greater than necessary.
+-->
+
+<H2>Digital Images</H2>
+
+<p>
+A <A HREF="http://en.wikipedia.org/wiki/Digital_image">digital image</A>
+can be viewed as a (typically, rectangular) grid of dots,
+or <b>pixels</b>.  ("Pixel" is a contraction for "picture element".)
+
+<p>
+<A HREF="http://en.wikipedia.org/wiki/Image_resolution">Resolution</A>
+is a measure of how much detail an image holds, but exactly what it means
+depends upon context.
+<b>Pixel resolution</b> describes the size of an image in terms of
+its width (number of columns) and height (number of rows).
+For example, 1024 &times; 768 is a common resolution for computer
+monitors, which is to say that such monitors have 1024 columns and
+768 rows of pixels.
+<b>Spatial resolution</b> describes how densely packed the pixels are,
+and is usually expressed in terms of <b>pixels per inch</b> (ppi)
+(or <b>dots per inch</b> (dpi)).
+(To use such a measure, rather than pixels per square inch, would seem
+to imply that the density is the same along the rows and along the columns.)
+It is this quality that, practically speaking, determines the clarity
+of an image.  In 2010, computer monitors typically had a spatial 
+resolution of between 72 and 100 ppi.
+
+<p>
+In a <A HREF="http://en.wikipedia.org/wiki/Binary_image">binary image</A>
+(also called a <b>black-and-white</b> or <b>bi-level</b> image),
+each pixel is either black or white.  Some devices, including fax machines
+and some laser printers, can handle only bi-level images.
+As each pixel's appearance can be characterized by one of only two
+possible values (black or white), the obvious way to represent a single
+pixel is with a single bit, where 0 represents black and 1 represents
+white (or vice versa).  (Recall the image of the tiger shown in class.)
+
+<p>
+In a
+<A HREF="http://en.wikipedia.org/wiki/Monochromatic_image">grayscale image</A>,
+each pixel is of some shade of gray ranging from the darkest, black, to the
+lightest, white. Hence, a black-and-white image (as discussed immediately
+above) is just a special case of a grayscale image in which there are only
+two shades of gray, black and white.
+However, when one talks of a grayscale image, by implication one usually
+means an image in which there are more possible shades.
+Some early computer monitors were capable of displaying any of sixteen
+shades of gray, for example.  
+<p>
+What are commonly referred to as black-and-white photographs are really
+grayscale images.  In such photographs, it is typical for there to be
+any of 256 possible shades of gray.  In some applications, including
+medical imaging (where it is important for the image to be very 
+detailed and precise), the number of possible shades of gray exceeds
+one thousand (1024, say, or 4096).
+<p>
+It's no accident that the number of possible shades of gray in the
+examples above are powers of two!  Note that 16 = 2<sup>4</sup>,
+256 = 2<sup>8</sup>, and 1024 = 2<sup>10</sup>.  Hence, in an image
+in which each pixel can be any of 16 shades of gray, the obvious
+way to represent each pixel is using 4 bits (i.e., a half-byte).
+Interpreted as an unsigned integer, a bit string of length four
+represents an integer value in the range 0..15.  The standard approach
+is for 0 to represent black (the darkest shade) and for 15 to represent
+white (the lightest shade), with the numbers in between representing
+increasingly lighter shades, as we go from 1 to 14.
+In an analogous fashion, each pixel in an image allowing any of 256
+shades would be represented by a bit string of length eight (i.e., a
+byte) representing in integer in the range 0..255.
+<p>
+In <A HREF="http://en.wikipedia.org/wiki/Color_image">color images</A>,
+each pixel has a color.  Following the
+<A HREF="http://en.wikipedia.org/wiki/RGB">RGB color model</A>,
+in which red, green, and blue are the primary colors, each pixel's
+appearance can be described by an RGB triple that describes the
+intensities of red, green, and blue, respectively, present in that pixel.
+One standard representation, called
+<A HREF="http://en.wikipedia.org/wiki/truecolor">truecolor</A>,
+uses 24 bits to store the RGB value of each pixel, eight bits for
+each of the three components (which, of course, are viewed as integers
+in the range 0..255).  
+Each cell in the table below is labeled with the RGB value of its
+background color.
+
+</p><p>
+<center>
+<table bgcolor="#6437C8">
+<tr>
+  <td bgcolor="#FF0000">255,0,0</td>
+  <td bgcolor="#FF7F00">255,127,0</td>
+  <td bgcolor="#FFFF00">255,255,0</td>
+  <td bgcolor="#FF7F7F">255,127,127</td>
+  <td bgcolor="#FFFF7F">255,255,127</td>
+  <td bgcolor="#FF007F">255,0,127</td>
+</tr>
+<tr>
+  <td bgcolor="#00FF00">0,255,0</td>
+  <td bgcolor="#7FFF00">127,255,0</td>
+  <td bgcolor="#FF00FF">255,0,255</td>
+  <td bgcolor="#7FFF7F">127,255,127</td>
+  <td bgcolor="#404040">32,32,32</td>
+  <td bgcolor="#7F7F7F">127,127,127</td>
+</tr>
+<tr>
+  <td bgcolor="#0000FF">0,0,255</td>
+  <td bgcolor="#7F00FF">127,0,255</td>
+  <td bgcolor="#7F7FFF">127,127,255</td>
+  <td bgcolor="#007F7F">0,127,127</td>
+  <td bgcolor="#00007F"><font color="white">0,0,127</font></td>
+  <td bgcolor="#FFFFFF">255,255,255</td>
+</tr>
+</table>
+</center>
+
+<!--
+</p><p>
+If you want to play with different combinations of RGB values to see
+what colors they give rise to, click
+<a href="http://www.rapidtables.com/web/color/RGB_Color.htm">here</a>.
+<!--
+<a href="http://chemconnections.org/Java/RGB/example1.html">here</a>.
+(Note that there the color intensities are described on a scale from
+0 to 1 (e.g., 0.64) rather than from 0 to 255.)
+A similar tool can be found
+<a href="http://home.comcast.net/~ed-abramson/14ColorTest/HSB-and-RGB-Colors.html">here</a>.
+-->
+</p><p>
+If you want to view lots of examples of colors and see how they are
+represented in RGB, click
+<a href="http://www.rapidtables.com/web/color/RGB_Color.htm">here</a>.
+
+<!-- 
+  <a href="http://immigration-usa.com/html_colors.html">click here</a>.
+  (Rather than using three decimal numerals to describe
+  the intensities of red, green, and blue, however, on this site an RGB
+  value is shown as a six-digit hexadecimal (base 16) numeral, with the
+  first two digits giving red's intensity, the next two digits green's
+  intensity, and the last two blue's intensity.  (A two-digit hexadecimal
+  numeral can represent any integer in the range 0..255.  In hexadecimal,
+  we use <b><tt>A</tt></b> through <b><tt>F</tt></b> as "digits"
+  corresponding to values 10 through 15, respectively.)
+-->
+
+</p><p>
+So far we've talked about how individual pixels are represented.
+What about an image as a whole?  
+Remember, an image is just a two-dimensional grid of pixels, or
+rows and columns of pixels.  To encode an image as a whole, we
+can "linearize" the two-dimensional grid into a sequence of pixels
+by, for example, starting with the first row of pixels, then moving
+to the second, and then to the third, etc.
+For example, consider the 5 &times; 5 table below, which is supposed
+to illustrate an image with five rows and five columns of pixels.
+(The image forms a pretty crude upper case <b>N</b>.)
+
+<center>
+<table border="1" cellpadding="0">
+<tr>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+</tr>
+<tr>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+</tr>
+<tr>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+</tr>
+<tr>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+</tr>
+<tr>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+</tr>
+</table>
+</center>
+
+<!--  This table has upper case I
+<table border="1" cellpadding="0">
+<tr>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+</tr>
+<tr>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+</tr>
+<tr>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+</tr>
+<tr>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+</tr>
+<tr>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#000000"><pre> </pre></td>
+  <td bgcolor="#FFFFFF"><pre> </pre></td>
+</tr>
+</table>
+-->
+
+Then, using 0 for black and 1 for white and linearizing the image, we get
+<pre>0111000110010100110001110
+    ^    ^    ^    ^    ^ </pre>
+
+(The caret symbols indicate the last bit of the representation of each row of
+pixels.)
+<p>
+<H4>Images are Big!</H4>
+According to the 
+<A HREF="http://en.wikipedia.org/wiki/Digital_camera">wikipedia entry
+on digital cameras</A>, the Canon 350D takes pictures with pixel resolution
+3456 &times; 2304, for a total of about 8 million pixels!
+If we stored such an image in the straightforward way sketched above
+(with each pixel being represented by a bit string of 24 bits, or three
+bytes), it would take approximately 24 million bytes (i.e., 24MB)!
+That's a lot of space, and transmitting such a representation over
+a network takes time.  Hence, various ways of compressing (i.e., making
+smaller) such representations have been developed.
+<p>
+A compression technique is said to be <b>lossless</b> if it can be
+reversed, meaning that data compressed using that technique can be
+decompressed to recover the original representation.
+A compression technique is said to be <b>lossy</b> if, in general,
+it cannot be reversed, which is to say that decompression will
+yield something close to the original representation, but not matching
+it exactly.  Because the human vision system has only a certain degree
+of sensitivity, and hence cannot distinguish two images that differ
+only in subtle ways, most compression techniques that are used for
+digital images are lossy.  The same is true for representations of
+audio (e.g., music). In contrast, to use lossy compression on
+numeric or textual data could be disastrous, because, for most applications,
+it is imperative that that kind of data be recoverable in exact form.
+<p>
+Different compression techniques have led to the existence
+of several
+<A HREF="http://en.wikipedia.org/wiki/Image_formats">image file formats</A>
+that are in common use, some of which you have probably heard of, including
+JPEG, TIFF, and GIF.  Each one has its strengths and weaknesses.
+Digital images include photographs, cartoons, diagrams, and other
+varieties.  Some image file formats are better for one kind of image
+than another.
+
+
+<H2>Audio</H2>
+<p>
+Omitted for now.
+
+<!--
+<p>
+<font size = -2>
+copyright Robert McCloskey 2006-2013
+</font>
+-->
+
+</body>

@@ -1,0 +1,355 @@
+<html>
+<head><title>Java <b>for</b> loops</title>
+</head>
+<body>
+<h2>CMPS 134<br />
+Notes on Java's for-loop
+</h2>
+
+</p><p>
+Almost every computer program that does something interesting has one or
+more segments of code that are executed repeatedly.  The programming
+language constructs that support this are loops and recursion.
+Here we concentrate on loops.  Specifically, we focus on the 
+<b>for</b>-loop in Java, which is one of three kinds of loops that
+exist in that language.
+
+</p><p>
+In a proper usage of a <b>for</b>-loop, there is a <b>loop control variable</b>
+(LCV) (typically, but not necessarily, of type <tt>int</tt>) that varies over
+a specified range of values.  For each value v in that range, a code segment
+(called the loop body) is executed while the LCV has value v.  
+Each execution of the loop body is referred to as an <b>iteration</b> of the
+loop.
+
+</p><p>
+The syntax of a <b>for</b>-loop in Java is this;
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<tt>
+for (&lt;<b>LCV-initialization</b>&gt;; &lt;<b>loop guard</b>&gt;;
+     &lt;<b>LCV-update</b>&gt;) <br />
+{<br />
+&nbsp;&nbsp;&nbsp;&lt;<b>loop body</b>&gt;<br />
+} </tt>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+The <b>LCV-initialization</b> is an assignment statement by which is
+established the initial value of the LCV.
+(Often the assignment is combined with the LCV's declaration.)
+The <b>loop guard</b> is a boolean expression (i.e., one that evaluates to
+either <b>true</b> or <b>false</b>) involving the LCV that is used to
+determine when no more iterations should take place.
+The <b>LCV-update</b> is an assignment to the LCV  (typically to increment or
+decrement it by one, or possibly by two or more) that is to be carried out
+at the end of each loop iteration.
+
+</p><p>
+What follows is a <b>flowchart</b> illustrating flow-of-control through
+a for-loop.
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>                                +-------+
+                                | begin |
+                                +-------+
+                                    |
+                                    |
+                                    v
+                            +----------------+
+                            |     LCV-       |
+                            | initialization |
+                            +----------------+
+                                    |
+                                    |
+      +---------------------------> |
+      |                             v
+      |                            / \
+      |                           /   \
+      |                          /     \
+      |                  true   / loop  \     false     +-----+  
+      |             +<---------(  guard  )------------> | end |
+      |             |           \       /               +-----+
+      ^             |            \     /
+      |             v             \   /
+      |       +-----------+        \ /
+      |       | loop body | 
+      |       +-----------+     
+      |             |
+      |             |
+      |             v
+      |        +--------+
+      |        |  LCV-  |
+      +<-------| update |
+               +--------+ </pre>
+</td></tr>
+</table>
+</center>
+
+
+<hr>
+<h3>Examples</h3>
+</p><p>
+Each row of the following table shows a Java code segment featuring a
+for-loop and the output it produces when executed.
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><th>Code Segment</th><th>Output Produced</th><th>Remarks</th></tr>
+<tr>
+<td>
+<pre>for (int i=1; i<=5; i = i+1) {
+   System.out.println("i is " + i);
+}</pre>
+</td>
+<td>
+<pre>i is 1
+i is 2
+i is 3
+i is 4
+i is 5</pre>
+</td>
+<td>
+  Counts up from 1 to 5
+</td>
+</tr>
+<tr>
+<td>
+<pre>for (int i=4; i>0; i = i-1) {
+   System.out.println("i is " + i);
+}</pre>
+</td>
+<td>
+<pre>i is 4
+i is 3 
+i is 2
+i is 1</pre>
+</td>
+<td>
+  Counts down from 4 to 1
+</td>
+</tr>
+<tr>
+<td>
+<pre>int n = 5;
+for (int i=1; i <= 2*n-1; i = i+2) {
+   System.out.println("i is " + i);
+}</pre>
+</td>
+<td>
+<pre>i is 1
+i is 3 
+i is 5
+i is 7
+i is 9</pre>
+</td>
+<td>
+  Prints the first n positive odd integers (1 through 2n-1 by 2's)
+</td>
+</tr>
+<tr>
+<td>
+<pre>int n = 5;
+for (int i=1; i <= n; i = i+1) {
+   System.out.println("i is " + (2*i - 1));
+}</pre>
+</td>
+<td>
+<pre>i is 1
+i is 3 
+i is 5
+i is 7
+i is 9</pre>
+</td>
+<td>
+  Prints the first n positive odd integers in a different way.
+</td>
+</tr>
+<tr>
+<td>
+<pre>int n = 6;
+int sumSoFar = 0;
+for (int i=1; i <= n; i = i+1) {
+   sumSoFar = sumSoFar + i;
+   System.out.print("i is " + i);
+   System.out.println("; sumSoFar is " + sumSoFar);
+}
+</pre>
+</td>
+<td>
+<pre>i is 1; sumSoFar is 1
+i is 2; sumSoFar is 3
+i is 3; sumSoFar is 6
+i is 4; sumSoFar is 10
+i is 5; sumSoFar is 15
+i is 6; sumSoFar is 21</pre>
+</td>
+<td>
+  Reports each sum 1+2+...+k, for k in range 1..n.
+</td>
+</tr>
+<tr>
+<td>
+<pre>int n = 6;
+int sumSoFar = 0;
+for (int i=1; i <= n; i = i+1) {
+   sumSoFar = sumSoFar + 2*i - 1;
+   System.out.print("i is " + i);
+   System.out.println("; sumSoFar is " + sumSoFar);
+}
+</pre>
+</td>
+<td>
+<pre>i is 1; sumSoFar is 1
+i is 2; sumSoFar is 4
+i is 3; sumSoFar is 9
+i is 4; sumSoFar is 16
+i is 5; sumSoFar is 25
+i is 6; sumSoFar is 36</pre>
+</td>
+<td>
+Reports each sum 1+3+...+(2k-1) (i.e., the sum of the first
+k odd positive integers), for k in range 1..n.
+</td>
+</tr>
+<tr>
+<td>
+<pre>
+for (char ch = 'A'; ch <= 'G'; ch = (char)(ch+1)) {
+   System.out.print(ch);
+}
+</pre>
+</td>
+<td>
+<pre>ABCDEFG</pre>
+</td>
+<td>
+Prints the characters in the range 'A' .. 'G' all on one line.
+Uses casting to convert the result of expression <tt>ch+1</tt>
+from a value of type <tt>int</tt> to one of type <tt>char</tt>.
+</td>
+</tr>
+<tr>
+<td>
+<pre>
+for (int i = (int)('A'); i <= (int)('G'); i = i+1) {
+   System.out.print((char)i);
+}
+</pre>
+</td>
+<td>
+<pre>ABCDEFG</pre>
+</td>
+<td>
+Prints the characters in the range 'A' .. 'G' all on one line,
+same as previous code segment.  Uses an LCV of type <tt>int</tt>
+instead of type <tt>char</tt>.
+</td>
+</tr>
+<tr>
+<td>
+<pre>
+for (int i = 0; i <= 6; i = i+1) {
+   System.out.print((char)('A' + i));
+}
+</pre>
+</td>
+<td>
+<pre>ABCDEFG</pre>
+</td>
+<td>
+Prints the characters in the range 'A' .. 'G' all on one line,
+same as previous code segment.  
+</td>
+</tr>
+<tr>
+<td>
+<pre>
+for (int i = 1; i <= 4; i = i+1) {
+   System.out.println("Beginning iteration with i = " + i);
+   for (int j=1; j <= 3; j = j+1) {
+      System.out.println("   i is " + i + "; j is " + j);
+   }
+   System.out.println("Ending iteration with i = " + i);
+}</pre>
+</td>
+<td>
+<pre>
+Beginning iteration with i = 1
+   i is 1; j is 1
+   i is 1; j is 2
+   i is 1; j is 3 
+Ending iteration with i = 1
+Beginning iteration with i = 2
+   i is 2; j is 1
+   i is 2; j is 2
+   i is 2; j is 3 
+Ending iteration with i = 2
+Beginning iteration with i = 3
+   i is 3; j is 1
+   i is 3; j is 2
+   i is 3; j is 3 
+Ending iteration with i = 3
+Beginning iteration with i = 4
+   i is 4; j is 1
+   i is 4; j is 2
+   i is 4; j is 3 
+Ending iteration with i = 4</pre>
+</td>
+<td>The outer loop iterates four times, with i=1,2,3,4.
+During each iteration of the outer loop, the nested loop
+iterates three times, with j=1,2,3
+</td>
+</tr>
+<tr>
+<td>
+<pre>
+for (int i = 1; i <= 4; i = i+1) {
+   System.out.println("Beginning iteration with i = " + i);
+   for (int j=1; j <= i; j = j+1) {
+      System.out.println("   i is " + i + "; j is " + j);
+   }
+   System.out.println("Ending iteration with i = " + i);
+}</pre>
+</td>
+<td>
+<pre>
+Beginning iteration with i = 1
+   i is 1; j is 1
+Ending iteration with i = 1
+Beginning iteration with i = 2
+   i is 2; j is 1
+   i is 2; j is 2
+Ending iteration with i = 2
+Beginning iteration with i = 3
+   i is 3; j is 1
+   i is 3; j is 2
+   i is 3; j is 3 
+Ending iteration with i = 3
+Beginning iteration with i = 4
+   i is 4; j is 1
+   i is 4; j is 2
+   i is 4; j is 3 
+   i is 4; j is 4
+Ending iteration with i = 4</pre>
+</td>
+<td>The outer loop iterates four times, with i=1,2,3,4.
+During each iteration of the outer loop, the nested loop
+iterates i times times, with j=1,2,...,i
+</td>
+</tr>
+
+</table>
+</center>
+
+
+</body>
+</html>

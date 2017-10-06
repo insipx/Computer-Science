@@ -1,0 +1,51 @@
+<title>PMJ's Submit Page</title><body background="spring17/images/background.jpg"><h1>Submit Page</h1>
+<h2>spring17, cmps134, lab3_dir <small><i>as of Fri Oct 06, 2017, 13:26:58</i></small></h2>
+<h2>Login:</h2>
+<form action='/~mccloske/Submit.cgi' method='post'  ENCTYPE='multipart/form-data' ><input type=hidden name='hasForm' value="yes">
+<input type=hidden name='root' value='spring17'><input type=hidden name='dir' value='cmps134'><input type=hidden name='sub' value='lab3_dir'><input type=hidden name='pass' value='2'><SELECT NAME='tag[0]' size=1>
+<OPTION SELECTED value =0>Select:
+<OPTION value =1>Abril_Danielle_T
+<OPTION value =2>Bannen_Shannon_R
+<OPTION value =3>Buch_Caitlin
+<OPTION value =4>Byrne_Connor_J
+<OPTION value =5>Catucci_Christopher_K
+<OPTION value =6>Cherundolo_Anne
+<OPTION value =7>Conlon_Thomas_J
+<OPTION value =8>Delevan_Michael
+<OPTION value =9>DiGiacomo_Andrew_V
+<OPTION value =10>Erfman_Cyrena_L
+<OPTION value =11>Grove_Eva_T
+<OPTION value =12>Ho_Hoang_H
+<OPTION value =13>Idelfonso_Eric_J
+<OPTION value =14>Kilner_Brian_P
+<OPTION value =15>Kirk_James_T
+<OPTION value =16>Kramer_Kyle_M
+<OPTION value =17>Krupka_Natalie_M
+<OPTION value =18>Lacomis_Lindsey_C
+<OPTION value =19>May_Ralph_L
+<OPTION value =20>McAllister_Claire_M
+<OPTION value =21>McNulty_Eileen
+<OPTION value =22>Medalla_Patrick_John_S
+<OPTION value =23>Nametko_Heather_A
+<OPTION value =24>Orr_James_B
+<OPTION value =25>Osmolia_Jordan_M
+<OPTION value =26>Piranio_Veronica_M
+<OPTION value =27>Radetich_John_F
+<OPTION value =28>Rose_Christy
+<OPTION value =29>Saito_Keigo
+<OPTION value =30>Scheider_Meagan_R
+<OPTION value =31>Sheehan_Kimberly_P
+<OPTION value =32>Slezak_Matthew
+<OPTION value =33>Soto_Anthony
+<OPTION value =34>Spock_Mr
+<OPTION value =35>Staubach_Robert_A
+<OPTION value =36>Trujillo_Tianna_M
+<OPTION value =37>Venezia_Joseph_S
+<OPTION value =38>Vogl_Alfred_E
+<OPTION value =39>Voltaggio_Nicholas_W
+<OPTION value =40>Walsh_Zachary_V
+<OPTION value =41>Williams_Luke_M
+<OPTION value =42>Wynn_Michael_J
+<OPTION value =43>
+</SELECT>
+<input type=password name='tag[1]' size=20 value=><center><input type=submit value='SUBMIT FORM'>&nbsp;&nbsp;<input type=reset></center></form>

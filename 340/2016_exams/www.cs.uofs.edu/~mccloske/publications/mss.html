@@ -1,0 +1,588 @@
+  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+           "http://www.w3.org/TR/REC-html40/loose.dtd"><HTML>
+<META NAME="GENERATOR" CONTENT="TtH 2.00">
+                                                                        
+<title> \bf An Analysis of Algorithms Laboratory\\
+  Utilizing the\\
+  Maximum Segment Sum Problem\\</title>
+ 
+<H1 align=center><b>An Analysis of Algorithms Laboratory<br>
+  Utilizing the<br>
+  Maximum Segment Sum Problem<br></H1></b> 
+<p>
+
+<H3 align=center>          Robert McCloskey<br>
+         John Beidler<br>
+         University of Scranton<br>
+         {mccloske, beidler}@cs.uofs.edu<br></H3>
+ 
+<p>
+
+<H3 align=center> </H3>
+
+<p>
+
+<H2> Abstract</H2>
+This paper describes a laboratory/homework exercise, appropriate for
+the traditional CS&nbsp;2 or Data Structures & Algorithms course (CS&nbsp;7)
+[<a href="#ACM78" name=CITEACM78>1</a>], 
+that gives students practice in  analyzing algorithms 
+to determine their asymptotic running times as well as in recognizing the relationship between an algorithm's 
+asymptotic running time and the execution time of a 
+program implementing it.
+The exercise utilizes the maximum segment sum problem, which, we argue, is a good alternative to sorting, the problem that is 
+probably 
+most often used in exercises of this kind.
+<p>
+<p>
+        <H2><A NAME="tth_sEc1">
+1</A>&nbsp;&nbsp; <font size="+1"> <b>Introduction</font></b></H2>
+
+<p>
+In setting out to design a laboratory exercise intended to give
+students practice in analyzing algorithms,
+the first computational problem that usually comes to mind is sorting.
+This is not surprising; indeed,  from a pedagogical standpoint, sorting is ideal:
+it is simple, has many applications, and, because 
+it is solved by a variety of algorithms 
+possessing several different time complexity signatures<a href="#tthFtNtAAB" name=tthFrefAAB><sup>1</sup></a>,
+it serves as a convenient vehicle for teaching a number of 
+concepts in algorithm design and analysis.
+
+<p>
+Due to its appeal, we normally spend 
+several class periods discussing sorting in our CS&nbsp;2 course.  
+In particular, we use a number of the classic sorting algorithms 
+to illustrate techniques by which to determine an algorithm's time complexity.
+We also have used a homework exercise
+(similar to the lab described by Epp [<a href="#Epp" name=CITEEpp>5</a>])
+in which the student is provided with the execution times of several sorting programs 
+on data sets of various sizes and descriptions
+(e.g., random, increasing, and decreasing order) and is instructed to
+match each program with the sorting algorithm that it utilizes
+(e.g., insertion sort, heapsort, quicksort, etc.).
+We have found that this approach-in which the student is cast in the role
+of playing a game of matching-succeeds in
+injecting some fun into a subject that many students find rather daunting.
+As is mentioned in [<a href="#Epp" name=CITEEpp>5</a>], this has a strong analogy to the classic
+chemistry exercise in which the student is given an unknown substance
+and is asked to identify it.
+
+<p>
+The level of intellectual effort required of the student by such an exercise depends, to a
+large extent, on what is covered in lectures and in the course textbook.
+For example, suppose that the textbook describes,
+for each sorting algorithm under consideration, 
+its best-, average-, and worst-case time complexities, as well as under which conditions the best and worst cases arise.
+Then the student need only apply this information to determine the correct matching between the algorithms and the
+observed execution times of the programs.  While this is instructive, insofar as it may give the student a better
+grasp of what is meant by complexity measures such as
+O(n), O(n logn), and 
+O(n<sup>2</sup>), it does not require the student to perform anything in 
+the way of algorithm analysis.
+
+<p>
+At the opposite extreme, suppose that <em>no </em> information regarding
+the time complexities of the sorting algorithms
+has been presented to the student.  Completing the exercise now becomes much more difficult, 
+and is probably beyond the abilities of all but the best students
+(plus those who, unable to derive all the relevant complexity measures
+themselves, are resourceful enough to obtain them
+elsewhere, such as by perusing some algorithms texts at the library).
+
+<p>
+More likely than either of these extremes is the scenario in which
+the student has been informed of the average- and worst-case 
+complexities
+of the majority (or perhaps all) of the sorting algorithms 
+under consideration, 
+but in which little or nothing has been revealed about their best cases.
+(Because the average and worst cases are regarded as more 
+important than the best case, most textbooks ignore the latter.)
+In this scenario, the student's most difficult task may very well be
+to determine best-case complexities for two or more of the 
+algorithms-specifically, those which, absent this information, 
+cannot be conclusively matched to any of the observed execution times.
+For example, in order to distinguish between insertion sort 
+(as described in [<a href="#Weiss" name=CITEWeiss>8</a>])
+and selection sort,
+their best-case 
+complexities-O(n) and O(n<sup>2</sup>), respectively-are required,
+because they agree in the average and worst cases-O(n<sup>2</sup>).
+While this is a valuable exercise, it seems strange to focus the student's
+attention on best-case analysis, not only because
+it is less important than the other two cases,
+but also because best-case analysis usually requires more in the way
+of application-specific reasoning, and thus tends to divert the student's attention away from the
+basic analysis techniques that the exercise is intended to stress.
+
+<p>
+With the above points in mind, we decided to develop a laboratory/homework exercise of the kind under discussion
+(i.e., requiring the student to determine the correct matching
+between a set of given algorithms and a set of observed execution times),
+utilizing some problem <em>not </em> discussed in the textbook
+(or in other readily accessible books)
+and <em>not </em> to be covered in class, 
+other than to give its definition and to illustrate it with an example.
+Basing the exercise on such a problem places its emphasis squarely upon
+the task of analyzing the given algorithms to determine their 
+asymptotic running times, and relegates to a secondary role the subsequent (and easier) 
+task of matching the algorithms to the observed execution times.
+(Assuming that each of the algorithms can be analyzed via
+straightforward application of the techniques covered in the course,
+we find this level of difficulty appropriate for CS&nbsp;2.)
+It is worth noting that the observed execution times play an important
+role not only in the matching phase of the exercise,
+but also in the analysis phase, because they help the students to
+check the accuracy of their work.
+For example, if the student determines one of the algorithms to have
+complexity O(n<sup>2</sup> logn), but none of the observed execution
+times conforms to this measure, the student can conclude that the
+analysis was probably in error and therefore should be repeated.
+
+<p>
+It turns out that the <em>maximum segment sum </em> problem, 
+which is defined in the next section,
+serves our purposes very nicely.
+Like sorting, 
+it is an easy-to-comprehend problem for which there exist
+several simple algorithmic solutions of various time complexities.
+Furthermore, one of these solutions is most appropriately expressed
+using recursion, which means that the exercise can be used for
+giving students practice in analyzing both iterative <em>and </em>
+recursive algorithms.
+
+<p>
+<em>Unlike </em> sorting, the maximum segment sum problem does 
+not appear widely in the literature; in particular, 
+it is not found in many freshman- or sophomore-level computer science texts.
+(There are exceptions, of course, including [<a href="#Cohen" name=CITECohen>3</a>] and [<a href="#Weiss" name=CITEWeiss>8</a>].)
+Thus, in order for the students to ascertain the complexities of the 
+given algorithms, they will most likely have to perform the 
+analyses themselves, which is just what we want.
+
+<p>
+Another departure from sorting is this:
+among the algorithms for maximum segment sum that we know about, 
+none differs (asymptotically) between its best-case and worst-case 
+running times.
+Although this precludes what could be some interesting analysis work
+for the student, we prefer it this way, because it allows
+the student to concentrate on one issue: determining the worst-case
+complexity of each algorithm.
+(Besides, how many CS&nbsp;2 students are
+prepared to perform an average-case analysis 
+on an algorithm whose best- and worst-case
+running times do not agree?)
+
+<p>
+The above explains why we like to use the maximum segment sum problem,
+rather than sorting, as the basis for an exercise whose intended
+emphasis is algorithm analysis.
+In what remains, we give a
+precise definition of this problem, describe the essential details of our lab/homework exercise, and briefly discuss the algorithms it utilizes.
+
+<p>
+        <H2><A NAME="tth_sEc2">
+2</A>&nbsp;&nbsp; <font size="+1"> <b>Problem Description</font></b></H2>
+The <em>maximum segment sum </em> problem is as follows:
+given an array <tt>A</tt> of numbers (integers, say),
+compute the maximum among the sums of its contiguous segments.
+That is, letting 
+
+<centEr><table border=0 align=center><tr><td>
+<Table align=left><tr><td nowrap align=center>
+f(p,q) = </td><td nowrap align=center>
+<font size="-1"></font> <Br><font face=symbol size="+3">å<br></font>
+<font size="-1">p  <font face=symbol>£</font
+> i <font face=symbol> &lt; </font
+> q</font>&nbsp;<br></td><td nowrap>
+<tt>A</tt>(i)</td></Table>
+</td></table></centEr>
+
+ 
+we want to find<a href="#tthFtNtAAC" name=tthFrefAAC><sup>2</sup></a>
+
+<centEr><table border=0 align=center><tr><td>
+<Table align=left><tr><td nowrap align=center>
+<tt>max</tt> { f(p,q)&nbsp;<font face=symbol>|</font
+>&nbsp;<tt>A'FIRST</tt>  <font face=symbol>£</font
+> p  <font face=symbol>£</font
+> q  <font face=symbol>£</font
+>  <tt>A'LAST</tt>+1 } </td></Table>
+</td></table></centEr>
+
+
+We use Ada's notation for arrays, in which 
+parentheses (as opposed to square brackets) are used for subscripting and in which <tt>A'FIRST</tt> and <tt>A'LAST</tt> denote the lower and 
+upper bounds, respectively, of the index range of <tt>A</tt>.
+
+<p>
+For example, taking <tt>A</tt> to be the array holding the sequence of values
+
+<centEr><table border=0 align=center><tr><td>
+<Table align=left><tr><td nowrap align=center>
+(-4, 7, 0, -3, 6, -3, 5, -4, 2, -3, -1, 5)</td></Table>
+</td></table></centEr>
+
+ 
+we find that the maximum
+among <tt>A</tt>'s segment sums is 12, corresponding to the sum of 
+its second through seventh elements.
+
+<p>
+        <H2><A NAME="tth_sEc3">
+3</A>&nbsp;&nbsp; <font size="+1"> <b>Description of the Exercise</font></b></H2>
+
+<p>
+The student is given four algorithms (expressed as function subprograms, and identified as A, B, C, and D),
+each of which solves the maximum segment sum problem.
+These appear in the figures below. Also given are four executables, identified only as
+programs 1, 2, 3, and 4, each of which applies one of the subprograms to an array whose length is chosen by the user.
+(The data occupying the array come from a file containing 
+several hundred integers produced by a pseudo-random number generator.)
+The student is instructed to run each program on arrays of various
+lengths between 0 and 500, and to record and plot the resulting execution
+times on graph paper, or, if convenient, using an appropriate software
+package.
+(Each program reports an estimated ``execution time'', which is 
+simply a close approximation to the number
+of source code instructions executed by the   subprogram it called.)
+
+<p>
+The student is instructed 
+to find the correct matching from algorithms A, B, C, and D to
+programs 1, 2, 3, and 4
+and to supply evidence supporting his/her conclusions. 
+
+<p>
+To accomplish this, the student has little choice but to apply
+the analysis techniques presented in the course
+in order to derive the asymptotic running time of each algorithm, and then to match these with the execution times 
+obtained by running the four programs in the manner described above.
+
+<p>
+
+<p><A NAME="tth_fIg1">
+</A> 
+<pre>
+function Max_Seg_Sum_A
+  ( A : Ary_Type ) return integer is
+
+  Sum        : integer;
+  Max_So_Far : integer := 0;
+
+begin
+  for I in A'FIRST .. A'LAST  loop
+    Sum := 0;
+    for J in I .. A'LAST  loop
+      Sum        := Sum + A(J);
+      Max_So_Far := Max(Max_So_Far, Sum);
+    end loop;
+  end loop;
+  return Max_So_Far;
+end Max_Seg_Sum_A;
+</pre>
+
+<p>
+ <center>      Figure 1: Algorithm A</center>
+<p>
+<p>
+
+<p><A NAME="tth_fIg2">
+</A> 
+<pre>
+function Max_Seg_Sum_B
+  ( A : Ary_Type ) return integer is
+
+  Sum        : integer;
+  Max_So_Far : integer := 0;
+
+begin
+  for I in A'FIRST .. A'LAST  loop
+    for J in I .. A'LAST  loop
+      Sum := 0;
+      for K in I .. J  loop
+        Sum := Sum + A(K);
+      end loop;
+      Max_So_Far := Max(Max_So_Far, Sum);
+    end loop;
+  end loop;
+  return Max_So_Far;
+end Max_Seg_Sum_B;
+</pre>
+
+<p>
+ <center>      Figure 2: Algorithm B</center>
+<p>
+<p>
+
+<p><A NAME="tth_fIg3">
+</A> 
+<pre>
+function Max_Seg_Sum_C
+  ( A : Ary_Type ) return integer is
+
+  Max_So_Far      : integer := 0;
+  Max_Ending_Here : integer := 0;
+
+begin
+  for I in A'FIRST .. A'LAST  loop
+    Max_Ending_Here := 
+       Max(Max_Ending_Here + A(I), 0);
+    Max_So_Far := 
+       Max(Max_So_Far, Max_Ending_Here);
+  end loop;
+  return Max_So_Far;
+end Max_Seg_Sum_C;
+</pre>
+
+<p>
+ <center>      Figure 3: Algorithm C</center>
+<p>
+<p>
+
+<p><A NAME="tth_fIg4">
+</A> 
+<pre>
+function Max_Seg_Sum_D
+  ( A : Ary_Type ) return integer is
+
+  Sum    : integer;
+  Mid    : integer;
+  Max_TL : integer := 0; --max to left
+  Max_TR : integer := 0; --max to right
+  Max_WL : integer;  --max within left
+  Max_WR : integer;  --max within right
+  Max_C  : integer;  --max with A(Mid) 
+
+begin
+  if A'LENGTH = 0  then
+    return 0;
+  elsif A'LENGTH = 1  then
+    return Max(A(A'FIRST), 0);
+  else
+    Mid := (A'FIRST + A'LAST) / 2;
+    --find max seg sum including A(Mid)
+    --first work towards left
+    Sum := 0;
+    for I in reverse A'FIRST..Mid-1 loop
+      Sum    := Sum + A(I);
+      Max_TL := Max(Sum, Max_TL);
+    end loop;
+    --now work towards right
+    Sum := 0;
+    for I in Mid+1..A'LAST loop
+      Sum    := Sum + A(I);
+      Max_TR := Max(Sum, Max_TR);
+    end loop;
+    --now compute it
+    Max_C := Max_TL + A(Mid) + Max_TR;
+    --find max seg sum within left and
+    --right halves, using recursion
+    Max_WL := 
+        Max_Seg_Sum_D(A(A'FIRST..Mid-1));
+    Max_WR := 
+        Max_Seg_Sum_D(A(Mid+1..A'LAST));
+    --result is the maximum of the three
+    return Max(Max_C,
+               Max(Max_WL, Max_WR));
+  end if;
+end Max_Seg_Sum_D;
+</pre>
+
+<p>
+ <center>      Figure 4: Algorithm D</center>
+<p>
+<p>
+        <H2><A NAME="tth_sEc4">
+4</A>&nbsp;&nbsp; <font size="+1"> <b>The Algorithms</font></b></H2>
+The four algorithms given to the student are in the form  of Ada function subprograms, as shown in the figures.
+(These are adapted from the pseudo-code in [<a href="#Bentley" name=CITEBentley>2</a>].)
+The data type <tt>Ary_Type</tt> of the
+formal parameter <tt>A</tt> is assumed to be defined as follows: <br><br>
+<tt> type Ary_Type is array</tt> <!--  <br> -->
+<tt>    ( integer range &lt;&#62; ) of integer;</tt> <br><br>
+For the reader not familiar with Ada, this type corresponds to 
+the notion of an ``array of integers indexed by some range of integers.''
+(The index range of an array of this type is specified in its declaration.)
+For an array <tt>A</tt>, <tt>A'FIRST</tt> and <tt>A'LAST</tt>
+denote the lower and upper bounds, respectively, of its index range,
+<tt>A'LENGTH</tt> denotes its number of elements, and
+<tt>A(low..high)</tt> (which is itself of type <tt>Ary_Type</tt>)
+denotes the ``slice'' of <tt>A</tt> with index range <tt>low..high</tt>,
+where <tt>low</tt> and <tt>high</tt> are any appropriate expressions.
+Also assumed to exist is a function subprogram <tt>Max</tt> that,
+in constant time, returns the larger of its two integer parameters.
+
+<p>
+Even a novice programmer-one just having completed CS&nbsp;1, say-should
+be capable of producing the fairly obvious O(n<sup>3</sup>) solution to
+the problem,
+which is our Algorithm B.
+It simply computes, for each i and j satisfying
+<tt>A'FIRST</tt>  <font face=symbol>£</font
+> i  <font face=symbol>£</font
+> j  <font face=symbol>£</font
+> <tt>A'LAST</tt>, the sum of
+the segment <tt>A(i..j)</tt>, and remembers the maximum among them.
+There being O(n<sup>2</sup>) such segments with an average length of
+O(n), this yields a complexity of O(n<sup>3</sup>).
+Algorithm A improves on B by taking advantage of the fact that, to
+compute the sum of the segment <tt>A(i..j)</tt>, where i  <font face=symbol>£</font
+> j, one
+need only add <tt>A(j)</tt> to the sum of the segment <tt>A(i..j-1)</tt>.
+A running time of O(n<sup>2</sup>) is thereby achieved.
+
+<p>
+Algorithm D is based on a divide-and-conquer strategy.
+The crucial observation is that, for any k satisfying
+<tt>A'FIRST</tt>  <font face=symbol>£</font
+> k  <font face=symbol>£</font
+> <tt>A'LAST</tt>, 
+there exists a segment of <tt>A</tt>
+that yields the maximum sum and that either
+<br><br>
+<p>
+&nbsp;&nbsp;(1) occurs within <tt>A(A'FIRST .. k-1)</tt>,<br>
+&nbsp;&nbsp;(2) occurs within <tt>A(k+1 .. A'LAST)</tt>, or<br>
+&nbsp;&nbsp;(3) includes <tt>A(k)</tt>.
+<br><br>
+<p>
+Thus, to compute the maximum segment sum of <tt>A</tt>, it suffices
+to choose k, 
+to compute the maximum sum among the segments in each of the three
+categories, and, finally, to take the largest of these.
+To cover categories (1) and (2), it is natural to use recursion.
+Running time is minimized when
+k is chosen to be midway  between <tt>A'FIRST</tt> and <tt>A'LAST</tt>
+(for exactly the same reason that
+<em>quicksort </em> runs fastest when the pivot happens to partition 
+the array into equal-sized parts).  
+The asymptotic running time is O(n logn).
+
+<p>
+Algorithm C, which is the linear time solution first described by Gries [<a href="#Gries" name=CITEGries>6</a>] (and later covered in
+[<a href="#Bentley" name=CITEBentley>2</a>,<a href="#Cohen" name=CITECohen>3</a>,<a href="#Dijkstra" name=CITEDijkstra>4</a>,<a href="#Manber" name=CITEManber>7</a>,<a href="#Weiss" name=CITEWeiss>8</a>]),
+is derivable using the inductive methodology for algorithm design
+espoused by Manber [<a href="#Manber" name=CITEManber>7</a>].
+The crucial observation leading to the algorithm is that, 
+for any k satisfying <tt>A'FIRST</tt>  <font face=symbol>£</font
+> k <font face=symbol> &lt; </font
+> <tt>A'LAST</tt>, 
+if you know the maximum segment sum of <tt>A(A'FIRST..k)</tt>
+as well as the maximum sum among all segments 
+<tt>A(j..k)</tt> ending at element k,
+you can compute, in constant time, 
+both of these values with respect to k+1.
+
+<p>
+For a more detailed treatment of the development of 
+each of the four algorithms, see [<a href="#Bentley" name=CITEBentley>2</a>].
+For a discussion of the maximum segment sum problem
+emphasizing the idea that an algorithm and its correctness proof
+should be developed hand-in-hand,
+see [<a href="#Cohen" name=CITECohen>3</a>,<a href="#Dijkstra" name=CITEDijkstra>4</a>,<a href="#Gries" name=CITEGries>6</a>].
+
+<p>
+        <H2><A NAME="tth_sEc5">
+5</A>&nbsp;&nbsp; <font size="+1"> <b>Conclusion</font></b></H2>
+The maximum segment sum problem serves very nicely as the basis of
+an analysis of algorithms laboratory/homework exercise in either 
+CS&nbsp;2 or CS&nbsp;7.  
+To a large extent, this is due to the fact that
+it is solved by several relatively simple algorithms of differing time complexities, each of which is amenable to
+analysis by methods usually taught in these courses.
+In this regard it is similar to the problem of sorting, which, 
+it seems likely,
+is the one most often utilized in such exercises.
+
+<p>
+In at least two other regards, however, maximum segment sum differs
+from sorting in ways that cause us to prefer to use 
+the former rather than the latter.
+One is that maximum segment sum, possessing neither the practical nor
+the historical significance of sorting, need not be a topic of discussion
+in the course.
+As a result, upon receiving the instructions for the exercise, the student 
+will have had no prior exposure to any of the algorithms presented therein
+and, therefore, will be forced to analyze them ``from scratch''.
+
+<p>
+The second is that, in contrast to the majority of the classic algorithms 
+for sorting, the best-case and worst-case running times of each of
+the algorithms for maximum segment sum are (asymptotically) the same.
+This simplifies the analysis of the algorithms,
+allowing the student to concentrate solely on applying
+the techniques covered in class for determining worst-case
+asymptotic running time without concern for best- or average-case
+running time (both of 
+which can be addressed very nicely in a similar, but separate,
+exercise that makes use of classic sorting algorithms).
+
+<p>
+<H2>References</H2>
+<DL compact>
+
+<p>
+<dt>[<a href="#CITEACM78" name=ACM78>1</a>]</dt><dd>
+ACM Curriculum Committee on Computer Science, 
+  Curriculum '78: Recommendations for the Undergraduate Program in 
+  Computer Science, <em>Comm. ACM 22,3 </em> (March 1979),
+  pp.&nbsp;147-166.
+
+<p>
+<dt>[<a href="#CITEBentley" name=Bentley>2</a>]</dt><dd>
+Bentley,&nbsp;&nbsp; J., &nbsp;&nbsp; <em>Programming Pearls </em>,<br>
+  Addison-Wesley, Reading, MA, 1986, pp.&nbsp;69-80.
+
+<p>
+<dt>[<a href="#CITECohen" name=Cohen>3</a>]</dt><dd>
+Cohen, E.,
+  <em>Programming in the 1990's: An Introduction to the 
+   Calculation of Programs </em>,
+  Springer-Verlag, NY, NY, 1990.
+
+<p>
+<dt>[<a href="#CITEDijkstra" name=Dijkstra>4</a>]</dt><dd>
+Dijkstra, E.W., ed.,
+  <em>Formal Development of Programs and Proofs </em>,
+  Addison-Wesley, Reading, MA, 1990.
+
+<p>
+<dt>[<a href="#CITEEpp" name=Epp>5</a>]</dt><dd>
+Epp, E.C.,
+  Yet Another Analysis of Algorithms Laboratory,
+  <em>SIGCSE Bulletin </em> 24:4 (1992), pp.&nbsp;11-14.
+
+<p>
+<dt>[<a href="#CITEGries" name=Gries>6</a>]</dt><dd>
+Gries, D.,
+  A Note on the Standard Strategy for Developing Loop Invariants
+  and Loops,
+  <em>Science of Computer Programming </em> 2 (1984), pp.&nbsp;207-214.
+
+<p>
+<dt>[<a href="#CITEManber" name=Manber>7</a>]</dt><dd>
+Manber, U.,
+  <em>Introduction to Algorithms: A Creative Approach </em>,
+  Addison-Wesley, Reading, MA, 1989.
+
+<p>
+<dt>[<a href="#CITEWeiss" name=Weiss>8</a>]</dt><dd>
+Weiss, M.,   <em>Data Structures and Algorithm<br>Analysis in Ada </em>,
+  Benjamin/Cummings, Redwood City, CA, 1993.
+
+<p>
+</DL>  <hr><H3>Footnotes:</H3>
+
+<p><a name=tthFtNtAAB></a><a href="#tthFrefAAB"><sup>1</sup></a> By 
+this we mean to take into account not only worst-case complexity,
+but also average- and best-case complexity.
+<p><a name=tthFtNtAAC></a><a href="#tthFrefAAC"><sup>2</sup></a> This definition allows for the possibility that 
+all values in <tt>A</tt> are negative, in which case an empty segment yields
+the maximum sum, zero.
+It also assumes, only for convenience, 
+that <tt>A</tt> is indexed by a range of integers.
+<p><hr><small>File translated from T<sub><font size="-1">E</font></sub>X by <a href="http://hutchinson.belmont.ma.us/tth/">T<sub><font size="-1">T</font></sub>H</a>, version 2.00.<br>On 23 Jul 1999, 18:52.</small>
+</HTML>

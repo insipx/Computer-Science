@@ -1,0 +1,37 @@
+cfhadgeb: valid
+cfhaegbd: valid
+cfhbdage: valid
+cgbheadf: valid
+cgbhfdae: valid
+chdgafbe: valid
+daehbgcf: valid
+daehfcgb: valid
+dbehfacg: valid
+dbgcfhae: valid
+dbgcfhea: valid
+dbgeahfc: valid
+dbhegacf: valid
+dbhfaceg: valid
+dfaebhcg: valid
+dfhbgace: valid
+dfhcageb: valid
+dgahebfc: valid
+dgchbeaf: valid
+dgebfach: valid
+dgecafhb: valid
+dhacfbge: valid
+dhaegbfc: valid
+dhecagbf: valid
+eadfhbgc: valid
+eahdbgcf: valid
+eahfcgbd: valid
+ebdfhcag: valid
+ebdgchfa: valid
+abcdefgh: NOT valid
+bcfghade: NOT valid
+dabghcde: NOT valid
+ahefbdcg: NOT valid
+gacedbfh: NOT valid
+cfabdghe: NOT valid
+hacgbdfe: NOT valid
+

@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>Axioms and Theorems for the (family of) if function(s)
+</title>
+</head>
+<body>
+<H2>
+SE 504 (Formal Methods and Models) <br />
+Axioms and Theorems for the (family of) if function(s)
+</H2>
+
+<p>
+For every type <tt>T</tt>, we have the function
+<tt>if<sub>T</sub> : bool &times; T &times T &rarr; T</tt>
+(where the subscript is omitted if <tt>T</tt> is understood)
+that, depending upon whether its first argument is true or false,
+respectively, yields either its second or third argument, respectively.
+
+</p><p>
+That is, its defining axioms are
+
+</p><p>
+<b>(if.0a)</b> <tt>if(true,a,b) = a</tt> &nbsp; 
+<br /><b>(if.0b)</b> <tt>if(false,a,b) = b</tt> &nbsp;
+
+</p><p>
+From these, we can prove each of the following theorems:
+
+</p><p>
+<b>(if.1)</b>  <tt>if(p,a,a) = a</tt>
+
+</p><p>
+<b>(if.2)</b>  <tt>if(E=F,a[x:=E],b) = if(E=F,a[x:=F],b)</tt>
+
+</p><p>
+Distributivity Theorems:<br />
+<b>(if.3a)</b>
+Provided that <tt>&oplus;</tt> has signature <tt>T &times; R &rarr; S</tt>:
+ &nbsp; <tt>if<sub>T</sub>(p,a,b) &oplus;  c  =  
+                      if<sub>S</sub>(p,a&oplus;c,b&oplus;c)</tt>
+<br /><b>(if.3b)</b>
+Provided that <tt>&oplus;</tt> has signature <tt>R &times; T &rarr; S</tt>:
+ &nbsp; <tt>c &oplus; if<sub>T</sub>(p,a,b) =  
+                                if<sub>S</sub>(p,c&oplus;a,c&oplus;b)</tt>
+
+</p><p>
+<b>(if.4a)</b> <tt>if<sub>bool</sub>(p,a,b) &equiv;
+                   (p &rArr; a) &and; (&not;p &rArr; b)</tt>
+<br />
+<b>(if.4b)</b> <tt>if<sub>bool</sub>(p,a,b) &equiv;
+                      (p &and; a) &or; (&not;p &and; b)</tt>
+<br />
+<b>(if.4c)</b> <tt>if<sub>bool</sub>(p,q,true) &equiv; p &rArr; q</tt>
+
+</p><p>
+<b>(if.5a)</b> <tt>if<sub>bool</sub>(p,a,b) &and; if<sub>bool</sub>(p,c,d)
+              &equiv; if<sub>bool</sub>(p,a&and;c,b&and;d)</tt>
+<br />
+<b>(if.5b)</b> <tt>if<sub>bool</sub>(p,a,b) &or; if<sub>bool</sub>(p,c,d)
+              &equiv; if<sub>bool</sub>(p,a&or;c,b&or;d)</tt>
+
+<!-- What follows is identical to (if.5a), so why was it ever added?
+  </p><p>
+  <b>(if.6)</b> <tt>if<sub>bool</sub>(p,a,b) &and; if<sub>bool</sub>(p,c,d)
+                &equiv; if<sub>bool</sub>(p,a&and;c,b&and;d)</tt>
+-->
+</body>
+</html>

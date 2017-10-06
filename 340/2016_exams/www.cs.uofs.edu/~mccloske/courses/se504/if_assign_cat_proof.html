@@ -1,0 +1,257 @@
+<html>
+<head>
+</head>
+<body>
+<h2>
+SE 504 <br />
+Proof of correctness of a program composed of a selection (if) command
+and an assignment
+</h2>
+
+<p>
+<b>Note:</b> Here we use the notation <b>b.i</b> (as does Kaldewaij)
+rather than the more familiar <b>b[i]</b> to refer to the i-th element
+of array b.
+
+</p><p>
+Prove the following Hoare triple:
+<pre>
+{ P: 0&lt;i &and; i&lt;m &and; m&lt;N &and; (&forall;j | i < j < N : b.j &ge; b.m) }
+if b.i >= b.m  -->  skip
+[] b.i <= b.m  -->  m := i
+fi
+;i := i-1
+{ Q: 0&le;i &and; i&lt;m &and; m&lt;N &and; (&forall;j | i < j < N : b.j &ge; b.m) }
+</pre>
+
+</p><p>
+Note that <tt>P</tt> and <tt>Q</tt> differ only in that <tt>Q</tt>
+allows <tt>i</tt> to have value zero.
+
+</p><p>
+<b>Solution:</b> <br />
+
+The given Hoare triple is of the form 
+<tt>{P} S<sub>1</sub>; S<sub>2</sub> {Q}</tt>,
+where <tt>S<sub>1</sub></tt> is a selection command and
+<tt>S<sub>2</sub></tt> is an assignment command.  The <b>Hoare triple
+catenation law</b> tells us that, to prove it, it suffices to devise a
+predicate <tt>R</tt> and to show
+</p><p><center><tt>{P} S<sub>1</sub> {R}  &and;  {R} S<sub>2</sub> {Q}
+</tt></center>
+
+</p><p>
+Because <tt>S<sub>2</sub></tt> is an assignment, we choose <tt>R</tt> to be
+<tt>wp.S2.Q</tt>.  By definition of <tt>wp</tt>, this choice for <tt>R</tt>
+truthifies <tt>{R} S<sub>2</sub> {Q}</tt>.  Hence, it remains only to
+prove <tt>{P} S<sub>1</sub> {R}</tt>.  As <tt>S<sub>1</sub></tt> 
+is a selection (i.e., if) command, we do so by applying the
+<b>Hoare triple selection law</b>, which says that it suffices to show 
+<ol type=a>
+  <li><tt>[P &rArr; BB]</tt>, where <tt>BB</tt> is the disjunction of the
+      guards, and
+  </li>
+  <li><tt>{P &and; B<sub>i</sub>} S<sub>i</sub> {R}</tt> (for all i).
+  </li>
+</ol>
+
+</p><p>
+As for (a), it is trivial, because, in any state, at least one of 
+<tt>b.i &ge; b.m</tt> (i.e., <tt>B<sub>0</sub></tt>) or 
+<tt>b.i &le; b.m</tt> (i.e., <tt>B<sub>1</sub></tt>) must hold.
+If we insist on formality, we could prove (a) as follows.
+(Notice that we don't even need to make use of <tt>P</tt> as an assumption.)
+
+<pre>
+     BB
+
+ =      < BB is disjunction of guards, of which there are two >
+
+     B<sub>0</sub> &or; B<sub>1</sub>
+
+ =      < defn of B<sub>0</sub> and B<sub>1</sub> >
+
+     b.i &ge; b.m  &or;  b.i &le; b.m
+
+ =      < defn of &ge; >
+
+     b.i = b.m  &or;  b.i > b.m  &or;   b.i &le; b.m
+
+ =      < theorem: [&not;(x > y)  =  x &le; y] >
+
+     b.i = b.m  &or;  b.i > b.m  &or;  &not;(b.i > b.m)
+
+ =      < Excluded Middle (3.28); true is zero of &or; (3.29) >
+
+     true
+</pre>
+
+</p><p>
+As for (b), because there are two guarded commands in our selection command,
+we are to prove both
+<b>(i)</b> <tt>{P &and; B<sub>0</sub>} S<sub>0</sub> {R}</tt> and 
+<b>(ii)</b> <tt>{P &and; B<sub>1</sub>} S<sub>1</sub> {R}</tt>.  Our
+choice for R was <tt>wp.(i:=i-1).Q</tt>, which, applying the 
+<b>wp assignment law</b> and textual substitution, works out to
+
+</p><p><center><tt>
+      R: 0&le;i-1 &and; i-1&lt;m &and; m&lt;N &and; (&forall;j | i-1 < j < N : b.j &ge; b.m)
+</tt></center>
+
+</p><p>
+<b>(i)</b> <tt>{P &and; B<sub>0</sub>} S<sub>0</sub> {R}</tt> 
+ &nbsp; (i.e., <tt>[P &and; B<sub>0</sub> &rArr; wp.S<sub>0</sub>.R]</tt>)
+
+</p><p>
+We prove it by assuming the antecedant (<tt>P &and; B<sub>0</sub></tt>) and
+showing the consequent (<tt>wp.S<sub>0</sub>.R</tt>).
+
+<pre>
+       wp.S<sub>0</sub>.R
+
+   =      < defn. of S<sub>0</sub> >
+
+       wp.skip.R
+
+   =      < wp skip law >
+
+       R
+
+   =      < defn of R >
+
+       0&le;i-1 &and; i-1&lt;m &and; m&lt;N &and; (&forall;j | i-1 < j < N : b.j &ge; b.m)
+
+   =      < assumption 0&lt;i is equivalent to 0&le;i-1 >
+
+       true  &and;  i-1&lt;m  &and;  m&lt;N  &and;  (&forall;j | i-1 < j < N : b.j &ge; b.m)
+
+   =      < assumption i&lt;m implies i-1&lt;m >
+
+       true  &and;  true  &and;  i&lt;N  &and;  (&forall;j | i-1 < j < N : b.j &ge; b.m)
+
+   =      < assumptions i&lt;m and m&lt;N together imply (by transitivity of < ) i&lt;N >
+
+       true  &and;  true  &and;  true  &and;  (&forall;j | i-1 < j < N : b.j &ge; b.m)
+
+   =      < true is identity of &and; (3.39), three times >
+
+       (&forall;j | i-1 < j < N : b.j &ge; b.m)
+
+   =      < split off term (8.23) (justified by fact that the assumptions
+            guarantee i&lt;N, as noted above, from which it follows that
+            there is at least one value of j satisfying i-1 < j < N 
+           (i.e., the range is nonempty))                                  >
+
+       b.i &ge; b.m  &and;  (&forall;j | i < j < N : b.j &ge; b.m)
+
+   =      < assumption B<sub>0</sub>, (3.39) >
+
+       (&forall;j | i < j < N : b.j &ge; b.m)
+
+   =      < (4th conjunct of) assumption P >
+
+       true
+
+</pre>
+
+
+</p><p>
+<b>(ii)</b>
+<tt>{P &and; B<sub>1</sub>} S<sub>1</sub> {R}</tt>
+&nbsp; (i.e., <tt>[P &and; B<sub>1</sub> &rArr; wp.S<sub>1</sub>.R]</tt>)
+
+</p><p>
+We prove it by assuming the antecedant (<tt>P &and; B<sub>1</sub></tt>)
+and showing the consequent (<tt>wp.S<sub>1</sub>.R</tt>).
+<pre>
+       wp.S<sub>1</sub>.R
+
+   =      < defn. of S<sub>1</sub> >
+
+       wp.(m:=i).R
+
+   =      < wp assignment law >
+
+       R(m:=i)
+
+   =      < defn of R, textual substitution >
+
+       0&le;i-1  &and;  i-1&lt;i  &and;  i&lt;N  &and;  (&forall;j | i-1 < j < N : b.j &ge; b.i)
+
+   =      < assumption 0&lt;i (1st conjunct of P) is equivalent to 0&le;i-1 >
+
+       true  &and;  i-1&lt;i  &and;  i&lt;N  &and;  (&forall;j | i-1 < j < N : b.j &ge; b.i)
+
+   =      < number theoretic theorem: x-1 < x >
+
+       true  &and;  true  &and;  i&lt;N  &and;  (&forall;j | i-1 < j < N : b.j &ge; b.i)
+
+   =      < assumptions i&lt;m and m&lt;N (2nd, 3rd conjuncts of P)
+            together imply, by transitivity of &lt;, that i&lt;N    >
+
+       true  &and;  true  &and;  true  &and;  (&forall;j | i-1 < j < N : b.j &ge; b.i)
+
+   =      < true is identity of &and; (3.39), three times >
+
+       (&forall;j | i-1 < j < N : b.j &ge; b.i)
+
+   =      < split off term (8.23) (justified by fact that the 
+            assumptions guarantee i&lt;N, as noted above, from which it
+            follows that there is at least one value of j satisfying
+            i-1 < j < N (i.e., the range is nonempty))               >
+
+       b.i &ge; b.i  &and;  (&forall;j | i < j < N : b.j &ge; b.i)
+
+   =      < theorem: x &ge; x; true is identity of &and; (3.39) >
+
+       (&forall;j | i < j < N : b.j &ge; b.i)
+</pre>
+
+Now what?  The expression above, which we want to prove, says that
+<tt>b.j &ge; b.i</tt> for all j in the range <tt>i+1..N-1</tt>.
+But this follows from the transitivity of &ge; together with two of our
+assumptions, namely <tt>B<sub>1</sub></tt> 
+(which says that <tt>b.m &ge; b.i</tt>)
+and the 4th conjunct of <tt>P</tt> (which says that <tt>b.j &ge; b.m</tt> 
+for all j in <tt>i+1..N-1</tt>).  How can we show this formally?
+It is a bit tricky.  Here goes:
+<pre>
+  <==     < Body weakening/strengthening (9.11) >
+
+       (&forall;j | i < j < N : b.j &ge; b.m  &and;  b.m &ge; b.i  &and;  b.j &ge; b.i)
+
+   =      < by transitivity of &ge;, the 3rd conjunct in body of
+            above is implied by the conjunction of the first two;
+            thus, by (3.60), an equivalent expression is obtained
+            by removing the 3rd conjunct                           >
+
+       (&forall;j | i < j < N : b.j &ge; b.m  &and;  b.m &ge; b.i)
+
+    =     < Distributivity of &and; over &forall; (9.7) >
+
+       (&forall;j | i < j < N : b.j &ge; b.m)  &and;  b.m &ge; b.i
+
+    =     < (4th conjunct of) assumption P and assumption B<sub>1</sub> >
+
+       true &and; true
+
+    =     < (3.40) >
+
+       true 
+</pre>
+
+</p><p>
+Summarizing, what we have shown is
+</p><p><center><tt>
+       [(P &and; B<sub>1</sub>)  &rArr;  (true &rArr; wp.S<sub>1</sub>.R)]
+</tt></center>
+
+</p><p>
+But by (3.73), the consequent of the above is simply 
+<tt>wp.S<sub>1</sub>.R</tt>.
+Hence, we have proved 
+<tt>[(P &and; B<sub>1</sub>)  &rArr;  wp.S<sub>1</sub>.R]</tt>,
+as required.
+
+</body>
+</html>

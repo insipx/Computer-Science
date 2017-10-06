@@ -1,0 +1,326 @@
+<HTML>
+<HEAD>
+<TITLE>1990 U of S Programming Contest Problems</TITLE>
+</HEAD>
+<BODY>
+
+<H2>University of Scranton 1990 High School Programming Contest Problems</H2>
+
+<p>
+<A HREF="#How_Many_Days">Problem 1: How Many Days?</A><br />
+<A HREF="#Digital_Roots">Problem 2: Digital Roots</A><br />
+<A HREF="#Extended_Precision_Addition">Problem 3:
+         Extended Precision Addition</A><br />
+<A HREF="#String_Subsets">Problem 4: String Subsets</A><br />
+<A HREF="#On_the_Line">Problem 5: On the Line?</A><br />
+<A HREF="#Caesar_Cipher_Encoding">Problem 6: Caesar Cipher Encoding</A>
+
+<p> &nbsp;
+
+<p>
+<A NAME="How_Many_Days">
+<hr><b>Problem 1: How Many Days?</b></A>
+
+<p>
+Write a program that determines the length of time, in days, between
+two dates given as input.  Dates are expressed in the familiar form
+<b>mm/dd/yy</b>.  (The first two digits of the year are assumed to be
+19.)
+
+<p>
+The two dates given as input need not be given in chronological order.
+However, in the output, the two dates must be listed in chronological order.
+You may assume that any date given as input corresponds to a day
+that actually occurred (or will occur).  This excludes dates such as
+04/31/77 and 02/29/53 (because April has only 30 days and February has
+only 28 days in non-leap years).
+
+<p>
+You should be aware that each of January, March, May, July, August, October,
+and December has 31 days, each of April, June, September, and November
+has 30 days, and February has either 28 or 29, the latter only in
+leap years.  
+In the century that includes the years 1900 through 1999, the leap years
+are all those divisible by four, except for 1900.
+(Most people are not aware that a year ending in 00 is a leap year 
+only if its first two digits form a number that is divisible by four.)
+
+<p>
+The program should repeat until the user enters the same date for both
+inputs.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+1st Date: <u>04/21/90</u><br />
+2nd Date: <u>04/24/90</u><br />
+There are 3 days between 04/21/90 and 04/24/90.<br />
+<br />
+1st Date: <u>04/24/90</u><br />
+2nd Date: <u>04/21/90</u><br />
+There are 3 days between 04/21/90 and 04/24/90.<br />
+<br />
+1st Date: <u>03/10/65</u><br />
+2nd Date: <u>09/21/99</u><br />
+There are 12613 days between 03/10/65 and 09/21/99.<br />
+<br />
+1st Date: <u>08/11/85</u><br />
+2nd Date: <u>08/11/85</u><br />
+There are 0 days between 08/11/85 and 08/11/85.
+</tt>
+
+
+<p> &nbsp;
+
+<p>
+<A NAME="Digital_Roots">
+<hr><b>Problem 2: Digital Roots</b></A>
+
+<p>
+We define the <b>digital root</b> of a nonnegative integer <em>n</em>
+as follows.  Let <em>m</em> be the sum of the digits in <em>n</em>.
+If <em>m</em> is a one-digit number, then <em>m</em> is the digital root of
+<em>n</em>.  Otherwise, the digital root of <em>n</em> is equal to
+the digital root of <em>m</em>.
+
+<p>
+Develop a program that, given as input a nonnegative integer,
+outputs its digital root.
+The program should terminate when the user enters 0 as input.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter number: <u>7</u><br />
+Digital Root: 7<br />
+<br />
+Enter number: <u>3452</u><br />
+Digital Root: 5<br />
+<br />
+Enter number: <u>397</u><br />
+Digital Root: 1<br />
+<br />
+Enter number: <u>0</u><br />
+Digital Root: 0
+</tt>
+
+
+
+<p> &nbsp;
+<p>
+<A NAME="Extended_Precision_Addition">
+<hr><b>Problem 3: Extended Precision Addition</b></A>
+
+<p>
+Develop a program that takes as input two "long" nonnegative integers and
+outputs their sum.  The inputs will be no longer than 35 digits.
+The program should repeat until the user enters zero for both inputs.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+1st input: <u>10371</u><br />
+2nd input: <u>315</u><br />
+Result: 10686<br />
+<br />
+1st input: <u>54696543201678654789456</u><br />
+2nd input: <u>82067690004564356875434</u><br />
+Result: 136764233206243011664890<br />
+<br />
+1st input: <u>0</u><br />
+2nd input: <u>0</u>
+</tt>
+
+<p> &nbsp;
+<p>
+<A NAME="String_Subsets">
+<hr><b>Problem 4: String Subsets</b></A>
+
+<p>
+A <em>set</em> is a collection of elements, or members.
+If <b>S</b> and <b>T</b> are sets such that every member of <b>S</b> 
+is also a member of <b>T</b>, then <b>S</b> is said to be a 
+<em>subset of </em> <b>T</b>.
+(It is possible for each of <b>S</b> and <b> T</b> to be a subset of
+the other.  In this case, they contain precisely the same members.)&nbsp;
+If <b>S</b> is a subset of <b>T</b> but <b>T</b> is <em>not</em> a subset of
+<b>S</b> ---which is to say that every member of <b>S</b> is also a member
+of <b>T</b>, but <b>T</b> contains some member that is <em>not</em> a member
+of <b>S</b>--- then <b>S</b> is said to be a <em>proper subset</em>
+of <b>T</b>.
+
+<p>
+Given any two sets <b>S</b> and <b>T</b>, they are related to each
+other ---with respect to the <em>subset of</em> concept--- 
+in exactly one of four ways:
+
+<ol>
+  <li><b>S</b> is a proper subset of <b>T</b>.</li>
+  <li><b>T</b> is a proper subset of <b>S</b>.</li>
+  <li>Each of <b>S</b> and <b>T</b> is a subset of the other.</li>
+  <li>Neither <b>S</b> nor <b>T</b> is a subset of the other.</li>
+</ol>
+
+<p>
+With every character string <em>x</em> we can associate the set 
+<b>S<sub><em>x</em></sub></b> whose members are precisely those 
+characters appearing (at least once) in <em>x</em>.  For example, if
+<em>x</em> is the string "MISSISSIPPI", then <b>S<sub><em>x</em></sub></b> 
+is the set whose members are "M", "I", "S", and "P".
+If <em>x</em> and <em>y</em> are character strings and
+<b>S<sub><em>x</em></sub></b> is a subset of
+<b>S<sub><em>y</em></sub></b>, we say that <em>x</em> is a
+<em>string-subset</em> of <em>y</em>.
+
+<p>
+Develop a program that, given as input two character strings
+<em>x</em> and <em>y</em>, reports (in the manner illustrated
+below) which of the four possible relationships holds between the sets 
+<b>S<sub><em>x</em></sub></b> and <b>S<sub><em>y</em></sub></b>.
+The program should terminate when the user enters as input two
+empty strings.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter 1st string: <u>MISAPPROPRIATION</u><br />
+Enter 2nd string: <u>MISSISSIPPI</u><br />
+MISSISSIPPI is a proper string-subset of MISAPPROPRIATION.<br />
+<br />
+Enter 1st string: <u>JUNK</u><br />
+Enter 2nd string: <u>JACKASS</u><br />
+Neither JUNK nor JACKASS is a string-subset of the other.<br />
+<br />
+Enter 1st string: <u>BATTLES</u><br />
+Enter 2nd string: <u>STABLES</u><br />
+Each of BATTLES and STABLES is a string-subset of the other.<br />
+<br />
+Enter 1st string: <u></u><br />
+Enter 2nd string: <u></u>
+</tt>
+
+
+<p> &nbsp;
+<p>
+<A NAME="On_the_Line">
+<hr><b>Problem 5: On the Line?</b></A>
+
+<p>
+Develop a program that, given as input three points
+<b>P<sub>1</sub></b>, <b>P<sub>2</sub></b>, and <b>P<sub>3</sub></b>
+on the cartesian coordinate plane,
+reports whether <b>P<sub>3</sub></b> lies on the line containing
+<b>P<sub>1</sub></b> and <b>P<sub>2</sub></b>.
+
+<p>
+In order to input the three points, the user enters six integers 
+<em>x<sub>1</sub></em>, <em>y<sub>1</sub></em>, <em>x<sub>2</sub></em>,
+<em>y<sub>2</sub></em>, <em>x<sub>3</sub></em>, and <em>y<sub>3</sub></em>.  
+The three points are 
+<b>P<sub>1</sub></b>&nbsp;=&nbsp;(<em>x<sub>1</sub></em>,
+                                  <em>y<sub>1</sub></em>), 
+<b>P<sub>2</sub></b>&nbsp;=&nbsp;(<em>x<sub>2</sub></em>,
+                                  <em>y<sub>2</sub></em>), and 
+<b>P<sub>3</sub></b>&nbsp;=&nbsp;(<em>x<sub>3</sub></em>, 
+                                  <em>y<sub>3</sub></em>).
+
+<p>
+The program should repeat until the user's input is such that
+<b>P<sub>1</sub></b> and <b>P<sub>2</sub></b> are the same point.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter x1: <u>12</u><br />
+Enter y1: <u>5</u><br />
+Enter x2: <u>7</u><br />
+Enter y2: <u>9</u><br />
+Enter x3: <u>10</u><br />
+Enter y3: <u>7</u><br />
+<br />
+The point (10,7) IS NOT on the line containing (12,5) and (7,9).<br />
+<br />
+Enter x1: <u>0</u><br />
+Enter y1: <u>0</u><br />
+Enter x2: <u>-1</u><br />
+Enter y2: <u>-1</u><br />
+Enter x3: <u>5</u><br />
+Enter y3: <u>5</u><br />
+<br />
+The point (5,5) IS on the line containing (0,0) and (-1,-1).<br />
+<br />
+Enter x1: <u>7</u><br />
+Enter y1: <u>-2</u><br />
+Enter x2: <u>7</u><br />
+Enter y2: <u>-2</u>
+</tt>
+
+
+<p> &nbsp;
+<p>
+<A NAME="Caesar_Cipher_Encoding">
+<hr><b>Problem 6: Caesar Cipher Encoding</b></A>
+
+<p>
+A Caesar cipher (named after the Roman Emperor Julius Caesar) is a
+rudimentary encoding scheme in which each letter is replaced by the
+letter occurring <em>k</em> places after it in the alphabet.  (Imagine
+that the letters are listed in a circle so that <b>A</b> immediately
+follows <b>Z</b>.)  The number <em>k</em> is referred to as the 
+<em>shift</em> because, in effect, a Caesar cipher shifts all the
+letters of the alphabet <em>k</em> positions.
+
+<p>  
+For example, if <em>k</em>&nbsp;=&nbsp;2, 
+<b>A</b> would be encoded as <b>C</b>,
+<b>B</b> would be encoded as <b>D</b>, ...,
+<b>X</b> would be encoded as <b>Z</b>,
+<b>Y</b> would be encoded as <b>A</b>, and
+<b>Z</b> would be encoded as <b>B</b>.
+The notion of a negative shift makes sense, too.  For example, if
+<em>k</em>&nbsp;=&nbsp;-3, 
+<b>A</b> would be encoded as <b>X</b>,
+<b>B</b> would be encoded as <b>Y</b>,
+<b>C</b> would be encoded as <b>Z</b>, 
+<b>D</b> would be encoded as <b>A</b>, ...,
+<b>Z</b> would be encoded as <b>W</b>.
+
+<p>
+Develop a program that accepts as input a shift value (an integer) 
+and a message (a string of characters)
+and that generates as output the corresponding encoded form of the message.
+The message will be no longer than 40 characters.  The shift value will
+be no less than -25 and no greater than 25.
+Any character that occurs in the message and that is not an upper case letter
+should be encoded as itself.
+The program should repeat until the user enters zero for the shift value.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter shift value: <u>7</u><br />
+Enter message: <u>THE END IS NEAR</u><br />
+Encoded message: AOL LUK PZ ULHY<br />
+<br />
+Enter shift value: <u>-4</u><br />
+Enter message: <u>ALL ABOARD</u><br />
+Encoded message: WHH WXKWNZ<br />
+<br />
+Enter shift value: <u>0</u>
+</tt>
+
+
+</BODY>
+</HTML>

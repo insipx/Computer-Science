@@ -1,0 +1,100 @@
+<html>
+<head>
+  <title>How to make jGrasp use spaces in place of tab characters</title>
+</head>
+
+<body>
+<h2>How to make jGrasp use spaces in place of tab characters</h2>
+
+<h3>The Curse of the Tab Character</h3>
+</p><p>
+For those of us who view programs using a variety of applications
+(i.e., various web browsers and/or text editors), tabs appearing
+in source code files can be very annoying.  Why?
+Because tabs are rendered differently in one application vs. another.  
+
+
+</p><p>
+Suppose, for example, that the following eight-line program segment
+had been keyed in using jGrasp's text editor.
+To the right of each line of code is a description of which characters
+form the "whitespace" at the beginning of each line.
+These descriptions are consistent with jGrasp's default setting, which
+has each tab character being rendered as though it were three spaces.  
+Despite what you may think, this example is not really as far-fetched
+as it may first appear, especially if the code was cobbled together using
+a sequence of editing operations in which code was moved around a lot.
+
+</p><p>
+<center>
+<table border="1">
+<tr><td>
+<pre>
+   while (k != m)            (tab)
+   {                         (3 spaces)
+      cntr = cntr + 1;       (6 spaces)
+      if (k < m)             (tab and 3 spaces)
+         { m = m - k; }      (9 spaces)
+      else                   (2 tabs)
+         { k = k - m; }      (3 tabs)
+   }                         (tab) </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Now suppose that the same code segment is displayed using an application
+in which tab characters are rendered as though they were a sequence of
+seven spaces.  The code segment would look like this:
+
+</p><p>
+<center>
+<table border="1">
+<tr><td>
+<pre>
+(1)       while (k != m)
+(2)   {
+(3)      cntr = cntr + 1;
+(4)          if (k < m)
+(5)         { m = m - k; }
+(6)              else
+(7)                     { k = k - m; }
+(8)       }</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+As you can see, the code is now ugly and virtually unreadable, as the
+visual cues intended to be provided by code indentation have been destroyed.
+
+<hr>
+<h3>How to Rid Ourselves, in jGrasp, of the Tabs Curse</h3>
+
+<ol>
+  <li>In the menu bar, click <b>Settings</b> and then choose <b>Font</b>
+      from the menu.</li>
+  <li>Click on the <b>CSD</b> tab.</li>
+  <li>Turn on <b>Soft tabs</b> option.
+      (Two boxes appear to its right.  Click on the right box and then
+      on the left box.  This should cause a check mark to appear in the
+      latter.)
+      </p><p>
+      With this option turned on, any tab characters entered on the
+      keyboard will be treated as a sequence of space characters.
+      How many spaces?  Use the <b>Tab Size</b> slider to choose.
+      A good setting is 3.
+      </p><p>
+      It also means that, if the <b>Auto Indent</b> option is turned on,
+      when jGrasp automatically indents a line of code, it will do so
+      using spaces rather than tabs.
+  </li>
+</ol>
+
+
+You can find more at 
+<a href="http://www.jgrasp.org/jgrasp/settings.htm#set_csd">
+  http://www.jgrasp.org/jgrasp/settings.htm#set_csd</a>
+
+</body>
+</html>

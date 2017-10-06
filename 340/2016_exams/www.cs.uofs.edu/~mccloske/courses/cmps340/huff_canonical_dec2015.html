@@ -1,0 +1,236 @@
+<html>
+<head><title>Canonical Huffman Coding</title>
+</head>
+<body>
+<h2>Canonical Huffman Coding</h2>
+
+</p><p>
+In standard Huffman coding, the compressor builds a Huffman Tree
+based upon the counts/frequencies of the symbols occurring in the
+file-to-be-compressed and then assigns to each symbol the 
+codeword implied by the path from the root to the leaf node
+associated to that symbol.  For example, if we adopt the convention
+that an edge from a node to its left (respectively, right) child 
+is labeled <tt>0</tt> (resp., <tt>1</tt>), then if the path from the 
+root to a particular leaf is left, left, right, left, right, left, 
+then the codeword assigned to the associated symbol will be <tt>001010</tt>. 
+
+</p><p>
+Canonical Huffman Coding recognizes that the essential information
+provided by a Huffman Tree is the mapping from symbols to their
+<em>codeword lengths</em>; the particular bit patterns of the
+codewords are secondary and can be computed independently of the
+tree.  Indeed, in Canonical Huffman Coding the set of codewords that 
+is employed depends solely upon the distribution of codeword lengths.  
+This set is chosen so as to satisfy not only the familiar 
+<b>prefix</b> property (i.e., no codeword is the prefix of any other)
+but also this property:
+
+</p><p>
+<b>Longer-is-Lesser</b> property:
+<blockquote>
+  If x and y are codewords and |x| > |y|, 
+  then x<sub>|y|</sub> &#8826;  y.  <!-- precedes symbol -->
+</blockquote>
+</p><p>
+Here, |z| denotes the length of z, z<sub>n</sub> denotes the prefix of 
+z of length n, and &#8826; is the "lexicographically less than"
+relation.  Lexicographic ordering is essentially the same as
+alphabetic ordering.
+
+</p><p>
+With respect to bit strings u and v, neither of which is a prefix of the
+other, to say that u &#8826; v is to say that the
+leftmost bit in which they differ is a <tt>0</tt> in u and a
+<tt>1</tt> in v.  For example, <tt>100101</tt> &#8826; <tt>10100</tt>
+because of the bits in the 3rd position (counting from one at the
+left).  (For essentially the same reason, the word "carwash" precedes
+"cattle" in the dictionary.)
+
+</p><p>
+Now, if A and B are leaves in a Huffman Tree 
+(in which edges to left (respectively, right)
+children are labeled <tt>0</tt> (resp., <tt>1</tt>))
+with corresponding codewords x and y (i.e., the labels
+on the edges along the path from the root to A (respectively, B) 
+spell out x (resp., y)) then x &#8826; y is equivalent to A being 
+to the left of B in the tree.
+
+</p><p>
+Thus, in order for the set of codewords induced by a Huffman Tree
+to satisfy the <b>Longer-is-Lesser</b> property, the tree must
+have this property:
+
+</p><p>
+<b>Deeper-is-Lefter</b> property:
+<blockquote>
+If A and B are leaves and A is to the left of
+B, then A's depth is not less than B's depth.
+(The depth of a node is its distance from the root.)
+</blockquote>
+
+</p><p>
+But we can take any Huffman Tree and, by a judicious sequence of
+swaps of subtrees rooted at nodes of the same depth, arrive at
+another Huffman Tree having the Deeper-is-Lefter property and
+having a set of codewords whose length distribution is the same
+as that in the original tree.  
+
+</p><p>
+Even though such a Huffman Tree transformation process is
+possible, it's not necessary to do it that way.
+A better approach is to take the codeword length distribution
+of the original tree and to build a Deeper-is-Lefter tree 
+directly therefrom.   Indeed, for any given distribution of lengths,
+there is only one possible tree structure.
+
+</p><p>
+For example, suppose that the symbol frequencies led us to build one 
+of the many Huffman Trees in which the codeword length distribution was 
+as on the left below.
+Then the corresponding (unique) Deeper-is-Lefter tree 
+(where each leaf's depth is explicitly indicated)
+is in the middle, and the resulting set of codewords 
+(listed in lexicographically increasing 
+&mdash;and thus length descending&mdash; order) is to the right:
+
+<center>
+<table border="1" cellpadding="12">
+<tr>
+  <td><table border="1" cellpadding="4">
+      <caption alignment="bottom">Codeword Length Distribution</caption>
+      <tr><th>Length</th><th>Number</th></tr>
+      <tr><td>6</td><td>2</td></tr>
+      <tr><td>5</td><td>1</td></tr>
+      <tr><td>4</td><td>3</td></tr>
+      <tr><td>3</td><td>4</td></tr>
+      <tr><td>2</td><td>1</td></tr>
+      </table>
+  </td> 
+  <td>
+    <center><b>Deeper-is-Lefter Huffman Tree</b></center><br />
+<pre>                            *
+                          /   \ 
+                         /     \ 
+                        /       \ 
+                       /         \ 
+                      /           \ 
+                     /             \ 
+                    /               \
+                   /                 \
+                  /                   \
+                 /                     \
+                *                       *
+              /   \                   /   \
+             /     \                 /     \
+            /       \               /       \
+           /         \             /         \
+          *           *           *           *
+         / \         / \         / \          2
+        /   \       /   \       /   \
+       /     \     /     \     /     \
+      *       *   *       *   *       *
+     / \     / \  3       3   3       3
+    *   *   *   *
+   / \  4   4   4
+  *   *
+ / \  5
+*   *   
+6   6</pre>
+  </td>
+  <td>
+    <b>Codewords</b><br />
+    <tt>000000</tt><br />
+    <tt>000001</tt><br />
+    <tt>00001</tt><br />
+    <tt>0001</tt><br />
+    <tt>0010</tt><br />
+    <tt>0011</tt><br />
+    <tt>010</tt><br />
+    <tt>011</tt><br />
+    <tt>100</tt><br />
+    <tt>101</tt><br />
+    <tt>11</tt><br />
+  </td>
+</tr>
+</table>
+</center>
+
+</p><p>
+Significantly, the Longer-is-Lesser set of codewords that arises
+from a Deeper-is-Lefter tree has some interesting properties
+when you interpret each codeword as a natural number 
+(using standard binary enocding).
+One is 
+
+</p><p><b>Consecutive-Values</b> property: 
+<blockquote>
+For any particular length, the codewords of that length represent 
+a consecutive range of natural numbers.
+</blockquote>
+
+</p><p>
+In our example, the codewords of length four represent the range 1..3 
+and those of length three represent 2..5.
+
+</p><p>
+Another property that such a set of codewords posesses is
+
+</p><p>
+<b>Half-of-Successor</b> property: 
+<blockquote>
+For all k less than the maximum length among codewords, 
+the smallest codeword of length k has value &lceil;(m+1)/2&rceil;,
+where m is the value of the largest codeword of length k+1.
+</blockquote>
+
+</p><p>
+All this is quite interesting, of course, but is there any advantage 
+in employing a set of codewords that arises from a Deeper-is-Lefter
+tree?
+Answer: <b>Yes</b>.
+
+</p><p>
+Briefly, we list them:
+<ul>
+  <li>The metadata encoding the symbol-to-codeword mapping need not
+      include an explicit description of the tree's structure.
+      In its place, all that is needed is a description of the
+      codeword length distribution, as this implicitly describes
+      the structure of the tree.
+      </p><p>
+      One way to encode the distribution is by indicating the
+      minimum and maximum among the codeword lengths, and then
+      indicating, for each length, the number of codewords of that
+      length.  For the example shown above, the list would be
+      &lt;2, 6, 1, 4, 3, 1, 2&gt;.  
+      </p><p>
+      For our ridiculously small example, encoding this list
+      would require a slightly larger number of bits than encoding the 
+      tree's structure.  But for a realistic-sized example, the
+      opposite would usually be the case, although the savings would
+      typically be small.
+  </li> 
+  <li>Of more significance is that the compressor is no longer
+      obligated to generate a structure (i.e., the Huffman Tree)
+      from which the symbol-to-codeword mapping can be induced explicitly.
+      Rather, all that it is responsible for computing is the
+      symbol-to-codeword-length mapping.  That is, it suffices
+      to compute, for each symbol, the length of its codeword.
+      It turns out that this can be accomplished a little more quickly
+      and using a little less memory than by building a full-fledged tree.
+  </li>
+  </p><p>
+  <li>Of even more significance is that the decompressor, exploiting
+      the <b>Consecutive-Values</b> and <b>Half-of-Successor</b> 
+      properties noted above, can do its job more quickly and using 
+      less memory than if it were using an explicit representation of
+      a Huffman Tree.
+      </p><p>
+      <em>Details to be provided at some point in time... </em>
+  </li>
+</ul>
+
+
+</body>
+</html>

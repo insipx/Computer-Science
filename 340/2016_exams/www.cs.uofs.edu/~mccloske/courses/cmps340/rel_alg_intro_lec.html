@@ -1,0 +1,1165 @@
+<html>
+<head>
+   <title>&nbsp Relational Algebra Introduction</title>
+</head>
+<body>
+<H2>Relational Algebra Introduction</H2>
+
+<p>
+A relational database is composed of two-dimensional <b>tables</b>.
+(A table can also be called a <b>relation</b>, although relational
+"purists" would argue that there is a subtle distinction between the
+two.)
+Each "row" of a table is called a <b>tuple</b>. 
+Each tuple is composed of <b>fields</b>, one for each <b>attribute</b> 
+of the table.
+(The attributes are the names we associate with the fields/columns.)
+
+<p>
+Here is an example of a table in which each tuple describes a student in
+a hypothetical high school or 4-year college.
+
+<pre>
+   Student    ID     Name      Sex   Class
+           +------+----------+-----+-------+
+           |   2  |  Mary    |  F  |   2   |
+           +------+----------+-----+-------+
+           |   6  |  John    |  M  |   4   |
+           +------+----------+-----+-------+
+           |   9  |  Carol   |  F  |   3   |
+           +------+----------+-----+-------+
+           |   7  |  Mary    |  F  |   4   |
+           +------+----------+-----+-------+
+           |   1  |  Ann     |  F  |   1   |
+           +------+----------+-----+-------+
+           |  13  |  Mike    |  M  |   2   |
+           +------+----------+-----+-------+
+           |   8  |  Helen   |  F  |   4   |
+           +------+----------+-----+-------+
+           |   5  |  Jim     |  M  |   1   |
+           +------+----------+-----+-------+
+           |  16  |  Mike    |  M  |   3   |
+           +------+----------+-----+-------+ </pre>
+
+<p>
+Following the usual convention, we have written the name of the table,
+<em>Student</em>, immediately to the left of the attributes, which
+serve as column headings.
+As the reader has probably surmised, we have chosen to encode the values
+corresponding to male and female, respectively, by <tt>M</tt> and <tt>F</tt>.
+Also, the values <tt>1</tt>, <tt>2</tt>, <tt>3</tt>, and <tt>4</tt>
+occurring in the <em>Class</em> attribute
+correspond to freshman, sophomore, junior, and senior, respectively.
+
+<p>
+The reader should keep in mind that the order in which we list the tuples
+occurring in a table is irrelevant.  That is, a table is viewed as being
+a <b>set</b> of tuples, not a <b>sequence</b> of tuples.
+
+<p>
+One of the central functions of a DBMS is to answer questions (about the
+data in the database) posed to it by users.
+(Indeed, there would be no reason to store the data in the first place
+if there were no desire to retrieve bits and pieces of it later for the
+purpose of answering such questions.)
+Such a question is referred to as a <b>query</b>.  For example,
+with respect to the table above, a user might ask <em>What are the names of
+the female students?</em>  Or, to state it in the form of a command:
+<em>List the names of the female students</em>.  More examples:
+<em>List the names of female freshmen</em>; <em>List the name and sex of 
+each senior</em>.  In the relational database model, the answers 
+to queries such as these are themselves tables
+(although such tables do not become a "permanent" part of the database).
+For example, the answer to the last query mentioned would be:
+<pre>
+             Name     Sex  
+         +----------+-----+
+         |  John    |  M  |              List the name and sex
+         +----------+-----+              of each senior.
+         |  Mary    |  F  | 
+         +----------+-----+
+         |  Helen   |  F  | 
+         +----------+-----+ </pre>
+
+<p>
+Notice that this table is obtained from the <em>Student</em> table by
+first eliminating all but those tuples corresponding to seniors
+(i.e., tuples whose <em>Class</em> attribute has value <tt>4</tt>)
+and then eliminating all but the <em>Name</em> and <em>Sex</em>
+attributes.  (You will see shortly that the elimination of tuples and
+attributes correspond to two of the fundamental operations used for
+answering queries.)
+
+<p>
+Because computers' abilities to "understand" natural language (such as English)
+is very limited (at least to this point in time), a user must, in specifying
+a query, employ a more precise and formal notation.
+Most relational DBMS's support the use of some variant of <b>SQL</b>
+(Standard Query Language) for specifying queries.
+Here we shall use a slightly lower-level language, <b>relational algebra</b>,
+for that purpose.  Conceptually, one can view the first phase of
+query processing &mdash;in which a DBMS translates an SQL query submitted
+to it into a program that produces the answer to that query&mdash;
+as having as its purpose to translate the SQL query into an
+equivalent relational algebra query.
+
+<p>
+We shall present two different forms of syntax for relational algebra (RA)
+queries.  One is the traditional syntax, which has a mathematical flavor.
+The other has a flavor more similar to programming languages, or even SQL.
+The latter we will refer to as sugared relational algebra (SRA).
+
+<p>
+Queries in relational algebra are based upon the use of three elementary
+operations on tables: <b>project</b>, <b>restrict</b>, and <b>join</b>.
+(The "restrict" operation is usually called "select", but here we use
+the terminology of C.J. Date (prolific author on the subject of the
+relational model), in part because the SELECT verb in SQL has an entirely
+different meaning.)
+<!--
+  (For our purposes, a special case of the join operation, called
+  <b>natural join</b>, suffices.)
+-->
+
+<p>
+Because the result of applying an operation is itself a table, we can
+compose operations in sequence.  The obvious analogy is with functions
+mapping reals to reals, where the function (f o g), read "f of g", is
+defined by (f o g)(x) = f(g(x)).
+Indeed, the operators in relational algebra <b>are</b> functions,
+with tables as both domain and range.
+
+<H3>The Project Operation</H3>
+
+<p>
+Applying <b>project</b> to a table yields a copy of that table, but 
+(possibly) with some of its attributes (i.e., columns) excluded.
+(Presumably, the excluded attributes are not of interest.)
+SRA's syntax for an application of the <b>project</b> operation
+is as follows:
+<p>
+<center><tt>PROJECT &lt;<em>list of attributes</em>&gt; FROM
+        &lt;<em>table</em>&gt;</tt>
+</center>
+In RA, this is written
+<p>
+<font size=+1>
+<center><tt>&Pi;<sub>&lt;<em>list of attributes</em>&gt;</sub>(&lt;<em>table</em>&gt;)</tt>
+</center>
+</font>
+
+<p>
+For example, the SRA expression
+
+<center><tt>PROJECT  Name, Class  FROM  Student</tt></center>
+<br />
+evaluates to the table obtained by making a copy of the <em>Student</em>
+table (shown above) and then removing all columns except those corresponding 
+to the attributes <em>Name</em> and <em>Class</em>.
+In RA, we would have written this as 
+<tt>&Pi;<sub>Name,Class</sub>(Student)</tt>. <br />
+
+The resulting table is
+<pre>
+                      Name   Class 
+                   +--------+-----+
+                   |  Mary  |  2  |
+                   +--------+-----+
+                   |  John  |  4  |            PROJECT Name, Class
+                   +--------+-----+            FROM Student
+                   |  Carol |  3  |
+                   +--------+-----+
+                   |  Mary  |  4  |
+                   +--------+-----+
+                   |  Ann   |  1  |
+                   +--------+-----+
+                   |  Mike  |  2  |
+                   +--------+-----+
+                   | Helen  |  4  |
+                   +--------+-----+
+                   |  Jim   |  1  |
+                   +--------+-----+ 
+                   |  Mike  |  3  |
+                   +--------+-----+ </pre>
+<p>
+The query <tt>PROJECT Name, Class FROM Student</tt>, then, 
+is nothing but a more formal way of stating the (English) query
+<p>
+<center><em>List the name and class of each student.</em></center>
+
+
+<H3>The Restrict Operation</H3>
+<p>
+(Note that Elmasri &amp; Navathe (and almost everyone else, with the exception
+of C.J. Date) calls this <em>select</em>, but we refrain from doing so
+because the meaning of that term in SQL is quite different.)
+Applying <b>restrict</b> to a table yields a copy of that table, but 
+(possibly) with some of its tuples (i.e., rows) excluded, namely those 
+tuples that fail to satisfy a specified condition.
+(Presumably, any tuple failing to satisfy the condition is not of interest
+to the user.) 
+In keeping with the syntactic style used for <b>project</b>, an application
+of the <b>restrict</b> operation will be written in SRA in the following
+way:<br><br>
+<center><tt>RESTRICT &lt;<em>table</em>&gt; WHERE 
+     &lt;<em>condition</em>&gt;</tt></center>
+
+In RA, we would write this as
+<font size=+1>
+<center><tt>&sigma;<sub><em>&lt;condition&gt;</em></sub>(<em>&lt;table&gt;</em>)
+</center></tt></font>
+
+<p>
+The condition is simply a boolean expression to be evaluated with respect
+to a tuple.  (Hence, any sensible condition will mention one or more
+attributes of the table.)
+For example, the expression<br /><br />
+
+<center><tt>RESTRICT Student  WHERE  Sex = 'M'</tt></center>
+<br />
+evaluates to the table that has the same attributes as <em>Student</em>
+and includes precisely those tuples of <em>Student</em> in which 
+the <em>Sex</em> attribute has value <tt>M</tt>.
+It looks like this:
+<pre>
+              ID     Name      Sex   Class
+           +------+----------+-----+-------+
+           |   6  |  John    |  M  |   4   |
+           +------+----------+-----+-------+
+           |  13  |  Mike    |  M  |   2   |       RESTRICT Student
+           +------+----------+-----+-------+       WHERE Sex = 'M'
+           |   5  |  Jim     |  M  |   1   |
+           +------+----------+-----+-------+
+           |  16  |  Mike    |  M  |   3   |
+           +------+----------+-----+-------+
+</pre>
+
+By using <b>boolean</b> (or <b>logical</b>, if you prefer)
+operators (such as <tt>AND</tt>, <tt>OR</tt>, and <tt>NOT</tt>)
+in the condition, we can express more complicated queries. 
+For example, if we wanted to form a table like <em>Student</em>,
+except listing only students who are either (a) sophomore and male or 
+(b) female, we could write<br /><br />
+
+<center><tt>RESTRICT Student  WHERE  (Sex = 'M' AND Class = 2)  OR 
+(Sex = 'F')</tt></center>
+
+<p>
+With only the <b>project</b> and <b>restrict</b> operations, we have
+the ability to describe many non-trivial queries.  For example, suppose
+that we wanted a list containing the name and sex of every senior.
+From the examples above, it should be clear that the expression
+<br>
+<center><tt>RESTRICT Student WHERE Class = 4</tt></center><br>
+refers to the table that looks like <em>Student</em> except that only
+the tuples corresponding to seniors are present.
+Once we have constructed that table, it remains only to
+project from it the <em>Name</em> and <em>Sex</em> attributes.
+The appropriate query, then, would be<br /><br />
+<center><tt>
+   PROJECT  Name, Sex  FROM  (RESTRICT Student WHERE  Class = 4)
+</tt></center>
+
+<p>
+In RA, this would be
+<font size=+1>
+<center><tt>
+   &Pi;<sub>Name,Sex</sub>(&sigma;<sub>Class=4</sub>(Student))
+</tt></center>
+</font>
+<p>
+This example illustrates that one query can be "nested" inside 
+another.
+<!--  This is consistent with the syntax
+   <tt>FROM &lt;<em>table</em>&gt;</tt> (such as occurs in applications
+   of both <b>project</b> and <b>restrict</b>), because the result of
+   "evaluating" a query is itself a table.
+-->
+Indeed, as the RA syntax suggests,
+nesting one query inside another is nothing more than function composition,
+as alluded to earlier.
+
+<p>
+As another example, suppose we wanted a list containing the name and sex
+of every student who is either a male sophomore or else a senior.  An
+appropriate SRA query is
+<pre>
+   PROJECT  Name, Sex 
+   FROM     (RESTRICT Student 
+             WHERE  (Sex = 'M' AND Class = 2)  OR  (Class = 4)
+            )
+</pre>
+
+The query is split over multiple lines simply because it is too long to
+fit on a single line.  In the more concise RA notation,
+this would be
+<p>
+<font size = +1>
+<center><tt>
+&Pi;<sub>Name,Sex</sub>(&sigma;<sub>(Sex='M' AND Class=2) OR (Class=4)</sub>(Student))</tt></center>
+</font>
+
+<p>
+As queries get more complicated, requiring the use of two, three, or more
+nested applications of <b>project</b> and/or <b>restrict</b>, 
+they become difficult to understand.
+Hence, we allow "temporary" tables to be given names.
+For example, the query above describing the list of names and sexes of
+students who are either male sophomores or seniors (of either sex)
+can be written as
+
+<pre>
+(1) Temp &larr; RESTRICT Student WHERE (Sex = 'M' AND Class = 2)  OR  (Class = 4)
+(2) Result &larr; PROJECT  Name, Sex  FROM  Temp
+</pre>
+
+Here, in line (1) we specify that the table obtained from doing the
+<b>restrict</b> is to be named (rather unimaginatively) <tt>Temp</tt>,
+and then we apply <b>project</b> to that table in line (2) in order
+to obtain the desired result, to which we give the name <tt>Result</tt>!
+   
+
+
+<H3>The Join Operation</H3>
+
+<p>
+In any but the most trivial relational databases there will be two,
+three, or possibly many more tables.  In such a setting, to answer
+most interesting queries will require the use of two or more tables.
+This is where the <b>join</b> operation becomes useful.
+
+<p>
+Suppose that, in addition to <em>Student</em> (as illustrated above), our
+database also includes a table whose purpose is to keep a record of
+which students are currently enrolled in which courses.
+(Such a table would arise from there being a many-to-many 
+relationship type involving student and course entities.)
+Let us call this the <em>Enrolled-In</em> table; for the purposes
+of doing examples, suppose that its current contents are as follows:
+
+<pre>
+    Enrolled-In   StuID   CourseID
+                 +-----+------------+
+                 |  2  |   CIL 102  |
+                 +-----+------------+
+                 |  2  |   MATH 2   |
+                 +-----+------------+
+                 |  1  |   HIST 7   |
+                 +-----+------------+
+                 |  7  |   MATH 2   |
+                 +-----+------------+
+                 |  1  |   ENGL 4   |
+                 +-----+------------+
+                 |  1  |   MATH 2   |
+                 +-----+------------+
+                 |  13 |   HIST 7   |
+                 +-----+------------+
+                 |  5  |   HIST 7   |
+                 +-----+------------+
+                 |  5  |   CIL 102  |
+                 +-----+------------+ </pre>
+
+<p>
+<b>Note justifying the addition of such a table:</b>
+  (<em>This can be skipped by the uninterested reader.</em>)
+  It is true that the information represented by the <em>Enrolled-In</em>
+  table could be embedded within the <em>Student</em> table, assuming that
+  we added an attribute for <em>CourseID</em> to that table.  However, 
+  to do so would result in the duplication of much data, because, for
+  each course a particular student was enrolled in, her <em>ID</em>, 
+  <em>Name</em>, <em>Sex</em>, and <em>Class</em> values would have to be
+  repeated.  For example, the fact that Mary was enrolled in both CIL&nbsp;102
+  and MATH&nbsp;2 would require that both of these rows/tuples appear in our 
+  expanded Student table:
+  <pre>
+              ID     Name      Sex   Class   Enrolled-In
+           +------+----------+-----+-------+-------------+
+           |   2  |  Mary    |  F  |   2   |   CIL 102   |
+           |   2  |  Mary    |  F  |   2   |   MATH 2    |
+           +------+----------+-----+-------+-------------+ </pre>
+
+  Duplication of data is undesirable for at least two reasons.  One is
+  that it takes more storage space than necessary.  Another is that it
+  makes the problem of maintaining "data integrity/consistency" much more
+  difficult.  Suppose, for example, that Mary moves on to Class 3.
+  Then it becomes necessary to modify <b>every</b> tuple 
+  storing data regarding Mary.  If, for some reason, some tuples are
+  modified but others are not, we have an inconsistency in the data.
+
+  <p>
+  To avoid the need to maintain multiple tuples representing Mary,
+  you might suggest that the <em>Enrolled-In</em> field be of
+  type <b>set of string</b>, rather than just <b>string</b>.
+  That way, the value <tt>{ "CIL 102", "MATH 2" }</tt> could be
+  assigned to the <em>Enrolled-In</em> field of the tuple representing
+  Mary, indicating that the two courses in which Mary is enrolled are
+  CIL&nbsp;102 and MATH&nbsp;2
+  <p>
+  This is a reasonable suggestion; however, for technical reasons it has 
+  traditionally been a rule of the relational model that all attributes
+  must be viewed as being atomic, meaning, for example, that if an attribute
+  has a value that is a set, its individual members cannot be 
+  extracted/identified by any operation of the relational model.
+  In the case of Mary's courses, this would not be acceptable, because it
+  would prevent us, for example, from using relational operations
+  <!--  (such as <b>join</b> described below) -->
+  that could help us answer a query such as
+  "List the names of all students enrolled in the course with ID
+  <tt>C/IL 102</tt>." 
+  <!--  (Here we're assuming that there is a table <em>Courses</em> in which
+        each tuple identifies a course by its ID and also gives its name.)
+  -->
+  <br /><b>End of note.</b>
+
+<p>
+Consider the following informal query:
+<p>
+<center><em>Report which students are enrolled in which courses.</em></center>
+
+<p>
+A somewhat more formal way of saying this is
+<blockquote>
+<em>Produce a list of all ordered pairs <em>(x,y)</em> 
+satisfying the condition that <em>x</em> is (the name of) a student 
+and <em>y</em> is (the course ID of) a course in which <em>x</em>
+is enrolled.</em></center>
+</blockquote>
+
+<p>
+The correct result would be a table containing the tuples in 
+<em>Enrolled-In</em>, except with each student ID replaced by the
+corresponding student's name.
+Clearly, such a table cannot be constructed from the <em>Student</em> and
+<em>Enrolled-In</em> tables using only the <b>project</b> and <b>restrict</b>
+operations.  (Indeed, neither of those operations allows us to construct a
+table whose tuples are formed by combining tuples from two (or more)
+different tables.  But that's exactly what we need here, because all
+information about student names is in the <em>Student</em> table whereas
+all information about course ID's is in the <em>Enrolled-In</em> table.)
+
+<p>
+Consider how you might go about constructing an answer to this query.
+Most likely, you would scan through the tuples of <em>Enrolled-In</em>;
+for each such tuple <tt>e</tt> you would note the value of
+<tt>e[StuID]</tt> (i.e., the value in its <em>StuID</em> field)
+and then scan through the tuples of <em>Student</em> in search of the
+tuple <tt>s</tt> satisfying <tt>s[ID] = e[StuID]</tt> (i.e., having a
+matching value in its <em>ID</em> field).
+Upon finding it, you would place into the table under construction
+the tuple <tt>&lt;s[Name],e[CourseID]&gt;</tt>.
+
+<p>
+The crucial concept here is that of combining a tuple in one table with 
+a <em>matching</em> tuple in another table.
+(In our example, what made one tuple match another was having the same
+value in their <em>ID</em> and <em>StuID</em> attributes, respectively.
+In a different query, the matching criterion would be different.)
+
+<p>
+This capability of combining matching tuples from two different tables
+is precisely what the <b>join</b> operation provides.  Specifically,
+the SRA expression<br><br>
+<center>JOIN &lt;<em>table</em>&gt; WITH &lt;<em>table</em>&gt; WHERE
+&lt;<em>join-condition</em>&gt; </center>
+
+<p>
+yields as its value the table obtained by combining every pair of tuples
+(from the two indicated tables) that satisfy the join condition.
+(Each atomic sub-expression within a join condition must compare an
+attribute in one table to an attribute in the other table.)
+
+<p>
+In RA, the join operator is a bowtie symbol, but HTML has no similar symbol.
+So we will use the &times; operator, and put the join condition as a
+subscript to its right.
+Hence, we will write a join in RA as
+<p>
+<font size=+1>
+<center><tt><em>&lt;table&gt;</em> &times;<sub><em>&lt;join-condition&gt;</em></sub> <em>&lt;table&gt;</em>
+</tt></center>
+</font>
+
+<!-- Here I've inserted stuff from Brookshear's book (6th edition, pages
+   412-413.  It interrupts the discussion, but it may be worth doing.
+-->
+<p>
+To illustrate this idea, consider these two tables:
+<pre>
+          Table A              Table B
+
+           V   W              X   Y   Z
+         +---+---+          +---+---+---+
+         | r | 2 |          | 5 | g | p |
+         | t | 4 |          | 4 | d | e |
+         | p | 6 |          | 2 | m | q |
+         +---+---+          | 4 | t | f |
+                            +---+---+---+ </pre>
+
+The result of the expression 
+&nbsp; <tt>JOIN A WITH B WHERE W = X</tt> &nbsp; (or, in the RA notation, 
+<font size=+1><tt>A &times;<sub>W=X</sub> B</tt></font>)
+is the table
+<pre>
+            V  W   X   Y   Z
+         +---+---+---+---+---+
+         | r | 2 | 2 | m | q |
+         | t | 4 | 4 | d | e |
+         | t | 4 | 4 | t | f |
+         +---+---+---+---+---+ </pre>
+
+<p>
+Here we combined a tuple t in A with a tuple u in B iff t[W] = u[X].
+This (i.e., comparing two attributes for equality) is the 
+most common kind of join condition.
+However, it's not the only kind.  Consider
+<center><tt>JOIN A WITH B WHERE W &lt; X</tt></center>
+<p>
+The resulting table consists of all those combinations of tuples t and u
+from A and B, respectively, in which t[W] &lt; u[X]:
+<pre>
+           V   W   X   Y   Z
+         +---+---+---+---+---+
+         | r | 2 | 5 | g | p |
+         | r | 2 | 4 | d | e |
+         | r | 2 | 4 | t | f |
+         | t | 4 | 5 | g | p |
+         +---+---+---+---+---+ </pre>
+
+<p>
+In case it is necessary to qualify an attribute by specifying in which
+table it is found (such as would be the case if the join condition
+involved an attribute name that occurred in both tables being joined),
+we can qualify it by its table name, as in
+&nbsp; <tt>JOIN A WITH B WHERE A.W = B.X</tt> &nbsp; (or, in the RA notation, 
+<font size=+1><tt>A &times;<sub>A.W=B.X</sub> B</tt></font>).
+<!-- End of Brookshear stuff -->
+
+<p>
+Returning to our problem of devising a query that asks for the names of
+students and the ID's of courses in which they are enrolled,
+our first step is to employ the <b>join</b> operation as follows:
+
+<pre>
+JOIN  Enrolled-In WITH Student  WHERE  StuID = ID
+</pre>
+
+<!-- 
+(In order to distinguish between the <tt>ID</tt> attribute of the
+<tt>Enrolled-In</tt> table and the same-named attribute of the
+<tt>Student</tt> table, we qualify them by including as a prefix
+the table name and a period.)
+-->
+The resulting table would be
+<pre>
+   StuID   CourseID     ID     Name      Sex   Class
+  +-----+------------+------+----------+-----+-------+
+  |  2  |   CIL 102  |   2  |  Mary    |  F  |   2   |
+  +-----+------------+------+----------+-----+-------+    
+  |  2  |   MATH 2   |   2  |  Mary    |  F  |   2   |
+  +-----+------------+------+----------+-----+-------+
+  |  1  |   HIST 7   |   1  |  Ann     |  F  |   1   |
+  +-----+------------+------+----------+-----+-------+
+  |  7  |   MATH 2   |   7  |  Mary    |  F  |   4   |
+  +-----+------------+------+----------+-----+-------+
+  |  1  |   ENGL 4   |   1  |  Ann     |  F  |   1   |
+  +-----+------------+------+----------+-----+-------+
+  |  1  |   MATH 2   |   1  |  Ann     |  F  |   1   |
+  +-----+------------+------+----------+-----+-------+
+  |  13 |   HIST 7   |  13  |  Mike    |  M  |   2   |
+  +-----+------------+------+----------+-----+-------+
+  |  5  |   HIST 7   |   5  |  Jim     |  M  |   1   |
+  +-----+------------+------+----------+-----+-------+
+  |  5  |   CIL 102  |   5  |  Jim     |  M  |   1   |
+  +-----+------------+------+----------+-----+-------+ </pre>
+
+Note that each tuple's first two columns come from a tuple in
+<em>Enrolled-In</em> and its last four columns come from a matching
+tuple in <em>Student</em>.
+
+<p>
+From the table immediately above (resulting from the application of
+<b>join</b>), we get the desired result simply by omitting every
+column except those corresponding to <em>Name</em> and <em>CourseID</em>.
+To do this, we apply <b>project</b>.  Hence, the SRA query that we want is
+
+<pre>
+PROJECT Name, CourseID 
+FROM (JOIN  Enrolled-In WITH Student
+      WHERE StuID = ID
+     ) </pre>
+<br />
+</pre>
+
+<!--
+
+<p>
+<b>Natural Join</b>:
+ Suppose that the <tt>ID</tt> attribute in the
+<tt>Student</tt> table had been named <tt>StuID</tt> instead,
+corresponding to the name of the attribute in <tt>Enrolled-In</tt>.
+Then, in both RA and SRA, we could have written the join operation
+specified above as
+<p><center><tt>Enrolled-In * Student</tt></center>
+
+<p>
+In general, if tables <tt>A</tt> and <tt>B</tt> have as commonly-named
+(and commonly-typed) attributes
+<tt>x<sub>1</sub></tt>, <tt>x<sub>2</sub></tt>, ..., 
+<tt>x<sub>n</sub></tt>, then <tt>A * B</tt> is a shorthand notation for 
+<p><center><tt>
+JOIN A WITH B WHERE 
+A.x<sub>1</sub> = B.x<sub>1</sub> AND
+A.x<sub>2</sub> = B.x<sub>2</sub> AND ... AND
+A.x<sub>n</sub> = B.x<sub>n</sub></tt></center>
+
+-->
+
+<H3>Natural Join and Resolving Naming Conflicts</H3>
+
+<p>
+Suppose that the <tt>ID</tt> attribute in the <tt>Student</tt> table
+had been named <tt>StuID</tt> instead, corresponding to the name of the
+attribute in <tt>Enrolled-In</tt>.  Then the join operation performed
+above would have been written (in SRA)
+<pre>JOIN  Enrolled-In WITH Student WHERE StuID = StuID</pre>
+<p>
+This raises a rather sticky issue: In the WHERE clause, one occurrence
+of <tt>StuID</tt> refers to the attribute in <tt>Enrolled-In</tt>
+whereas the other refers to the same-named attribute in <tt>Student</tt>.
+But how can we know that?  One answer is to require that, in any
+comparison of attributes in a join condition, the first (respectively,
+second) one mentioned must be from the first (resp., second) table mentioned
+(i.e., the one preceding (resp., following) <tt>WITH</tt>).
+(Since every join condition should be composed of such comparisions,
+possibly combined using boolean operators such as <tt>AND</tt> and <tt>OR</tt>)
+this rule makes sense.)
+
+<p>
+Another way to resolve the issue is to require that attribute names be
+qualified where necessary by prefixing them with the name of the table.
+Using that approach, our join operation would have been written like this:
+<pre>JOIN  Enrolled-In WITH Student 
+WHERE Enrolled-In.StuID = Student.StuID</pre>
+
+<p>
+This resolves the naming issue as it pertains to forming/interpreting this
+particular query, but it raises a new naming issue with respect to the table
+that results from evaluating the query: that table will have
+<b>two</b> different attributes named <tt>StuID</tt>.
+<p>
+Ah, but this is easily remedied by omitting one of those attributes!
+After all, in each tuple, the values in the two same-named attributes
+will be the same.  (The join condition guarantees this.)
+
+<p>
+Indeed, this situation arises so often in doing join operations that a
+special version of join has been defined, called the <b>natural join</b>,
+and the corresponding operator is the asterisk, <b>*</b>.  So the result
+of evaluating
+<p><center><tt>Enrolled-In * Student</tt></center></p>
+would be as pictured above, except that, in effect, the two
+attributes named <tt>StuID</tt> would be merged into a single attribute
+of that name.  (Well, the picture shows an attribute named <tt>ID</tt>,
+but in the context of the present discussion it has been renamed
+<tt>StuID</tt>.)
+
+<p>
+Does this completely resolve the issue of conflicting (or duplicate)
+attribute names?  No!
+
+<p>
+Suppose that we wanted to join <tt>Student</tt> with itself, with the
+join condition stipulating that two tuples should be combined in the
+case that their <tt>StuID</tt> values were different but their
+<tt>Name</tt> attributes were the same.  That is, we want to say
+something like
+<pre>JOIN Student WITH Student
+WHERE StuID != StuID  AND  Name = Name </pre>
+
+<p>
+Even if we ignore any potential ambiguities with respect to attribute
+names in the query, the problem is that the resulting table <b>must</b>
+have two attributes named <tt>StuID</tt> because, in each tuple, their
+values will be different!  (And hence we cannot simply merge the two
+columns into one.)
+
+<p>
+To resolve this, we introduce the notions of aliasing and
+(locally) renaming attributes.
+
+
+<p>
+<hr>
+More stuff to appear here soon.
+<hr>
+<!-- 
+Although it is not shown above, each
+attribute's fully qualified name includes the name of the table 
+from which it came, followed by a period, followed by its
+(unqualified) name.  Hence, the (fully qualified) names of the
+attributes in this table are <em>Enrolled-In.StuID</em>,
+<em>Enrolled-In.CourseId</em>, <em>Student.ID</em>, etc.
+We typically use the fully-qualified name of an attribute 
+only when necessary to distinguish it from other attributes.
+For example, here the two <em>ID</em> fields require qualification.
+<center><tt>JOIN A WITH B WHERE A.W = B.X</tt></center>
+
+<p>
+is the table
+<pre>
+          A.V A.W B.X B.Y B.Z
+         +---+---+---+---+---+
+         | r | 2 | 2 | m | q |
+         | t | 4 | 4 | d | e |
+         | r | 2 | 4 | d | e |
+         | r | 2 | 4 | t | f |
+         | t | 4 | 5 | g | p |
+         +---+---+---+---+---+
+</pre>
+
+
+Consider the following query:<br><br>
+<center><em>List all names possessed by two or more students.</em></center>
+<p>
+The natural way to answer this is to scan through the <em>Student</em>
+table and look for values that occur in the <em>Name</em> attribute more
+than once.  But how can this be expressed via the <b>project</b>,
+<b>restrict</b>, and <b>join</b> operations?  Well, suppose that you
+joined the <em>Student</em> table with itself, matching any pair of
+tuples corresponding to students having the same <em>Name</em> but 
+distinct <em>ID</em>'s.
+The result would be a table whose tuples are in one-to-one
+correspondence to the ordered pairs of (distinct) students 
+having the same name.  Using the example <em>Student</em> table
+from above, we get
+<pre>
+    ID      Name     Sex   Class     ID      Name     Sex   Class   
+ +------+----------+-----+-------+-------+----------+-----+-------+
+ |   2  |   Mary   |  F  |   2   |    7  |   Mary   |  F  |   4   |
+ +------+----------+-----+-------+-------+----------+-----+-------+
+ |   7  |   Mary   |  F  |   4   |    2  |   Mary   |  F  |   2   |
+ +------+----------+-----+-------+-------+----------+-----+-------+
+ |  13  |   Mike   |  M  |   2   |   16  |   Mike   |  M  |   3   |
+ +------+----------+-----+-------+-------+----------+-----+-------+
+ |  16  |   Mike   |  M  |   3   |   13  |   Mike   |  M  |   2   |
+ +------+----------+-----+-------+-------+----------+-----+-------+</pre>
+
+<p>
+And now the result is obtained simply by using PROJECT to get the
+Name attribute.
+
+<p>
+There is a small problem, however.  As a consequence of the fact that
+this table was produced by joining <em>Student</em> <b>with itself</b>,
+even the fully-qualified versions of the attribute names are insufficient
+for uniquely indentifying the attributes.  (We have <b>two</b> attributes
+named <em>Student.ID</em>, and similarly for attributes <em>Name</em>,
+<em>Sex</em>, and <em>Class</em>.)  Thus, any subsequent reference
+to any of the attributes of this table will be ambiguous, a situation
+that, in computing, we abhor!  For that matter, even writing the <b>join</b>
+query to produce this table is somewhat problematic, as it would be stated as
+<pre>
+JOIN Student WITH Student 
+   WHERE (Student.Name = Student.Name  AND  Student.ID != Student.ID)
+</pre>
+Taking the first conjunct of the <tt>WHERE</tt> clause, we intend that
+one instance of "<tt>Student.Name</tt>" refers to the <em>Name</em>
+attribute of <em>one</em> of the two tables being joined and the
+second instance refers to the corresponding attribute in the <em>other</em>
+table.  But how would the Pseudo-SQL interpreter "know" that?
+For example, what if the first conjunct had said 
+<tt>Student.Name&nbsp;=&nbsp;"Bart"</tt>?  Should that be interpreted
+differently from <tt>"Bart"&nbsp;=&nbsp;Student.Name</tt> because the
+operands of the (usually considered to be commutative) equality operator 
+have been reversed?
+
+<p>
+One way to disambiguate join-conditions is to stipulate
+that each atomic sub-expression therein be of the
+form <tt>A * B</tt>, where A (resp. B) refers either to a literal
+value (e.g., <tt>Bart</tt>, as above) or to an attribute from the
+first (resp. second) table, and <tt>*</tt> is a relational operator
+(e.g., <tt>=</tt>, <tt>!=</tt>, <tt>&lt;</tt>, <tt>&gt;</tt>) by
+which they are to be compared.  For that matter, it would even be
+appropriate to prohibit literal values in join-conditions, because
+any such condition is more appropriately used in an application of
+<b>restrict</b>.  That is, every atomic sub-expression of a join-condition
+ought to be for the purpose of comparing the value of an attribute
+coming from some tuple in the first table to the value of an attribute
+coming from some tuple in the second table.
+
+
+<p>
+To avoid these issues, we require that, when a table is joined with
+itself, we use a renaming convention, as illustrated by the query
+<pre>
+JOIN Student AS Stu1 WITH Student AS Stu2
+   WHERE (Stu1.Name = Stu2.Name  AND  Stu1.ID != Stu2.ID)
+</pre>
+The first <tt>AS</tt> clause indicates that, within the context of this
+query, <tt>Stu1</tt> will be used as an alias (i.e., an alternative name)
+for the <em>Student</em> table.  The second <tt>AS</tt> clause
+indicates that <tt>Stu2</tt> will be used as an alias for <em>Student</em>,
+too.  The resulting table would be as shown above, with the fully-qualified
+names of the attributes being <em>Stu1.ID</em>, <em>Stu1.Name</em>,
+<em>Stu1.Sex</em>, <em>Stu1.Class</em>, <em>Stu2.ID</em>, 
+<em>Stu2.Name</em>, etc.
+
+<p>
+Note that, although we introduced aliases for both instances of
+<em>Student</em>, one would have sufficed.
+
+<p>
+To obtain the list of names possessed by two or more students,
+it suffices to <b>project</b> on either of the attributes 
+<em>Stu1.Name</em> or <em>Stu2.Name</em>.
+Hence, the solution can be written as 
+
+<pre>
+(1) Temp &larr; JOIN Student AS Stu1 WITH Student AS Stu2
+                WHERE (Stu1.Name = Stu2.Name  AND  Stu1.ID != Stu2.ID)
+(2) PROJECT Stu1.Name FROM Temp
+</pre>
+or, nesting the application of join within that of project, as
+<pre>
+PROJECT Stu1.Name
+   FROM (JOIN Student AS Stu1 WITH Student AS Stu2
+            WHERE (Stu1.Name = Stu2.Name  AND  Stu1.ID != Stu2.ID)
+        ) </pre>
+
+<p>
+Another renaming feature that is sometimes useful allows you to rename
+the attributes of a (temporary) relation.  For example, the query
+<pre>
+Temp(Stu-ID, Stu-Name) &larr; PROJECT ID, Name FROM Student
+</pre>
+results in a (temporary) table named <em>Temp</em> obtained by
+<b>projecting</b> the <em>ID</em> and <em>Name</em> attributes
+from the <em>Student</em> table and then renaming those attributes
+<em>Stu-ID</em> and <em>Stu-Name</em>, respectively.  (The new
+names are simply listed in parentheses after the name of the
+temporary table.)
+
+<p>
+Using attribute renaming in this way, the list of names possessed by
+two or more students can be produced via the query
+<pre>
+(1) Temp(Stu-ID, Stu-Name) &larr; PROJECT ID, Name FROM Student
+(2) PROJECT Name FROM 
+       (JOIN Temp WITH Student
+           WHERE Temp.Stu-Name = Student.Name  AND Temp.Stu-ID != Student.ID
+       )
+</pre>
+without using the <tt>AS</tt> clause.
+
+-->
+
+<H3>Set-theoretic Operations</H3>
+In addition to the <b>project</b>, <b>restrict</b>, and <b>join</b>
+operations, it is often convenient employ the set-theoretic
+operations of <b>union</b>, <b>intersection</b>, and <b>difference</b>.
+Each of these operations applies to two relations, which, in order to
+make sense, must be structurally alike.  That is, the two relations
+must have the same number of attributes and corresponding attributes
+must be of the same domain.
+(<b>Note:</b> A relational model purist (such as C.J. Date) would
+probably argue that, to apply a set-theoretic operation to two tables,
+they must have precisely the same collection of attributes (in terms of
+not only domains but also names).
+Under this restriction, using the attribute-renaming features discussed
+above would often be necessary before applying a union,
+intersection, or difference operator.  <b>End of note.</b>)
+<p>
+Returning to the problem of finding students who are either female or
+else both male and in the sophomore class, we could have written the
+solution as follows:
+<pre>
+Females    &larr; RESTRICT Student WHERE Sex = 'F'
+Males      &larr; RESTRICT Student WHERE Sex = 'M'
+Sophomores &larr; RESTRICT Student WHERE Class = 2
+Result     &larr; Females &cup; (Males &cap; Sophomores) 
+</pre>
+
+<!--where we have used "+" for union and "*" for intersection. -->
+
+<p>
+For another example, suppose that we wanted to produce the list of
+students who are <em>not</em> enrolled in <tt>CIL&nbsp;102</tt>.
+Your first inclination might be to produce a table containing the ID's 
+of students enrolled in a course other than <tt>CIL&nbsp;102</tt> and 
+then to join that with <em>Student</em> in order to obtain the
+corresponding names:
+<pre>
+(1) Non_CIL102 &larr; PROJECT StuID FROM (RESTRICT EnrolledIn WHERE CourseID &ne; 'CIL 102')
+(2) Result     &larr; PROJECT Name 
+                 FROM (JOIN Student WITH Non_CIL102 WHERE Student.ID = Non_CIL102.StuID)
+</pre>
+
+But this is incorrect, as it will yield the name of every student who
+is enrolled in some course other than <tt>CIL&nbsp;102</tt>.  In particular,
+students not enrolled in any courses will be (incorrectly) omitted and
+students enrolled in <tt>CIL&nbsp;102</tt> as well as at least 
+one other course will be (incorrectly) included.
+
+<p>
+A correct approach would be to produce a table containing the ID's of 
+all students and another table containing the ID's of students enrolled
+in <tt>CIL&nbsp;102</tt>, and then to take the difference of the two,
+which will be a table including precisely the ID's of students 
+not enrolled in <tt>CIL&nbsp;102</tt>.  This idea leads to the query
+<pre>
+(1) All_ID         &larr; PROJECT ID FROM Student
+(2) CIL102_ID      &larr; PROJECT StuID AS ID FROM (RESTRICT EnrolledIn WHERE CourseID = 'CIL 102')
+(3) Non_CIL102     &larr; All_ID - CIL102_ID
+(4) Result         &larr; PROJECT Name 
+                     FROM (JOIN Student WITH Non_CIL102 WHERE Student.ID = Non_CIL102.ID)
+</pre>
+<p>
+Notice that in step (2) we projected on the <em>StuID</em> attribute but
+we specified (via the clause <em>AS ID</em>) that that attribute should
+be named <em>ID</em> in the resulting table.
+Having done that, we are free in step (3) to take the difference of the
+two specified tables because their attribute names (and domains, of course)
+coincide.
+
+</p><p>
+In order to avoid the JOIN at the end (which was simply for the purpose of
+recovering the names associated to the ID's in the Non_CIL102 table,
+we could have included the names in the intermediate results:
+<pre>
+(1) All_ID         &larr; PROJECT ID, Name FROM Student
+(2) CIL102_ID      &larr; PROJECT StuID AS ID, Name FROM (RESTRICT EnrolledIn WHERE CourseID = 'CIL 102')
+(3) Non_CIL102     &larr; All_ID - CIL102_ID
+(4) Result         &larr; PROJECT Name FROM Non_CIL102
+</pre>
+
+<H3>Aggregate Operations</H3>
+Even with all the capabilities provided by the operations discussed
+above, there are still some fundamental types of queries that cannot
+be answered.  Suppose, for example, that you simply wanted to know the
+number of students in freshman class (i.e., class 1).  
+You can use <b>restrict</b> to obtain all tuples from the <em>Student</em>
+relation having value 1 in the <em>Class</em> attribute.
+But that's <em>more</em> information than you want!
+You simply want to know <em>how many</em> such students there are!
+Or suppose that you wanted to compute the average of the values in the
+<em>Class</em> attribute?
+(A more likely scenario would be that you had a <em>Salary</em>,
+or <em>Number_of_Dependents</em>, attribute in some relation, and you
+wanted to compute an average.)
+To answer queries of the form <em>How many ...?</em> or
+<em>What is the average of ...?</em> and other similar queries that 
+call for some kind of statistical summary of data, RA includes what
+are called <b>aggregate</b> functions.
+These include 
+<tt>COUNT</tt>, <tt>SUM</tt>, <tt>AVG</tt>, <tt>MIN</tt>, and
+<tt>MAX</tt>.  (Elmasri &amp; Navathe spell out the whole word
+in the case of the last three, but we'll be content with using 
+these abbreviations.)
+
+</p><p>
+As an example, suppose that our <em>Student</em> table included
+the attribute <em>SAT_Score</em> and that we wanted to find the
+average, minimum, and maximum values in that column.
+In SRA, we would write this query as
+<pre>
+AGGREGATE AVG(SAT_Score), MIN(SAT_Score), MAX(SAT_Score)
+FROM Student
+</pre>
+The result will be a one-tuple table.  Deriving its attribute names
+from the functions applied and the attributes to which they were applied,
+the table might look like this:
+<pre>
+   AVG_SAT_Score   MIN_SAT_Score  MAX_SAT_Score
+  +--------------+---------------+-------------+
+  |   1040.75    |     913       |    1430     |
+  +--------------+---------------+-------------+
+</pre>
+
+If we wanted this data only for seniors, say, we would have nested
+an application of RESTRICT in the FROM clause, as follows:
+<pre>
+AGGREGATE AVG(SAT_Score), MIN(SAT_Score), MAX(SAT_Score)
+FROM (RESTRICT Student WHERE Class = 4)
+</pre>
+
+</p><p>
+Suppose that we want to know how many female seniors have SAT scores
+above 1100, and the average SAT score among those students.  We could
+write this query like this:
+<pre>
+AGGREGATE COUNT(*), AVG(SAT_Score)
+FROM (RESTRICT Student
+      WHERE Sex = 'F' AND SAT_Score > 1100)
+</pre>
+
+</p><p>
+The result might look something like this:
+<pre>
+    COUNT*   AVG_SAT_Score
+  +--------+---------------+
+  |    57  |    1240.75    |
+  +--------+---------------+
+</pre>
+</p><p>
+When, as above, an asterisk is specified as the argument of <tt>COUNT</tt>,
+it means that the resulting value should be a count of all the tuples in
+the "target" table (i.e., the table to which the operation is being applied).
+Had we used, say, <tt>COUNT(SAT_Score)</tt> instead,
+the resulting value would be the number of <b>distinct</b> values
+in the <em>SAT_Score</em> column (of the target table, which, in our
+example, includes only tuples corresponding to female seniors).
+If the target table has a key attribute, say <em>K</em>,
+then <tt>COUNT(*)</tt> and <tt>COUNT(K)</tt> are equivalent.
+
+</p><p>
+Suppose that we wanted to know how many male students there were,
+and the average of their SAT scores, and similarly for females.
+From the examples above, it should be obvious that we could devise
+two separate queries to ascertain this information, one for males and
+another for females.  It would be nice if we could do it all with a
+single query.  And indeed we can, because we can use a <b>grouping</b>
+feature to partition the tuples of the target table into separate groups
+(according to the values in one or more attributes), in which case the
+aggregate functions are applied to each group of tuples separately.
+
+<p>
+For example, the SRA query
+<pre>
+AGGREGATE Sex, COUNT(*), AVG(SAT_Score)
+FROM Student
+GROUP BY Sex
+</pre>
+would produce a table such as the following:
+<pre>
+  Sex   COUNT*   AVG_SAT_Score
++-----+--------+---------------+
+| 'F' |  145   |    1040.5     |
+| 'M' |  137   |    1038.2     |
++-----+--------+---------------+
+</pre>
+
+</p><p>
+What the first tuple of this table says (literally) is that the
+<em>Student</em> table has 145 tuples having value 'F' in the Sex column,
+and the average of the <em>SAT_Score</em> values in these tuples is 1040.5.
+The second tuple's interpretation is analogous, of course.
+
+</p><p>
+Had we omitted the mention of the <em>Sex</em> attribute in the
+first line of the query, we would have obtained the same table, except
+without the <em>Sex</em> attribute.  Hence, we would have been able to
+conclude that there were 145 students of one sex and 137 of the other
+(each having the reported SAT score averages), but we wouldn't
+know which was which.  For this reason, we usually include the
+grouping attribute(s) in the result.  On the other hand, it would not
+make sense to mention a non-grouping attribute on the first line
+of an <tt>AGGREGATE</tt> query, except as the argument of one of the
+aggregate functions.
+For example, the following query makes no sense, because there is no
+way to supply a meaningful value for <tt>Name</tt> in each tuple of
+the result.
+<pre>
+AGGREGATE Name, Sex, COUNT(*), AVG(SAT_Score)
+FROM Student
+GROUP BY Sex
+</pre>
+
+</p><p>
+As suggested by the phrase "grouping attribute(s)" above, there can
+be more than one grouping attribute.  Thus, for example, if we wanted
+to group students by sex and class, we could have said
+<pre>
+AGGREGATE Sex, Class, COUNT(*), AVG(SAT_Score)
+FROM Student
+GROUP BY Sex, Class
+</pre>
+The result would then have looked like this:
+<pre>
+  Sex   Class   COUNT*   AVG_SAT_Score
++-----+-------+--------+---------------+
+| 'F' |   1   |   37   |    1023.5     |
+| 'F' |   2   |   40   |    1054.1     |
+| 'F' |   3   |   29   |    1033.7     |
+| 'F' |   4   |   35   |    1019.5     |
+| 'M' |   1   |   40   |    1044.7     |
+|  .  |   .   |    .   |      .        |
+|  .  |   .   |    .   |      .        |
++-----+-------+--------+---------------+
+</pre>
+
+</p><p>
+As for the RA notation for aggregates, here are what the (valid)
+queries above (which were given in SRA notation) would look like
+in RA notation:
+
+<font size=+1>
+<p><tt>
+&image;<sub>AVG(SAT_Score), MIN(SAT_Score), MAX(SAT_Score)</sub>(Student)
+</tt></font>
+
+<font size=+1>
+<p><tt>
+&image;<sub>AVG(SAT_Score), MIN(SAT_Score), MAX(SAT_Score)</sub>
+(&sigma;<sub>Class=4</sub>(Student))
+</tt></font>
+
+<font size=+1>
+<p><tt>
+&image;<sub>COUNT(*), AVG(SAT_Score)</sub>
+(&sigma;<sub>Sex = 'F' AND SAT_Score > 1100</sub>(Student))
+</tt></font>
+
+<font size=+1>
+<p><tt>
+<sub>Sex</sub>&image;<sub>Sex, COUNT(*), AVG(SAT_Score)</sub>(Student)
+</tt>
+</font>
+
+<font size=+1>
+<p><tt>
+<sub>Sex,Class</sub>&image;<sub>Sex, Class, COUNT(*), AVG(SAT_Score)</sub>(Student)
+</tt>
+</font>
+
+
+<h3>Exercises</h3>
+For each of the following English-language queries, devise an
+"equivalent" query in either or both of the RA or SRA notations.
+A few of the queries assume that <tt>Teaches</tt> is a third table
+in the database, with attributes <tt>Course_ID</tt> and <tt>Faculty_ID</tt>,
+with each tuple having the meaning that the specified course is taught
+by the specified faculty member.
+<p>
+<b>1.</b> List the sex and class of every student named "Chris".<br />
+<b>2.</b> List the course IDs of all courses in which a student
+named "Chris" is enrolled.<br />
+<b>3.</b> List the names of all students enrolled in the course
+CIL&nbsp;102.<br />
+<b>4.</b> List the ID's of students enrolled in a course taught by
+a faculty member whose ID is "Sarek".  <br />
+<b>5.</b> List the name and class of any student enrolled in a course
+taught by a faculty member whose ID is "Sarek". <br />
+<b>6.</b> List the names of all students enrolled in a course
+in which a student named "Chris" is enrolled.<br />
+<b>7.</b> List the ID's of all courses in which there are enrolled
+students from different classes.  (In our example, CIL&nbsp;102 would
+be such a course, because both Mary (class 2) and Jim (class 1) are
+enrolled in it.) <br />
+<b>8.</b> List the number of students enrolled in the course CIL&nbsp;102.
+<br />
+<b>9.</b> For each student, list her/his name and the number of courses
+in which (s)he is enrolled. <br />
+<b>10.</b> For each course, list its ID and the number of students enrolled
+in it.  <br />
+<b>11.</b> For each course, list its ID, the ID of the faculty member
+teaching it, and the number of students enrolled in it.  <br />
+<b>12.</b> For each course taught by Knuth, list its ID together with the
+number of students who are enrolled in it.<br />
+<b>13.</b> Find the average # of students enrolled in each course.<br />
+<b>14.</b> For each faculty member, find the average # of students 
+enrolled in the courses (s)he is teaching.
+
+
+</body>
+</html>

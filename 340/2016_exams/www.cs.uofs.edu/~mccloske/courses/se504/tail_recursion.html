@@ -1,0 +1,602 @@
+<html>
+<head>
+  <title>Developing an Iterative Program to Compute a Tail Recursive Function
+  </title>
+</head>
+<h2>
+SE 504<br>
+Developing an Iterative Program to Compute a Tail Recursive Function
+</h2>
+
+A <b>tail recursive</b> function is one for which there exists a
+definition of the following form:
+
+</p><p>
+<center>
+<font size="+1">
+<table border="0" cellpadding="1">
+<tr>
+  <td rowspan="2"><tt>H.x &nbsp;=&nbsp;</tt><font size="+4">{</font></td>
+  <td><tt>f.x</tt></td>
+  <td><tt>if b.x</tt></td>
+</tr>
+<tr>
+  <td><tt> H.(g.x)</tt></td>
+  <td><tt>otherwise (i.e., &not;b.x)</tt></td>
+</tr>
+</table>
+</font>
+</center>
+
+<!--
+<font size="+1">
+<pre>
+H.x = { f.x      if b.x
+      { H.(g.x)  otherwise (i.e., &not;b.x)
+</pre>
+</font>
+-->
+
+</p><p>
+where b, f, and g are functions that can be defined without reference to H.
+For some types S and T, the signatures of these functions are
+</p><p>
+<center><tt>
+        H : S &rarr; T,   b : S &rarr; bool,  f : S &rarr; T, and 
+        g : S &rarr; S<br />
+</tt></center>
+
+</p><p>
+Note that either or both of the types S and T may themselves be cartesian
+products of types (e.g., S = S<sub>1</sub> &times; S<sub>2</sub>)
+so that the definition of tail recursive function
+should be understood to apply not only to functions of one argument
+but also to multi-argument functions.
+If, for example, we had S = S<sub>1</sub> &times; S<sub>2</sub>
+and we preferred to view H &mdash;as well as f, b, and g&mdash; as being
+two-argument functions, we could write the definition of H as follows:
+
+<center>
+<font size="+1">
+<table border="0" cellpadding="1">
+<tr>
+  <td rowspan="2"><tt>H.x<sub>1</sub>.x<sub>2</sub> =&nbsp;</tt>
+     <font size="+4">{</font>
+  </td>
+  <td><tt>f.x<sub>1</sub>.x<sub>2</sub></tt></td>
+  <td><tt>if b.x<sub>1</sub>.x<sub>2</sub></tt></td>
+</tr>
+<tr>
+  <td><tt>H.(g<sub>1</sub>.x<sub>1</sub>.x<sub>2</sub>).(g<sub>2</sub>.x<sub>1</sub>.x<sub>2</sub>)</tt> 
+  </td>
+  <td><tt>otherwise (i.e., &not;b.x<sub>1</sub>.x<sub>2</sub>)</tt></td>
+</tr>
+</table>
+</font>
+</center>
+
+</p><p>
+(Here we have that <tt>g<sub>1</sub></tt> and <tt>g<sub>2</sub></tt> 
+are such that <tt>g.x<sub>1</sub>.x<sub>2</sub> = (g<sub>1</sub>.x<sub>1</sub>.x<sub>2</sub>, g<sub>2</sub>.x<sub>1</sub>.x<sub>2</sub></tt>).)
+
+</p><p>
+The generalization of this to
+S = S<sub>1</sub> &times; S<sub>2</sub> &times; ... &times; S<sub>k</sub> 
+(k &gt; 2) should be obvious.
+
+</p><p>
+What makes these definitions "tail" recursive is that, in the recursive case,
+the result is simply an application of the function being defined (with no
+other operators having to be applied thereafter).  Thus, when evaluating
+the function at a given value, the recursive "call" is the very last thing
+you do (i.e., the tail).  Compare this to, say, the standard (non-tail)
+recursive definition of the factorial function:
+
+<font size="+1">
+<pre>Fact.n = { 1               if n=0
+         { n &times; Fact.(n-1)  otherwise (i.e., n>0) </pre>
+</font>
+
+</p><p>
+In evaluating Fact.k (for any k&gt;0), we would (recursively) evaluate
+Fact.(k-1) <b>and then</b> multiply the result by k.
+
+</p><p>
+Exploring the function H described above, we find that
+
+<font size="+1">
+<pre>
+H.x = H.(g.x)           (assuming &not;b.x)
+    = H.(g.(g.x))       (assuming &not;b.(g.x))
+    = H.(g.(g.(g.x)))   (assuming &not;b.(g.(g.x)))
+    = ...               ...
+    = H.(g<sup>[k]</sup>.x)         (assuming &not;b.(g<sup>[i]</sup>.x) for all i satisfying 0&le;i&lt;k)
+    = f.(g<sup>[k]</sup>.x)         (assuming b.(g<sup>[k]</sup>.x))
+</pre>
+</font>
+where by <tt>g<sup>[k]</sup>.x</tt> we mean <tt>g.(g.(....(g.x)....))</tt>, 
+where <tt>g</tt> occurs <tt>k</tt> times.
+(Formally, we define <tt>g<sup>[0]</sup>.x = x</tt> and, for <tt>j&ge;0</tt>,
+<tt>g<sup>[j+1]</sup>.x = g(g<sup>[j]</sup>.x)</tt>.)
+In other words, assuming that there exists some <tt>i&ge;0</tt> for which
+<tt>b.(g<sup>[i]</sup>.x)</tt> holds, we find that 
+
+<font size="+1">
+</p><p><center><tt>H.x = f.(g<sup>[K]</sup>.x)</tt><br></center>
+</font>
+</p><p>
+where <tt>K</tt> is the minimum such <tt>i</tt>.  That is,
+ <tt>K = (min i | 0&le;i &and; b.(g<sup>[i]</sup>.x) : i)</tt>.
+
+</p><p>
+This suggests the following iterative program for establishing y = H.X.
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<font size="+1">
+<pre><code>|[con X : S;
+  con K : int;  { K = (MIN i | 0&le;i &and; b.(g<sup>[i]</sup>.X) : i) }
+  var x : S;
+  var k : int;
+  var y : T;
+  x,k := X,0;
+  { loop invariant I : x = g<sup>[k]</sup>.X  &and;  0&le;k&le;K }
+  { bound function t : K - k }
+  do k &ne; K &rarr;  x,k := g.x, k+1
+  od
+  { assertion: x = g<sup>[k]</sup>.X  &and;  k=K; hence, H.X = f.x }
+  y := f.x;
+  { y = H.X }
+]| </code></pre>
+</font>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+The code above suffers from the fact that it relies upon "knowing"
+(magically, apparently) the value of <tt>K</tt>.  From the loop invariant
+(and our definition of <tt>K</tt>) it follows that the loop guard is
+equivalent to <tt>&not;b.x</tt>.  By using this as our guard,
+we remove the program's dependence upon <tt>K</tt>.
+
+</p><p>
+Further observation of the code reveals that, except insofar as the
+loop invariant refers to it, the variable <tt>k</tt> is useless.
+It is worth investigating, then, whether we can restate the invariant
+so as not to mention <tt>k</tt>.  It turns out that, indeed, we can,
+by observing that, as <tt>x</tt> assumes the values 
+</p><p><center><tt> 
+X, g.X, g<sup>[2]</sup>.X, g<sup>[3]</sup>.X, ...</tt></center>
+
+</p><p>
+on successive iterations of the loop, the property <tt>H.x = H.X</tt> 
+is preserved.  Hence, we can state the loop invariant as 
+<tt>I : H.x = H.X</tt> and we can omit the variable <tt>k</tt> from the
+program altogether.
+Let us prove that this <tt>I</tt> is, indeed, a loop invariant.  To
+do so, it suffices to prove that the truth of <tt>I</tt> is established by the
+initialization code and that its truth is preserved by an arbitrary iteration
+of the loop.  (These correspond to proof obligations (i) and (ii) in the loop
+checklist.)  That <tt>I</tt> is established by the initialization is obvious
+(a proof of <tt>{true} x:=X {H.x = H.X}</tt> is left to the reader);
+that <tt>I</tt> is preserved by each loop iteration is proved by showing the
+Hoare triple
+
+</p><p><center><tt>{I &and; &not;b.x} x := g.x {I}</tt></center>
+</p><p>
+which is equivalent to 
+
+</p><p><center><tt>[I &and; &not;b.x ==&gt; wp.(x := g.x).I]</tt></center>
+</p><p>
+Here is the proof:
+
+<pre>
+ Assume I (i.e., H.x = H.X) and &not;b.x
+
+    wp.(x := g.x).I
+
+ =    < wp assignment law >
+
+    I(x := g.x)
+
+ =    < defn of I >
+
+    (H.x = H.X)(x := g.x)
+    
+ =    < textual sub >
+
+    H.(g.x) = H.X
+
+ =    < assumption &not;b.x; by defn. of H, &not;b.x implies H.x = H.(g.x) >
+
+    H.x = H.X
+
+ =    < assumption >
+
+    true
+</pre>
+
+</p><p>
+Unfortunately, the bound function still refers not only to <tt>k</tt>
+but also to <tt>K</tt>.  Although it is not as elegant as the original,
+the bound function can be described as
+</p><p><center><tt>
+t : (MIN i | 0<=i &and; b.(g<sup>[i]</sup>.x) : i)</tt>
+</center>
+
+</p><p>
+In other words, <tt>t</tt> is the number of (additional) times that 
+<tt>g</tt> must be applied to <tt>x</tt> in order for the result to 
+satisfy <tt>b</tt>.
+Of course, whether or not such a number exists depends upon 
+<tt>g</tt>, <tt>b</tt>, and <tt>x</tt>.  In the typical case,
+<tt>x</tt> will be an integer, <tt>b</tt> will be true when <tt>x</tt>
+is sufficiently close to zero, and <tt>g.x</tt> will be a number
+closer to zero than is <tt>x</tt>.
+
+</p><p>
+The final version of the program is as follows:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<font size="+1">
+<pre><code>|[con X : S;
+  var x : S;
+  var y : T;
+  x := X;
+  { loop invariant I : H.x = H.X }
+  { bound function t : (MIN i | 0<=i &and; b.(g<sup>[i]</sup>.x) : i) }
+  do &not;b.x &rarr;  x := g.x
+  od;
+  { assertion: H.x = H.X &nbsp;&and;&nbsp; b.x ; hence, H.X = f.x }  
+  y := f.x;
+  { y = H.X }
+]| </code></pre></font>
+</td></tr>
+</table>
+</center>
+
+<p>
+As a concrete example of a tail recursive function definition, we offer this:
+<font size="+1">
+<pre>H.n = { n        if 0&le;n&le;1
+      { H.(n-2)  otherwise (i.e., n>1) </pre>
+</font>
+
+<p>
+It should not take you long to recognize that this function, when applied
+to a natural number <em>n</em>, yields zero if <em>n</em> is even and
+one if <em>n</em> is odd.
+
+<p>
+In general, however, "natural" examples of tail recursive function
+definitions are not often encountered.
+<!--
+We offer here no concrete examples of tail recursive functions for the simple
+reason that "natural" examples are hard to come by!
+-->
+
+</p><p>
+<hr>
+<H3>Pseudo-tail recursive functions:</H3>
+
+Few "natural" recursive function definitions (i.e., ones that someone is
+likely to devise via intuition in formally defining a function) are tail
+recursive.  However, some non-tail recursive function definitions can be
+transformed to obtain a tail recursive definition of a function having
+one extra argument and in terms of which the original function can be defined
+directly.  In particular, such a transformation can be applied to any
+definition having the following "pseudo tail recursive" form:
+
+<font size="+1">
+<pre>
+G.x = { f.x            if b.x
+      { h.x &oplus; G.(g.x)  otherwise (i.e., &not;b.x)
+</pre> </font>
+
+where <tt>&oplus; : T &times; T &rarr; T</tt> is an associative operator
+having an identity element <tt>e</tt> and where <tt>b</tt>, <tt>f</tt>, 
+and <tt>g</tt> are functions as described before.
+
+<p>
+<b>Note:</b> 
+The right-hand side of the recursive case in the definition of <tt>G</tt> could
+have been <tt>G.(g.x) &oplus; h.x</tt> (even if <tt>&oplus;</tt> were not 
+commutative/symmetric). 
+This would simply mean that, in what follows, the two operands in
+every subexpression of the form <tt>a &oplus; b</tt> should be swapped.
+<b>End of note</b>.
+
+</p><p>
+Examples of pseudo-tail recursive function definitions:
+
+</p><p>
+<b>Example 1:</b> the classic factorial function
+<pre>
+  Fact.n = { 1               if n=0
+           { n &times; Fact.(n-1)  otherwise (i.e., n>0)
+</pre>
+
+</p><p>
+<b>Example 2:</b> a function that calculates the sum of the digits in
+  the decimal (base ten) numeral describing a number.
+  (In 462, for instance, the sum of the digits is 4+6+2 = 12.)
+
+<pre>
+  digit_sum.n = { 0                              if n=0
+                { (n mod 10) + digit_sum.(n/10)  otherwise
+</pre>
+
+</p><p>
+<b>Example 3:</b> a function that reports whether or not a specified
+value (x) occurs among the values in the prefix of a specified length
+(n) of a specified array (b).  That is, it answers the question,
+Does x occur in b[0..n)?
+<pre>
+  occurs_in.x.b.n = { false                                if n=0
+                    { (b.(n-1) = x) &or; occurs_in.x.b.(n-1)  otherwise
+</pre>
+
+</p><p>
+We now show that, for any function that can be defined via a pseudo-tail
+recursive definition, there exists a "more general" function that can be
+defined via tail recursion.
+
+</p><p>
+Let G be the function defined via the pseudo-tail recursive definition 
+template above.  Define H as follows:
+
+</p><p><center><tt>H.x.y = y &oplus; G.x</tt></center>
+
+</p><p>
+Notice that H has one "extra" argument, y.  One might call this
+the "accumulating argument" in that (something close to) the result
+of the function application "accumulates" in it as we go deeper and
+deeper into the recursive applications of the function.
+This will become evident when we do a concrete example.
+
+</p><p>
+Consider the two cases <tt>b.x</tt> and <tt>&not;b.x</tt>:
+
+<center>
+<table border="1" cellpadding="4">
+<tr>
+<td>
+<pre>Case b.x:
+
+    H.x.y 
+
+ =    < defn of H >
+
+    y &oplus; G.x
+
+ =    < defn of G; assumption b.x > 
+
+    y &oplus; f.x
+</pre>
+</td>
+<td>
+<pre>Case &not;b.x:
+
+    H.x.y 
+
+ =    < defn of H >
+
+    y &oplus; G.x
+
+ =    < defn of G; assumption &not;b.x > 
+
+    y &oplus; (h.x &oplus; G.(g.x))
+
+ =    < associativity of &oplus; >
+
+    (y &oplus; h.x) &oplus; G.(g.x)
+
+ =    < defn of H, with x,y := g.x, y &oplus; h.x >
+
+    H.(g.x).(y &oplus; h.x)
+</pre>
+</td>
+</tr>
+</table>
+</center>
+</p><p>
+What this establishes is that we may characterize H as follows:
+
+<font size="+1">
+<pre>
+H.x.y = { y &oplus; f.x            if b.x
+        { H.(g.x).(y &oplus; h.x)  otherwise (i.e., &not;b.x)
+</pre>
+</font>
+
+</p><p>
+But this has the format of a (two-argument) tail recursive function definition.
+Hence, H is tail recursive!
+
+</p><p>
+Taken together with the fact that <tt>G.x = e &oplus; G.x = H.x.e</tt>
+(recall that <tt>e</tt> denotes the identity element of <tt>&oplus;</tt>),
+we have that <tt>G</tt> is directly definable in terms of a tail recursive
+function.
+
+<h4>A Concrete Example</h4>
+</p><p>
+Let us carry out this transformation on a concrete example.
+Take the function <tt>digit_sum</tt> defined above:
+
+<pre>
+  digit_sum.n = { 0                              if n=0
+                { (n mod 10) + digit_sum.(n/10)  otherwise
+</pre>
+
+</p><p>
+In accord with the procedure suggested above, we define
+
+</p><p><center><tt>digit_sum'.n.m = m + digit_sum.n</tt></center>
+
+</p><p>
+from which we derive (in a manner analogous to our analysis of H above) that
+
+<pre>
+  digit_sum'.n.m = { m + 0                               if n=0
+                   { digit_sum'.(n/10).(m + (n mod 10))  otherwise
+</pre>
+(Of course, we can omit the "<tt>+ 0</tt>" in the base case.)
+
+</p><p>
+Using this characterization of <tt>digit_sum'</tt> together with the
+fact that <tt>digit_sum.n = digit_sum'.n.0</tt>, we carry through a
+particular application of <tt>digit_sum</tt>:
+
+<pre>
+  digit_sum.462
+
+=    < digit_sum.n = digit_sum'.n.0 for all n >
+ 
+  digit_sum'.462.0
+
+=    < defn of digit_sum', recursive case >
+
+  digit_sum'.46.(0+2)
+
+=    < defn of digit_sum', recursive case >
+
+  digit_sum'.4.(0+2+6)
+
+=    < defn of digit_sum', recursive case >
+
+  digit_sum'.0.(0+2+6+4)
+
+=    < defn of digit_sum', base case >
+
+  0+2+6+4
+
+=    < arithmetic >
+
+  12
+</pre>
+
+</p><p>
+This illustrates the idea that the "extra" argument that was introduced
+in transforming pseudo-tail recursive <tt>digit_sum</tt> into
+(fully-)tail recursive <tt>digit_sum'</tt> serves to accumulate the result.
+
+</p></p>
+<b>End of Concrete Example</b>
+
+</p><p>
+Let's now return to our generic function G (having a pseudo-tail recursive
+definition) and the function H (with the (fully) tail recursive definition)
+satisfying G.x = H.x.e, for all x in G's domain (and where e is the identity
+of <tt>&oplus;</tt>).
+Suppose that we wish to develop a program that, given input <tt>X</tt>,
+establishes <tt>z = G.X</tt>.
+Then, because <tt>G.X = H.X.e</tt>, it suffices to construct a
+program that establishes the equivalent <tt>z = H.X.e</tt>.
+Such a program would be as follows:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<font size="+1">
+<pre><code>|[con X : S;
+  var x : S;
+  var y,z : T;
+  x,y := X,e;
+  { loop invariant I : H.x.y = H.X.e (equivalently, y &oplus; G.x = G.X) }
+  do &not;b.x &rarr;  x,y := g.x, y &oplus; h.x;
+  od
+  { assertion: (H.x.y = H.X.e) &and; b.x; hence H.X.e = y &oplus; f.x }  
+  { equivalently: (y &oplus; G.x = G.X) &and; b.x; hence y &oplus; f.x = G.X }
+  z := y &oplus; f.x;
+  { z = H.X.e; hence, z = G.X }
+]| </code></pre></font>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Returning to our concrete example pertaining to the functions
+<tt>digit_sum</tt> and <tt>digit_sum'</tt>, the above translates
+into this program:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre><code>|[con N : nat;
+  var n : nat;
+  var m : nat;
+  var z : nat;
+  n,m := N,0;
+  { loop invariant I : digit_sum'.n.m = digit_sum'.N.0 }
+  { equivalently: m + digit_sum.n = digit_sum.N }
+  do n &ne; 0 &rarr;  n,m := n/10, m + (n mod 10);
+  od
+  { assertion: digit_sum'.n.m = digit_sum'.N.0  &and;  n=0;
+    hence, digit_sum'.N.0 = m + 0 (= m) }  
+  { equivalently: m + digit_sum.n = digit_sum.N &and; n=0; hence, m+0 = digit_sum.N }  
+  z := m + 0;  // obviously, the "+ 0" can be omitted
+  { z = digit_sum'.N.0 }; 
+  { equivalently: z = digit_sum.N }
+]|  
+</code></pre>
+</td></tr>
+</table>
+</center>
+
+<H3>Tail-recursive function definitions with more than two cases</H3>
+
+Suppose that we have the following function definition:
+
+<pre>
+H.x = { f<sub>0</sub>.x      if b<sub>0</sub>.x
+      { f<sub>1</sub>.x      if b<sub>1</sub>.x
+      { H.(g<sub>0</sub>.x)  if c<sub>0</sub>.x
+      { H.(g<sub>1</sub>.x)  if c<sub>1</sub>.x
+</pre>
+where <tt>[b<sub>0</sub>.x &or; b<sub>1</sub>.x &or; c<sub>0</sub>.x &or;
+c<sub>1</sub>.x]</tt> (i.e., for every <tt>x</tt>, at least one of
+<tt>b<sub>0</sub></tt>, <tt>b<sub>1</sub></tt>, <tt>c<sub>0</sub></tt>, 
+or <tt>c<sub>1</sub></tt> holds).
+ 
+<p>
+This particular example has exactly two base cases and two recursive
+cases, but it can be easily generalized to any number of each.  Strictly
+speaking, this does not qualify as a tail recursive definition.  However,
+it can be shown that such a definition can be transformed into an equivalent
+one that <em>is</em> tail recursive.
+(Exactly how this is accomplished is beyond the scope of this document.)
+What is important to us is how to transform a function definition such as
+this into a program that computes the defined function.  Well, here it is:
+
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<font size="+1">
+<pre><code>|[con X : S;
+  var x : S;
+  var y : T;
+  x := X;
+  { loop invariant I : H.x = H.X }
+  do c<sub>0</sub>.x  &rarr;  x := g<sub>0</sub>.x
+  [] c<sub>1</sub>.x  &rarr;  x := g<sub>1</sub>.x
+  od
+  { assertion: H.x = H.X  &and;  (b<sub>0</sub>.x &or; b<sub>1</sub>.x) }
+  if b<sub>0</sub>.x  &rarr;  {H.x = H.X  &and;  b<sub>0</sub>.x}  y := f<sub>0</sub>.x  {y = H.X}
+  [] b<sub>1</sub>.x  &rarr;  {H.x = H.X  &and;  b<sub>1</sub>.x}  y := f<sub>1</sub>.x  {y = H.X}
+  fi
+  { y = H.X }
+]|  </code></pre></font>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+<font size=-2>Copyright Robert McCloskey 2004-2016</font>
+</body>
+</html>

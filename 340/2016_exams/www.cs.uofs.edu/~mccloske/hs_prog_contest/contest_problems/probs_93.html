@@ -1,0 +1,400 @@
+
+
+<HTML>
+<HEAD>
+<TITLE>1993 U of S High School Programming Contest Problems</TITLE>
+</HEAD>
+<BODY>
+<H2>University of Scranton 1993 High School Programming Contest Problems</H2>
+
+<p>
+<A HREF="#Wrap_Around_Numbers">Problem 1: Wrap Around Numbers</A><br />
+<A HREF="#Oh_only_have_ohs_for_a">Problem 2: Oh only have Oh's for a</A><br />
+<A HREF="#Back_in_the_Saddle_Again">Problem 3: Back in the Saddle Again</A><br />
+<A HREF="#Tens_Complements">Problem 4: Ten's Complements</A><br />
+<A HREF="#Cash_Register">Problem 5: Cash Register</A><br />
+<A HREF="#Right_Triangles">Problem 6: Right Triangles</A><br />
+
+
+<p> &nbsp;
+<p>
+<A NAME="Wrap_Around_Numbers">
+<hr>
+<b>Problem 1: Wrap Around Numbers</b></A>
+
+<p>
+Let's define a trip through a number to be constructed as follows:
+Visit the leftmost digit of the number.  That digit tells you which
+digit to visit next: move to the right, wrapping around to the left
+end of the number if necessary, as many places as the value of the
+digit.  Continue this process until some digit is visited for a second
+time.  If all digits have been visited, the number qualifies as a
+<b>wrap around number</b>.  Otherwise, it does not.
+
+<p>
+For example, consider the number 32741.  We visit the leftmost digit,
+which tells us to next visit the digit <b>three</b> places to the right,
+which is the 4.  Next we visit the 7 (which is <b>four</b> places to
+the right of the 4), then the 1, then the 3 again.  The trip has
+returned to a digit for the second time without having visited all
+the digits.  (The 2 was never visited.)  Thus, 32741 is <em>not</em>
+a wrap around number.  On the other hand, 3233 <em>is</em> a wrap around
+number, as we would first visit the leftmost 3, then the rightmost 3,
+then the middle 3, then the 2, and then return to the rightmost 3.
+All four digits are visited.
+
+<p>
+Write a program that accepts as input a positive integer having at most
+twelve digits and that reports whether or not it is a wrap around number.
+The program should repeat until the user enters zero as input.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter input: <u>872</u><br />
+872 IS a wrap around number.<br />
+<br />
+Enter input: <u>351267853</u><br />
+351267853 IS NOT a wrap around number.<br />
+<br />
+
+Enter input: <u>0</u>
+</tt>
+
+
+<p> &nbsp;
+<p>
+<A NAME="#Oh_only_have_ohs_for_a">
+<hr>
+<b>Problem 2: Oh only have Oh's for a</b></A>
+
+<p>
+The term <em>plaintext</em> refers to a message in "ordinary" form.
+The term <em>ciphertext</em> refers to an encoded form of some plaintext.
+The process of translating plaintext to ciphertext is called
+<em>encoding</em> and the inverse process is called <em>decoding</em>.
+
+<p>
+Develop a program that, given as input a string of characters
+(serving as plaintext), outputs its ciphertext, according to the following
+encoding scheme:
+<ul>
+  <li>Each vowel in plaintext is translated into the vowel following it
+      in the sequence <b>A</b>, <b>E</b>, <b>I</b>, <b>O</b>,
+      <b>U</b>, <b>A</b>.
+  </li>
+  <li>Any character that is not a vowel is translated into itself.</li>
+</ul>
+
+<p>You may assume that the plaintext given as input contains no lower case
+letters and has length no greater than 40.  The program should repeat
+until the user enters plaintext of length zero.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter plaintext: <u>YOUR CAT IS AN IDIOT.</u><br />
+Ciphertext: <u>YUAR CET OS EN ODOUT.</u><br />
+<br />
+Enter plaintext: <u></u><br />
+</tt>
+
+<p>&nbsp;
+<p>
+<A NAME="Back_in_the_Saddle_Again">
+<hr>
+<b>Problem 3: Back in the Saddle Again</b></A>
+
+<p>
+Let <b>A</b> be an <em>m</em>&nbsp;&times;&nbsp;<em>n</em> integer array.
+(This means that <b>A</b> is a (two-dimensional) table having
+<em>m</em> rows and <em>n</em> columns each element of which is an integer.)
+
+A <em>saddle point</em> of <b>A</b> is an element that is 
+<ul>
+  <li>larger than any other in its row and smaller than
+      any other in its column (called a <b>type 1</b> saddle point), or
+  </li>
+  <li>smaller than any other in its row and larger than any
+      other in its column (called a <b>type 2</b> saddle point). 
+  </li>
+</ul>
+
+<p>
+It is not difficult to prove that, in any two-dimensional integer
+array, there can be at most one saddle point of each of the two types.
+
+<p>
+Develop a program that, given as input a two-dimensional integer array,
+reports (in the format shown below) which of its elements are saddle points.
+The program should repeat until the user indicates that the array to be
+processed has zero rows.  No array given as input will exceed 20 rows or
+20 columns.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter number of rows: <u>4</u><br />
+Enter number of columns: <u>3</u><br />
+Row 1: <u>2 -3 -8</u><br />
+Row 2: <u>0 -7 -4</u><br />
+Row 3: <u>3 6 1</u><br />
+Row 4: <u>7 5 -2</u><br />
+<br />
+Type 1 saddle point: row 2 column 1<br />
+Type 2 saddle point: row 3 column 3<br />
+<br />
+Enter number of rows: <u>3</u><br />
+Enter number of columns: <u>5</u><br />
+Row 1: <u>1 0 3 2 6</u><br />
+Row 2: <u>7 2 6 9 6</u><br />
+Row 3: <u>2 -4 -8 4 3</u><br />
+<br />
+Type 1 saddle point: none<br />
+Type 2 saddle point: row 2 column 2<br />
+<br />
+Enter number of rows: <u>2</u><br />
+Enter number of columns: <u>2</u><br />
+Row 1: <u>0 6</u><br />
+Row 2: <u>7 2</u><br />
+<br />
+Type 1 saddle point: none<br />
+Type 2 saddle point: none<br />
+<br />
+Enter number of rows: <u>0</u>
+</tt>
+
+
+<p>&nbsp;
+<p>
+<A NAME="Tens_Complements">
+<hr>
+<b>Problem 4: Ten's Complements</b></A>
+
+<p>
+The <em>ten's complement</em> of a nonnegative integer <em>n</em> is 
+the integer formed by subtracting each digit of <em>n</em> from 9
+and then adding one to the result.  For example, the ten's complement
+of 35 is 64&nbsp;+&nbsp;1, or 65.
+
+<p>
+Note that the ten's complement of 27 is 73 but that the ten's complement
+of 0027 is 9973.  Thus, the ten's complement of a number depends upon
+how many leading zeros we include in expressing it.
+(For this reason it is more accurate to say that each representation
+of a number has a ten's complement than to say that each number has a
+ten's complement.)
+
+<p>
+Develop a program that, given as input a nonnegative integer having
+no more than 20 digits, outputs its ten's complement.
+The program should repeat until the user enters 000 as input.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter number: <u>83078</u><br />
+Ten's complement: 16922<br />
+<br />
+Enter number: <u>0083078</u><br />
+Ten's complement: 9916922<br />
+<br />
+Enter number: <u>300</u><br />
+Ten's complement: 700<br />
+<br />
+Enter number: <u>000</u><br />
+Ten's complement: 1000
+</tt>
+
+<p>&nbsp;
+<p>
+<A NAME="Cash_Register">
+<hr>
+<b>Problem 5: Cash Register</b></A>
+
+<p>
+Write a program that "makes change" from a cash register for a
+series of purchases.  In order to keep the problem relatively
+simple, you are to assume that the cash register has an unlimited
+supply of one dollar bills.  (In particular, this means that the
+amount of change, in coins, returned to a customer should never
+exceed 99 cents.)
+
+<p>
+The program should begin by reading a set of inputs that indicates
+how many quarters, dimes, nickels, and pennies can be found,
+initially, in the cash register.
+That will be followed by a series of cash register transactions,
+each of which occurs as a result of a customer purchase.
+Each transaction consists of two steps:
+first, the customer pays (i.e., tenders cash) for the purchase, and,
+second, the customer is given correct change.
+
+The first step of each transaction is described by six inputs:
+<ol>
+  <li>purchase price, in dollars
+      (real number with at most two digits after decimal point),</li>
+  <li>amount tendered, in dollars
+      (real number with at most two digits after decimal point),</li>
+  <li>number of quarters tendered (nonnegative integer)</li>
+  <li>number of dimes tendered (nonnegative integer)</li>
+  <li>number of nickels tendered (nonnegative integer)</li>
+  <li>number of pennies tendered (nonnegative integer)</li>
+</ol>
+The number of quarters, dimes, etc., tendered by the customer is
+important, because your program must keep track of how many of each
+kind of coin are available in the cash register for making change.
+
+<p>
+The second step of each transaction is reported, as output, by your
+program.  Specifically, the program should display the total amount of 
+change to be returned to the customer, followed by the number of 
+quarters, dimes, nickels, and pennies used in making that change. 
+The number of coins used in making change should be the minimum possible.
+This depends not only upon the amount of change, but also upon how many
+of each kind of coin are currently available in the cash register.
+For example, if 56 cents are to be returned, the preferred solution is
+to use two quarters, one nickel, and one penny (a total of four coins).
+However, if the register has only one quarter, then that quarter, 
+plus 31 cents in available dimes, nickels, and pennies would be used to 
+make change.  (This would require at least five coins.)
+If it is not possible to make exact change with the coins available in 
+the cash register, the transaction is voided (meaning that the coins
+tendered by the customer are given back) and a relevant message is 
+displayed.  (See example below.)
+
+<p>
+You may assume that the inputs describing a transaction are "valid".  
+For example, the amount tendered cannot be less than the purchase
+price.  Also, the number of quarters, etc., tendered must be consistent
+with the amount tendered.  For example, if the amount tendered is 13.72,
+then the values of the coins tendered must add up to some number of dollars 
+(no more than 13) and 72 cents.
+
+<p>
+A number of observations about the sample program execution below may
+be helpful.  Notice that, in the first transaction, the customer tendered
+over a dollar in coins.  This is acceptable.  Notice that the second
+transaction was voided because the cash register had too few pennies to
+make four cents change.  (There were initially five pennies in the
+register, but two were removed in making change for the first purchase,
+leaving only three.)
+Notice that, in the third transaction, one dime and two nickels were used
+in making change, rather than two dimes.  This is due to the fact that
+there was only one dime remaining in the register after the second 
+transaction.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Initial Number of Quarters: <u>6</u><br />
+Initial Number of Dimes: <u>3</u><br />
+Initial Number of Nickels: <u>12</u><br />
+Initial Number of Pennies: <u>5</u><br />
+<br />
+Purchase Price: <u>16.27</u><br />
+Amount Tendered: <u>21.50</u><br />
+Quarters Tendered: <u>6</u><br />
+Dimes Tendered: <u>0</u><br />
+Nickels Tendered: <u>0</u><br />
+Pennies Tendered: <u>0</u><br />
+<br />
+Change Due: 5.23<br />
+Quarters returned: 0<br />
+Dimes returned: 2<br />
+Nickels returned: 0<br />
+Pennies returned: 3<br />
+<br />
+Purchase Price: <u>0.51</u><br />
+Amount Tendered: <u>0.55</u><br />
+Quarters Tendered: <u>2</u><br />
+Dimes Tendered: <u>0</u><br />
+Nickels Tendered: <u>1</u><br />
+Pennies Tendered: <u>0</u><br />
+<br />
+Change Due: 0.04<br />
+TRANSACTION VOIDED:  CANNOT MAKE EXACT CHANGE<br />
+<br />
+Purchase Price: <u>3.30</u><br />
+Amount Tendered: <u>5.00</u><br />
+Quarters Tendered: <u>0</u><br />
+Dimes Tendered: <u>0</u><br />
+Nickels Tendered: <u>0</u><br />
+Pennies Tendered: <u>0</u><br />
+<br />
+Change Due: 1.70<br />
+Quarters returned: 2<br />
+Dimes returned: 1<br />
+Nickels returned: 2<br />
+Pennies returned: 0<br />
+<br />
+Purchase Price: <u>0.00</u>
+</tt>
+
+
+<p>&nbsp;
+<p>
+<A NAME="Right_Triangles">
+<hr>
+<b>Problem 6: Right Triangles</b></A>
+
+<p>
+Write a program that, given as input three distinct points on the 
+cartesian plane
+---(<em>x<sub>1</sub></em>,&nbsp;<em>y<sub>1</sub></em>),
+(<em>x<sub>2</sub></em>,&nbsp;<em>y<sub>2</sub></em>), and
+(<em>x<sub>3</sub></em>,&nbsp;<em>y<sub>3</sub></em>)---
+reports whether the triangle they form is a right triangle.
+
+<p>
+The program should repeat until the user's input is such that the
+three points are not all distinct.
+
+<p>
+Recall that a triangle is a right triangle if and only if the square
+of the length of its longest side is equal to the sum of the squares
+of the lengths of its other two sides.
+
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter x1: <u>5.5</u><br />
+Enter y1: <u>3.0</u><br />
+Enter x2: <u>1.5</u><br />
+Enter y2: <u>3.0</u><br />
+Enter x3: <u>5.5</u><br />
+Enter y3: <u>6.0</u><br />
+RIGHT TRIANGLE<br />
+<br />
+Enter x1: <u>-1.0</u><br />
+Enter y1: <u>3.0</u><br />
+Enter x2: <u>4.5</u><br />
+Enter y2: <u>3.0</u><br />
+Enter x3: <u>7.0</u><br />
+Enter y3: <u>-3.7</u><br />
+NOT RIGHT TRIANGLE<br />
+<br />
+Enter x1: <u>0.0</u><br />
+Enter y1: <u>0.0</u><br />
+Enter x2: <u>4.5</u><br />
+Enter y2: <u>3.0</u><br />
+Enter x3: <u>0.0</u><br />
+Enter y3: <u>0.0</u>
+</tt>
+
+</body>
+</html>
+

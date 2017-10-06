@@ -1,0 +1,1173 @@
+<html>
+<head><title>Organizing Records in Files</title>
+</head>
+<body>
+
+<H2>
+CMPS 340 &nbsp; (formerly) File Processing<br />
+Organizing Records in Files
+</H2>
+
+<!-- <h4>Under Construction (perpetually)</h4>  -->
+</p><p>
+At one level of abstraction, a file is simply a stored sequence of bytes,
+a view that is directly supported in some programming languages.
+The programs (and users) that access a file typically view it from a
+somewhat higher level of abstraction, however.  A file containing text,
+such as source code or an e-mail message, is often viewed as a sequence
+of lines, each of which is a sequence of characters.
+A file used for storing business-oriented data or part of a database is
+typically viewed as being composed of <b>records</b>, each of which is
+composed of <b>fields</b>.
+A record describes an entity (e.g., an employee, a business transaction,
+a kind of product sold by a retail store, a section of an academic course),
+while a field describes one attribute of such an entity (e.g., an employee's
+SSN, the amount of money exchanged in a transaction, the number
+of units of a product in stock, the name of a course).
+</p><p>
+<!--
+  Notion that a file is, at a low level of abstraction, nothing but a
+  sequence of bytes, but at a higher level of abstraction, it is a
+  sequence of records, each of which is a sequence of fields, each of
+  which is a "meaningful" unit of data.  (An arbitrary segment of a
+  record is not a field.)  Note that not all files fit this neat
+  description, but many do.  Text files containing e-mails, e.g.,
+  are nothing but a sequence of characters.  One might view each
+  character as forming a record.
+-->
+</p><p> 
+In order to read data from a file and to interpret it correctly, there
+must be some way to find the boundaries between adjacent records and
+to find, within each record, the boundaries between adjacent fields.
+(To keep things simple, for the moment we assume that all records in
+the file have the same basic structure in the sense that they all have
+the same collection of fields occurring in the same order.)
+<!--We also assume that each record is stored in a contiguous chunk of
+storage space.) -->
+How can this be accomplished?
+
+</p><p>
+To illustrate the problem, suppose that we have a file in which each
+record describes a person, including his/her name and address.
+Further suppose that two (physically) adjacent records describe 
+John Ames and Mary Johnson, as follows:
+
+<center>
+<table border="0" cellpadding="0">
+<tr><td>
+<pre><em>Name:</em>                        |    <em>Name:</em>
+  <em>First_Name:</em>  John          |      <em>First_Name:</em>  Mary
+  <em>Last_Name:</em>   Ames          |      <em>Last_Name:</em>   Johnson
+<em>Address:</em>                     |    <em>Address:</em>
+  <em>Street_Addr:</em> 234 Elm St.   |      <em>Street_Addr:</em> RD #4
+  <em>City:</em>        Stillwater    |      <em>City:</em>        Moscow
+  <em>State:</em>       OK            |      <em>State:</em>       PA
+  <em>Zip_Code:</em>    74051         |      <em>Zip_Code:</em>    18444</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Now consider precisely that segment of the file in which these records
+are stored.
+If the records are stored in consecutive bytes, as are the fields within
+each record (and all data is assumed to be encoded as character strings),
+this portion of the file will be as follows:
+<center>
+<tt>
++-------------------------------------------------------------------+<br />
+| JohnAmes234 Elm St.StillwaterOK74051MaryJohnsonRD #4MoscowPA18444 |<br />
++-------------------------------------------------------------------+<br />
+</tt>
+<b>Figure 1</b>
+</center>
+</p><p>
+This clearly presents a problem for a programmer attempting to write
+software to interpret this data, because there is no way to determine where
+one record ends and another begins.  Nor is there any way to tell,
+within a record, where one field ends and another begins.
+
+<H2>Laying out Fields within Records</H2>
+</p><p>
+First let's consider how to address this problem with respect to fields,
+and for the moment assume that, somehow, we can isolate records from
+one another.
+</p><p>
+<b>Fixed-length Fields:</b>
+One way to enable a program to distinguish one field from another is to
+fix the length of each field.
+That is, for each field appearing in the records of the file
+(e.g., <em>First_Name</em>, <em>Last_Name</em>, <em>Street_Addr</em>),
+we format the file so that, in all of its records, the number of bytes
+used for storing the value of that field is the same.
+</p><p>
+COBOL (as well as a number of other languages) supports this approach
+directly with its data declaration mechanism, in which each field's length
+is explicitly specified.
+If we choose the lengths of the six atomic fields in our example to be 
+12, 15, 16, 13, 2, and 5, respectively, the records would be laid out
+as follows:
+<center>
+<table border="0" cellpadding="0">
+<tr><td>
+<pre><em>
+               1         2         3         4         5         6
+      123456789012345678901234567890123456789012345678901234567890123</em>
+     +---------------------------------------------------------------+
+     |John        Ames           234 Elm St.     Stillwater   OK74051|
+     +---------------------------------------------------------------+ </pre>
+<pre><em>
+               1         2         3         4         5         6
+      123456789012345678901234567890123456789012345678901234567890123</em>
+     +---------------------------------------------------------------+
+     |Mary        Johnson        RD #4           Moscow       PA18444|
+     +---------------------------------------------------------------+ </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+The bytes following the one that stores the last meaningful character in
+a field are typically filled with spaces or null characters, although 
+these are not the only possibilities.  We refer to this as <b>padding</b>.
+Clearly, with this approach, it is easy to find the beginning (and end)
+of each field within a record, assuming that we can find the beginning
+of the record itself.
+
+</p><p>
+On the negative side, this approach tends to result in storage space being
+wasted, at least in those fields containing values that vary widely in
+terms of how much space is "needed" to encode them.  For example, some
+last names are much longer than others.  Hence, we decided to allocate
+fifteen bytes to the <em>Last_Name</em> field, even though most values
+we would expect to occupy that field can be stored in several fewer bytes.
+If we were to allocate fewer bytes to that field, we would save space, 
+but only at the possible cost of having to truncate (or otherwise
+abbreviate) the values occupying that field in some of the file's
+records.  Whether or not a truncated value is acceptable in a particular
+field depends upon the application, of course.
+
+</p><p>
+Notice that, in our sample records, approximately half of the 126 bytes
+allocated for storing the two records are occupied by spaces serving
+as padding between fields.
+
+</p><p>
+<b>An aside:</b> 
+Consider the possibility that, rather than encoding all
+the fields as character strings, we choose a different encoding scheme
+for the <tt><em>State</em></tt> and <tt><em>Zip_Code</em></tt> fields.
+There are 50 states, and 2<sup>6</sup> = 64 &gt; 50, which means that we
+could assign to each state a unique 6-bit code, rather than using two bytes
+(16 bits) to encode state values.  As for zip codes, they are five-digit
+decimal numerals, meaning that they can be encoded using 17 bits, as
+2<sup>17</sup> &ge; 10<sup>5</sup>, rather than using 40 bits (5 bytes).
+<b>End of aside.</b>
+
+<p>
+<b>Variable-length Fields:</b>
+To save space, as well as to avoid the occasional need for truncating
+field values, we would prefer to allocate to each field precisely as
+much space as is needed to store its value, no more and no less.
+Figure 1 suggests that it may not be possible to achieve this without
+sacrificing the ability to find the boundaries between fields, however.  
+Luckily, it turns out that, if we are willing to use a little extra space
+for each field, we need not make this sacrifice after all.
+Two approaches are as follows:
+
+    <ul>
+      <li><b>Using delimiters:</b>
+        Place a delimiter character (or string, if necessary) between
+        each pair of adjacent fields.
+        Using dollar signs as delimiters in our <tt>John Ames</tt>
+        record, we get
+        <p>
+        <center><tt> 
+       +----------------------------------------+ <br />
+       |John$Ames$234 Elm St.$Stillwater$OK74051|<br />
+       <!-- |Mary$Johnson$RD #4$Moscow$PA18432|<br />  -->
+       +----------------------------------------+
+        </center></tt>
+        <p>
+        Notice that we did not place a delimiter between the <em>State</em>
+        and <em>Zip_Code</em> fields.  This illustrates that, when a field
+        is naturally fixed in length, we can safely omit a trailing delimiter,
+        assuming that any software that interprets the record "knows" the
+        appropriate field length.
+ 
+        <p>
+        The main problem with using delimiters (or <b>separators</b>,
+        as they are sometimes called) is that if the character (or,
+        more generally, the byte value or byte sequence) that we chose
+        to use as the delimiter occurs in a record, we must take special
+        measures to ensure that such an occurrence will not be misinterpreted
+        as being a delimiter.  This is usually accomplished by employing the
+        idea of an <b>escape sequence</b>.  By convention, the backslash
+        character (<b>\</b>) is used to signal an escape sequence, which
+        means that the character following it is to be treated in an
+        out-of-the-ordinary way.
+   
+        <p>
+        For example, suppose that our delimiter is the <b>$</b> symbol.
+        Then to encode an occurrence of that symbol within a record, we
+        use the escape sequence <b>\$</b>.  In other words, <b>\</b>
+        followed by <b>$</b> encodes the occurrence of the latter
+        within a record, whereas <b>$</b> not preceded by <b>\</b>
+        encodes a delimiter.  But wait!  Suppose that a record included
+        an occurrence of <b>\$</b>!  To encode it as <b>\$</b> would be
+        wrong, because that would be interpreted as being simply an
+        occurrence of <b>$</b> in the record!  Hence, we need to introduce
+        the escape sequence <b>\\</b> as well, in order to encode an
+        occurrence of <b>\</b> in a record.  That is, any occurrence of
+        <b>\</b> in a record is encoded by <b>\\</b> and any occurrence of
+        <b>$</b> in a record is encoded by <b>\$</b>.  Then an occurrence
+        of <b>\$</b> would be encoded by <b>\\\$</b>.  Under this scenario,
+        every occurrence of <b>\</b> (in our encoding of any record) must be
+        followed either by another <b>\</b> or by <b>$</b>.
+      </li>
+      <li><b>Using field length indicators:</b>
+          Store, within each record, the lengths of its (variable-length)
+          fields.  The lengths can be recorded at the beginning of the
+          record or each one immediately before its corresponding field.
+          Following the former approach (and using underlines to emphasize
+          field length indicators), our John Ames record would be stored as
+          <p><tt><center>
+           +---------------------------------------------+<br />
+           |<u>4</u> <u>4</u> <u>11</u> <u>10</u>JohnAmes234 Elm St.StillwaterOK74051|<br />
+          <!-- 4 7 5 6</b>MaryJohnsonRD #4MoscowPA18432<br /> -->
+           +---------------------------------------------+ 
+          </center></tt>
+          <p>
+          Note that the spaces between length indicators are there only
+          for the reader's benefit; they are not really part of the stored
+          data.
+          <p> 
+          Following the latter approach, the record would be like this:
+          <p><tt><center>
+            +------------------------------------------+<br />
+          |<u>4</u>John<u>4</u>Ames<u>11</u>234 Elm St.<u>10</u>StillwaterOK74051|
+           <br />
+          <!--  <b>4</b>Mary<b>7</b>Johnson<b>5</b>RD #4*6*MoscowPA18432 -->
+            +------------------------------------------+
+          </center></tt>
+
+          </pre>
+          <p>
+          The astute reader may be asking how we can find the boundaries
+          between length indicators (in the former case) or between the
+          length indicator and the field it describes (in the latter).
+          We could, of course, use delimiters, but then the length indicators
+          themselves would be superfluous!
+          A more likely answer is that, for each length indicator, we would
+          fix its length.  Furthermore, their values would be encoded in binary
+          mode rather than text.  For example, the value eleven (giving the
+          length of <em>Street_Addr</em>) would be stored not in two bytes
+          as the string "11" (with each byte holding the value
+          <tt>00110001</tt>, which is the extended-ASCII representation
+          of the character <tt>'1'</tt>) but rather in a single byte with
+          value <tt>00001011</tt> (which is the 8-bit binary representation of 
+          eleven).  By using binary representation, a single byte is capable
+          of encoding any integer value in the range 0..255, which covers
+          the range of lengths of most fields.  If we anticipate field values
+          exceeding a length of 255, two bytes could be allocated to hold that
+          field's length indicator, yielding a possible range of 0..65535.
+      </li>
+      <li><b>Using XML-style tags:</b>
+          Under this approach, John Ames's record could be stored like this:
+  <pre>
+    &lt;record&gt;
+       &lt;Name&gt;
+          &lt;FirstName&gt;John&lt;/Firstname&gt;
+          &lt;LastName&gt;Ames&lt;/Lastname&gt;
+       &lt;/Name&gt;
+       &lt;Address&gt;
+          &lt;StreetAddress&gt;234 Elm St.&lt;/StreetAddress&gt;
+          &lt;City&gt;Stillwater&lt;/City&gt;
+          &lt;State&gt;OK&lt;/State&gt;
+          &lt;ZipCode&gt;74051&lt;/ZipCode&gt;
+       &lt;/Address&gt;
+    &lt;/record&gt;
+  </pre>
+        This approach limits us to encoding everything as text and it also
+        takes a lot of space due to all the tags.
+      </li>
+    </ul>
+
+<H2>Laying out Records within a File</H2>
+<p>
+So far we've explored how to encode fields so as to make it possible to
+find the boundaries between them, which is a prerequisite for being able
+to interpret the contents of a record.  Now we turn to the question of how
+to encode records so that the boundaries between them can be found.
+Not surprisingly, the answers are quite similar to those that apply to
+fields.
+
+<ul>
+  <li><b>Fixed-length Records:</b>
+    Assuming, as is typically the case, that every record contains the
+    same collection of fields, choosing to fix the length of each one 
+    automatically gives rise to records of fixed length, too.
+    Having records of fixed length is an advantage, especially in files
+    that are accessed <b>randomly by record number</b> (as opposed to
+    <b>sequentially</b>), because it allows us to calculate the location
+    of a record as a byte offset from the beginning of the file.  
+    Specifically, if records are of length <em>m</em>, then the <em>k</em>th
+    record (numbering beginning at zero) begins <em>k &times; m</em> bytes
+    from the beginning of the file.
+    <p>  
+    Fixing the length of records does not, however, imply that all fields
+    within them must be of fixed length.  Consider Linda Ames-Rumpelstiltskin,
+    John's sister, who chose to combine her maiden name with her husband's
+    name, and who lives next door to John:
+<pre>
+<em>Name:</em>
+  <em>First_Name:</em>  Linda
+  <em>Last_Name:</em>   Ames-Rumpelstiltskin
+<em>Address:</em>
+  <em>Street_Addr:</em> 236 Elm St.
+  <em>City:</em>        Stillwater
+  <em>State:</em>       OK
+  <em>Zip_Code:</em>    74051
+</pre>
+    Using the fixed-length field approach from above, and truncating her
+    last name to 15 bytes, corresponding to the length of the
+    <em>Last_Name</em> field, we get
+    <pre><em>
+               1         2         3         4         5         6
+      123456789012345678901234567890123456789012345678901234567890123</em>
+     +---------------------------------------------------------------+
+     |Linda       Ames-Rumpelstil236 Elm St.     Stillwater   OK74051|
+     +---------------------------------------------------------------+ </pre>
+
+    Recall that the lengths of the first four fields are 12, 15, 16, and 13
+    bytes, respectively, for a total of 56 bytes.  Suppose that, instead
+    of fixing their lengths individually, we fixed their total length to
+    be 56 (including delimiters or length indicators).  In that case, we
+    could store her record (using <tt>$</tt> as the separator/delimiter),
+    without truncating any field values, as follows:
+    <pre><em>
+               1         2         3         4         5         6
+      123456789012345678901234567890123456789012345678901234567890123</em>
+     +---------------------------------------------------------------+
+     |Linda$Ames-Rumpelstiltskin$236 Elm St.$Stillwater       OK74051|
+     +---------------------------------------------------------------+ </pre>
+  </li>
+  <li><b>Variable-length Records:</b>
+    If the advantages of fixed-length records (ease in finding the
+    boundaries between records, even without scanning their contents)
+    do not outweigh their disadvantages (wasted space, truncated data),
+    we might be wise choose to use variable-length records.  The two
+    main implementation techniques are as with variable-length fields:
+    delimiters and length indicators.
+    <ul>
+      <li><b>Delimiters:</b> The most commonly used one is what
+        is sometimes referred to as the <em>newline</em> character,
+        denoted in C/C++ and Java as <tt>'\n'</tt>.
+        <!-- Exactly what this means depends upon the hardware/software
+        platform.  For example, in Unix, the newline character is a
+        line feed (carriage return?), whereas in DOS, its a carriage return
+        followed by a line feed ???
+         -->
+      </li>
+      <li><b>Length Indicators:</b> Analogous to length indicators for
+         fields, a record length indicator can be placed immediately
+         before each record, or, alternatively, all record lengths can be
+         stored at the beginning of the file, in what is sometimes called a
+         <em>header record</em>, or even in a separate file.
+         Placing a length indicator immediately prior to each record
+         would be suitable for sequential access but of little help in
+         supporting random access by record number.
+         Placing the length indicators together better supports random access.
+         <p>
+         Suppose, for example, that the first four records in the file had
+         lengths 45, 82, 63, and 39.  If we wished to access the 4th record
+         (counting starting at zero), we could add the lengths of records
+         0 through 3, giving 229, which would tell us that record
+         4 begins at byte 229 of the file.  Of course, more generally,
+         to calculate the location at which the the <em>k</em>-th record
+         begins, one would add the lengths of records 0 through <em>k-1</em>.
+         <p>
+         To avoid all that adding, we could store the cumulative
+         record lengths rather than the individual record lengths.
+         In our example, these would be 45, 127, 190, and 229.
+         Counting from zero, the <em>k</em>-th such value tells us the
+         location at which the <em>k+1</em>-st record begins.
+         (For example, the 3rd value in our list is 229, which gives
+         the starting location of the 4th record.) 
+         <p>
+         Because record lengths could very well be in the hundreds or
+         thousands of bytes, length indicators for records are likely
+         to be chosen to be at least two bytes long.  Cumulative record
+         lengths could very well require four bytes, which allows for
+         values up to <em>2<sup>32</sup> - 1</em>
+         (slightly beyond four billion).
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+<hr>
+<H2>File Maintenance</H2>
+<p>
+Some files, once created, remain static.  However, the more interesting
+case is the one in which a file's contents change during its lifetime.
+The standard way of describing changes to a (record-oriented) file
+is via the operations <b>Add</b>, <b>Change</b>, and <b>Delete</b>.
+(Alternative names are, respectively, Insert, Modify, and Remove.)
+As suggested by their names, Add causes a new record to be placed into
+the file, Change causes an existing record in the file to be modified,
+and Delete causes a record in the file to be removed therefrom.
+One can express a Change operation as a Delete followed by an Add,
+so it is not absolutely necessary to consider Change at all.
+
+<p>
+Files come in two main varieties with respect to the ordering of their
+records: <b>ordered</b> and <b>unordered</b>.
+By the former is meant a file in which the order in which the records occur
+is based upon 
+<!--  is significant.  Often, such a file's records are ordered according to-->
+some well-defined criterion relating to the values in their fields.  
+(For example, a file having records describing persons (including their
+names) could be ordered so as to be in alphabetical order by name;
+a file whose records describe events of some sort (including the time
+at which each one occurred) could be ordered according to when they
+occurred.)
+Certain benefits accrue from ordering the records in a file with
+respect to a certain field, one of which is that searches based upon
+that field can be carried out more quickly.
+
+<p>
+A file in which the order in which records occur has no significance
+is sometimes referred to as a <b>pile</b> or a <b>heap</b>.
+(We will refrain from using the latter term because
+it has a widely-used alternative meaning in computer science.)
+In a sense, such a file can be viewed logically as a <em>set</em>
+of records rather than as a <em>sequence</em> of records.
+
+<p>
+So we can distinguish files across two dimensions with respect
+to their records
+&mdash;fixed- vs. variable-length and ordered vs. unordered (pile)&mdash;
+giving us four different varieties of files.
+Let's explore, with respect to each of the four varieties of files,
+how we could carry out each of the insert, delete, and change operations. 
+
+<p>
+<b>Pile file with fixed-length records:</b>
+   There are two standard approaches, one in which the file is 
+   maintained in a <em>perpetually compacted</em> state, the other 
+   involving the use of <em>tombstones</em> (i.e., "empty slots" of
+   storage space formerly occupied by records) and 
+   periodic <em>compaction</em>.
+   (A file is in a compacted state if there are no empty slots between
+    adjacent records.)
+   <ul>
+     <li><b>Perpetually compacted:</b> To keep a file in a compacted state,
+       the deletion operation is carried out by <b>(a)</b> copying the
+       file's last record into the space occupied by the record to be
+       deleted and <b>(b)</b> marking the space occupied by the last record
+       as no longer in use.
+       (Because all records are of the same size, no data &mdash;except for
+       the deleted record&mdash; will be obliterated by doing this, and no
+       storage space will become unused, except that occupied by the
+       last record.)
+       <p>
+       An add operation is carried out by writing the new record at the end
+       of the file (i.e., immediately after the last record).
+     </li>
+     <li><b>Tombstones and periodic compaction:</b> 
+       A tombstone is a chunk of storage space that has been marked as
+       "dead" or "unoccupied".  (Of course, we have to agree on some way
+       of encoding this so that a program examining the bytes stored there
+       can tell that it is a tombstone.)
+       Add operations are carried out as described above.
+       To effect a delete under this approach, we put a tombstone in place
+       of the record to be deleted.
+       <p>
+       Over time, as more and more operations are performed
+       upon the file, some of them deletions, the number of tombstones
+       scattered around the file will keep increasing.  At some point, we
+       will want to reclaim that "wasted" space, which we can do via
+       file compaction, which basically means making a new copy of the
+       file, but with all the tombstones removed from it. 
+     </li>
+   </ul>
+   <p>
+   As for the Change operation, under either approach we would probably
+   carry it out "in place", meaning that the record would be modified and
+   then written back into the same place.
+
+
+<p>
+<b>Pile file with variable-length records:</b>
+Things get more interesting with variable-length records.
+To perform a delete, for example, one cannot simply move the file's 
+last record into the space occupied by the record to be deleted, for
+the simple reason that it might not fit!  Or, even if the last record does
+indeed fit into the space occupied by the record being deleted, what do we
+do with any "extra" space that is left over?
+<p>
+These observations tell us that the strategy of keeping the file
+"perpetually compacted", as described above for the case of fixed-length
+records, is probably not practical for a file of variable-length records.
+On the other hand, employing tombstones and periodic compaction would 
+work here just as in pile files with fixed-length records.
+<p>
+When applied to a large file, periodic compaction is not only an expensive
+operation, but it may also require the file to be taken "offline" while it
+is being compacted, a situation that may not be acceptable.  Also, the
+quantity of space occupied by tombstones may tend to become unacceptably
+large in the time leading up to a compaction.
+<p>
+In order to slow (eliminate?) the growth of space wasted by tombstones,
+we could carry out an add by writing the new record in place of one
+of the tombstones, rather than at the end of the file. 
+The main difficulty in this approach is to find a suitable tombstone
+to be replaced by the new record! 
+The minimum requirement would be that the tombstone's length is 
+at least as large as the record's.  (This assumes, of course, that we insist
+upon storing each record in a contiguous chunk of storage space, as opposed
+to allowing a record to be distributed among two or more (formerly)
+empty slots.)
+</p><p>
+Various more specific criteria have been suggested, however, including
+<b>Best-fit</b> and <b>Worst-fit</b>, the former of which says that the
+tombstone to be replaced should be the smallest one large enough to hold
+the new record.  The latter says that the chosen tombstone should be
+the <em>largest</em> one!  (Another strategy is <b>First-fit</b>, which
+says to use any tombstone that is large enough, which is to say the "first"
+suitable one encountered while searching for one.)
+<p>
+Your intuition may tell you that Best-fit makes the most sense,
+but before you draw that conclusion, consider what happens to the
+"extra" storage space inside a tombstone that is larger than the new record
+written in its place.  Does that space itself become a new tombstone?
+If so, Best-fit will, over time, have a tendency to cause many small
+tombstones to exist.  On the other hand, Worst-fit will tend to result
+in fewer and larger tombstones.  The fewer tombstones there are, the easier
+it is to manage them.  Also, a small tombstone tends to be more difficult
+to utilize, simply because it is less likely to be large enough to
+hold a new record.
+<p>
+The next natural question is to ask how we go about managing the
+tombstones in a file so as to make efficient the task of finding a
+suitable tombstone when a record is added and the task of recording
+the existence of a new tombstone when a record is deleted (or when
+a record is written in place of a larger tombstone, leaving a smaller
+residual tombstone).
+<p>
+Among the possible approaches are to maintain a linked list of tombstones,
+with the links stored within the tombstones themselves.
+Another approach would be to store the addresses (and lengths)
+of the tombstones in a separate table, thereby making it unnecessary
+to go hopping from place to place within the file 
+(causing lots of costly disk accesses) simply to
+follow the links until a suitable tombstone is found.
+Of course, that table itself would have to be stored in the file
+(in what is sometimes known as a <b>header record</b>, which is a
+generic term often used to describe <b>meta-data</b> stored at the
+beginning of a file) or in a separate file.
+<p>
+<hr>
+<b>Exercise:</b>
+Suppose that the introduction of a tombstone (due to the deletion of 
+a record) results in two (or even three) tombstones being adjacent to 
+one another.  In that case, it would make sense to merge them into
+a single tombstone.  How difficult would it be to detect this situation
+and to make this adjustment?
+<hr>
+
+<p>
+<H3>Ordered Files</H3>
+<p>
+Maintenance becomes much more difficult with ordered files, because we
+lose the freedom to put records wherever they "fit".
+
+<p>
+<b>Ordered files with fixed-length records:</b>
+
+<p>
+Here is perhaps the most straightforward approach:
+<ul>
+  <li><b>Delete</b>: Replace the record with a tombstone.
+      The tombstone is likely to be filled at some later time as a
+      consequence of shifting records to make room for a new one.
+      (See below.) 
+      <p><b>Note:</b> Keeping the file perpetually compacted
+      would be inefficient, as compacting the file each time a 
+      record is deleted (meaning that all records following the deleted
+      record must be shifted toward the beginning of the file) 
+      would necessitate that, on average, half the file be rewritten.
+      Moreover, this approach would result in the Add operation being 
+      expensive, too, becase, to make room for a new record, on average
+      half of the file would have to be rewritten. 
+      <b>End of note.</b>
+      <p>
+      In the unusual case of a file in which deletes occur more often
+      than adds (which would result in lots of tombstones lying around),
+      one can use occasional file compaction to get rid of the tombstones.
+  </li>
+  <li><b>Add</b>: Locate the place where the new record belongs and
+      then make room for it by shifting existing records towards the
+      nearest tombstone.  If the nearest tombstone is "far away", this
+      will result in a significant portion of the file being rewritten
+      and hence would be very expensive.
+  </li>
+  </p><p>
+  <li><b>Change</b>: change the record "in place".
+  </li>
+</ul>
+<p>
+An alternative approach uses an Overflow File:
+<ul>
+  <li><b>Delete</b>: replace the record with a tombstone, as above.
+  </li>
+  <li><b>Add</b>: If there is a tombstone "near" to where the new
+      record belongs, then shift data to make room for it, as above.
+      Otherwise, place the new record into an <b>overflow</b> file,
+      which is simply a pile file containing recently-added records.
+      Occasionally, sort the overflow file and merge its records with
+      those in the "actual" file, thereby creating an up-to-date version of
+      the latter.  One of the negative consequences of using an
+      overflow file is that every time a search is performed on the
+      actual file, we must also scan all the records in the overflow file
+      in case any of them satisfy the search criteria.  
+      </p><p>
+      For files intended to support a "relative record number" access mode,
+      using an overflow file probably doesn't make sense.
+  </li>
+  <li><b>Change</b>: change the record "in place".
+  </li>
+</ul>
+
+<p>
+<b>Ordered file with variable-length records:</b>
+The approaches described above apply even when records are not of
+fixed length.  It is slightly more complicated, however, due to the
+fact that the existence of a tombstone near to where a record is to
+be added does not guarantee that "local" shifting will work, because
+the tombstone may be smaller than the new record.  Hence, depending
+upon the length of the record to be added, it may be necessary to find
+two or more nearby tombstones before carrying out a shift.
+
+<hr>
+<H3>Using Buckets</H3>
+<p>
+The previous section began by suggesting that maintaining an ordered file is
+more difficult than maintaining a pile file because in the former, unlike
+the latter, there are strict constraints upon where records can be placed,
+relative to one another.  Specifically, the i-th record must come before
+the (i+1)-st record.  That is, if the i-th record occupies bytes
+<em>k</em> through <em>m</em> of the file, record i+1 must begin at byte 
+<em>m+1</em> (or later, in the case that there is unused space
+(e.g., one or more tombstones or a record separator character) in between
+the two records).
+
+<p>
+But this assumes that records in an ordered file must appear, physically,
+in an order consistent with their logical order.
+Must we really make such an assumption?  <b>No!</b>
+The idea of divorcing physical ordering from logical ordering is one 
+with which you already should be familiar,
+<!-- that you should have seen before, -->
+in the form of pointer/reference-based implementations of the 
+<b>list</b> and <b>tree</b> data structures.
+In a (singly-linked) list, each "node" contains a data item together with
+a reference/pointer (often called <tt>next</tt>) to the
+(node containing the) item that logically follows it.
+The reason for having the <tt>next</tt> pointer is precisely because
+the physical location of a node's logical successor is totally
+independent of its own location.
+
+<p>
+We can apply the same idea to an ordered file by organizing it as a 
+linked list.  For example, the data associated to each node in the list
+could be a single record.
+The reference/pointer in each node could take the form of a byte offset,
+perhaps, or a physical record number (in the case that such a number could
+be mapped easily into a byte offset, such as when the records were
+all of the same length).
+<p>
+Rather than (or in addition to) storing a <tt>next</tt> pointer in each
+node, one could maintain a table (or "record index") that provides a 
+<em>logical-to-physical</em> mapping from logical record positions to
+their corresponding physical locations (as byte offsets from the beginning
+of the file, perhaps).  To illustrate, consider this picture:
+<pre>
+    The file               The record index         The tombstone index
+    --------               ----------------         -------------------
+
+                            recLoc   recLen            tsLoc   tsLen
+     +------+             +--------+--------+         +------+-------+
+   0 |      |           0 |   347  |    61  |       0 |  72  |   42  |
+     | Rec3 |             +--------+--------+         +------+-------+
+     |      |           1 |   114  |    89  |       1 | 503  |    9  |
+     +------+             +--------+--------+         +------+-------+
+  72 |      |           2 |   452  |    51  |       2 | 408  |   44  |
+     |      |             +--------+--------+         +------+-------+
+     |      |           3 |     0  |    72  |
+     +------+             +--------+--------+
+ 114 |      |           4 |   203  |    44  |
+     | Rec1 |             +--------+--------+
+     |      |
+     +------+
+ 203 |      |
+     | Rec4 |
+     |      |
+     +------+
+ 347 |      |
+     | Rec0 |
+     |      |
+     +------+
+ 408 |      |
+     |      |
+     |      |
+     +------+
+ 452 |      |
+     | Rec2 |
+     |      |
+     +------+
+ 503 |      |
+     |      |
+     |      |
+     +------+
+ 512
+</pre>
+
+<!--
+<pre>
+   The file                   The record index
+   --------                   ----------------
+
+     +----+                    recLoc   recLen
+   0 |    |                   +-------+--------+
+     |    |                 0 |  874  |    77  |
+     +----+                   +-------+--------+
+ 373 |    |                 1 |  373  |   103  |
+     | R1 |                   +-------+--------+
+     |    |                 2 | 1105  |    57  |
+     +----+                   +-------+--------+ 
+ 476 |    |                 3 |  519  |    90  |
+     |    |                   +-------+--------+
+     +----+                       .        .
+ 519 |    |                       .        .
+     | R3 |
+     |    |
+     +----+
+ 609 |    |
+     |    |
+     +----+
+ 874 |    |
+     | R0 |
+     |    |
+     +----+
+ 951 |    |
+     |    |
+     +----+
+1105 |    |
+     | R2 |
+     |    |
+     +----+
+1162 |    |
+     |    |
+     .    .
+     .    .
+</pre>
+-->
+<!--
+<pre>
+ 0        373       519         874              1105
++--------+---------+-----------+----------------+-------- ... --+
+|        |         |           |                |         ...   |
++--------+---------+-----------+----------------+-------- ... --+
+
+
+           0     1      2     3
+        +-----+-----+------+-----+------ ... --+
+recLoc  | 874 | 373 | 1105 | 519 |       ...   |
+        +-----+-----+------+-----+------ ... --+
+recLen  |  77 | 103 |  57  |  90 |       ...   |
+        +-----+-----+------+-----+------ ... --+
+</pre>
+-->
+This is meant to depict a situation in which the file 
+(which has had 512 bytes allocated to it) has five records
+which happen to be stored beginning at the bytes with offsets 
+347, 114, 452, 0, and 203, respectively.
+(By <b>offset</b> we mean the location relative to the beginning of the
+file.  Recall that we are viewing a file simply as a sequence of bytes.)  
+<p>
+The picture indicates that the record lengths are stored in the record
+index, too; we could, instead, store that information in a byte
+(or two, depending upon the maximum record length) prefixing each record.
+
+<p>
+Depending upon how insertions and deletions are carried out, we may
+also want to maintain a table (as shown) (or a linked list) indicating the 
+locations and sizes of tombstones (i.e., chunks of space within the
+confines of the file that are logically empty and hence into which
+records can be placed/shifted during the insertion of a new record).
+
+<p>
+Following the scenario just described, the obvious algorithm for
+processing the records in the file, in logical order from first to last,
+is as follows:
+<pre><code>
+   f.open(input);  // open the file for input
+
+   // now read each record and process it
+   for (int i = 0; i != recLoc.length(); i++) {
+      f.seek(recLoc[i]);   // seek to the byte where record #i begins
+      record = f.read(recLen[i]);  // read the record into a variable
+      process(record);             // process the record
+   }
+   f.close()  // close the file
+</code></pre>
+<p>
+Exactly what we mean by "process a record" is not important; simply assume
+that it entails examining the contents of the record and possibly carrying
+out some computation that depends upon those contents.  Also assume that
+the application requires that the records be examined in their logical
+order.
+<p>
+The <tt>seek</tt> operation is to be understood as positioning the
+<b>file pointer</b> at the byte with the specified offset.  It does
+not directly translate into the occurrence of a disk seek, but, 
+in combination with whatever I/O operation is carried out next
+(most likely, a <tt>read</tt> or <tt>write</tt>), it could very well
+lead to a disk seek.
+The <tt>read</tt> operation transfers the specified number of bytes,
+beginning at the byte where the file pointer is positioned, into an array
+of bytes. 
+<p>
+Assuming that the physical locations of the records within the file 
+bear no particular relationship to their logical positions within the file
+(which, even if the file began with its logical and physical orderings
+being the same, is not an outlandish scenario, assuming that the file's
+current state is the result of thousands or millions of record insertions
+and deletions), the number of disk block reads occurring during execution
+of this algorithm will approach the number of records in the file.
+
+<p>
+As an example, suppose that records 35, 57, 145, 211, 214, and 298
+all happen to reside in the same disk block.  (These numbers refer
+to the records' logical positions within the file.)  Then, on the
+36-th iteration of the loop, that disk block will be read in.
+(Remember that we number the records starting at zero.)
+On the 58-th iteration, the same disk block will be read in again.
+And again on the 146-th iteration.  And so on and so forth.
+Now, it may be that, on the 215-th iteration,
+the disk block will still be in an I/O buffer in RAM (having been put
+there during the 212-th iteration) and hence may not have to be read
+again during that iteration.  But still, this disk block will be accessed
+from disk five separate times.  And each time, the vast majority of data
+in the block will be ignored.
+
+<p>
+What we have done, then, by completely divorcing the logical positions
+of the records from their respective physical positions, is to make
+the insert and delete operations more efficient at the expense of
+making the read-file-sequentially operation much less efficient.
+Can we adjust our approach to arrive at a happy medium?
+
+<p>
+The short answer is <b>yes</b>.  The solution is to coarsen the
+level of granularity of the nodes in the linked list of records.
+That is, rather than having each node in the list correspond to a
+single record, make it instead correspond to a collection of
+several logically consecutive records.  We refer to such a node
+as a <b>bucket</b>.
+
+<p>
+To illustrate the idea of managing a file by treating it as a
+collection of buckets, we use an example.  To simplify the 
+management task, we choose a uniform bucket size of 512 bytes.
+Hence, the first 512 bytes (bytes 0 through 511) of storage space
+allocated to the file holds one bucket, the next 512 bytes holds
+another, and so on and so forth.
+Note that the physical order of the buckets does not necessarily
+correspond to their logical order.
+For example, we may have this situation:
+
+<pre>
+  0           512         1024        1536        2048
+ +-----------+-----------+-----------+-----------+-----------+
+ | bucket #2 | bucket #1 | bucket #4 | bucket #0 | bucket #3 |
+ +-----------+-----------+-----------+-----------+-----------+
+</pre>
+
+<p>
+Here, the physical location of the bucket containing the 
+first several records in the file (bucket #0) is at offset 1536,
+which is preceded by three buckets that, logically, come later.
+The corresponding <b>logical-to-physical bucket map</b>, which we
+call <tt>log2PhysBuckMap</tt>, could be as follows:
+
+<pre>
+                   0   1   2   3   4
+                 +---+---+---+---+---+
+log2PhysBuckMap  | 3 | 1 | 0 | 4 | 2 |
+                 +---+---+---+---+---+
+</pre>
+The physical bucket numbers are stored as entries in the table rather
+than the byte offsets.  (To compute the byte offset from the physical
+bucket number, simply multiply it by the length of a bucket, in this
+case 512.)
+
+<p>
+With this approach, the algorithm for processing all the records in the
+file becomes
+
+<pre>
+   f.open(input);   // open the file for input
+
+   // read each bucket and process the records it holds
+   for (int i=0; i != log2PhysBuckMap.length; i++) {
+      f.seek(512 * log2PhysBuckMap[i]);  // seek to beginning of bucket #i
+      bucket = new Bucket(f.read(512));  // read contents of bucket
+      for (int j=0; j != bucket.numRecs(); j++) {
+         record = bucket.getRec(j);      // read j-th record from bucket
+         process(record);
+      }
+   }
+   f.close();  // close the file
+</pre>
+<p>
+This (pseudo-)code assumes that there is a class called <tt>Bucket</tt>
+having a constructor that, given the (raw) contents of a bucket, creates
+an object (representing a bucket) that has certain capabilities, 
+among them to report how many records it contains and to allow 
+those records to be retrieved.  (The assumption here is that the
+records within a bucket are numbered (starting with zero, say)
+according to their logical order and that the method call
+<tt>getRec(j)</tt> returns the <tt>j</tt>th record in the bucket.)
+Of course, for these operations to be implementable requires that
+a bucket's raw contents are such that it is possible to find boundaries
+between records, etc.
+
+<p>
+Compare the number of disk seeks carried out in executing this algorithm
+and the algorithm given earlier.  In this one, the number of seeks
+corresponds to, at worst, the number of buckets comprising the file
+(assuming, of course, that each bucket is stored in a contiguous
+region of the disk so that it can be read in full after a single disk seek.)
+In executing the earlier algorithm, the number of seeks corresponded to
+the number of records.
+Assuming that buckets contain, on average, say fifty records, this
+reduces the number of disk seeks by a factor of about fifty.  That is a
+significant improvement.
+
+<p>
+The advantages of organizing a file as a collection of buckets carry
+over to the add, change, and delete operations.
+<em>More stuff to be added here.</em>
+
+
+<hr>
+<h3>Internal Organization of a Bucket</h3>
+
+<p>
+As noted above, in order for a program to be able to take the 512 
+(or whatever number of) bytes comprising a bucket and to 
+extract individual records from it, there must be some means
+of determining where, within the bucket, each record is stored.
+In accord with the ideas presented earlier in this document,
+two possibilities are to use delimiters/separators or length indicators.
+<!-- 
+  Because we prefer not to impose any restrictions upon what data might
+  appear in a record, and because the use of delimiters requires that
+  there be some byte value (or sequence of byte values) that cannot
+  "legally" occur within a record (and hence can be used as a delimiter),
+we here focus upon using length indicators.
+-->
+Here we shall assume that we have chosen to use length indicators,
+although our discussion would apply just as well had we chosen separators.
+
+<p>
+Perhaps the most obvious way to lay out the records in a bucket is
+depicted below.
+Here we have assumed that a single byte is sufficient for storing the
+number of records in the bucket as well as each record's length.
+As a byte has 256 possible values (and hence naturally can represent
+any integer in the range 0 to 255), this means that we are restricting
+the number of records in a bucket to be at most 255 and, likewise,
+the length of any record.  If either of these assumptions is too
+restrictive, we can use two bytes instead (or whatever number is
+sufficient for our purposes).  Another possibility, which we shall
+not explore here, is to use a variable-length encoding scheme for
+these values.
+<pre>
++-+-+-+-+-----+-+---------+---------+---------+-----+-------------+------------+
+| | | | | ... | | 0th rec | 1st rec | 2nd rec | ... | (k-1)st rec | free space |
++-+-+-+-+-----+-+---------+---------+---------+-----+-------------+------------+
+ ^ ^ ^ ^  ...  ^
+ | | | |  ...  |
+ | | | |  ...  length of (k-1)-st record in bucket (1 byte)
+ . . . .  ... 
+ . . . .  ... 
+ | | | length of 2nd record in bucket (1 byte) 
+ | | length of 1st record in bucket (1 byte)
+ | length of 0th record in bucket (1 byte)
+ number of records (k)in bucket (1 byte)
+</pre>
+<p>
+Under this scenario, the first byte of the bucket is used for storing
+the number, <em>k</em>, of records contained in the bucket, the
+following <em>k</em> bytes are used for storing the lengths of those
+records, and the remaining bytes are used for storing the records
+themselves, in order and with no space between them.  In all
+likelihood, there will be some free space at the end of the bucket.
+In effect, each bucket has a single tombstone. 
+
+<p>
+Suppose that a new record, of length <em>r</em>, is to be inserted in the
+<em>j</em>-th position in such a bucket.  (That is, the new record is
+to be placed into the bucket so that it is the <em>j</em>-th record
+and what had been the <em>j</em>-th record now becomes the <em>(j+1)</em>-st,
+etc., etc.)
+Such an operation cannot be carried out unless there are at least
+<em>r+1</em> bytes of free space in the bucket, <em>r</em> for holding
+the new record and one for holding its length.
+
+<p>
+Consider what must be done to carry out this operation.
+First, the bucket must be read into RAM from secondary storage
+(unless, of course, it is already there).  
+Then, manipulating the contents of that chunk of RAM in order
+to effect the insertion, we can
+<ol>
+  <li>Shift (the bytes holding) records <em>j</em> through <em>k-1</em>
+      to the "right" by <em>r+1</em> places.
+  </li>
+  <li>Shift the bytes holding the lengths of records <em>j</em> 
+      through <em>k-1</em> and records <em>0</em> through <em>j-1</em>
+      to the "right" by <em>1</em> place.
+  </li>
+  <li>Place the value <em>r</em> into the <em>(j+1)</em>-st byte
+      (counting from zero starting at the "left") to record the
+      length of the new record.
+  </li>
+  <li>Copy the contents of the new record into the <em>r</em> bytes
+      immediately following record <em>j-1</em>.
+  </li>
+</ol>
+
+<p>
+Having modified the bucket in RAM, the next step would be to write it
+back into the file, replacing its old contents.
+
+<p>
+The reader should have no trouble figuring out how to carry out a
+delete operation.
+
+<p>
+Now consider how to retrieve the <em>j</em>-th record from a bucket.
+As with a record insertion, the first thing to do is to get the bucket
+into RAM.  Suppose that we do that, and we view it as an array <tt>b[]</tt>
+of bytes. 
+We need to calculate <tt>beg</tt> and <tt>end</tt> such that
+<tt>b[beg..end]</tt> is the segment of <tt>b[]</tt> that holds record
+<em>j</em>.  Having done that, we can make a copy of those bytes and
+provide them to the client who requested the record.
+Here's how to calculate <tt>beg</tt> and <tt>end</tt>:
+<pre>
+   k := b[0];    // k is # of records stored in bucket
+   m := b[1] + b[2] + ... + b[j];  // m is sum of lengths of records 0..j-1
+   beg := k + 1 + m;
+   end := beg + b[j+1] - 1;
+</pre>
+
+<p>
+Another, perhaps less obvious, way to organize the bucket is depicted here:
+<pre>
++---------+---------+---------+-----+------------+------------+-+-----+-+-+-+-+
+| 0th rec | 1st rec | 2nd rec | ... |(k-1)st rec | free space | | ... | | | | |
++---------+---------+---------+-----+------------+------------+-+-----+-+-+-+-+
+                                                               ^       ^ ^ ^ ^
+                                                               |  ...  | | | |
+                    length of (k-1)-st record in bucket (1 byte)  ...
+                                                                  ...  . . . .
+                                 length of 2nd record in bucket (1 byte) | | |
+                                   length of 1st record in bucket (1 byte) | |
+                                     length of 0th record in bucket (1 byte) |
+                                      number of records (k) in bucket (1 byte)
+</pre>
+<p>
+Under this scenario, the records occupying the bucket are stored
+at the "left end" of the bucket, contiguously, in an order corresponding
+to their logical order.  So as to be able to find the boundaries
+between adjacent records, their lengths are stored at the "right end"
+of the bucket, in reverse order.  (The very last thing stored in
+the bucket is the number of records it holds.)
+The advantage of this scenario, in comparison to the one shown earlier,
+is that less data need to be shifted around to carry out insertions
+and deletions.  Because this data shifting occurs in RAM (as opposed
+to much slower secondary storage), it is not all that important.
+
+<!--
+<p>
+Any space existing between the end of the last record and where its
+length is stored is "free", which is to say that it can be used for
+storing a new record (and length) in the case of an insertion
+operation being applied.
+-->
+
+
+
+
+
+<!--
+<p>
+At this point, give an algorithm for reading/processing the records
+in logical order, explain that the number of disk reads will be close
+to the number of records, with the same blocks being read numerous
+times.  Also, there being a one-to-one correspondence between records
+and entries in the recLoc/recLen table, that table has to be big.
+(And hence may not fit into RAM, meaning that insertions and deletions
+there are a problem!)
+
+Also, managing tombstones is difficult, especially when records are
+variable in length, as one must search among them to find a suitable
+one when an insertion occurs.
+
+Then suggest that a better approach may be to group records together
+into "buckets", each of which holds a logically contiguous sequence
+of records, plus (most likely) some empty space allowing for the
+possibility of new records being inserted into the bucket.  Now the
+recLoc/recLen table is replaced by a bucketLoc/bucketLen table, which,
+because buckets are large enough to fit a bunch of records, will be
+significantly smaller than the recLoc/recLen table.  Also, if we 
+stipulate that buckets are the same length, we don't need bucketLen
+info.  The inside of a bucket would be where record length info would
+be stored, of course.
+-->
+
+<p>
+To be continued ....
+
+<!--
+
+For such a scheme would require that the free space within the file be managed.
+(Free space is any space allocated to the file but which, at the moment,
+is not being used to hold data (or meta-data) describing a record.
+Tombstones are examples of free space.)
+
+-->
+<!--
+
+<p>
+   The main advantage of using fixed-length fields is that it is easier
+   to write software that handles this format, because many programming
+   languages directly support it.
+   The main disadvantage is that there tends to be a lot of space wasted
+   when field values can be encoded using less space than that allocated
+   to them.  (E.g., the name "Smith" in a field for which 16 bytes has
+   been allocated.)
+   Also, field values that cannot be encoded within the space allocated
+   to them must be truncated or otherwise abbreviated.
+
+
+-->
+</body>
+</html>

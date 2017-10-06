@@ -1,0 +1,604 @@
+<html>
+<head><title>CMPS 134 Introduction to Recursion</title>
+</head>
+<body>
+<h2>CMPS 134 &nbsp; Introduction to Recursion</h2>
+
+<!--
+<p>
+This is meant to supplement Chapter 12 of Reges &amp; Stepp.
+-->
+
+<h3>Recursive Function Definitions</h3>
+</p><p>
+Consider the following (mathematical) function, the domain of which is
+the natural numbers (i.e., nonnegative integers):
+
+</p><p><center><tt>sumUpTo(n) = 0 + 1 + 2 + ... + n</tt></center>
+
+</p><p>
+Given that addition is commutative, we could just as well have written
+this as 
+
+</p><p><center><tt>sumUpTo(n) = n + (n-1) + (n-2) +  ... + 0</tt></center>
+
+</p><p>
+That is, for any natural number <tt>n</tt>, <tt>sumUpTo(n)</tt> 
+is the sum of the integers in the range <tt>0..n</tt>.
+For example, <tt>sumUpTo(4) = 4 + 3 + 2 + 1 + 0</tt>, or <tt>10</tt>.
+<!-- 
+  (As a special case, <tt>sumUpTo(0)</tt> is <tt>0</tt>, as the range
+  <tt>1..0</tt> is empty and the sum of an empty collection of numbers
+  is zero.)
+-->
+
+</p><p>
+The given definition lacks rigor, because it relies upon an
+(intelligent) reader understanding what is meant by "<tt>...</tt>".
+Here is a better definition:
+<!--
+<pre>
+   sumUpTo(n) = | 0                 if n = 0  (1)
+                | n + sumUpTo(n-1)  otherwise (i.e., n > 0) (2)</pre>
+-->
+
+</p></p>
+<center>
+<table border="0" cellpadding="0">
+<tr><td rowspan="2"><tt>sumUpTo(n) =&nbsp;</tt></td>
+    <td><tt>{ 0</tt></td>
+    <td>&nbsp;</td>
+    <td>if &nbsp;<tt>n = 0</tt></td>
+    <td><b>(1)</b></td>
+</tr>
+<tr><td><tt>{ n + sumUpTo(n-1)</tt></td>
+    <td>&nbsp;</td>
+    <td>otherwise (i.e., <tt>n &gt; 0)</tt></td>
+    <td><b>(2)</b></td>
+</tr>
+</table>
+</center>
+
+</p><p>
+This definition is based upon the observation that, for <tt>n&gt;0</tt>, the
+"sum up to <tt>n</tt>" is just <tt>n</tt> plus the "sum up to <tt>n-1</tt>".
+In other words, the "sum up to <tt>n</tt>" is
+
+</p><p><center><tt>n + <b>((n-1) + (n-2) + ... + 0)</b></tt></center>
+
+</p><p>
+in which the boldfaced (and parenthesized) part is the 
+"sum up to <tt>n-1</tt>".
+
+</p><p>
+But is our second definition of <tt>sumUpTo</tt> any more rigorous
+than the first?  In the first definition, the "<tt>...</tt>" was
+troublesome, but the second is suspicious in that the body of the
+definition refers to the function itself.
+Does this not lead to a "circularity" (as if <em>field</em> were defined
+as <em>meadow</em> and vice versa)?  <b>No!</b>
+To demonstrate this, let's apply the function using the second definition:
+<pre>
+sumUpTo(4) = 4 + sumUpTo(3)             (by (2))
+           = 4 + 3 + sumUpTo(2)         (by (2))
+           = 4 + 3 + 2 + sumUpTo(1)     (by (2))
+           = 4 + 3 + 2 + 1 + sumUpTo(0) (by (2))
+           = 4 + 3 + 2 + 1 + 0          (by (1))
+</pre>
+</p><p>
+We got the correct result!  Moreover, it should be clear to the reader
+that applying <tt>sumUpTo</tt> to any other natural number 
+would lead us, by a similar process, to a correct result.
+
+</p><p>
+In the definition, line (1) is referred to as the <b>base case</b>
+and line (2) is referred to as the <b>recursive case</b>.
+The distinction is that the base case does not refer to the function
+being defined, whereas the recursive case does.  The key to making
+this work (i.e., to avoid circularity) is that any application of the
+function in the recursive case must be to a "smaller" argument (i.e.,
+one that is closer to the base case).
+That way, during an evaluation of the function, we are certain to 
+reach the base case, eventually.
+
+</p><p>
+For this function, the pattern is obvious:
+An application of <tt>sumUpTo</tt> to <tt>n</tt> leads to an application
+of <tt>sumUpTo</tt> to <tt>n-1</tt>, which leads to an application of
+<tt>sumUpTo</tt> to <tt>n-2</tt>, etc., etc., until eventually
+it is applied to zero (the base case).  This is typical.
+
+</p><p>
+Let's develop a more general function that "computes" the sum of any
+range <tt>u..v</tt> of integers.  The informal definition is
+</p><p><center><tt>sumOfRange(u,v) = u + (u+1) + (u+2) + ... + (v-1) + v
+</tt></center>
+</p><p>
+Observing that (under the assumption <tt>u&le;v</tt>) the sum of the
+integers in the range <tt>u..v</tt> is <tt>u</tt> plus the sum of the
+integers in the range <tt>u+1..v</tt>, we formulate the recursive definition
+<pre>
+   sumOfRange(u,v) =  { 0                     if u&gt;v  (1)
+                      { u + sumOfRange(u+1,v) otherwise  (2)</pre>
+
+</p><p>
+Using this definition to evaluate <tt>sumOfRange(3,6)</tt>, we get
+<pre>
+             sumOfRange(3,6) 
+           = 3 + sumOfRange(4,6)              (by (2))
+           = 3 + 4 + sumOfRange(5,6)          (by (2))
+           = 3 + 4 + 5 + sumOfRange(6,6)      (by (2))
+           = 3 + 4 + 5 + 6 + sumOfRange(7,6)  (by (2))
+           = 3 + 4 + 5 + 6 + 0                (by (1))</pre>  
+which is the correct result.
+
+</p><p>
+Alternatively, we could have observed (again assuming that <tt>u&le;v</tt>)
+that the sum of the integers in the range <tt>u..v</tt> is the sum of the
+integers in the range <tt>u..v-1</tt>, plus <tt>v</tt>.  So we could have
+written the recursive case in the definition as
+</p><p><center><tt>sumOfRange(u,v-1) + v &nbsp; (2')</tt></center>
+
+</p><p><hr><b>Exercise:</b> Evaluate <tt>sumOfRange(3,6)</tt>, but this
+time assume that the definition uses the alternative recursive case (2')
+rather than (2).
+<hr>
+
+<!--
+</p><p>
+For that matter, we could observe (again assuming <tt>u &le; v</tt>)
+that, for any <tt>w</tt> satisfying <tt>u&le;w&le;v</tt>, the sum of
+the integers in <tt>u..v</tt> is the sum of the integers in the range
+<tt>u..w</tt> plus the sum of the integers in the range <tt>w+1..v</tt>!
+Choosing <tt>w = (u+v)/2</tt>, we are led to the following alternative
+definition of the function:
+<pre>
+   sumOfRange(u,v) =
+      { 0                                                  if u&gt;v
+      { sumOfRange(u,(u+v)/2)) + sumOfRange(((u+v)/2)+1,v) otherwise </pre>
+-->
+
+</p><p>
+To make this a little more interesting, let's define a function that
+computes the sum of the values in an array segment <tt>a[u..v]</tt>.
+(We assume that the elements of the array contain numbers of some kind.)
+Informally,
+</p><p><center><tt>
+  sumOfSeg(a,u,v) = a[u] + a[u+1] + a[u+2] + ... + a[v-1] + a[v]
+</tt></center>
+</p><p>
+Using observations analogous to those we employed in developing our
+recursive definition of <tt>sumOfRange</tt>, we get
+<pre>
+ sumOfSeg(a,u,v) =  { 0                        if u&gt;v  (1)
+                    { a[u] + sumOfSeg(a,u+1,v) if 0&le;u&le;v&lt;a.length (2)</pre>
+
+</p><p>
+Using this definition to evaluate <tt>sumOfSeg(a,3,6)</tt>, we get
+<pre>
+    sumOfSeg(a,3,6) 
+  = a[3] + sumOfSeg(a,4,6)                      (by (2))
+  = a[3] + a[4] + sumOfSeg(a,5,6)               (by (2))
+  = a[3] + a[4] + a[5] + sumOfSeg(a,6,6)        (by (2))
+  = a[3] + a[4] + a[5] + a[6] + sumOfSeg(a,7,6) (by (2))
+  = a[3] + a[4] + a[5] + a[6] + 0               (by (1))</pre>
+which is the correct result.
+
+
+<h3>Recursion in Programming</h3>
+</p><p>
+How does this notion of recursion relate to computer programming?
+Well, just as it makes sense for the "body of" a function's definition 
+to refer to the function itself, it makes sense for a method's body
+to refer to the method itself.  In other words, in programming,
+recursion manifests itself in having methods that call themselves!
+Most modern programming languages, including Java, support this
+technique.
+
+</p><p>
+Here again is our recursive definition of the function <tt>sumOfRange</tt>:
+<pre>
+   sumOfRange(u,v) =  { 0                     if u&gt;v  (1)
+                      { u + sumOfRange(u+1,v) otherwise  (2)</pre>
+
+Adapting it into a Java method, we get
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/** Returns the sum of the integers in the range u..v
+*/
+public static int sumOfRange(int u, int v) {
+   int result;
+   if (u &gt; v)
+      { result = 0; }
+   else 
+      { result = u + sumOfRange(u+1,v); }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+The correspondence between the two should be quite clear.
+Notice that the base case and recursive case correspond to the two
+branches of the <tt>if</tt>-statement.  Every properly written
+"recursive" method will have a similar feature.
+Of course, what is important is that if a client were to make
+the method call <tt>sumOfRange(3,6)</tt>, for example,
+the value returned to it would be <tt>3+4+5+6</tt>, or <tt>18</tt>.
+And, indeed, this is the case.
+<!--
+  (Consult pages 728-736 in Chapter 12 of Reges &amp; Stepp for an
+  explanation of the "mechanics of recursion", i.e., how it is carried
+  out on a computer.)
+-->
+
+</p><p>
+Here again is our recursive definition of function <tt>sumOfSeg</tt>:
+<pre>
+ sumOfSeg(a,u,v) =  { 0                        if u&gt;v  (1)
+                    { a[u] + sumOfSeg(a,u+1,v) if 0&le;u&le;v&lt;a.length (2)</pre>
+
+</p><p>
+Expressing it as a Java method (and assuming that the array holds values
+of type <tt>int</tt>), we get
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/** Returns the sum of the values in the segment a[u..v].
+**  pre-condition: 0 <= u,v < a.length
+*/
+public static int sumOfSeg(int[] a, int u, int v) {
+   int result;
+   if (u &gt; v)
+      { result = 0; }
+   else 
+      { result = a[u] + sumOfSeg(a,u+1,v); }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+It turns out &mdash;even if the examples we've done so far might not
+illustrate it!&mdash; that recursion is a powerful problem-solving technique.
+Indeed, if you have a problem for which the solution (to any non-trivial
+instance) can be expressed in terms of one or more "smaller" instances of
+the same problem, you can use recursion to solve it.
+In most of the examples above, the "problem" involved a range of integers
+<tt>u..v</tt> and we were able to express its solution in terms of a
+solution to the same problem with respect to the smaller range
+<tt>u+1..v</tt>.  In particular, computing the sum of the elements in
+<tt>a[u..v]</tt> was expressed in terms of computing the sum of the elements
+in (the shorter segment) <tt>a[u+1..v]</tt>.
+
+
+<h3>Determining the Maximum Value in an Array Segment</h3>
+</p><p>
+Lest you think that the only kind of problem to be solved using
+recursion is one that asks for a sum to be calculated,
+consider the problem of identifying the maximum element in an array
+segment.  In a segment of length one, the maximum value is, obviously,
+the lone element in the segment.  In a longer segment, the maximum is
+the larger of the first value and the maximum value in the rest of the
+segment.  Assuming that <tt>max</tt> is a function that yields the
+larger of its two arguments, we can express this as
+<pre>
+  maxInSeg(a,u,v) = { a[u]                         if u=v
+                    { max(a[u], maxInSeg(a,u+1,v)) otherwise </pre>
+
+</p><p>
+As a Java method, one translation is
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/** Returns the maximum value in a[u..v]
+**  pre-condition: 0 <= u <= v < a.length
+*/
+public static int maxInSeg(int[] a, int u, int v)
+   int result;
+   if (u == v)
+      { result = a[u]; }
+   else 
+      { result = Math.max(a[u], maxInSeg(a,u+1,v)); }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Had we forgotten about the <tt>max()</tt> method in the class
+<tt>java.Math</tt>, we might have written the <tt>else</tt> branch
+as follows:
+<pre>         int maxInRest = maxInSeg(a,u+1,v); 
+         if (a[u] > maxInRest) 
+            { result = a[u]; }
+         else 
+            { result = maxInRest; }
+</pre>
+
+</p><p><hr>
+<b>Exercise:</b> Make the necessary changes to (either version of)
+method <tt>maxInSeg()</tt> in order to obtain a method meeting the
+following specification:
+<pre>
+   /** Returns the lowest-numbered location, within the segment a[u..v],
+   **  that is occupied by the maximum value in that segment.
+   */
+   public static int locOfMaxInSeg(int[] a, int u, int v) { ... } </pre>
+<hr>
+
+<h3>Reversing an Array Segment</h3>
+</p><p>
+All the recursive methods that we have developed so far are observers,
+in the sense that they calculate results but don't change the state of
+any object.  Let's remedy that by developing a method that reverses
+the order of the elements in an array segment.  The vital observation is
+that to reverse an array segment, it suffices to swap its first and last
+elements and to reverse the segment in between them!  That is, to
+reverse the segment <tt>a[u..v]</tt>, we swap the values at locations
+<tt>u</tt> and <tt>v</tt> and reverse the segment <tt>a[u+1..v-1]</tt>.
+(In which order we do these does not matter, as neither operation
+"interferes" with the other.)  The base case occurs when the segment's
+length is one or less, as then nothing needs to be done to effect a
+reversal.  Here is the method:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/** Reverses the order of the elements in the segment a[u..v].
+ **  pre: 0&le;u&le;v+1&le;a.length
+*/
+public static void reverseSeg(int[] a, int u, int v) {
+
+   if (u >= v) {
+      // segment length is <= 1, so nothing need be done
+   }
+   else {
+      swap(a,u,v);            // swap the values at locations u and v of a
+      reverseSeg(a,u+1,v-1);  // reverse elements in a[u+1..v-1]
+   }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+<hr>
+<h3>Sorting an Array Segment</h3>
+</p><p>
+To sort an array segment <tt>a[u..v]</tt>, we can employ <b>Selection Sort</b>,
+which would do this:
+<pre>
+   for each i in the range u..v {
+      Let k be the location of the minimum value in a[i..v];
+      swap(a,i,k);
+   }</pre>
+Of course, the above is Java-like pseudo-code.  Employing pseudo-code
+again, but expressing ourselves in a recursive fashion, here is how 
+to sort array segment <tt>a[u..v]</tt> using the Selection Sort approach:
+<pre>
+   if (u >= v) {
+      // segment length is <= 1, so nothing needs to be done
+   }
+   else {
+      Let k be the location of the smallest value in a[u..v];
+      swap(a,u,k); 
+      sort the segment a[u+1..v]
+   } </pre>
+
+<b>Exercise:</b> Translate the pseudocode immediately above into a
+recursive Java method that sorts array segment <tt>a[u..v]</tt>
+
+<hr>
+<h3>Recursive Binary Search</h3>
+
+</p><p>
+The binary search strategy (in which we find a "solution" within a
+range <tt>low..high</tt> by repeatedly cutting the search space in
+half) can be expressed not only using loops (such as we have done
+before) but also recursively.  The following recursive method finds
+the unique location <tt>k</tt>, where <tt>low&le;k&le;high</tt>,
+such that every element in array segment <tt>a[low..k-1]</tt> is
+less than <tt><b>key</b></tt>, which is less than or equal to every
+element in <tt>a[k..high-1]</tt>.  (Of course, <tt>a[low..high-1]</tt>
+is assumed to be in ascending order.)
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/** Returns the unique value of k in the range low..high satisfying the
+**  condition a[low..k-1] &lt; key &le; a[k..high-1]
+**  pre: 0 &le; low &le; high &le; a.length and the elements in a[low..high-1] 
+**       are in ascending order
+*/
+int indexOfBinSearch(int[] a, int low, int high, int key)
+{
+   if (low == high)
+      { return low; }    // the only result possible!
+   else {
+      int mid = (low+high) / 2;
+      if (a[mid] < key)         // result must be in the range mid+1..high
+      {
+         return indexOfBinSearch(a, mid+1, high, key);
+      }
+      else    // a[mid] &ge; key, so result must be in the range low..mid
+      {
+         return indexOfBinSearch(a, low, mid, key);
+      }
+   }
+} </pre>
+</td></tr>
+</table>
+</center>
+
+<hr>
+<h3>Numbers to Numerals</h3>
+
+</p><p>
+In Java, one can use the <tt>Integer.toString()</tt> method to translate
+a value of type <tt>int</tt> into a <tt>String</tt> object that expresses
+that integer as a decimal numeral (or even a numeral in another base).
+For example, the call <tt>Integer.toString(5723)</tt> yields as its result
+(a reference to) the String "<tt>5723</tt>".
+
+</p><p>
+Even had we not known about the <tt>Integer.toString()</tt> method, we
+could have written our own method to do the same thing, like this:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public static String intToString(int m) { return "" + m; }</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+This takes advantage of the fact that, when a numeric value is combined
+with a String via the concatenation operator, Java automatically
+converts the number to a String first (in effect, by implicitly calling
+a <tt>toString()</tt> method as just described).
+
+</p><p>
+As an academic exercise, let's design a recursive version of our method
+<tt>intToString()</tt>.
+
+</p><p>
+Recall from above that a recursive solution to the problem of computing
+the sum <tt>1 + 2 + 3 + ... + n</tt> of the first <tt>n</tt> positive integers
+becomes evident when we recognize that, for <tt>n &gt; 0</tt>, this is the
+sum of the first <tt>n-1</tt> positive integers (i.e., a smaller instance
+of the same problem), plus <tt>n</tt>.
+
+</p><p>
+Using <tt>4257</tt> as an example, 
+we can make a similar observation regarding
+the problem under consideration: 
+the string corresponding to <tt>4257</tt> is the concatenation of<br />
+(1) the string corresponding to <tt>425</tt> (i.e., "<tt>425</tt>") with<br />
+(2) the character corresponding to <tt>7</tt> (i.e., <tt>'7'</tt>).
+
+</p><p>
+To state it more generally, for any integer <tt>m</tt>, 
+where <tt>m &ge; 10</tt>, the string corresponding to <tt>m</tt> is the
+concatenation of<br />
+(1) the string corresponding to <tt>m/10</tt> 
+   (i.e., <tt>m</tt> with its ones digit chopped off) with <br />
+(2) the character corresponding to <tt>m % 10</tt>
+    (i.e., the ones digit of <tt>m</tt>).
+
+</p><p>
+Assuming that we can figure out how to compute the character corresponding
+to an integer less than 10 (e.g., '7' for 7), it will not be difficult 
+to transform the plan above into a recursive method in which any
+value in the range <tt>0..9</tt> is covered by the base case and 
+all greater numbers are covered by the recursive case.
+
+
+</p><p>
+Because there are a finite number of cases for it to handle, a method 
+that translates an integer in the range <tt>0..9</tt> into its 
+corresponding <tt>char</tt> value is not difficult.  Here is a
+brute force approach:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/** Given an int value in the range 0..9, returns the corresponding
+value of type char.  E.g., 4 maps to '4', 7 maps to '7'.
+*/
+public static char digitToChar(int dig) {
+   if (dig == 0)      { return '0'; }
+   else if (dig == 1) { return '1'; }
+   else if (dig == 2) { return '2'; }
+   else if (dig == 3) { return '3'; }
+   else if (dig == 4) { return '4'; }
+   else if (dig == 5) { return '5'; }
+   else if (dig == 6) { return '6'; }
+   else if (dig == 7) { return '7'; }
+   else if (dig == 8) { return '8'; }
+   else if (dig == 9) { return '9'; }
+   else { return 'X'; }  // shouldn't happen
+}
+</td></tr>
+</table>
+</center>
+
+</p><p>
+With a little knowledge about how values of type <tt>char</tt> are 
+represented internally, we could have written the method above to be
+not only more concise, but also more efficient in terms of execution time.
+The knowledge we need is that the <tt>char</tt> values <tt>'0'</tt>
+through <tt>'9'</tt> are represented by consecutive integer values
+and that, in Java, if <tt>k</tt> is an expression of type <tt>int</tt>
+having value in the range <tt>0..9</tt>, then the expression
+<tt>(char)('0' + k)</tt> is the value of type <tt>char</tt> corresponding
+to <tt>k</tt>.  For example, <tt>(char)('0' + 5)</tt> has value equal to
+<tt>'5'</tt>.
+
+</p><p>
+Armed with this knowledge, we can rewrite our <tt>digitToChar()</tt>
+method as follows:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/** Given an int value in the range 0..9, returns the corresponding
+value of type char.  E.g., 4 maps to '4', 7 maps to '7'.
+*/
+public static char digitToChar(int dig) { return (char)('0' + dig); }
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Using the method above, we can now write the method of interest:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/** Given a nonnegative int value, returns the corresponding decimal
+** numeral in the form of a String.  E.g., 5234 maps to "5234".
+*/
+public static char intToString(int m) 
+{ 
+   if (m < 10) { return "" + digitToChar(m); }
+   else { return intToString(m / 10) + digitToChar(m % 10); }
+}
+</td></tr>
+</table>
+</center>
+
+
+<hr>
+<h3>Loops vs. Recursion</h3>
+</p><p>
+Interestingly, any algorithm that can be expressed using loops
+can be expressed recursively, and vice versa.  Hence, if we have
+one construct, we don't need the other.  But having both at our
+disposal is advantageous because, depending upon the
+circumstance/context, one is sometimes preferable to the other.
+From the standpoint of efficiency (running time and memory usage),
+loops are usually superior.  From the standpoint of elegance and
+readability, recursion is often superior.  Indeed, some algorithms
+can be expressed concisely and elegantly using recursion but less so
+using loops.  Perhaps the best-known example is <b>Quick Sort</b>,
+developed in about 1960 by C.A.R. Hoare.
+
+
+</body>
+</html>

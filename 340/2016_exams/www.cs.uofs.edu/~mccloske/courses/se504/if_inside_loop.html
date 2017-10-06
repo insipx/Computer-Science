@@ -1,0 +1,84 @@
+<html>
+<head>
+  <title>Selection command inside a loop</title>
+</head>
+<body>
+<h2>SE 504 <br />
+When a selection command (i.e., if statement) is nested inside a loop ...
+</h2>
+
+
+</p><p>
+Suppose you have a loop of the following form (that is, one whose body
+is a selection command):
+<pre>    
+    do B ---> 
+       if B0 ---> S0
+       [] B1 ---> S1
+       fi
+    od
+</pre>
+
+</p><p>
+<b>Question:</b>
+When it comes time to prove item (ii) on the loop checklist,
+<tt>{I &and; B} S {I}</tt> (where <tt>I</tt> is the invariant,
+<tt>B</tt> is the loop guard, and <tt>S</tt> is the body of the loop),
+how do you proceed?  
+
+</p><p>
+<b>Answer:</b>
+First, you observe that S is a selection command.  Following the
+rules that govern how one goes about proving a Hoare triple in which the
+program is a selection command (namely, rule (5) in 
+<a href="prog_ver_summary.html">Program Verification Summary</a> 
+(PVS), we deduce that the following should be proved:
+<pre>
+     (a)  [I &and; B  ==>  B0 v B1]
+     (b0) {I &and; B &and; B0} S0 {I}
+     (b1) {I &and; B &and; B1} S1 {I}
+</pre>
+
+</p><p>
+As with any Hoare triple, the steps to follow in order to prove (b0) depend
+upon the form of S0.  If S0 is the catenation of two or more commands, apply
+(1) from PVS.  If S0 is an assignment command, apply (4).  And so on and
+so forth.  Of course, the same reasoning applies to proving (b1).
+
+</p><p>
+Just to complicate things a little, suppose that the original program were
+of the form
+<pre>
+    do B ---> 
+       if B0 ---> S0
+       [] B1 ---> S1
+       fi;
+       i := i+1
+    od
+</pre>
+
+</p><p>
+Now the loop body, rather than consisting entirely of a selection command,
+is the catenation of a selection command (call it IF) with an assignment.
+Instantiating <tt>S</tt> by <tt>IF; i:=i+1</tt>, 
+Item (ii) on the loop checklist is <tt>{I &and; B} IF; i:=i+1 {I}</tt>.
+Because it is a catenation, rule (1) from PVS applies, which says that
+we should find an R for which both <tt>{I &and; B} IF {R}</tt>
+and <tt>{R} i:=i+1 {I}</tt> are true.  Because <tt>i:=i+1</tt>
+is an assignment, a good choice for R is <tt>wp.(i:=i+1).I</tt>,
+which is <tt>I[i:=i+1]</tt>.  This gives us <tt>{R} i:=i+1 {I}</tt>
+"for free".  We are left to show <tt>{I &and; B} IF {I[i:=i+1]}</tt>.
+Now we apply (5) from PVS, which tells us to prove
+ 
+<pre>
+   (a) [I &and; B ==> B0 &or; B1]
+   (b0) {I &and; B &and; B0} S0 {I[i:=i+1]}
+   (b1) {I &and; B &and; B1} S1 {I[i:=i+1]}
+</pre>
+
+As explained earlier, to prove (b0) we would follow the appropriate rule
+from PVS, according to the form of S0 (e.g., catenation, assignment, skip,
+selection command, etc.).  The same goes for (b1).
+
+</body>
+</html>

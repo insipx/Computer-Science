@@ -1,0 +1,63 @@
+CMPS 340  File Processing
+Algorithms for extendible hashing (insertion and deletion)
+
+
+procedure Insert ( REC )       --inserts REC into hash table
+
+begin
+  KEY    := KeyOf(REC);  
+  ADDR   := the number whose binary representation is the first DIR_DEPTH
+            bits of H(KEY), where H is our hash function.
+  BUCKET := the bucket pointed to by DIRECTORY[ ADDR ]
+
+  if a record R satisfying KeyOf(R) = KEY is already in BUCKET then
+
+     Take appropriate action  (perhaps report "duplicate error")
+
+  elsif BUCKET is not full then
+
+     place REC into BUCKET
+
+  else
+     Split_Bucket(BUCKET);  --split BUCKET and redistribute its contents 
+                            --appropriately between itself and the new bucket.
+                            --If BUCKET's depth was equal to DIR_DEPTH, add 1
+                            --to DIR_DEPTH and double the size of DIRECTORY.
+     Insert( REC );         --recursively insert
+  fi;
+end Insert;
+
+
+procedure Delete ( KEY )        --deletes from hash table the record R 
+                                --satisfying KeyOf(R) = KEY 
+begin
+  ADDR   := the number whose binary representation is the first DIR_DEPTH
+            bits of H(KEY), where H is our hash function.
+  BUCKET := the bucket pointed to by DIRECTORY[ ADDR ]
+
+  Let R be the record in BUCKET satisfying KeyOf(R) = KEY 
+
+  if R does not exist then
+     do nothing (or perhaps report "nothing to delete" error)
+  else
+     remove R from BUCKET
+
+     do while BUCKET has a sibling bucket SIB and the two are "collapsible" 
+        
+        --Note that two buckets are "siblings" iff their labels (a bucket's
+        --label is the bit string which is the longest common prefix of the
+        --hash values of all keys that "belong" in it) differ in only the last
+        --bit.  Two siblings are collapsible if their contents can together fit
+        --into a single bucket.  (Folk and Zoellick do not consider two buckets
+        --to be siblings unless, in addition, their depths (lengths of their
+        --labels) are equal to DIR_DEPTH, the depth of the directory.)
+
+        Collapse(BUCKET, SIB );   --Combine contents of BUCKET and SIB into
+                                  --BUCKET, freeing the space used by SIB and
+                                  --changing directory cells pointing to SIB
+                                  --so as to point to BUCKET.  If appropriate, 
+                                  --subtract 1 from DIR_DEPTH and halve the 
+                                  --size of DIRECTORY.
+     od;
+  fi;
+end Delete;   

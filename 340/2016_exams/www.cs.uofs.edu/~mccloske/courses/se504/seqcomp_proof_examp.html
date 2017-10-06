@@ -1,0 +1,340 @@
+<html>
+<head>
+<title>Proving Correctness of a sequential composition of commands
+</title>
+</head>
+<body>
+<H2>
+SE 504 <br />
+Proving Correctness of a sequential composition of commands
+</H2>
+
+</p><p>
+The Hoare Triple law for <b>sequential composition</b> 
+(also called <b>catenation</b>) says
+<p><center>
+     {P} S<sub>1</sub>; S<sub>2</sub> {Q} &nbsp;&equiv;&nbsp;  
+     there exists a predicate R such that {P} S<sub>1</sub> {R} &and;  {R} S<sub>2</sub> {Q} 
+</center>
+
+</p><p>
+Note that here S<sub>1</sub> and S<sub>2</sub> represent programs that may
+themselves be sequential compositions
+(i.e., they need not be individual commands).
+
+</p><p>
+<b>Example 1:</b> Prove <tt>{P &and; k&ge;0} sum := sum + k; k := k+1 {P}</tt>, 
+where <tt>P: sum = (+i | 0&le;i&lt;k : i)</tt>.
+
+</p><p>
+The rule suggests that we find a prediate R such that both
+<p><center><tt>
+         {P &and; k&ge;0} sum := sum + k {R} &nbsp;and&nbsp;  {R} k := k+1 {P}
+</tt></center>
+
+<p>
+Utilizing the Hoare Triple rule for assignment, we have that
+<p><center><tt>{P(k:=k+1)} k := k+1 {P}</tt></center>
+
+<p>
+Hence, we choose as a candidate for R the predicate 
+<tt>P(k:=k+1)</tt>.
+This is a good choice not only because it "automatically" validates
+the second Hoare Triple but also because, being the weakest such
+predicate that we could have chosen, it maximizes the chances that
+the first Hoare Triple is valid.
+(The weaker you make a Hoare Triple's postcondition, the more likely 
+that it is valid.)
+
+</p><p>
+It remains only to show that
+
+<p><center><tt> {P &and; k&ge;0} sum := sum + k {R} </tt></center>
+
+<p>
+By the Hoare Triple rule for assignment, this is equivalent to
+
+<p><center><tt> [P &and; k&ge;0 &rArr; R(sum := sum+k)] </tt></center>
+
+<p>
+Here is a proof:
+
+<pre>
+  Assume P and k&ge;0. 
+
+     R(sum := sum + k)
+
+  =     < defn of R >
+
+     P(k:=k+1)(sum := sum + k)
+
+  =     < defn of P >
+
+     (sum = (+i | 0&le;i&lt;k : i))(k:=k+1)(sum := sum + k)
+
+  =     < textual substitution >
+
+     (sum = (+i | 0&le;i&lt;k+1 : i)(sum := sum + k)
+
+  =     < textual substitution >
+   
+     sum + k = (+i | 0&le;i&lt;k+1 : i)
+
+  =     < assumption k&ge;0 guarantees that range is non-empty; split off term (Gries 8.23) >
+
+     sum + k = (+i | 0&le;i&lt;k : i) + k
+
+  =     < algebra: subtract k from both sides >
+
+     sum = (+i | 0&le;i&lt;k : i)
+
+  =     < assumption P >
+
+     true
+</pre>
+
+<p>
+Now suppose that we use the wp-approach instead of the Hoare Triple approach.
+Recall that the relationship between wp and Hoare Triples is
+
+<p><center> {P} S {Q} &nbsp;&equiv;&nbsp;  [P <tt>&rArr;</tt> wp.S.Q] </center>
+
+<p>
+Because our program is a sequential composition of commands, in order to
+compute its weakest precondition we will make use of the wp sequential
+composition rule, which is 
+
+<p><center> [wp.(S<sub>1</sub>;S<sub>2</sub>).Q &nbsp;&equiv;&nbsp;
+            wp.S<sub>1</sub>.(wp.S<sub>2</sub>.Q)] </center>
+
+<p>
+Here is a proof of 
+<tt>[P &and; k&ge;0 &rArr; wp.(sum := sum+k; k:=k+1).P]</tt>:
+
+<pre>
+  Assume P and k&ge;0
+
+     wp.(sum := sum+k; k:=k+1).P
+
+  =     < wp sequential composition rule >
+
+     wp.(sum:=sum+k).(wp.(k:=k+1).P)
+
+  =     < wp assignment rule >
+
+     wp.(sum:=sum+k).(P(k:=k+1))
+
+  =     < wp assignment rule >
+
+     P(k:=k+1)(sum:=sum+k)
+</pre>
+
+<p>
+As this is the second line in the proof above, we simply continue
+as in that proof.
+
+<hr>
+<p>
+<b>Example 2:</b> Prove 
+<tt>{P: x=X &and; y=Y} temp := x; x := y; y := temp {Q: x=Y &and; y=X}</tt>.
+
+</p><p>
+Following the Hoare Triple approach, first we could parse the program as
+</p><p>
+<center>
+<tt>(temp := x; x := y); y := temp</tt>
+</center>
+
+</p><p>
+suggesting that we seek a predicate R making each of these Hoare Triples
+valid:
+
+</p><p>
+<center>
+  <tt>{P} temp := x; x := y; {R}</tt> &nbsp; and &nbsp;
+  <tt>{R} y := temp {Q}</tt>
+</center>
+
+</p><p>
+The best choice for R is <tt>wp.(y:=temp){Q}</tt>, which is
+(by the wpAL) <tt>Q(y := temp)</tt>.
+We have that <tt>{R} y := temp {Q}</tt> is valid.
+We are left with the problem of proving this Hoare Triple:
+
+</p><p>
+<center>
+<tt>{P} temp := x; x := y; {R}</tt> 
+</center>
+
+</p><p>
+which is itself a sequential composition and hence we need to find
+R' that validates both
+</p><p>
+<center>
+<tt>{P} temp := x {R'}</tt> &nbsp; and &nbsp; 
+<tt>{R'} x := y; {R}</tt> 
+</center>
+
+</p><p>
+Following the same reasoning as before, we choose R' to be 
+<tt>wp.(x:=y).R</tt>, which is <tt>R(x:=y)</tt>,
+leaving us with the problem of showing the Hoare Triple
+<tt>{P} temp := x {R'}</tt>.
+By the Hoare Triple Assignment Law (HTAL), this is equivalent to
+<tt>P &rArr; R'(temp := x)</tt>.  Let's prove it:
+
+
+</p><p>
+<pre>    Assume P (i.e., x=X &and; y=Y).
+
+    R'(temp:=x)
+
+=      < defn. of R' >
+
+    R(x:=y)(temp:=x)
+
+=      < defn of R >
+
+    Q(y:=temp)(x:=y)(temp:=x)
+
+=      < defn of Q >
+
+    (x=Y &and; y=X)(y:=temp)(x:=y)(temp:=x)
+
+=      < textual substitution >
+
+    (x=Y &and; temp=X)(x:=y)(temp:=x)
+
+=      < textual substitution >
+
+    (y=Y &and; temp=X)(temp:=x)
+
+=      < textual substitution >
+
+    y=Y &and; x=X
+
+=      < assumption >
+
+    true</pre>
+
+</p><p>
+A more streamlined approach would have been to make use of the 
+<b>weakest precondition sequential composition</b> law, which says 
+</p><p>
+<center>
+<b>[wp.(S<sub>1</sub>;S<sub>2</sub>).Q &nbsp;&equiv;&nbsp;
+   wp.S<sub>1</sub>.(wp.S<sub>2</sub>.Q)]</b>
+</center>
+
+</p><p>
+Recall the law relating HT's and wp: <tt>{P}S{Q} &equiv; [P &rArr; wp.S.Q]</tt>.
+The P, S, and Q that interest us at the moment are
+</p><p>
+<center><tt>
+P: x=X &and; y=Y &nbsp; &nbsp;
+S: temp := x; x := y; y := temp &nbsp; &nbsp;
+Q: x=Y &and; y=X
+</tt></center>
+
+</p><p>
+So we prove that <tt>{P}S{Q}</tt> is valid by proving 
+<tt>P &rArr; wp.S.Q</tt>:
+
+<pre>
+   Assume P (i.e., x=X and y=Y)
+
+     wp.S.Q
+
+  =     < defn of S and Q >
+
+     wp.(temp:=x; x:=y; y:=temp).(x=Y &and; y=X}
+
+  =     < wp seq. comp. law, with S<sub>1</sub> := "temp:=x" and S<sub>2</sub> := "x:=y; y:=temp" >
+
+     wp.(temp:=x).(wp.(x:=y; y:=temp).(x=Y &and; y=X))
+
+  =     < wp seq. comp. law, with S<sub>1</sub> := "x:=y" and S<sub>2</sub>:= "y:=temp" >
+
+     wp.(temp:=x).(wp.(x:=y).(wp.(y:=temp).(x=Y &and; y=X)))
+
+  =     < wp assignment law >
+
+     wp.(temp:=x).(wp.(x:=y).((x=Y &and; y=X)(y:=temp)))
+
+  =     < wp assignment law >
+
+     wp.(temp:=x).((x=Y &and; y=X)(y:=temp)(x:=y))
+
+  =     < wp assignment law >
+
+     (x=Y &and; y=X)(y:=temp)(x:=y)(temp:=x)
+
+  =     < textual substitution >
+
+     (x=Y &and; temp=X)(x:=y)(temp:=x)
+
+  =     < textual substitution >
+
+     (y=Y &and; temp=X)(temp:=x)
+
+  =     < textual substitution >
+
+     y=Y &and; x=X
+
+  =     < assumption >
+
+     true</pre>
+
+</p><p>
+We purposely wanted to arrive at the same formula (see 5th one from
+the bottom) here as in the previous proof.
+However, we would have obtained a proof with somewhat shorter formulas
+had we applied textual substitution immediately after each application of
+wpAL rather than waiting until all three applications of wpAL had
+been carried out.  To demonstrate this, start with the fifth formula
+in the proof above:
+
+<pre>
+     wp.(temp:=x).(wp.(x:=y).((x=Y &and; y=X)(y:=temp)))
+
+  =     < textual substitution >
+
+     wp.(temp:=x).(wp.(x:=y).(x=Y &and; temp=X))
+
+  =     < wp assignment law >
+
+     wp.(temp:=x).((x=Y &and; temp=X)(x:=y))
+
+  =     < textual substitution >
+
+     wp.(temp:=x).(y=Y &and; temp=X)
+
+  =     < wp assignment law >
+
+     (y=Y &and; temp=X)(temp:=x)
+
+  =     < textual substitution >
+
+     y=Y &and; x=X
+
+  =     < assumption >
+
+     true </pre>
+
+</p><p>
+Sequential composition is associative; that is, the program 
+
+<p><center>S<sub>1</sub>; S<sub>2</sub>; S<sub>3</sub> </center>
+
+<p>
+can be viewed as being either 
+(S<sub>1</sub>; S<sub>2</sub>); S<sub>3</sub> &nbsp; or &nbsp;
+S<sub>1</sub>; (S<sub>2</sub>; S<sub>3</sub>).
+<p>
+In the proof above, we used the latter interpretation.
+(Notice the instantiations of S<sub>1</sub> and S<sub>2</sub> in the first step of the proof.)
+As an exercise, the reader should do the proof using the former
+interpretation.
+
+</body>
+</html>

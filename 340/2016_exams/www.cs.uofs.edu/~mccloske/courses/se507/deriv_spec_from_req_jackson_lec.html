@@ -1,0 +1,927 @@
+<html>
+<head>
+  <title>SE 507: Notes on "Deriving Specifications from Requirements"
+  </title>
+</head>
+<body>
+<H2>SE 507 <br />
+Notes on <em>Deriving Specifications from Requirements: An Example</em><br />
+by Michael Jackson and Pamela Zave
+</H2>
+
+This web page follows the material presented in Sections 1-8 of the
+paper mentioned in the title, hereafter referred to by DSR, which appeared 
+on pages 15-24 of the Proceedings of ICSE'95 (ACM's 1995 International
+Conference on Software Engineering).
+It also draws some information from other papers co-authored by
+Jackson and Zave, including
+<ul>
+  <li><em>Four Dark Corners of Requirements Engineering</em> (FDC),
+      from ACM Transactions on Software Engineering and Methodology,
+      Vol. 6, No. 1, Jan. 1997, pp. 1-30.
+  </li>
+  <li><em>The Meaning of Requirements</em> (MR),
+      from Annals of Software Engineering, Vol. 3 (1997), pp. 5-21.
+  </li>
+  <li><em>A Reference Model for Requirements and Specifications</em> (RMRS),
+      from IEEE Software, May/June 2000, pp. 37-43.
+  </li>
+</ul>
+
+<p>
+First we review some terms that Jackson uses, which are
+summarized on page 24 of FDC.
+
+<ul>
+  <li>The <em>environment</em> is the portion of the "real world" relevant
+      to the software development project.
+  </li>
+  <li>A <em>requirement</em> is a desired relationship among the 
+      <em>phenomena</em> (e.g., actions/events, states) of the environment.
+      It is stated in the <em>optative</em> mood, meaning that it is
+      intended as a wish or desire.  (Such a statement is often referred to
+      as being <em>prescriptive</em>.)
+
+  <li>The <em>machine</em> is the hardware/software entity the purpose of
+      which is to interact with the environment in such a way as to ensure
+      that the requirements are established/satisfied/maintained.
+  </li>
+  <li>A <em>specification</em> describes machine behavior (at its interface
+      with the environment) sufficient to achieve one or more requirements.
+      Viewed from the machine, a specification is a starting point for
+      programming; viewed from the environment, it is a 
+      <!-- restricted kind of requirement in that  -->
+      requirement in which all phenomena mentioned must be shared with
+      the machine and any constraints imposed must be upon phenomena
+      that are controlled by the machine.
+  </li>
+  <li><em>Domain knowledge</em> consists of facts/properties (or assumptions)
+      about (phenomena in) the environment that hold regardless of
+      whether or not the machine is present.
+      It is stated in the <em>indicative</em> mood, meaning that it is
+      intended to be a statement of fact.  (Such a statement is often
+      referred to as being <em>descriptive</em>.)
+      Such knowledge is used in refining requirements into specifications.
+  </li>
+</ul>
+<p>
+Given a requirement, we progress to a specification by purging the
+requirement of all features that would preclude implementation by the
+machine.
+Which features are these?
+<b>Answer:</b>Any that refer to environment phenomena that are not
+accessible to (i.e., shared with) the machine or that impose constraints
+upon phenomena that the machine does not control.
+
+<hr>
+<H3>Phenomena: Issues of Visibility/Sharing and Control</H3>
+
+</p><p>
+In Jackson's way of looking at things (see RMRS), phenomena are 
+partitioned into four categories, according to who <b>controls</b> them
+and to whom they are <b>visible</b>.
+<ol>
+  <li><b><em>e<sub>h</sub></em></b>: 
+      controlled (or initiated) by the <b>e</b>nvironment and 
+      <b>h</b>idden from (i.e., invisible to, not shared with) the machine.
+      <br />
+      <b>Examples:</b>
+      <ul>
+        <li>the property of there being four people on the elevator car</li>
+        <li>the "event" in which a person enters the elevator car</li>
+        <li>The property of the elevator being at the 3rd floor</li>
+        <li>The property of the elevator being in a "moving" (as opposed
+            to "stationary") state
+        </li>
+      </ul>
+      </p><p>
+  </li>
+  <li><b><em>e<sub>v</sub></em></b>: controlled by the <b>e</b>nvironment
+       but <b>v</b>isible to (i.e., shared with) the machine.
+       <br /> 
+       <b>Examples:</b>
+       <ul>
+         <li>the state of the sensor that indicates whether or not
+             the elevator car is at the 3rd floor
+         </li>
+         <li>the event of someone pressing the DOWN button on floor 8.</li>
+       </ul>
+      </p><p>
+  </li>
+  <li><b><em>s<sub>v</sub></em></b>: controlled by the machine 
+      (i.e., <b>s</b>ystem) but <b>v</b>isible to (shared with) 
+      the environment.
+      <br />
+      <b>Example:</b> the action/event of the machine signaling 
+         the elevator's motor to turn on.
+      </p><p>
+  </li>
+  <li><b><em>s<sub>h</sub></em></b>: controlled by the machine
+      (i.e., <b>s</b>ystem) and <b>h</b>idden from (i.e., not shared with)
+      the environment.
+      <br />
+      <b>Examples:</b>
+      <ul>
+        <li>the value of program variable <tt>currentFloor</tt>. </li>
+        <li>the subroutine <tt>checkSensor()</tt>. </li>
+      </ul>
+  </li>
+</ol>
+
+</p><p>
+The phenomena in the union of <em>e<sub>v</sub></em> and
+<em>s<sub>v</sub></em>, being those that are visible to both
+environment and machine (i.e., shared among them), 
+are at the <em>interface</em> between the two.
+(See Venn diagram on page 38 of RMRS.)
+
+<p>
+Domain knowledge, and likewise requirements, involve 
+only environment-controlled phenomena
+(i.e. those in the set <em>e</em> = <em>e<sub>h</sub></em> <tt>&cup;</tt>
+<em>e<sub>v</sub></em>).
+<!-- (which is shorthand for the union of <em>e<sub>h</sub></em> and -->
+
+<!-- 
+  Likewise, requirements resulting from the "requirements analysis" phase of
+  software development involve only phenomena from <em>e</em>,
+  most of which are typically from <em>e<sub>h</sub></em>.
+-->
+
+</p><p>
+A <em>specification</em> describes intended behavior of the machine at
+its interface with the environment &mdash;and hence mentions only
+phenomena in <em>e<sub>v</sub></em> and <em>s<sub>v</sub></em>&mdash;
+sufficient for ensuring that the requirements are satisfied,
+provided that the domain knowledge that has been ascertained is
+accurate.
+Furthermore, any constraints mentioned in a specification
+must be imposed upon phenomena in <em>s<sub>v</sub></em>
+(or <em>s<sub>h</sub></em>?),
+or else the machine, which directly controls only such phenomena,
+would not be capable of implementing it.
+
+</p><p>
+From the point of view of the machine, a specification is a starting
+point for programming.  That is, it describes how a program must behave.
+From the point of view of the environment, a specification is a
+special case of a requirement.
+
+</p><p>
+The main idea of this paper is to illustrate the idea of deriving
+a specification from a requirement by purging the latter of 
+all features that would preclude implementation by the machine.
+
+</p><p>
+Doing this relies upon the use of domain knowledge, which allows
+us to reason about constraints that the machine can impose upon 
+environment-controlled phenomena (i.e., those in <em>e</em>), 
+indirectly, by constraining those in <em>s<sub>v</sub></em>
+
+<H2>The Example: Zoo Turnstile</H2>
+
+</p><p>
+Our problem involves a zoo to which customers gain entry by inserting a
+coin/token into a slot, which allows them to pass through a turnstile.
+This mechanical apparatus has already been chosen, setting the
+limits of the environment for which the requirements must be stated.
+Hence, the requirements cannot be about the profitability of the zoo,
+or the best use of the real estate that it occupies, or what price should
+be charged to enter the zoo, or whether the owner would be better off
+if he sold the zoo and took up yoga.  All of these are outside the scope
+of the problem.
+
+</p><p>
+The goal is to develop software that controls the turnstile in
+such a way that no one can enter without paying and anyone who has
+paid is allowed to enter.  (More precisely, at no time may the number
+of people who have entered exceed the number of payments that have
+been made.)
+It is assumed that there is an electrical interface through which
+the machine can sense coins being dropped into the coin slot and 
+through which it can control the turnstile by initiating lock and unlock
+events.
+
+<H3>Designating Environment Phenomena</H3>
+
+</p><p>
+Jackson emphasizes (especially in MR) the idea that a 
+small-as-possible collection of <b>ground terms</b> should be 
+<b>designated</b> to enable us to write descriptions of 
+(and constraints upon) environment phenomena.
+A designation associates a ground term (typically a predicate) to
+an informal, but precise, description of the environment phenomenon
+to which it refers.
+
+</p><p>
+As Jackson puts it, "Ground terms serve to fix the relationship 
+between the description and what it describes."
+
+</p><p>
+All other terms will be <b>defined</b> in terms of the ground terms.
+Definitions are simply for the purpose of providing shorter and
+simpler descriptions, but they add nothing in terms of descriptive
+capabilities. <!-- (Example: aunt, expected-widgets-in-inventory) -->
+
+</p><p>
+Example from pages 13-14 of MR: the set of ground terms 
+<tt>{male, female, parent}</tt> is sufficient for describing 
+family relationships (aunt, sister, second cousin, etc.).
+(<b>Note:</b> if we assume that <tt>male(x) = &not;female(x)</tt>, 
+only one among <tt>male</tt> and <tt>female</tt> is needed
+as a ground term, as either one can be defined in terms of the other!)
+
+</p><p>
+For the Zoo Turnstile problem, we use the common technique of designating 
+actions/events by predicates.  That is, for each different kind of
+action/event, we designate a predicate that "recognizes" precisely
+that kind of action/event.
+<ul>
+  <li><b>Push(e)</b> : 
+      <em>e</em> is an event in which a visitor has pushed the turnstile
+      "arm", causing it to rotate to an "intermediate" position
+      from which it must continue rotating to a "home" position.
+      (This statement is from the environment's point of view.)
+      </p><p>
+      From the machine's point of view, <em>e</em> is an event in
+      which an electrical signal is received (from the turnstile)
+      indicating that the turnstile's arm rotated to the
+      intermediate position referred to above.
+  </li>
+  <li><b>Enter(e)</b> :
+      <em>e</em> is an event in which a visitor, 
+      <!-- pushes the turnstile to its "home" position, -->
+      having pushed the turnstile "arm" all the way to its "home" position,
+      passes through the gate, thereby entering the zoo
+  </li>
+  <li><b>Coin(e)</b> : 
+      <em>e</em> is an event in which a visitor inserts a coin in the slot.
+      (From the machine's point of view, it is the reception of an
+      electrical signal indicating that a coin was inserted.)
+  </li>
+  <li><b>Lock(e)</b> : 
+      <em>e</em> is an event in which the turnstile receives a signal to lock.
+      (From the machine's point of view, it is the sending of such a signal.)
+  </li>
+  <li><b>Unlock(e)</b> :
+      <em>e</em> is an event in which the turnstile receives a signal to
+      unlock.
+      (From the machine's point of view, it is the sending of such a signal.)
+  </li>
+</ul>
+
+</p><p>
+These all happen to be one-argument predicates; in general, the
+designated terms will tend to include multi-argument predicates, too.
+
+<p>
+Classifying the just-designated terms, we have that 
+<ul>
+  <li><em>e<sub>h</sub></em> includes <b>Enter()</b></li>
+  <li><em>e<sub>v</sub></em> includes <b>Coin()</b> and <b>Push()</b></li>
+  <li><em>s<sub>v</sub></em> includes <b>Lock()</b> and <b>Unlock()</b> 
+</ul>
+<p>
+Because the occurrence of events through the passage of time is what is at
+issue here, we also make the following designations, which assume that events
+and intervals between events are "individuals" that strictly alternate.
+That is, each event "ends" some interval and "begins" another.
+This is suggested by the following "timeline" picture, 
+in which vertical bars indicate events and dashed line segments are the 
+intervals between them.
+
+<pre><center>
+-----------|---|------|----------|---|--|------|--- ... 
+</center>
+</pre>
+
+</p><p>
+With respect to events and intervals, we designate the following
+standard set of predicates:
+<ul>
+  <li><b>Event(e)</b> : e is an (atomic and instantaneous) event </li>
+  <li><b>Interval(v)</b> : v is an interval (during which no event occurs)</li>
+  <li><b>Earlier(e,t)</b> : event e occurs earlier than event t</li>
+  <li><b>Begins(e,v)</b> : the occurrence of event e marks 
+      the beginning of interval v</li>
+  <li><b>Ends(e,v)</b> : the occurrence of event e marks
+      the end of interval v</li>
+</ul>
+
+</p><p>
+The assumption is that <b>Earlier()</b> defines a total ordering on events,
+meaning that, viewed as a binary relation on events, <b>Earlier</b> is
+anti-reflexive, transitive, and has the property that, 
+for every pair of distinct events <tt>e</tt> and <tt>f</tt>,
+exactly one of <b>Earlier(e,f)</b> and  <b>Earlier(f,e)</b> is true.
+
+</p><p>
+Note that if we were not assuming events to be instantaneous, we'd have
+to introduce phenomena relating to the delay between, for example,
+the coin being inserted into the slot and the machine sensing it.
+(In that case, a coin being inserted would not be an event visible
+to the machine, but the "coin entered" signal that reaches it later 
+would be.)
+(In terms of <b>problem frames</b>, this would mean that there would
+be a <b>connection domain</b> in between the machine domain and the
+domain containing the coin accepter mechanism.)
+
+</p><p>
+Another important thing to remember about events and intervals is that
+the former are what cause changes in state; hence, during any particular
+interval the state remains fixed.  (Thus, it makes sense to define
+predicates whose purpose is to characterize the state that exists
+during an interval.)
+
+<hr>
+
+<H3>IND1</H3>
+</p><p>
+Jackson begins his analysis by describing an <b>indicative safety property</b>
+of the environment, which is an example of domain knowledge.
+<!--  page 18: IND1;  page 14 of FDC: G1): -->
+(A safety property refers to one that prohibits certain events from
+happening in certain states/situations).
+
+</p><p>
+<em>Note:</em>
+The names of properties in boldface are taken from DSR; 
+the ones in parentheses are from FDC, which also discusses the
+zoo problem, but not in its entirety.
+<!-- (The Buchi automata appearing in FDC are better insofar as  -->
+(The finite state machines (FSM's) depicted in FDC have the advantage that
+final states are indicated.)
+<em>End of note.</em>
+
+</p><p>
+<b>IND1</b> (G1) says that <b>Push</b> and <b>Enter</b> events 
+must strictly alternate, beginning with a <b>Push</b>.
+This is a property of the turnstile mechanism.
+(See <!--Buchi automaton--> 
+the <b>finite state machine</b> (henceforth, <b>FSM</b>)
+on page 18 of DSR or page 14 of FDC.)
+
+</p><p>
+Note that the states <b>PE0</b> and <b>PE1</b> appearing in the FSM
+<!-- automaton-->
+are, in effect, predicates being defined in terms of (the designated terms)
+<b>Push</b> and <b>Enter</b>.
+Informally, we can give the definitions
+
+</p><p>
+<b>PE0(v)</b> = 
+ among all events to occur earlier than the one ending interval <em>v</em>,
+ either none was a <b>Push</b> or else an <b>Enter</b> occurred sometime after
+ the most recent occurrence of <b>Push</b> 
+
+</p><p>
+<b>PE1(v)</b> = 
+ among all events to occur earlier than the one ending interval <em>v</em>,
+ at least one was a <b>Push</b> and no <b>Enter</b> occurred after the most
+ recent occurrence of <b>Push</b>.
+
+</p><p>
+We leave it to the reader to provide formal definitions of 
+the predicates PE0 and PE1 in terms of the designated terms.
+Having defined these, we can express IND1 as follows:
+
+</p><p><center>
+<b>IND1</b>: 
+    (<tt>&forall;</tt>e,v | PE0(v) &and; Ends(e,v) <tt>:</tt> &not;Enter(e)) 
+    &nbsp; &and; &nbsp;
+      (<tt>&forall;</tt>e,v | PE1(v) &and; Ends(e,v) <tt>:</tt> &not;Push(e))
+</center>
+
+</p><p>
+<em>Note:</em> Strictly speaking, each universal quantification above
+should have in its range the conjuncts <tt>Event(e) &and; Interval(v)</tt>,
+but in order to minimize clutter, here we shall assume, in all the examples,
+that dummy <b>e</b> is an event (i.e., satisfies <b>Event(e)</b>),
+dummy <b>v</b> is an interval (i.e., satisfies <b>Interval(v)</b>),
+and dummies <tt>n</tt> and <tt>m</tt> are integers (i.e., satisfy
+<b>Integer(n)</b> and <b>Integer(m)</b>, respectively).
+<em>End of note.</em>
+
+</p><p>
+Notice that the formal version of <b>IND1</b> says that, if the turnstile is
+in state <b>PE0</b> (respectively, <b>PE1</b>), the next event to occur 
+cannot be an <b>Enter</b> (respectively, <b>Push</b>).
+<b>IND1</b> does <em>not</em> say that, if the turnstile is in state
+<b>PE0</b> (respectively, <b>PE1</b>), the next event to occur 
+<em>must be</em> a <b>Push</b> (respectively, <b>Enter</b>).
+Why not?
+
+<hr>
+
+<H3>IND2</H3>
+<p>
+The second indicative property, <b>IND2</b> (G4) 
+(which, like IND1, is a safety property), 
+says that if <b>Lock</b> and <b>Unlock</b> events have alternated
+in the past, beginning with <b>Unlock</b>, then a <b>Push</b>
+cannot occur if a <b>Lock</b> occurred more recently than the most
+recent occurrence of <b>Unlock</b>.
+
+<p>
+The reason for stating this property as an implication (if ... then ...) is
+that we don't know how the turnstile will behave (i.e., whether or not it
+will allow a <b>Push</b> to occur) following two <b>Lock</b> events
+occurring without an intervening <b>Unlock</b> or two <b>Unlock</b>
+events occurring without an intervening <b>Lock</b>.
+(Why don't we know?  Presumably, either because the turnstile
+manufacturer's reference manual does not say, or because that manual says
+that the turnstile's behavior will be unpredictable in such circumstances.)
+
+<p>
+In order to simplify the description <b>IND2</b>, we first define the
+predicates <b>LU0</b> (locked), <b>LU1</b> (unlocked), and
+<b>LU2</b> (unknown) in terms of the sequence of <b>Lock</b> and 
+<b>Unlock</b> events that have occurred.
+This definition is called <b>DEF1</b> and is done by means of a 
+<!--Buchi automaton--> FSM.  (See bottom right of page 18 in DSR or 
+the FSM <!--automaton--> labeled G4 on page 14 of FDC.)
+
+<p>
+Notice that <b>DEF1</b> is purely definitional, in the sense that
+it asserts no safety or liveness constraints.
+(<b>Note:</b> A <b>safety</b> constraint is one that prohibits some
+kind of event from occurring; a <b>liveness</b> constraint is one that
+insists upon the occurrence of some kind of event.)
+Its only purpose is to define the three predicates
+<b>LU0</b>, <b>LU1</b>, and <b>LU2</b>.
+We leave it to the reader to provide their formal definitions using
+predicate logic.
+<!-- of the predicates corresponding to these states. -->
+
+<p>
+Using the states/predicates defined in <b>DEF1</b>, we can express <b>IND2</b>
+as follows:
+
+<p>
+<b>IND2</b> (G4):  When the turnstile is locked (i.e., is in state <b>LU0</b>),
+a <b>Push</b> cannot occur.
+
+<p>
+More formally,
+<p><center>
+<b>IND2</b>: (<tt>&forall;</tt>e,v |
+    LU0(v) &and; Ends(e,v) &nbsp;<tt>:</tt>&nbsp; &not;Push(e))
+</center>
+
+<p>
+<hr>
+
+<p>
+<b>Note:</b>
+Interestingly, from the indicative statements in DSR it is not
+possible to conclude that every <b>Push</b> is followed (at some
+later time) by an <b>Enter</b>.  <!-- (Or is it?  Explore this.) -->
+On the other hand, FDC includes an indicative statement, <b>G2</b>, 
+which says that, assuming that <b>Push</b> and <b>Enter</b> events
+have alternated so far, beginning with a <b>Push</b>, every <b>Push</b>
+must be followed (at some point in time) by either a <b>Push</b> or 
+an <b>Enter</b>. 
+
+<p>
+From <b>IND1</b> (G1) and G2, one <em>can</em> conclude that 
+every <b>Push</b> is followed (at some point in time) by an 
+<b>Enter</b>, giving us a liveness property.
+<!-- Should that property be stated here in detail? -->
+<b>End of note.</b>
+
+
+<H3>The Requirements</H3>
+<p>
+There are basically two:
+<ol>
+  <li>No one should enter without paying.</li>
+  <li>Anyone who has paid should be allowed to enter.</li>
+</ol>
+
+<p>
+It would be too constraining to require that <b>Coin</b> and
+<b>Enter</b> events strictly alternate.
+(Imagine a scenario in which one person drops several coins into
+the slot in order to pay for a group of people behind her in the
+turnstile queue.)  Hence, the machine should allow payments to be made
+"in advance".  A more precise way to state the two requirements, then, is
+<ol>
+  <li>At any moment, the number of <b>Enter</b> events to have occurred
+      must not exceed the number of <b>Coin</b> events to have occurred.
+  </li>
+  <li>At any moment at which the number of <b>Coin</b> events to have occurred
+      exceeds the number of <b>Enter</b> events to have occurred, an
+      <b>Enter</b> event must be allowed to occur.
+  </li>
+</ol>
+
+
+
+<p>
+To make the descriptions of the requirements more concise,
+Jackson first defines predicates <b>Push#(v,n)</b>, 
+<b>Enter#(v,n)</b>, and <b>Coin#(v,n)</b> meaning, respectively, 
+that the number of <b>Push</b>, <b>Enter</b>, and <b>Coin</b> events, 
+respectively, occurring before interval <em>v</em> was <em>n</em>.
+
+<p>
+It's not clear to me why we should prefer to use these three predicates
+rather than the integer functions <b>#Push(v)</b>, <b>#Enter(v)</b>, and
+<b>#Coin(v)</b> having the property 
+<p><center><tt>
+(#Push(v) = n) &nbsp;&equiv;&nbsp; Push#(v,n) </tt></center>
+<p>
+and similarly for <b>#Enter</b> and <b>#Coin</b>.
+
+<!--
+<p>
+Using these, we can state requirement 1 as <b>OPT1</b> (also G5) 
+(see bottom of left column on page 19 in DSR), 
+
+<p><center>
+<b>OPT1</b>: (<tt>&forall;</tt>v,m,n &nbsp; |: &nbsp; 
+   Interval(v) &and; Integer(m) &and; Integer(n) &nbsp; : 
+    &nbsp; Enter#(v,m) &and; Coin#(v,n) &nbsp; <tt>&rArr;</tt> 
+    &nbsp; m &le; n)
+</center>
+-->
+<p>
+Using these integer functions, we can state requirement 1 as 
+<b>OPT1</b> (see bottom of left column on page 19 in DSR), 
+(also see the <!--Buchi automaton--> FSM G5 on page 14 of FDC).
+
+<p><center>
+<b>OPT1</b>: (<tt>&forall;</tt>v  |:  <!-- Interval(v) -->
+    #Enter(v) &le; #Coin(v))
+</center>
+
+<p>
+Requirement 2, <b>OPT2</b>, is that a visitor whose entry fee has been
+paid will not be prevented from entering.  Partially informally, this
+can be stated as
+
+<!--
+<p><center>
+<b>OPT2</b>: (&forall;v,m,n &nbsp; | &nbsp; 
+             Interval(v) &and; Integer(m) &and; Integer(n) &nbsp; : &nbsp;
+             Enter#(v,m) &and; Coin#(v,n) &and; m &lt; n 
+             &nbsp; <tt>&rArr;</tt> &nbsp;
+             Enter event is allowed to occur)
+</center>
+-->
+<p><center>
+<b>OPT2</b>: (<tt>&forall;</tt>v | <!--Interval(v) : -->
+             #Enter(v) &lt; #Coin(v) &nbsp;<tt>:</tt>&nbsp;
+             <b>Enter</b> event is allowed to occur to end v)
+</center>
+
+<p>
+Later we will make <b>OPT2</b> more precise.
+
+<hr>
+<H3>Specifications</H3>
+Both requirements and specifications are expressed in terms of
+environmental phenomena. 
+A requirement describes a desired relationship among environmental
+phenomena (typically ones that are of direct interest to
+customers/users); a specification describes a desired, implementable
+behavior of the machine in the environment
+(for the purpose of ensuring the satisfaction of some requirement(s)).
+Hence, all specifications are requirements, but
+not all requirements are specifications.
+<p>
+As Jackson explains in the right column on page 19 of DSR,
+to be a specification, a requirement must be such that
+<ol>
+  <li>all environment phenomena mentioned are shared with the machine
+     (i.e., are in either <em>e<sub>v</sub></em> or <em>s<sub>v</sub></em>).
+  </li>
+  <li>all phenomena that are constrained are machine-controlled
+      (i.e., in <em>s<sub>v</sub></em>).
+  </li>
+  <li>all constraints upon events are expressed in terms of preceding
+      events or states in preceding intervals.  That is, the conditions
+      for causing, or preventing from happening, an event can be
+      evaluated in the current state, without the need for making use
+      of any (possible) future state.
+  </li>
+</ol>
+
+</p><p>
+By this definition, neither <b>OPT1</b> nor <b>OPT2</b> is a specification!
+
+</p><p>
+Why?
+Because both are expressed in terms of <b>Enter</b> events, which are not 
+visible to (i.e., shared with) the machine.  Hence, (1) is violated.
+
+</p><p>
+To realize <b>OPT1</b>, the machine must either force <b>Coin</b> events
+to occur or prevent <b>Enter</b> events from occurring.
+Either way, (2) is violated because the machine controls neither
+<b>Coin</b> nor <b>Enter</b> events.
+
+</p><p>
+Jackson explains that <b>OPT1</b> also fails to satisfy (3):
+<blockquote>
+OPT1 also constrains the state in every interval, including those
+that are still in the future.  When the machine executes, or refrains
+from executing, any event, it must ensure that OPT1 will hold
+<em>afterwards</em>.  A requirement based in this way on a future
+state ... cannot be a specification...
+</blockquote>
+However, Jackson provides no precise criteria by which to determine
+whether a requirement violates (3).
+
+Interestingly, he says nothing about OPT2 violating (3),
+which suggests that there is no such violation.
+And why not?
+Here is your instructor's understanding as to why.
+Notice a crucial difference between OPT1 and OPT2: 
+unlike the former, the latter imposes a constraint upon program behavior
+that applies only in well-defined (and recognizable) situations,
+namely those in which the number of Enter events to have occured
+is less than the number of Coin events to have occurred.
+Moreover, OPT2 indicates explicitly that, in those situations,
+a specific kind of event is not to be prevented from occurring.
+OPT1, on the other hand, fails to indicate anything specific
+about what types of events are necessary, prohibited, or allowed, or
+about in which situations/states these conditions prevail.
+
+
+<!--  WRONG!  See above
+Interestingly, he says nothing about OPT2 violating (3),
+yet there seems to be no particular difference in the forms of
+OPT1 and OPT2 that distinguishes them with respect to this issue.
+-->
+
+<hr>
+
+<H3>Refining Requirements to Obtain Specifications</H3>
+<p>
+To obtain a specification from the requirements, we make use of the
+indicative environment properties (i.e., domain knowledge).
+
+<p>
+Letting R be the requirements and E the indicative environment properties,
+we want to find S (specifications) (meeting (1), (2), and (3) above)
+such that 
+<p><center>[S &and; E <tt>&rArr;</tt> R]</center>
+
+<p>
+meaning that in any state in which both S and E hold, so must R.
+This is actually an oversimplification of what we really need,
+a topic that is explored in some depth in RMRS.
+
+
+<H4>Refinement of OPT1</H4>
+<p>
+Let's try to refine <b>OPT1</b>, which says that the number of
+<b>Enter</b> events can never exceed the number of <b>Coin</b> events.
+As there is no way for the machine to force <b>Coin</b> events to occur,
+it must act to prevent <b>Enter</b> events from occurring in 
+certain situations.
+The machine does have some (indirect) control over <b>Enter</b> events,
+because of the properties asserted in <b>IND1</b> and <b>IND2</b>.
+Specifically, <b>IND2</b> says that <b>Push</b> cannot occur if the
+turnstile is in the locked state, <b>LU0</b>, which the machine is 
+able to cause <!-- (if necessary) --> by instigating a <b>Lock</b> event.
+(This assumes that the machine is careful never to cause the turnstile
+to enter the "unpredictable" state <b>LU2</b> by sending two <b>Lock</b>
+commands without an intervening <b>Unlock</b>, or vice versa.)
+Also, <b>IND1</b> says that <b>Push</b> and <b>Enter</b> events
+alternate strictly.  Hence &mdash;assuming that an <b>Enter</b> event has
+occurred more recently than the most recent occurrence of a <b>Push</b>
+event&mdash; the turnstile being in a locked state prevents not only
+<b>Push</b> events from occurring but also <b>Enter</b> events!
+
+<p>
+Because we need to ensure (as pointed out in the previous paragraph)
+that <b>Lock</b>s and <b>Unlock</b>s alternate strictly, in order to
+be sure that each <b>Lock</b> brings the turnstile to state <b>LU0</b>
+(locked, from which <b>Push</b> is impossible), 
+we state it as an optative property:
+<p><center>
+<b>OPT3</b> (G3): <b>Lock</b> and <b>Unlock</b> events strictly alternate, 
+beginning with the latter.
+</center>
+<p>
+We leave it to the reader to provide a formal definition of <b>OPT3</b>.
+
+<p>
+From <b>IND1</b> we obtain
+<!--
+<p><center>
+<b>IND3</b>: (<tt>&forall;</tt>v,m,n | Interval(v) &and; Integer(m) &and; Integer(n) :
+   Enter#(v,m) &and; Push#(v,n) &nbsp; <tt>&rArr;</tt> &nbsp; n-1 &le; m &le; n)
+</center>
+-->
+<p><center>
+<b>IND3</b>: (<tt>&forall;</tt>v |<tt>:</tt> <!--Interval(v) : -->
+   #Push(v)-1 &le; #Enter(v) &le; #Push(v))
+</center>
+
+</p><p>
+This says that, at any moment in time, the number of Push events to have
+occurred is either equal to, or exceeds by one, the number of Enter events
+to have occurred.  (The latter holds during that fraction of a second
+between a Push and the Enter that necessarily follows.)
+<!--
+</p><p>
+This property allows us to express OPT1 in terms of Push# rather than
+Enter# (thereby replacing a reference to an entity invisible to the
+machine (Enter#) by one visible to it (Push#)):
+<p><center>
+<b>OPT1a</b>: (&forall;v,m,n &nbsp; | &nbsp; 
+   Interval(v) &and; Integer(m) &and; Integer(n) &nbsp; : &nbsp;
+    Push#(v,m) &and; Coin#(v,n) &nbsp; <tt>&rArr;</tt> &nbsp; m &le; n)
+</center>
+-->
+</p><p>
+This property allows us to express something very close to 
+<b>OPT1</b> in terms of <b>#Push</b> rather than <b>#Enter</b>
+(thereby replacing a reference to an entity invisible to the
+machine (Enter#) by one visible to it (Push#)):
+
+</p><p><center>
+<b>OPT1a</b>: (<tt>&forall;</tt>v | <!-- Interval(v) -->
+               <tt>:</tt> #Push(v) &le; #Coin(v))
+</center>
+
+</p><p>
+OPT1a is slightly stronger than OPT1, but only insofar as it
+disallows a Push event from occurring when #Coin = #Enter
+(which OPT1 does not disallow).
+This strengthening is necessary anyway, because the machine has no
+way of preventing, even indirectly, an <b>Enter</b> from occurring 
+once a <b>Push</b> has occurred.
+
+
+</p><p>
+Now, of the three conditions that a requirement must satisfy
+to be a specification (recall discussion above), 
+<b>OPT1a</b> fails to satisfy both (2) and (3), 
+the former because it constrains phenomena not controlled by the 
+machine and the latter because it provides no guidance as to which 
+events are mandatory and which are prohibited according to the 
+current state.  
+(Jackson says that it refers to future states, but this seems 
+rather vague.)
+
+</p><p>
+Specifically for the purpose of obtaining requirements that satisfy (3),
+Jackson refines <b>OPT1a</b> into a safety property (<b>OPT4</b>) 
+and a liveness property (<b>OPT7</b>).
+<b>OPT4</b> says that <b>Unlock</b> must not occur when the turnstile is
+locked (i.e., in state <b>LU0</b>)
+and the next visitor has not yet been paid for.
+This, of course, will prevent a <b>Push</b> from occurring, thereby
+preventing an <b>Enter</b> from occurring, thereby preventing
+the number of <b>Enter</b> events from increasing so as to exceed
+the number of <b>Coin</b> events. 
+<!--, at least when the turnstile is in state <b>LU0</b>. -->
+
+<!--
+<p><center>
+<b>OPT4</b>: (&forall;v,e,n | 
+        LU0(v) &and; Push#(v,n) &and; Coin#(v,n) &nbsp;:&nbsp;
+        Ends(e,v)  <tt>&rArr;</tt> &not;Unlock(e))
+</center>
+-->
+<p><center>
+<b>OPT4</b>: (<tt>&forall;</tt>v,e &nbsp;|&nbsp;
+        LU0(v) &nbsp;&and;&nbsp; #Push(v) = #Coin(v) &nbsp;:&nbsp;
+        Ends(e,v) &nbsp;<tt>&rArr;</tt>&nbsp; &not;Unlock(e))
+</center>
+</p><p>
+Why does <b>OPT4</b> satisify condition (3) whereas <b>OPT1a</b> does not?
+Because OPT4 indicates a testable condition (in the current state)
+that constrains what the machine is allowed to do in the current state.
+OPT1a, to the contrary, simply states that a certain condition is to
+hold at all times.
+
+
+</p><p>
+<b>OPT7</b> says that, in certain situations,
+a <b>Lock</b> event must occur in time to prevent a subsequent <b>Push</b>
+(which, of course, inevitably leads to an <b>Enter</b>),
+namely when the turnstile is unlocked (i.e., in state <b>LU1</b>) and the 
+next visitor has not yet been paid for.
+These situations are formally defined as follows:
+<!--
+<p><center>
+<b>(DEF2)</b>: ReqLock(v) == LU1(v) &and;
+               (&exist;n |<tt>:</tt> Push#(v,n) &and; Coin#(v,n))
+</center>
+-->
+<p><center>
+<b>(DEF2)</b> &nbsp; ReqLock(v) &nbsp;<tt>:</tt>&nbsp; LU1(v) &nbsp;&and;&nbsp;
+               #Push(v) = #Coin(v)
+</center>
+<p>
+Investigation of the (documentation of the) turnstile mechanism
+reveals that hydraulic damping guarantees a delay of at least
+750 msecs between a <b>Push</b> and an <b>Enter</b> and an
+additional 10 msec between an <b>Enter</b> and the next <b>Push</b>.
+That is,
+<p><center>
+<b>IND4</b>: Duration[PE0] &ge; 10 msec &nbsp; &and; &nbsp;
+       Duration[PE1] &ge; 750 msec 
+</center>
+<p>
+Hence, between each <b>Push</b> event and the next, a minimum of 760 msecs
+will pass.
+Which is to say that the machine has less than that much time to lock the
+turnstile from the moment when <b>ReqLock()</b> becomes true.
+This gives us <b>OPT7</b>:
+<p><center>
+<b>OPT7</b>: Duration[ReqLock] &lt; 760 msec
+</center>
+
+<br />
+<hr>
+<H4>Refinement of OPT2</H4>
+
+</p><p>
+Recall that <b>OPT2</b> says, informally, that if the next customer's
+fee has already been paid (i.e., the number of <b>Coin</b> events 
+exceeds the number of <b>Enter</b> events), the machine should not 
+prevent an <b>Enter</b> event.
+It, like <b>OPT1</b>, is refined into a safety property and a
+liveness property.
+(See page 21.)
+
+</p><p>
+The safety property, <b>OPT5</b>, which isn't absolutely necessary but 
+is intended to reduce wear and tear on the turnstile locking mechanism,
+says that a <b>Lock</b> event should not occur in the case that the
+turnstile is not locked (i.e., is in state <b>LU1</b>) and the
+next customer's fee has been paid already:
+<p><center>
+<b>OPT5</b>: (<tt>&forall;</tt>v,e &nbsp;|&nbsp;
+        LU1(v) &nbsp;&and;&nbsp; #Push(v) &lt; #Coin(v) &nbsp;<tt>:</tt>&nbsp;
+        Ends(e,v) &nbsp;<tt>&rArr;</tt>&nbsp; &not;Lock(e))
+</center>
+
+</p><p>
+The liveness property, <b>OPT6</b>, says that, if the turnstile is
+locked but the next customer's fee has been paid, an <b>Unlock</b>
+event must occur, and soon!
+This set of states is formalized by:
+
+</p><p><center>
+<b>(DEF3)</b> &nbsp; ReqUnlock(v) &nbsp;<tt>:</tt>&nbsp; LU0(v) 
+     &nbsp;&and;&nbsp; #Push(v) &lt; #Coin(v))
+</center>
+
+</p><p>
+Now we can formally give <b>OPT6</b>:
+<p><center>
+<b>OPT6</b>: Duration[ReqUnlock] &lt; 250 msec
+</center>
+
+</p><p>
+Jackson gives no particular reason for choosing the duration 250 msec;
+it would seem to be based upon a judgement that any delay larger than
+that would give customers the impression that the turnstile is 
+annoyingly sluggish.
+
+
+</p><p>
+<table border=5 cellpadding=3>
+<tr>
+  <th><b>Class of <br />constrained action</b></th>
+  <th><b>Indicative</b></th>
+  <th><b>Optative</b></th>
+</tr>
+<tr>
+  <td>e<sub>h</sub></td>
+  <td>IND1 (G1) (safety) (Enter) <br />
+      IND1 (G1) &and; G2 (liveness) (Enter)
+  </td>
+  <td>OPT1 (G5) (safety) (Enter)  <br />
+      OPT2  (liveness) (Enter)  <br />
+  </td>
+</tr>
+<tr>
+  <td>e<sub>v</sub></td>
+  <td>IND1 (G1) (safety) (Push) <br />
+      IND2 (G4) (safety) (Push)
+  </td>
+  <td>&nbsp;
+  </td>
+</tr>
+<tr>
+  <td>s<sub>v</sub></td>
+  <td>&nbsp;</td>
+  <td>OPT3 (G3) (safety) (Lock, Unlock) <br />
+      OPT4 (G7) (safety) (Unlock) <br />
+      OPT5 (G7) (safety) (Lock)  <br />
+      OPT6 (G6) (liveness) (Unlock) <br />
+      OPT7 (G6) (liveness) (Lock) <br />
+  </td>
+</tr>
+</table>
+
+</body>
+</html>

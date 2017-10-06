@@ -1,0 +1,96 @@
+<html>
+<head>
+</head>
+<body>
+<h2>SE 507 Spring 2017<br />
+HW #2: Statecharts<br />
+Due: Thursday, March 23
+</h2>
+
+
+</p><p>
+<b>1.</b>
+In class we developed a statechart describing the intended behavior of 
+an <b>elevator display machine</b>.
+To keep things simple, we assumed that there was
+only one <b>summons button</b> on each floor, so that a potential
+passenger could convey the wish to be picked up at a particular
+floor but could not also convey the direction in which (s)he 
+intended to go from there (up vs. down).  Under this assumption,
+we had little choice but to also assume that, if the elevator car 
+stopped at a floor (and the doors were opened), then all 
+pending service requests associated with that floor had been
+satisfied.
+
+</p><p>
+In most real life elevator systems, each floor (other than those at 
+the low and high extremes) has two summons buttons, one to ask to go
+upward and the other to ask to go downward.
+It is assumed that a person who pressed a summons button
+will not enter the elevator car unless its current direction is 
+consistent with that in which (s)he wants to go.
+
+</p><p>
+Explain how, in this more realistic scenario, the 
+elevator display machine could be made to determine whether or not a 
+floor summons request had been satisfied.
+What kind of inference would the machine have to make?
+(Recall that we are assuming that the elevator display machine
+has access to floor sensor outputs but not to any information about
+the state of the elevator system's motor's directional setting.) 
+
+
+<hr>
+</p><p>
+<b>2.</b>
+Develop a StateChart diagram that depicts the behavior of a
+DVD player consistent with the informal description given next.
+Point out any ambiguities in the informal description and
+resolve each one in a reasonable way.
+Make use of hierarchical state structure (states within states)
+in an appropriate way.  
+
+
+</p><p>
+<blockquote>
+The DVD player has five buttons: <b>power</b>, <b>eject</b>,
+<b>play</b>, <b>stop</b>, and <b>pause</b>.
+
+</p><p>
+Initially, the player is <b>off</b>.
+Pressing the <b>power button</b> acts to toggle the player between being
+<b>on</b> and <b>off</b>.  Moreover, this is the only button that has
+any effect when the player is off.
+
+</p><p>
+Pressing the <b>eject</b> button acts to toggle the player's <b>tray</b>
+between being <b>open</b> and <b>closed</b>.
+Only the <b>power</b> and <b>eject</b> buttons have any effect
+when the tray is open.  If the tray is open when the player is turned
+off, the tray will close first.
+
+</p><p>
+When the player is on and the tray is closed, the <b>motor</b> is 
+either <b>spinning</b> or <b>idle</b>.
+It starts spinning (and tries to read the metadata stored on the disk
+in the tray) whenever the player goes from off to on or the 
+tray goes from open to closed.
+If either the disk is absent or the player cannot read it, 
+an error message is displayed and all but the 
+<b>eject</b> and <b>power</b> buttons are disabled.
+Otherwise, the other three buttons are enabled, as the disk is ready
+to be played. 
+In either case, the motor is idled.
+
+</p><p>
+Pressing the <b>start</b> button causes the player to start 
+(or continue) playing the disk.
+Pressing the <b>stop</b> button causes the motor to become idle.
+Pressing the <b>pause</b> button does not idle the motor but is
+for toggling between a state in which the disk is playing and one
+in which playing has been paused.  The <b>pause</b> button has
+no effect when the motor is idle.
+</blockquote>
+
+</body>
+</html>

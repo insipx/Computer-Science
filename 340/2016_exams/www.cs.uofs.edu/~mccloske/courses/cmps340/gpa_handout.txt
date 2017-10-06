@@ -1,0 +1,139 @@
+IDENTIFICATION DIVISION.
+PROGRAM-ID. Grade-Point-Averages.
+AUTHOR.  R. McCloskey and A. Programmer.
+INSTALLATION.  U of S.
+DATE-WRITTEN.  September 1, 1992.
+***********************************************************
+* Program Abstract:
+*   < Here should be a general description of 
+*     the purpose/functionality of the program >
+***********************************************************
+
+ENVIRONMENT DIVISION.
+
+INPUT-OUTPUT SECTION.
+FILE-CONTROL.
+    SELECT Student-File ASSIGN TO "GPA.DAT".
+    SELECT Out-File     ASSIGN TO SYS$OUTPUT.
+
+DATA DIVISION.
+
+FILE SECTION.
+
+FD  Student-File
+    DATA RECORD IS Student-Record.
+01  Student-Record.
+    02 SSN                  PIC X(9).
+    02 Name                 PIC X(20).
+    02 Attempted-Hours      PIC 99.
+    02 Quality-Points       PIC 99V99.
+
+FD  Out-File
+    DATA RECORD IS Print-Line.
+01  Print-Line   PIC X(80).
+
+WORKING-STORAGE SECTION.
+
+01 Eof                   PIC X     VALUE 'F'.
+01 Gpa                   PIC 9V99.
+01 Deans-List-Threshold  PIC 9V9   VALUE 3.5.
+
+01 Col-Head-Line-1.
+   02 FILLER PIC X(39) VALUE SPACES.
+   02 FILLER PIC X(5)  VALUE 'Hours'.
+
+01 Col-Head-Line-2.
+   02 FILLER PIC X(6)  VALUE SPACES.
+   02 FILLER PIC A(3)  VALUE 'SSN'.
+   02 FILLER PIC X(12) VALUE SPACES.
+   02 FILLER PIC X(4)  VALUE 'Name'.
+   02 FILLER PIC X(12) VALUE SPACES.
+   02 FILLER PIC X(9)  VALUE 'Attempted'.
+   02 FILLER PIC X(7)  VALUE SPACES.
+   02 FILLER PIC X(3)  VALUE 'GPA'.
+   02 FILLER PIC X(6)  VALUE SPACES.
+   02 FILLER PIC X(7)  VALUE 'Remarks'.
+
+01 Out-Line.
+   02 FILLER               PIC X(5)  VALUE SPACES.
+   02 Out-SSN              PIC X(9).
+   02 FILLER               PIC X(5)  VALUE SPACES.
+   02 Out-Name             PIC X(20).
+   02 FILLER               PIC X(2)  VALUE SPACES.
+   02 Out-Attempted-Hours  PIC Z9.
+   02 FILLER               PIC X(10) VALUE SPACES.
+   02 Out-GPA              PIC 9.99.
+   02 FILLER               PIC X(5)  VALUE SPACES.
+   02 Out-Remarks          PIC X(20).
+
+
+PROCEDURE DIVISION.
+
+Main-Program.
+    OPEN INPUT  Student-File
+    OPEN OUTPUT Out-File
+    PERFORM Print-Col-Headings
+    PERFORM Read-a-Record
+    PERFORM UNTIL Eof = 'T'
+       PERFORM Process-a-Record
+       PERFORM Read-a-Record
+    END-PERFORM
+    CLOSE Student-File
+    CLOSE Out-File
+    STOP RUN
+    .
+
+Read-a-Record.
+    READ Student-File 
+       AT END MOVE 'T' TO Eof
+    END-READ
+    .
+
+Process-a-Record.
+    DIVIDE Attempted-Hours INTO Quality-Points GIVING Gpa
+    IF Gpa IS GREATER THAN Deans-List-Threshold
+      MOVE "Dean's List" TO Out-Remarks
+    ELSE
+      MOVE SPACES TO Out-Remarks
+    END-IF
+    MOVE SSN TO Out-SSN
+    MOVE Name TO Out-Name
+    MOVE Attempted-Hours TO Out-Attempted-Hours
+    MOVE Gpa TO Out-GPA
+    PERFORM Write-Record
+    .
+
+Write-Record.
+    WRITE Print-Line FROM Out-Line
+    .
+   
+Print-Col-Headings.
+    WRITE Print-Line FROM Col-Head-Line-1 BEFORE ADVANCING 1 LINE
+    WRITE Print-Line FROM Col-Head-Line-2 BEFORE ADVANCING 1 LINE
+    .
+
+END-PROGRAM.
+
+
+----------------------------------------------------------------------
+Sample input file:
+
+123456789Deputy Dog          122745
+987654321Sweet P. Purebread  185800
+000000000Mr. Ed              156000
+123213045Lt. Worf            092070
+100101010Dr. Beverly Crusher 103155
+324865432Herman Munster      153135
+<EOF>
+
+------------------------------------------------------------------------
+Resulting output:
+                                     Hours
+      SSN            Name          Attempted        GPA     Remarks
+
+   123456789     Deputy Dog            12          2.28
+   987654321     Sweet P. Purebread    18          3.22 
+   000000000     Mr. Ed                15          4.00     Dean's List
+   123213045     Lt. Worf               9          2.30
+   100101010     Dr. Beverly Crusher   10          3.15
+   324865432     Herman Munster        15          2.09

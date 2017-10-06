@@ -1,0 +1,199 @@
+<html>
+<head>
+  <title>SE 500 &nbsp; Fall 2017 &nbsp; HW # 2</title>
+</head>
+<body>
+<h2>
+SE 500 (Math for SE) &nbsp; Fall 2017 <br />
+HW #2: Substitution and Leibniz Inference Rules,
+       Proofs involving Equivalence and Negation
+       <br />
+Due:  4pm, Wednesday, Sept. 7
+</h2>
+
+</p><p>
+<p>
+The exercises referred to come from the end of Chapters 1, 2, and 3 in the
+Gries & Schneider text (a copy of which will be on reserve in the library).
+
+</p><p>
+<b>1.</b> Do Exercise 1.6.  Specifically, show two different instantiations
+of Inference Rule Substitution (1.1)
+
+</p><p>
+<center>
+<table>
+<tr>
+  <td><center>E <hr> E[v:=F]</center>
+  </td>
+</tr>
+</table>
+</center>
+</p><p>
+in each case taking <b>E</b> to be the theorem
+&nbsp;<tt>x&gt;y &or; x&le;y</tt>&nbsp; 
+and <b>v</b> to be the list of variables <tt>x,y</tt>.
+(So all that is left for you is to instantiate <b>F</b> in
+two different ways.  Make sure that at least one of them
+involves compound expressions.)
+
+
+</p><p>
+<b>2.</b> Do Exercise 1.7, parts (b) through (e).
+Each answer should show an instantiation of Leibniz, together with a
+statement telling to what each of X, Y, E, and z was instantiated 
+in order to arrive at it.  For example, the answer to part (a) is
+
+</p><p>
+<center>
+<table border="0">
+<tr><td><center>
+<tt>x = x+2<br /><hr>4*x+y = 4*(x+2)+y</tt>
+</center></td></tr>
+</table>
+</center>
+
+<!--
+<pre>
+                                x = x+2
+                           -------------------
+                            4*x+y = 4*(x+2)+y  </pre>
+-->
+
+</p><p>
+at which one arrives by the instantiation <tt>X:x, Y:x+2, E:4*z+y, z:z</tt>. 
+
+
+</p><p>
+<b>3.</b> Do Exercise 1.8, parts (b) through (e).
+The solution to (a) is  <b><tt>b+c+y+w</tt></b>.
+<br />
+(Note: Depending upon which printing of the book you have, you may or may
+not have to swap the two sides of X=Y in parts (b) and (e).)
+
+</p><p>
+<b>4.</b> Do Exercise 1.9, parts (b) through (e).  The solution to (a) is  
+<b><tt>E:(x+y)*z, X:x+y, Y:y+x</tt></b>.
+
+
+</p><p>
+<b>5.</b> In each step in the proof below, <b>Leibniz</b> (with an assist
+from <b>Substitution</b>) is applied.  That is, in going from each line
+to the next, some subexpression <tt>E</tt> is replaced by an expression
+<tt>F</tt> such that <tt>E = F</tt> (or possibly <tt>F = E</tt>) is
+an instantiation of (i.e., the conclusion of applying <b>Substitution</b> to)
+one of the theorems in our arsenal.
+(That is, <tt>E = F</tt> (or else <tt>F = E</tt>) is <tt>P[r:=Q]</tt>,
+where <tt>P</tt> is a theorem in our arsenal, <tt>r</tt> is a list of
+variables, and <tt>Q</tt> is a list (of length equal to <tt>r</tt>)
+of expressions.)
+
+</p><p>
+Here, the only theorems used are axioms (3.1), (3.2), and (3.3).
+Fill in each "hint" so as to inform the reader which theorem (and which
+instantiation of it) was used.  The first hint is filled in for you. 
+Also, somehow highlight the subexpressions <tt>E</tt> and <tt>F</tt>
+in each step (using underlining or circling or something).
+In the first step below, the former is in boldface and the latter 
+is in italics.
+
+<pre>
+      (p &equiv; q) &equiv; (<b>true</b> &equiv; (q &equiv; r))
+
+   =      < (3.3), with q:=p >
+
+      (p &equiv; q) &equiv; (<em>(p &equiv; p)</em> &equiv; (q &equiv; r))
+
+   =      <                                                 >
+
+      (p &equiv; q) &equiv; (p &equiv; (p &equiv; (q &equiv; r)))
+
+   =      <                                                 >
+
+      (p &equiv; q) &equiv; (p &equiv; ((p &equiv; q) &equiv; r))
+
+   =      <                                                 >
+
+      (p &equiv; q) &equiv; (((p &equiv; q) &equiv; r) &equiv; p)
+
+   =      <                                                 >
+
+      (p &equiv; q) &equiv; ((p &equiv; q) &equiv; (r &equiv; p))
+
+   =      <                                                 >
+
+      ((p &equiv; q) &equiv; (p &equiv; q)) &equiv; (r &equiv; p)
+
+   =      <                                                 >
+
+      true &equiv; (r &equiv; p) 
+
+   =      <                                                 >
+
+      r &equiv; p
+</pre>
+
+
+<hr><hr>
+</p><p><br />
+The remaining problems are based on exercises at the end of Chapter 3 of
+the Gries &amp; Schneider text.
+In proving a theorem, you may make use of only lower-numbered
+theorems (or "metatheorems").
+Note that some of the exercises have hints that appear in the book,
+but not here.
+Don't forget the precedences of operators, which can be found on the
+textbook's inside front cover (in the hardback version at least) and
+<a href="gries_operator_precedence.html">here</a>.
+
+</p><p>
+<b>6.</b> Do Exercise 3.7, which is to prove theorem (3.11) 
+(which is <tt>&not;p &equiv; q &equiv; p &equiv; &not;q</tt>)
+in three different ways.
+Specifically, for each of these, transform the left-hand side
+into the right-hand side (or vice versa): 
+<ul>
+  <li><tt>(&not;p &equiv; q) &equiv; (p &equiv; &not;q)</tt></li>
+  <li><tt>(&not;p &equiv; p) &equiv; (q &equiv; &not;q)</tt>
+      (which is obtained from (3.11) by applying (3.2)</tt>)
+  </li>
+  <li><tt>&not;p &equiv; (q &equiv; p &equiv; &not;q)</tt></li>
+</ul>
+<!--
+(Based on Exercise 3.7) 
+In class we proved
+  (3.11)&nbsp; <tt>&not;p &equiv; q &equiv; p &equiv; &not;q</tt> &nbsp;
+Here you are asked to do it in a different way, namely by 
+transforming <tt>&not;p &equiv; p</tt> into <tt>&not;q &equiv; q</tt>.
+</p><p>
+Note that this corresponds to proving
+<tt>&not;p &equiv; p &nbsp;&equiv;&nbsp; &not;q &equiv; q</tt>,
+which, by an application of (3.2), is equivalent to (3.11).
+-->
+
+</p><p>
+<hr>
+<b>7.</b> Do Exercise 3.12, which is to prove the associativity of
+<tt>&ne;</tt>:
+<p><center>(3.17)  <tt>((p &ne; q) &ne; r)  &equiv;  (p &ne; (q &ne; r))</tt>
+</center>
+<p>
+using the heuristic of Definition Elimination (3.23).
+(Note that <tt>&ne;</tt> is used here rather than <tt>&equiv;</tt>
+with a line through it.  Why?  Because the latter symbol seems not to
+exist in HTML.)
+
+<!--
+</p><p>
+<hr>
+<b>8.</b> Do Exercise 3.13, which is to prove mutual associativity
+of <tt>&equiv;</tt> and <tt>&ne;</tt> (3.18):
+</p><p><center>(3.18)
+ <tt>((p &ne; q) &equiv; r)  &equiv;  (p &ne; (q &equiv; r))</tt>
+</center>
+</p><p>
+using the heuristic of Definition elimination(3.23).
+-->
+
+</body>
+</html>

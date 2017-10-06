@@ -1,0 +1,251 @@
+<html>
+<head>
+</head>
+<body>
+<h3>Translating numerical scores to letter grades: examples of using Java's
+<tt>if/else</tt> construct.
+</h3>
+
+<p>
+Acknowledgement:
+This document is an adaptation/expansion of material from Section 4.1 of
+<em>Building Java Programs</em>, by Reges and Stepp.
+
+</p><p>
+Consider the problem of developing a method that, given a numerical score
+representing a grade in the interval [0, 100], returns the corresponding
+letter grade.  The assumption is that
+a score in the interval [90, 100] translates to <b>A</b>,
+a score in the interval [80, 90) translates to <b>B</b>,
+a score in the interval [70, 80) translates to <b>C</b>,
+a score in the interval [60, 70) translates to <b>D</b>,
+and a score in the interval [0, 60) translates to <b>F</b>.
+
+</p><p>
+Here is our first attempt:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre><font color=red>// This version is WRONG!!</font>
+public static char scoreToLetterGrade(int score) {
+   
+   char result = 'F';
+   if (score >= 90) { result = 'A'; }
+   if (score >= 80) { result = 'B'; }
+   if (score >= 70) { result = 'C'; }
+   if (score >= 60) { result = 'D'; }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Why is this wrong?  Because its effect is to return <tt>'D'</tt> 
+when the score is 60 or greater and to return <tt>'F'</tt> otherwise.
+
+</p></p>
+How can we fix it?  There are several ways.  One is to return the result as
+soon as we know it:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public static char scoreToLetterGrade(int score) {
+   
+   if (score >= 90) { return 'A'; }
+   if (score >= 80) { return 'B'; }
+   if (score >= 70) { return 'C'; }
+   if (score >= 60) { return 'D'; }
+   return 'F';
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Many programmers would find this to be a quite acceptable solution.
+For those purists among us who cringe at the thought of a method having
+multiple exit points, the following approach, in which the tests are
+done in the opposite order, is better:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public static char scoreToLetterGrade(int score) {
+   
+   char result = 'F';
+   if (score >= 60) { result = 'D'; }
+   if (score >= 70) { result = 'C'; }
+   if (score >= 80) { result = 'B'; }
+   if (score >= 90) { result = 'A'; }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+If <tt>score</tt> were, say, <tt>93</tt>, five assigments would be made to
+<tt>result</tt>, but only the last one "would matter".
+
+</p><p>
+A different way to fix the problem is to use <tt>else</tt> clauses so
+as to avoid testing any condition that is weaker than one that we already
+know to be true.  (For example, there is no point in testing whether
+<tt>score</tt> is at least 80 if we have already ascertained that it is
+at least 90.)
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public static char scoreToLetterGrade(int score) {
+   
+   char result;
+   if (score >= 90)
+      { result = 'A'; }
+   else {
+      if (score >= 80) 
+         { result = 'B'; }
+      else {
+         if (score >= 70) 
+            { result = 'C'; }
+         else {
+            if (score >= 60)
+               { result = 'D'; }
+            else {
+               result = 'F';
+            }
+         }
+      }
+   }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+The exact same code, formatted in the following way, is judged by some
+programmers to be more easily readable:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public static char scoreToLetterGrade(int score) {
+   
+   char result;
+   if (score >= 90)
+      { result = 'A'; }
+   else if (score >= 80) 
+      { result = 'B'; }
+   else if (score >= 70) 
+      { result = 'C'; }
+   else if (score >= 60)
+      { result = 'D'; }
+   else 
+      { result = 'F'; }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Compressing it even more, we get
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public static char scoreToLetterGrade(int score) {
+   
+   char result;
+   if (score >= 90) { result = 'A'; }
+   else if (score >= 80) { result = 'B'; }
+   else if (score >= 70) { result = 'C'; }
+   else if (score >= 60) { result = 'D'; }
+   else { result = 'F'; }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Which of these alternatives is best is a subjective question.
+
+</p><p>
+As suggested by the initial discussion, essentially we have five cases:
+<ol>
+  <li><tt>90 &le; score</tt></li>
+  <li><tt>80 &le; score &lt; 90</tt></li>
+  <li><tt>70 &le; score &lt; 80</tt></li>
+  <li><tt>60 &le; score &lt; 70</tt></li>
+  <li><tt>score &lt; 60</tt></li>
+</ol>
+
+</p></p>
+Using the boolean conjunction (i.e.., <b>and</b>) operator <tt>&amp;&amp;</tt>,
+we can write the method as follows:
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public static char scoreToLetterGrade(int score) {
+   
+   char result = ' ';
+   if (90 <= score) { result = 'A'; }
+   if (80 <= score && score < 90) { result = 'B'; }
+   if (70 <= score && score < 80) { result = 'C'; }
+   if (60 <= score && score < 70) { result = 'D'; }
+   if (score < 60) { result = 'F'; }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Initializing <tt>result</tt> above is necessary, because otherwise the
+Java compiler will reject the program on the grounds that it is possible
+for <tt>result</tt> not to have been assigned a value before the method 
+tries to return its value.  Using the details of the conditions being tested
+(along with our knowledge of numbers), we know that that cannot happen,
+but, in general, a sequence of <tt>if</tt> statements may be such that 
+all the conditions evaluate to <tt>false</tt>, which, in a segment of code
+of the same structure as above, would lead to <tt>result</tt> never having
+a value assigned to it.  So the compiler is reasonable in demanding that
+the structure of the code (without relying upon the details of the
+conditions being tested) guarantees that the "return value" exists.
+
+</p><p>
+To avoid evaluating (sure-to-be-false) conditions unnecessarily,
+we could employ <tt>else</tt>-es in the above, yielding
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public static char scoreToLetterGrade(int score) {
+   
+   char result;
+   if (90 <= score) { result = 'A'; }
+   else if (80 <= score && score < 90) { result = 'B'; }
+   else if (70 <= score && score < 80) { result = 'C'; }
+   else if (60 <= score && score < 70) { result = 'D'; }
+   else { result = 'F'; }   // score < 60 must hold
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</body>
+</html>

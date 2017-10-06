@@ -1,0 +1,124 @@
+<html>
+<head>
+  <title>SE 500  Fall 2017  HW #4</title>
+</head>
+<body>
+<h2>SE 500 (Math. for SE)<br />
+Fall 2017<br />
+HW # 4: Additional Proof Techniques<br />
+Due: 6pm, Friday, September 29
+</h2>
+
+</p><p>
+All theorem and exercise numbers refer to the text by Gries and Schneider.
+In proving a numbered theorem, you may make use of any lower-numbered
+theorem or metatheorem.  (Note that, for example, 3.76a is taken to be
+a "lower number" than 3.76e.)
+
+</p><p>
+Be careful to respect rules of precedence, in particular that &equiv;
+has lower precedence than both &rArr; and &lArr;, each of which has 
+lower precedence than both &and; and &or;.
+
+<hr>
+</p><p>
+<b>1.</b> Prove
+</p><p><center><tt>
+ (3.76e) p &and; q &nbsp;&rArr;&nbsp; p &and; (q &or; r)
+</tt></center>
+</p><p>
+in five different ways:
+
+</p><p>
+<b>(a)</b> Prove it using the method of Section 4.1.  
+That is, either transform the antecedant into the consequent or vice versa.
+(The consequent has "more structure", so it may be better to start with it.)  
+If you transform antecedant into consequent, then in each step the
+relationship between the two relevant expressions expressions 
+must be either <tt>&equiv;</tt> or <tt>&rArr;</tt> (implies). 
+If you go in the opposite direction, the relationship in each step 
+must be either <tt>&equiv;</tt> or <tt>&lArr;</tt> 
+(is consequence of)).
+</p><p>
+<b>(b)</b> Prove it using the method of <em>assuming the antecedant</em>.
+</p><p>
+<b>(c)</b> Prove it using the method of <em>proof by case analysis</em>.
+Use <tt>q</tt> and <tt>&not;q</tt> as the two cases.
+</p><p>
+<b>(d)</b> Prove it using the method of <em>proof by contradiction</em>.
+(To prove <tt>A</tt> by contradiction, show <tt>&not;A &rArr; false</tt>.)
+</p><p>
+<b>(e)</b> Prove it using the method of <em>proof by contrapositive</em>.
+(To prove <tt>A &rArr; B</tt> by contrapositive, 
+show <tt>&not;B &rArr; &not;A</tt>.)
+
+<hr>
+</p><p>
+<b>2.</b> Do Exercise 4.2: Prove the monotonicity of &and; (4.3),
+</p><p><center><tt>
+  (p &rArr; q) &rArr; (p &and; r &rArr; q &and; r)
+</tt></center>
+</p><p>
+using the method of Section 4.1.
+It is recommended that you transform the consequent
+(which has "more structure") into the antecedant.
+Heed the advice from part (a) of the previous problem
+regarding the relationships between consecutive expressions.
+
+<hr>
+</p><p>
+<b>3.</b> (Based on Exercises 4.4 and 4.9)
+Prove
+</p><p><center><tt>
+  (p &rArr; q) &and; (r &rArr; s) &nbsp;&rArr;&nbsp;
+   (p &or; r &rArr; q &or; s)
+</tt></center>
+in three different ways.
+</p><p>
+<b>(a)</b> Prove it using the method of Section 4.1.
+Here, it is recommended that you transform the antecedant into the
+consequent. 
+Once again, heed the advice in part (a) of Problem 1.
+<!--  Of course, a valid proof of this form must be such that,
+   for any two expressions on successive lines, the relationship between
+   the first and second is either <tt>&equiv;</tt> or <tt>&rArr;</tt>.
+-->
+</p><p>
+It is suggested that you use (not necessarily in this order): 
+(3.59) (twice), (3.46) (three times), 
+(3.76d) twice (once to "get rid of" an occurrence of <tt>&not;p</tt>
+and once to get rid of an occurrence of <tt>&not;r</tt>),
+an absorption theorem (to get rid of an occurrence of <tt>q</tt>),
+and DeMorgan (twice).
+
+</p><p>
+<b>(b)</b> Prove it by the method of <em>assuming the antecedant</em>.
+Note that, because the consequent is itself an implication, you can prove
+it, if you wish, by assuming the antecedant of the consequent.
+Do not use (4.2) (Monotonicity of <tt>&or;</tt>) in your proof.
+Also note that, when you make an assumption, you are,
+in effect, assuming anything that is equivalent to (or even implied by)
+your assumption.  Hence, for example, by assuming <tt>p &rArr; q</tt>,
+you are also assuming, by (3.60), <tt>p &and; q &equiv; p</tt>.
+
+</p><p>
+<b>(c)</b> Prove it, making use of (4.2). 
+
+<!-- Remnant from 2011?  This HW is long enough without it!
+<hr>
+</p><p>
+<b>6.</b> (Based on Exercise 4.10)
+Prove Modus ponens (3.77)
+</p><p><center><tt>p &and; (p &rArr; q) &nbsp;&rArr;&nbsp; q</tt></center>
+in three different ways.
+</p><p>
+<b>(a)</b> Use <em>proof by contradiction</em>.
+  (It's recommended that you use an absorption theorem along the way.)
+</p><p>
+<b>(b)</b> Use <em>proof by contrapositive</em>.
+</p><p>
+<b>(c)</b> Use <em>proof by case analysis</em>.
+-->
+
+</body>
+</html>

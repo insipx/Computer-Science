@@ -1,0 +1,392 @@
+<html>
+<head>
+  <title>CMPS 340  Query Processing</title>
+</head>
+<body>
+<H2>
+CMPS 340  File Processing<br />
+Query Processing<br />
+based on Chapter 19 of Elmasri &amp; Navathe (6th ed.)
+</H2>
+
+<p>
+Recall the most important operations in Relational Algebra:
+
+<ul>
+  <li>
+    <b>Restrict</b>:
+    constructs a new table/relation containing all tuples
+    of a given relation that satisfy the <b>restrict-condition</b>.
+    The general syntax is
+    </p><p>
+    <center>RESTRICT &nbsp;<em>relation</em>&nbsp; WHERE &nbsp;
+            <em>restrict-condition</em>
+    </center>
+
+    <p>
+    Example:
+    <p>
+    <center><tt>RESTRICT Employee WHERE Salary >= 30000</tt></center>
+
+    <p>
+    In effect, Restrict acts as a "filter" on the tuples of a relation,
+    placing into the result only those tuples that satisfy the
+    restrict-condition, while omitting the other tuples.
+  </li>
+  <li>
+    <b>Project</b>:
+    constructs a new table/relation containing all the tuples
+    from a given relation, but (possibly) with some of the
+    attributes/columns omitted.  The general syntax is
+    <p>
+    <center>PROJECT &nbsp;<em>list-of-attributes</em>&nbsp; 
+            FROM <em>relation</em></center>
+
+    <p>
+    Example:
+    <p>
+    <center><tt>PROJECT Fname, Lname, Address
+            FROM Employee</tt></center>
+
+    <p>
+    In effect, a PROJECT omits some of the attributes (columns) of a relation.
+  </li>
+
+  <li>
+    <b>Join</b>:
+    combines every pair of tuples (from two relations) that satisfy
+    the <b>join-condition</b>.  Usually, the join condition requires that
+    a specified attribute in one tuple be equal to a specified attribute
+    from the other tuple.
+    The general syntax is
+    <p>
+    <center>JOIN &nbsp;<em>relation</em>&nbsp; WITH 
+     &nbsp;<em>relation</em>&nbsp; WHERE 
+      &nbsp;<em>join-condition</em></center>
+
+    <p>
+    Example:
+    </p><p>
+    <center><table border="0">
+    <tr><td><tt>JOIN Works_On WITH Department<br />
+                WHERE Works_On.Essn = Department.Mgr_Ssn</tt>
+    </td></tr>
+    </table>
+    </center>
+
+  </li>
+  <li><b>Set Theoretic</b>: Union, Intersection, Difference
+  </li>
+</ul>
+
+<hr>
+<p>
+The queries submitted by users to a (relational) DBMS are composed
+of such operations (often nested several levels deep).
+
+<p>
+<b>Question</b>: 
+  When a query is submitted to a DBMS, how does it "figure out"
+  how to respond?
+
+<p>
+At a high level of abstraction, we can describe it as follows:
+
+<pre>
+                  +----------------+                       +-----------+
+  SQL query ----> |  translator    |---> Relational   ---> | query     |--->+
+                  | (scan, parse)  |    algebra query      | optimizer |    |
+                  +----------------+                       +-----------+    |
+                                                                            v
+      +--------<---------------------------------<--------------------------+
+      |
+      v           +---------------+
+  execution --->  |  query code   |--->  code to execute 
+    plan          |   generator   |        the query
+                  +---------------+
+</pre>
+
+<hr>
+
+<H3>Basic Algorithms for Executing (single) Query Operations</H3>
+
+<b>Restrict</b>: Consider the query
+    &nbsp; <tt>Restrict R Where C</tt>
+
+<p>Among the ways to evaluate it are these:
+
+<ol>
+  <li><b>Brute Force</b>:
+    <pre>
+      for each tuple t in R {
+         if t satisfies C
+            { write t into result; }
+      }
+    </pre>
+  </li>
+  <li><b>Binary Search</b>: can be used if the restriction condition (C) is an
+      equality comparison on the ordering field of the file containing
+      relation R.  An example would be
+      </p><p>
+      <center><tt>RESTRICT Employee WHERE Lname = 'Rumplestiltskin'</tt>
+      </center>
+      </p><p>
+      It can also be used if the query asks for a range of values in the
+      ordering field.  Example:
+      </p><p>
+      <center><table border="0">
+      <tr><td><tt>RESTRICT Employee<br />
+          WHERE 'Rumplestiltskin' <= Lname  AND  Lname <= 'Smith'</tt>
+      </td></tr>
+      </table></center>
+
+      </p><p>
+      Here you would use binary search to find the first record in the
+      range and then sequentially access the rest.
+      <p>
+  </li>
+  <li><b>index or hash table</b>: if the restriction condition involves an
+    equality comparison on a field for which an index (flat, B+-tree, or
+    hash (scatter) table) exists, use it to obtain pointers to the 
+    relevant record(s), then fetch them.  (See the example above that
+    expresses a search for people having last name "Rumplestiltskin".)
+    </p><p>
+    This can work for a range query, too, in cases when the index
+    is not based on hashing.  Consider the example above that "asks for"
+    all employee records with names in between "Rumplestiltskin" and
+    "Smith".  We can search the index for the former and starting there,
+    find references to all the records up to and including the latter.
+    </p><p>
+    Now suppose that the index on last name is based on hashing.
+    We can use it to look up "Rumplestiltskin" and "Smith" (in order to
+    find references to relevant buckets in the main file), but what about
+    the names in between?  There are literally infinitely many, so it would
+    not make sense to form, and search for, each of them.  (Even if the
+    <tt>Lname</tt> field were restricted to length 15, there would be
+    millions of names in the range we are discussing.) 
+    So unless there was a readily available list of all employee names
+    that could be accessed (so that we could ascertain all those in the
+    range), to find the desired information would require an exhaustive
+    search of the hash table.
+  </li>
+
+</ol>
+
+<p>
+When restriction conditions are compound:
+<ul>
+  <li>If the restriction condition is a conjunction (<tt>AND</tt>),
+      one could either
+    <ol>
+      <li>Retrieve all records satisfying one of the conjuncts
+          (preferably the one satisfied by the fewest tuples) using
+          some approach from above and then test each of these tuples
+          for the other conditions, or
+          <p>
+      </li>
+      <li>For each conjunct, retrieve references to all the records satisfying
+          it; hence, each conjunct gives rise to a set of references.
+          Then calculate the intersection of these sets.
+          Here it helps to have references to individual records
+          (either in the form of addresses within blocks or, probably
+          better, record keys) as opposed to pointers to disk blocks.
+          For example, even if only 2% of tuples satisfy a condition,
+          a much larger percentage of blocks will contain at least one
+          such record.  Taking the intersection of sets of pointers to
+          blocks will yield a much larger set of blocks (because a number
+          of blocks could have no tuples satisfying both conditions but a
+          pair of records where one record satisfies one condition and
+          the other record satisfies the other).
+      </li>
+    </ol>
+    <p>
+  </li>   
+  <li>If the restriction condition is a disjunction (OR), brute force is
+      the only option, unless every component of the condition can be
+      processed in a better way.
+  </li>
+</ul>
+
+<hr>
+<p>
+<b>Project</b>: Consider the query
+    <tt>PROJECT &nbsp;A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>n</sub>&nbsp;
+        FROM R</tt>
+<p>
+Assuming that we want the result not to contain any duplicate tuples,
+among the ways to evaluate it are:
+
+<ol>
+  <li><b>Sort-based</b>:
+    Let R' be the relation obtained from R by omitting all attributes
+    except <tt>A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>n</sub></tt>.
+    Sort R' and, while (or after) doing so, omit duplicate tuples.
+    Note that the resulting table will be sorted, which is not
+    required.
+    <p>
+  </li>
+  <li><b>Hashing-based</b>: <pre>
+    for each tuple r in R {
+       Let r' be tuple obtained by omitting all unwanted attributes;
+       insert r' into (the appropriate bucket of) hash table T;
+    }
+    for each bucket B in T {
+       sort B;
+       write to result the tuples in B, omitting duplicates;
+    }</pre>
+    What's the point of using the hash table?  First, because any
+    collection of duplicate tuples will end up in the same bucket together,
+    it guarantees that such duplicates can be identified (making it
+    easy to omit all but one of them from the result).
+    Secondly, it is cheaper 
+    <!-- (by only a constant factor, but possibly a large one) -->
+    to sort lots of little collections of records than to sort a
+    single collection containing all of these records.  Also, as the
+    tuples in the resulting relation/table need not be in any particular
+    order, we don't mind that this solution does not produce a sorted
+    relation.
+  </li>   
+</ol>
+
+<hr>
+<b>Join</b>: Consider the query <tt>JOIN R WITH S WHERE R.A = S.B</tt>
+<p>
+Among the ways of evaluating it are these:
+
+<ol>
+  <li>
+    <b>Ultra-Brute Force</b>:<pre>
+       Let T = R&times;S;  (i.e., { r&times;s | r in R  and  s in S } )
+       Restrict T Where R.A = S.B</pre>
+    The approach is horrible, because the size of T will be
+    the product of m and n, where m and n are the sizes,
+    respectively, of R and S, and hence is not unlikely to be huge.
+    <p>
+  </li>
+  <li><b>Brute force (nested loop join)</b>:<pre>
+       for each tuple r in R {
+          for each tuple s in S {
+             if (r.A = s.B) { write r&middot;s into result; }
+          }
+       }</pre>
+    </p><p>
+    where r&middot;s is the tuple obtained by combining tuples r and s
+    into a single tuple.
+    Approaches (1) and (2) are the same, except that in (2) we don't
+    explicitly construct all of <tt>R&middot;S</tt> 
+    (which could be very big) before filtering out the tuples that fail
+    to satisfy the <tt>R.A = S.B</tt> condition.
+    Both approaches take time O(m*n), where m is the size of R and 
+    n is the size of S, but Ultra Brute Force always takes O(m*n)
+    space, whereas Brute Force is not likely to.
+  </li>
+  <li><b>Single loop join</b>
+      (assumes existence of an access path (i.e., index) for S.B):
+    <pre>
+       for each tuple r in R {
+          Let S' = { s in S | r.A = s.B }
+          for each s in S'
+             { write r&middot;s into result; }
+       }</pre>
+    <p>
+    The idea here is that the tuples in S' are obtained using the 
+    existing index on the B attribute of S.  
+    <p>
+    If the set <tt>R' = { r.A | r in R }</tt> (consisting of all the distinct
+    values found in attribute <tt>A</tt> of tuples in <tt>R</tt>) is 
+    significantly smaller than the number of tuples in <tt>R</tt>, then 
+    pre-sorting <tt>R</tt> with respect to <tt>A</tt> could save time,
+    because then the number of times that <tt>S</tt> need be searched to
+    find tuples matching the current tuple of <tt>R</tt> is reduced from
+    the cardinality of R to the cardinality of R', as follows:
+    <pre>
+       sort R with respect to A;
+       r = first tuple of R;
+       while (r != null)    // r == null means that no more tuples exist
+          crrntA = r.A;
+          S' = { s in S | crrntA = s.B }
+          while (r.A = crrntA) {
+             for each s in S'
+                { write r&middot;s into result; }
+             r = next tuple of R;
+          }
+       }  
+    </pre>
+    Notice that the outer loop iterates once for each distinct
+    <tt>A</tt>-value occurring among the tuples in <tt>R</tt>,
+    rather than once for each tuple in <tt>R</tt>, and <tt>S'</tt>
+    is computed once during each iteration of the outer loop.
+    <p>
+  </li>
+  <li><b>Sort-merge join</b>: Sort the tuples of R and S with respect to 
+    attributes A and B, resp., and then use cosequential processing
+    to combine the matching tuples.  (Of course, if either relation is
+    already ordered in the way we want, we need not sort it.)
+    <pre>
+    sort R wrt A;
+    sort S wrt B;
+    // now do cosequential processing similar to Balanced Line algorithm
+    r = first tuple in R;
+    s = first tuple in S;
+    while (r.A != +&infin;) && (s.B != +&infin;) {
+       if (r.A < s.B)
+          { r = next tuple in R; }
+       else if (r.A > s.B)
+          { s = next tuple in S; }
+       else {  // r.A == s.B 
+          let z = r.A
+          // next loop is tricky to implement
+          for every r' in R and s' in S such that r'.A = z = s'.B
+             { write r'&middot;s' to result }
+       }
+       // at this point r and s are first tuples in R and S for which
+       // r.A > A value from above and s.B > B value from above
+    } </pre>
+
+    Running time is O(m*log m  &nbsp;+&nbsp;  n*log n  &nbsp;+&nbsp; 
+    max(m+n,k)), where m and n are the lengths of R and S and k is the
+    length of the result.
+    The first term comes from sorting R, the second from sorting S, and the
+    third comes from performing the cosequential processing.
+    <p>
+    If secondary indexes exist, could use them (rather than sorting)
+    but this could be very inefficient as the records could be
+    scattered all over the place.
+  </li>
+  <li><b>Hash-join</b> (for the case in which the smaller of the two
+       relations (here assumed to be R) fits in RAM):
+   <pre>
+     Let h be a hash function
+     for each tuple r in R
+        { place r into bucket h(r.A) of a hash table; }
+     for each tuple s in S { 
+        for each tuple r in bucket h(s.B) that matches s {
+           write r&middot;s to result;
+        }
+     } </pre>
+     This approach is analogous to <b>nested loop join</b>, but 
+     its running time is better by a constant factor approximating
+     the number of distinct addresses in the hash table.
+     <p>
+  </li>
+  <li><b>Partition Hash Join</b>:<pre>
+     Let h be a hash function;
+     for each tuple r in R
+        { place r into bucket h(r.A) of hash table T<sub>1</sub> }
+     for each tuple s in S
+        { place s into bucket h(s.B) of hash table T<sub>2</sub> }
+
+     // at this point, any pair of matching tuples is in
+     // corresponding buckets of T<sub>1</sub> and T<sub>2</sub>
+     for each i in 0..M-1 {  // M = # of buckets in each hash table
+        process bucket i of T<sub>1</sub> with bucket i of T<sub>2</sub> 
+        to find matching tuples and write them to result;
+     }</pre>
+     Again, this approach is analogous to <b>nested loop join</b>, but 
+     its running time is better by a constant factor approximating
+     the number of distinct addresses in the hash table.
+  </li>
+</ol>
+
+</body>
+</html>

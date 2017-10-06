@@ -1,0 +1,189 @@
+<html>
+<head><title>CMPS 034L  Lab #6</title>
+</head>
+<body>
+<h2>CMPS 034L &nbsp; Spring 2017<br />
+Lab #6: Functional Methods, Strings, and Conditional Execution
+</h2>
+
+</p><p>
+For your convenience, here are a few relevant links:
+<ul>
+  <li><a href="http://download.oracle.com/javase/8/docs/api/java/lang/String.html"
+      target="_blank">java.lang.String</a> class.
+  </li>
+  <li><a href="http://www.cs.uofs.edu/~mccloske/courses/cmps134/string_methods.html"
+      target="_blank">Description of most common String methods</a>.
+  </li>
+  <li><a href="http://download.oracle.com/javase/8/docs/api/java/lang/Character.html"
+      target="_blank">java.lang.Character</a> class.
+  </li>
+</ul>
+
+</p><p>
+You are to work in groups of two, with one group of three in the
+case that an odd number of students is present.
+
+</p><p>
+Go to the
+<a href="http://practiceit.cs.washington.edu" target="_blank">Practice-It 
+website</a>, log in, and click on the <b>Start Practicing</b> button,
+then on the link labeled <b>Building Java Programs, 4th Edition</b>,
+and then on the link indicating <b>BJP Chapter 3</b>.
+
+</p><p>
+<h3>Activity #1: Practice-It Exercises from Chapter 3</h3>
+
+<ol>
+  <li><b>BJP4 Exercise 3.18 (vertical)</b>:
+     You are to develop a method that, given a String, prints its
+     characters vertically (i.e., one per line).
+     <br />
+     <b>Hint:</b> Use a for-loop and the <tt>charAt()</tt> method.
+  </li>
+  </p><p>
+  <li><b>BJP4 Exercise 3.19 (printReverse)</b>:
+     You are to develop a method that, given a String, prints its
+     characters in reverse order.
+     <br />
+     <b>Hint:</b> Use a for-loop (having a loop control variable whose value
+     decreases on each iteration) and the <tt>charAt()</tt> method.
+  </li>
+  </p><p>
+  <li><b>BJP4 Exercise 3.17 (padString)</b>:
+     You are to develop a functional method that, given a String and a
+     desired length, returns the String obtained by padding the given 
+     one with as many leading spaces as necessary to reach the desired
+     length.
+     </p><p>
+     How many times should your loop iterate?  Use the String concatenation
+     operator (<tt>+</tt>).
+     </p><p>
+     Note that your solution to this exercise is needed for the next activity.
+  </li>
+</ol>
+
+<hr>
+<h3>Activity #2: In which you submit work!</h3>
+
+</p><p>
+Complete the Java class <a href="JustifyStringZZ.java">JustifyString</a> and
+use this
+<a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab6_dir">Submit/Review</a> 
+link to submit it.
+
+<hr>
+<h3>Activity #3: Self-Checks and Exercises from Chapter 4</h3>
+
+</p><p>
+Now move to the Chapter 4 Self-Checks by clicking on the "Problems"
+link near top of the page (directly under the "Practice-It logo)
+and then on the link indicating <b>BJP Chapter 4</b>.
+
+</p><p>
+<ol>
+  <li>(Optional: skip to next task unless you're moving quickly.)<br />
+    <b>BJP4 Self-Check 4.4 (Oops4-errors)</b>:
+    Correct several errors in a Java program involving a functional method
+    and a couple of if-statements.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 4.5 (ifElseMystery1)</b>:
+      Given a method involving if-else statements and calls to it,
+      show the output produced.  Recall that <tt>y++</tt> is a
+      shorthand way of saying <tt>y = y+1</tt>.
+  </li>
+  </p><p>
+  <li>(Optional: skip to next task unless you're moving quickly.)<br />
+  <b>BJP4 Self-Check 4.16 (countFactors)</b>:
+      Correct a flawed method having as its purpose to compute the
+      number of divisors of a given number.  (The problem uses the
+      term 'factor', but 'divisor' is more accurate.)
+      </p><p>
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 4.18 (doubleSumError)</b>
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 4.20 (charMystery)</b>:
+      Recall that the statement <tt>letter++</tt> increases the value
+      of variable <tt>letter</tt> by one.  Keep in mind that values of
+      type <tt>char</tt> are pseudo-integers in the sense that each
+      of them is associated to an integer value that represents it.
+      Thus, for example, if <tt>letter</tt> has value <tt>'D'</tt>, then
+      execution of <tt>letter++</tt> changes its value to <tt>'E'</tt>
+      (because the number that represents <tt>'E'</tt> is one greater
+      than the number that represents <tt>'D'</tt>).
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 4.21 (capitalLetter)</b>:
+     Develop an if-else statement that reports whether or not a 
+     particular variable has as its value a String that begins 
+     with an upper case letter. 
+     Make use of the method <tt>Character.isUpperCase()</tt>.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 4.23 (lastFirst)</b>:
+     Develop a method that translates a name in the form first-space-last
+     (e.g., "<tt>Chris Glorphead</tt>") into the form 
+     last-comma-space-initial (e.g., "<tt>Glorphead, C.</tt>").
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 4.25 (printTriangleTypePreconditions)</b>:
+     Identify the preconditions appropriate for a method that receives
+     &mdash;via its parameters&mdash; 
+     the lengths of the three sides of a triangle.
+     The method was written under the assumption that the three values
+     it receives are the lengths of the sides of a real triangle
+     (as opposed to an "impossible" triangle).
+  </li>
+  </p><p>
+  <li>(Optional: skip to next task unless you're moving quickly.)<br />
+      <b>BJP4 Self-Check 4.27 (medianOf3)</b>:
+     Correct a flawed method having as its purpose to compute the
+     median of the three numbers passed to it via its parameters.
+  </li>
+  </p><p>
+  <li><b>BJP4 Exercise 4.3 (season)</b>:
+     Develop a method that takes parameters describing a calendar date
+     (just month and day, no year) and returns a String indicating in 
+     which season it falls (e.g., "<tt>Winter</tt>", "<tt>Summer</tt>").
+  </li>
+  </p><p>
+  <li>(Optional: skip to next task unless you're moving quickly.)<br />
+      <b>BJP4 Exercise 4.19 (quadrant)</b>:
+     Develop a method that receives a pair of real numbers representing
+     a point on the cartesian plane and returns a value indicating
+     in which of the quadrants the point lies.
+  </li>
+  </p><p>
+  <li><b>BJP4 Exercise 4.4 (daysInMonth)</b>:
+     Develop a method that receives an <tt>int</tt> parameter indicating 
+     a month (e.g., <tt>3</tt> for March, <tt>11</tt> for November) 
+     and returns the number of days in that month.
+     (Assume that February always has 28 days.)
+     Rather than developing a 12-branch if-else statement (one branch
+     for each month), try to use Java's OR operator (<tt>||</tt>) to form 
+     compound conditions so as to keep the number of branches at three
+     (one for each possible # of days in a month, 28, 30, or 31).
+     </p><p>
+     Note that your solution to this exercise is needed for the next activity.
+  </li>
+</ol>
+
+<hr>
+<h3>Activity #4: In which you submit work!</h3>
+
+</p><p>
+Complete the first version of the <tt>daysInMonth()</tt> method
+in the Java class <a href="MonthDaysZZ.java">MonthDays</a> and
+use this
+<a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab6_dir">Submit/Review</a> 
+link to submit it.
+If you are ambitious, complete the second version of the method, too,
+in which leap years are taken into account.
+Don't be afraid to have the second version of the method call the
+first one in all but the case of a leap day having to be accounted for.
+
+</body>
+</html>

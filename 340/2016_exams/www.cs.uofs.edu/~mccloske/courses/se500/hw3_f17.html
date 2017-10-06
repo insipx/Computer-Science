@@ -1,0 +1,159 @@
+<html>
+<head>
+  <title>SE 500 &nbsp; Fall 2017 &nbsp; HW # 3</title>
+</head>
+<body>
+<h2>
+SE 500 (Math for SE) &nbsp; Fall 2017<br />
+HW #3: Inequivalence, Disjunction, Conjunction, and Implication<br />
+Due: 7:20pm, Monday, September 18
+</h2>
+
+All the problems are based on exercises at the end of Chapter 3 of
+the Gries &amp; Schneider text.
+In proving a theorem, you may make use of only lower-numbered
+theorems (or "metatheorems").
+Note that some of the exercises may have hints that appear in the book,
+but not here.
+Don't forget the precedences of operators, which can be found on the
+textbook's inside front cover (in the hardback version at least) and
+<a href="gries_operator_precedence.html">here</a>.
+In exercises involving conjunction, expect to apply the Golden Rule
+(3.35) quite frequently and (3.32) occasionally.
+
+
+</p><p>
+<b>1.</b> Do Exercise 3.14, which is to prove mutual interchangability
+of <tt>&equiv;</tt> and <tt>&ne;</tt> (3.19):
+</p><p><center>(3.19)
+ <tt>p &ne; q &equiv; r &nbsp;  &equiv; &nbsp; p &equiv; q &ne; r</tt>
+</center>
+</p><p>
+using the heuristic of Definition elimination(3.23).
+
+</p><p>
+<hr>
+<b>2.(a)</b> 
+  <!-- Do Exercise 3.15, which is to make a convincing argument that 
+       &mdash;assuming <tt>&equiv;</tt>, <tt>&not;</tt>, <em>true</em>,
+       and <em>false</em> have their standard meanings as given in 
+       Section 2.1&mdash; Axioms (3.24) through (3.28) uniquely determine
+       the meaning of <tt>&or;</tt>.
+       In other words, the function described in the second column of the table
+       on page 26 &mdash;which we refer to as <em>disjunction</em>&mdash; is the
+       only function among the sixteen functions having signature
+       <b>bool <tt>&times;</tt> bool &rarr; bool</b> that satisfies
+       all five of the axioms (3.24) &mdash; (3.28).
+  -->
+Suppose that you took Axioms (3.24) through (3.28) and replaced
+each occurrence of &or; by &oplus;.  
+Call the resulting equations (3.24'), (3.25'), ..., (3.28').
+(The idea is that &oplus; could stand for any of the sixteen functions 
+with signature <b>bool &times; bool &xrarr; bool</b>, as are described 
+on page 26 of Gries &amp; Schneider.)
+</p><p>
+Make a convincing argument that, among those sixteen functions,
+the only one that makes all of (3.24'), (3.25'), ..., (3.28')
+into tautologies is the one that we call <b>disjunction</b>.
+(In other words, show that if we let &oplus; stand for any of the fifteen
+functions other than disjunction, at least one among (3.24'), (3.25'), ..., 
+(3.28') is not a tautology.)
+
+</p><p>
+<b>(b)</b>
+Now find a smallest subset of {(3.24'), (3.25'), ..., (3.28')} such that
+&oplus; must stand for disjunction in order for all members of that 
+subset to be tautologies.
+(In effect, you are being asked to identify a smallest set of
+axioms, among (3.24), ..., (3.28), that suffice to uniquely
+identify disjunction among all sixteen two-argument boolean functions.)
+<!-- (Two students claim that a particular set of two of the axioms are
+sufficient.)
+-->
+
+</p><p>
+<hr>
+<b>3.</b> Do Exercise 3.18, which is to prove Distributivity of <tt>&or;</tt>
+over <tt>&or;</tt>:
+</p><p><center><tt>
+  (3.31) p &or; (q &or; r) &nbsp;&equiv;&nbsp; (p &or; q) &or; (p &or; r)
+  <!-- (3.31) p v (q v r) = (p v q) v (p v r) -->
+</tt></center>
+
+</p><p>
+<hr>
+<b>4.</b> Without using (3.32), prove 
+</p><p><center><tt>p &or; (q &ne; r) &nbsp;&equiv;&nbsp; 
+               p &or; (q &equiv; r) &nbsp;&equiv;&nbsp; p
+</tt></center>
+</p><p>
+<b>Hint:</b> Use (3.27).
+
+<!--
+</p><p>
+<hr>
+<b>8.</b> Do Exercise 3.22, which is to prove Symmetry of <tt>&and;</tt>:
+</p><p><center><tt>
+  (3.36) p &and; q &nbsp;&equiv;&nbsp; q &and; p
+  <!-- (3.31) p & q = q & p -->
+</tt></center>
+-->
+
+</p><p>
+<hr>
+<b>5.</b> Do Exercise 3.24, which is to prove Zero of <tt>&and;</tt>:
+</p><p><center><tt>
+  (3.40) p &and; <em>false</em> &nbsp;&equiv;&nbsp; <em>false</em>
+  <!-- (3.31) p & false = false -->
+</tt></center>
+
+
+</p><p>
+<hr>
+<b>6.</b> Do Exercise 3.29, which is to prove one form of Absorption:
+<p><center><tt>
+  (3.44b)  p &or; (&not;p &and; q)  &nbsp;&equiv;&nbsp;  p &or; q
+</tt></center>
+
+</p><p>
+<hr>
+<b>7.</b> Do Exercise 3.33, which is to prove one form of De Morgan:
+<p><center><tt>
+  (3.47b)  &not;(p &or; q)  &nbsp;&equiv;&nbsp;  &not;p &and; &not;q
+</tt></center>
+</p><p>
+<b>Hint:</b> Look to use (3.35) at least twice.
+Also, look to use either (3.32) or else each of (3.9), (3.11), and (3.47a).
+
+</p><p>
+<hr>
+<b>8.</b> Do Exercise 3.34, which is to prove
+<p><center><tt>
+  (p &and; q) &or; (p &and; &not;q)  &nbsp;&equiv;&nbsp;  p
+  <!-- (p & q) v (p & !q) = p -->
+</tt></center>
+
+
+</p><p>
+<hr>
+<b>9.</b> Do Exercise 3.44, which is to prove 
+<p><center><tt>
+  p &rArr; q &nbsp;&equiv;&nbsp; &not;(p &and; &not;q)
+</tt></center>
+
+</p><p>
+<hr>
+<b>10.</b> Do Exercise 3.46, which is to prove 
+<p><center><tt>
+  p &rArr; q &nbsp;&equiv;&nbsp; &not;p &and; &not;q &nbsp;&equiv;&nbsp; &not;q
+</tt></center>
+
+</p><p>
+<hr>
+<b>11.</b> Do Exercise 3.51, which is to prove 
+<p><center><tt>
+  (3.67) p &and; (q &rArr; p) &nbsp;&equiv;&nbsp; p
+</tt></center>
+
+</body>
+</html>

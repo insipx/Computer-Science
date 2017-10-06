@@ -1,0 +1,216 @@
+<html>
+<head>
+  <title>CMPS 340  Some Sample Sugared Relational Algebra Queries</title>
+</head>
+<body>
+<h2>CMPS 340 Fall 2014<br />
+Even More Sample Queries in SRA (Sugared Relational Algebra)
+</h2>
+
+<!-- Note: The first five sample queries here come directly from 
+     Fall 2014 HW #3 in CMPS 340.  The last two (using aggregate
+     operations) were made up so as to not correspond to Fall 2015's
+     HW #3.  (Unfortunately, the last two problems in Fall 2014's
+     and 2015's are too closely related.)
+-->
+
+<p>
+Using the COMPANY relational database from the 6th edition of the 
+Elmasri/Navathe textbook (the schema diagram of which is in Figure 3.5
+(5.5 in earlier editions) and a possible state of which
+is illustrated in 
+<a href="elmasri_navathe.dir/en_6e_fig_3-6.pdf">Figure 3.6</a> (page 72)
+(or Figure 5.6 in earlier editions)), devise queries,
+expressed in Syntactically-sugared Relational Algebra (SRA), 
+corresponding to the following queries expressed in English.
+
+<hr>
+</p><p>
+<b>1.</b> 
+Report the first name, sex, and salary of each employee whose last name is
+'Rumplestiltskin' and who works for either Department 1 or Department 8.
+
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT Fname, Sex, Salary
+FROM RESTRICT Employee
+     WHERE Lname = 'Rumplestiltskin' AND (Dno = 1 OR Dno = 8)</pre>
+
+<hr>
+</p><p>
+<b>2.</b> 
+Report the last name and birthdate of each female employee whose
+salary is at least $50,000 and who works for a department named
+either "Data Processing" or "Quality Assurance".
+
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT Lname, Bdate
+FROM JOIN (RESTRICT Employee WHERE Sex = 'F' AND Salary &ge; 50000)
+     WITH (RESTRICT Department 
+           WHERE Dname = 'Data Processing' OR Dname = 'Quality Assurance')
+     WHERE Dno = Dnumber</pre>
+
+<hr>
+</p><p>
+<b>3.</b>
+Report the first and last name of each male employee who 
+has no dependents.
+
+</p><p>
+<b>Solution:</b> (Three of them)
+The first solution introduces a syntactic mechanism, 
+</p><p><center>
+<b><tt>LET &lt;name&gt; BE &lt;table-expr-1&gt; IN
+&lt;table-expr-2&gt;</tt></b>
+</center>
+
+</p><p> which produces the table described by the expression
+&lt;table-expr-2&gt;, in which we are allowed to use the 
+specified &lt;name&gt; (any number of times) to refer to the
+table described by &lt;table-expr-1&gt;.
+In our solution, we use the name <tt>Male_Empl</tt> to refer to
+the subset of the <tt>Employee</tt> table that includes only the
+tuples describing male employees.
+
+<pre>PROJECT Fname, Lname
+FROM LET Male_Empl BE (RESTRICT Employee WHERE Sex = 'M')
+     IN JOIN Male_Empl AS m
+        WITH (PROJECT Ssn FROM Male_Empl
+              MINUS
+              PROJECT Essn AS Ssn FROM Dependent
+             ) AS d
+        WHERE m.Ssn = d.Ssn</pre>
+
+</p><p>
+The second solution uses a <b>natural join</b>, which is a join in which
+the implicit join condition is that values of attributes with the same names
+have equal values.
+
+<pre>PROJECT Fname, Lname
+FROM LET Male_Empl BE (RESTRICT Employee WHERE Sex = 'M')
+     IN NATURAL_JOIN Male_Empl
+        WITH (PROJECT Ssn FROM Male_Empl
+              MINUS
+              PROJECT Essn AS Ssn FROM Dependent
+             )</pre>
+
+</p><p>
+The third solution employs a <b>left outer join</b>, which is a join 
+that produces a table that includes, in addition to the usual tuples, 
+a tuple for each tuple in the left operand that has no "matching" tuple
+in the right operand.  These "extra" tuples have NULLs in all the attributes
+that come from the right operand.
+
+<pre>PROJECT Fname, Lname
+FROM LEFT_OUTER_JOIN (RESTRICT Employee WHERE Sex = 'M') 
+     WITH Dependent
+     WHERE Ssn = Essn 
+WHERE Essn IS NULL</pre>
+
+</p><p>
+On a technical (one might even say pedantic) note,
+we refrain from saying <tt>Essn = NULL</tt> because of the special
+nature of <tt>NULL</tt>, which does not refer to a value but rather
+to the <b>absence</b> of a value.
+For this reason we view it to be meaningless to ask whether 
+<tt>NULL</tt> is equal to anything.
+
+<hr>
+</p><p>
+<b>4.</b>
+Report the names of any projects on which an employee having last name
+"Rumplestiltskin" works at least 20 hours per week.
+
+</p><p>
+<b>Solution:</b>
+<pre>
+PROJECT Pname
+FROM JOIN 
+       (JOIN (RESTRICT Employee WHERE Lname = 'Rumplestiltskin')
+        WITH (RESTRICT Works_On WHERE Hours &ge; 20)
+        WHERE Ssn = Essn
+       )
+     WITH Project
+     WHERE Pno = Pnumber</pre>
+
+<hr>
+</p><p>
+<b>5.</b>
+Report the SSN of any employee who works on a project that is controlled
+by a department other than the one for which the employee works.
+
+</p><p>
+<b>Solution:</b>
+<pre>
+PROJECT Ssn
+FROM JOIN Employee
+     WITH (JOIN Works_On WITH Project WHERE Pno = Pnumber)
+     WHERE Ssn = Essn AND Dno &ne; Dnum</pre>
+
+<hr>
+</p><p>
+<b>6.</b>
+Report, for each employee having at least one dependent,
+the number of dependents of each sex that that employee has.
+(Identify each employee by SSN.)
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE e.Ssn, d.Sex, COUNT(*)
+FROM JOIN Employee AS e
+     WITH Dependent AS d
+     WHERE e.Ssn = d.ESsn
+GROUP BY e.Ssn, d.Sex</pre>
+
+<!--
+</p><p>
+Note that, in the resulting table, each COUNT value will be greater
+than zero.  Thus, an employee having no dependents will not be listed
+at all and one having dependents of only one sex will be listed only
+once.  If we want to include employees with no dependents, we could
+use a left outer-join, like this:
+
+
+//The query below is WRONG!!  Because d.Sex will be NULL!!
+
+<pre>AGGREGATE e.SSN, d.Sex, COUNT(d.Dependent_Name)
+FROM LEFT_OUTER JOIN Employee AS e
+     WITH Dependent AS d
+     WHERE e.SSN = d.ESSN
+GROUP BY e.SSN, d.Sex</pre>
+
+</p><p>
+This time we counted distinct values of d.Dependent_Name so that
+tuples with NULL in that field would not be counted.
+(This assumes (reasonably), that tuples with NULL in the counted
+field are not counted.)
+
+</p><p>
+If we wanted to ensure that every employee had two tuples describing
+her/him, one listing number of male dependents and the other listing
+the number of female dependents, we could do it like this:
+
+// The query below is WRONG for the same reason as the one above.
+
+<pre>UNION
+  AGGREGATE e.SSN, d.Sex, COUNT(d.Dependent_Name)
+  FROM LEFT_OUTER JOIN Employee AS e
+       WITH (RESTRICT Dependent WHERE Sex = 'M') AS d
+       WHERE e.SSN = d.ESSN
+  GROUP BY e.SSN, d.Sex</pre>
+WITH
+  AGGREGATE e.SSN, d.Sex, COUNT(d.Dependent_Name)
+  FROM LEFT_OUTER JOIN Employee AS e
+       WITH (RESTRICT Dependent WHERE Sex = 'F') AS d
+       WHERE e.SSN = d.ESSN
+  GROUP BY e.SSN, d.Sex</pre>
+
+</p><p>
+Here we simply repeated the previous solution separately for male and
+female dependents, and then took the union of the two resulting tables.
+
+-->
+
+</body>
+</head>

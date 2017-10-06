@@ -1,0 +1,516 @@
+<html>
+<head>
+<title>Longest Common Subsequence Problem</title>
+</head>
+<body>
+<h2>
+  SE 504 <br />
+  The Longest Common Subsequence Problem
+</h2>
+
+</p><p>
+If <em>S</em> is a sequence, then any sequence that can be obtained by
+"removing" zero or more of the elements of <em>S</em> is a subsequence
+of <em>S</em>.  Note that the removed elements need not be adjacent to
+each other.  For example, consider the character sequence
+<!--
+<b>abbacabbaca</b>.  If the 2nd, 5th, 7th, 8th, and 10th characters are
+removed (counting starting at one), we get the subsequence <b>abaaaa</b>.  
+-->
+<em>S = </em><b>abbabcab</b>.
+If the 2nd, 4th, 5th, and 8th elements are removed,
+we are left with the subsequence <b>abca</b>.  
+
+</p><p>
+Consider now the sequence <em>T = </em><b>babacbaca</b>.  
+Notice that <b>abca</b> is a subsequence of it, too.
+(Indeed, there are at least three different ways of removing elements
+from <em>T</em> to obtain <b>abca</b>.)
+Hence, we have that <b>abca</b> is a <b>common subsequence</b> of
+<em>S</em> and <em>T</em>.
+
+
+</p><p>
+The <b>Longest Common Subsequence</b> problem is as follows:
+Given as input two fixed sequences (i.e., arrays) X[1..M] and Y[1..N]
+containing elements of some type T (e.g., <tt>char</tt>, if they are 
+character strings), find a sequence Z that is a subsequence of both X
+and Y and such that the length of Z is maximum among all such subsequences.
+
+</p><p>
+A somewhat more difficult version of the problem is to find the 
+set consisting of <em>all</em> common maximum-length subsequences
+of X and Y (rather than only a <!-- one-element subset of this set). -->
+particular element of this set).
+
+</p><p>
+Here we will consider a less difficult version of the problem, which is
+to find the <b>length</b> of a longest common subsequence of X and Y.
+
+</p><p>
+For <tt>0&le;m&le;M</tt> and <tt>0&le;n&le;N</tt>,
+let <tt>LLCS.m.n =</tt> the Length of a Longest Common Subsequence of X[1..m] 
+and Y[1..n].  Then we can specify our program as follows:
+
+</p><p>
+<table border="1" cellpadding="4"
+<tr><td>
+<pre><code>|[ con M, N : nat;
+   con X : array [1..M] of T;
+   con Y : array [1..N] of T;
+   var r : nat
+
+   r := ?
+
+   {Q: r = LLCS.M.N }
+]|
+</code></pre>
+</td></tr>
+</table>
+
+</p><p>
+If we are going to develop a program whose purpose is to compute the
+result of applying LLCS to particular values (M and N), we should probably
+come armed with a good understanding of LLCS.  So let's try to figure it
+out.
+
+</p><p>
+Because the only subsequence of an empty sequence is itself an empty sequence,
+it must be that the longest common subsequence of X[1..0] (which is empty) and
+Y[1..n] (for any n) is the empty sequence.  Similarly, the longest common
+subsequence of X[1..m] (for any m) and Y[1..0] (which is empty) is empty.
+These observations give rise to
+
+</p><p>
+<b>(1)</b> 
+  <tt>LLCS.0.n = 0</tt>  (for all <tt>n</tt> in <tt>0..N</tt>)<br />
+<b>(2)</b> 
+  <tt>LLCS.m.0 = 0</tt>  (for all <tt>m</tt> in <tt>0..M</tt>)
+
+</p><p>
+Let <tt>1&le;m&le;M</tt> and <tt>1&le;n&le;N</tt>.
+If <tt>X.m = Y.n</tt>, and if <tt>S</tt> is a longest common subsequence
+of <tt>X[1..m-1]</tt> and <tt>Y[1..n-1]</tt>, then appending <tt>X.m</tt>
+to <tt>S</tt> yields a longest common subsequence of 
+<tt>X[1..m]</tt> and <tt>Y[1..n]</tt>.
+This observation gives rise to
+
+</p><p>
+<b>(3)</b> 
+  <tt>LLCS.m.n = LLCS.(m-1).(n-1) + 1</tt>  
+    &nbsp; if &nbsp;<tt>X.m = Y.n (1&le;m&le;M, 1&le;n&le;N)</tt>
+
+</p><p>
+If, on the other hand, <tt>X.m &ne; Y.n</tt>, then any common subsequence
+of <tt>X[1..m]</tt> and <tt>Y[1..n]</tt> must also be a common subsequence
+either of <tt>X[1..m]</tt> and <tt>Y[1..n-1]</tt> or of
+<tt>X[1..m-1]</tt> and <tt>Y[1..n]</tt> (or both).
+This observation gives rise to
+
+</p><p>
+<b>(4)</b> 
+  <tt>LLCS.m.n = LLCS.m.(n-1) max LLCS.(m-1).n</tt>  
+    &nbsp;if &nbsp;<tt>X.m &ne; Y.n (1&le;m&le;M, 1&le;n&le;N) </tt>
+
+</p><p>
+Summarizing (1) through (4), we have
+
+<center>
+<tt>
+<table border="0" cellpadding="0">
+<tr>
+  <td rowspan="3">LLCS.m.n =<tt>&nbsp;&nbsp;</tt></td>
+  <td>{ 0</td>
+  <td><tt>&nbsp;&nbsp;</tt> if m=0 &or; n=0</td>
+</tr>
+<tr>
+  <td>{ LLCS.(m-1).(n-1) + 1</td>
+  <td><tt>&nbsp;&nbsp;</tt>
+      if 1&le;m&le;M &and; 1&le;n&le;N &and; X.m = Y.n</td>
+</tr>
+<tr>
+  <td>{ LLCS.m.(n-1) max LLCS.(m-1).n</td>
+  <td><tt>&nbsp;&nbsp;</tt>
+      if 1&le;m&le;M &and; 1&le;n&le;N &and; X.m &ne; Y.n</td>
+</tr>
+</table>
+</tt>
+</center>
+
+</p><p>
+Note that this definition covers all cases, so it is complete.
+
+</p><p>
+Imagine the values <tt>LLCS.m.n</tt> in a two-dimensional table.
+For example, if <tt>X</tt> and <tt>Y</tt> were of lengths three and 
+two, respectively, the table would be like this:
+
+<center>
+<tt>
+<table border="1" cellpadding="4">
+<tr>
+  <th>3</th>
+  <td>LLCS.3.0</td><td>LLCS.3.1</td><td>LLCS.3.2</td>
+</tr>
+<tr>
+  <th>2</th>
+  <td>LLCS.2.0</td><td>LLCS.2.1</td><td>LLCS.2.2</td>
+</tr>
+<tr>
+  <th>1</th>
+  <td>LLCS.1.0</td><td>LLCS.1.1</td><td>LLCS.1.2</td>
+</tr>
+<tr>
+  <th>0</th>
+  <td>LLCS.0.0</td><td>LLCS.0.1</td><td>LLCS.0.2</td>
+</tr>
+<tr>
+  <td>&nbsp;</td>
+  <th>0</th>
+  <th>1</th>
+  <th>2</th>
+</tr>
+</table>
+</tt>
+</center>
+
+</p></p>
+Generally speaking, the value <tt>LLCS.m.n</tt> would occupy the cell at
+location <tt>(m,n)</tt> (i.e., in row <tt>m</tt> and column <tt>n</tt>),
+for all <tt>m</tt> and <tt>n</tt>
+satisfying <tt>0&le;m&le;M &and; 0&le;n&le;N</tt>.
+In particular, the solution to the problem is found in the cell at
+location <tt>(M,N)</tt> (the upper right corner).
+
+</p><p>
+From our description of <tt>LLCS</tt>, it follows that each
+cell in row zero contains zero, as does each cell in column zero.
+It also follows that, for every other cell, its value depends upon
+either the cell diagonal to it below and left or else the cells 
+immediately under it and to its left.   That is, the value at
+each such location <tt>(m,n)</tt> depends upon either the one at
+location <tt>(m-1,n-1)</tt> or upon the ones at locations
+<tt>(m,n-1)</tt> and <tt>(m-1,n)</tt>.  (Of course, which of the
+two dependencies exist is determined by whether or not <tt>X.m = Y.n</tt>.)
+
+</p><p>
+So, having filled row zero and column zero with zeros, we can fill in the
+rest of the table row-by-row (with row numbers increasing as we go along),
+with each row being filled in with column numbers increasing as we go along.
+(Alternatively, we could fill the rest of the table column-by-column, or
+even diagonal-by-diagonal.)
+
+<hr>
+<h3>A Program Solution</h3>
+</p><p>
+Using the ideas developed above, here is a program solution, 
+which uses a two-dimensional array <tt>llcs</tt> to store the values 
+of <tt>LLCS</tt>:
+
+</p><p>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre><code>|[ con M, N : nat;
+   con X : array [1..M] of T;
+   con Y : array [1..N] of T;
+   var r : nat;
+   var m,n : nat;
+   var llcs : array[0..M,0..N] of nat;
+
+   llcs[0,0..N] := 0;   // fill row zero of llcs with zeros
+   llcs[0..M,0] := 0;   // fill column zero of llcs with zeros
+
+   m := 1;
+   {Loop invariant I<sub>(m)</sub>: (&forall;i,j | 0&le;i&lt;m &and; 0&le;j&le;N : llcs[i,j] = LLCS.i.j) &and; 1&le;m&le;M+1 }
+   {Bound function t: M+1-m}
+   <b>do</b> m &ne; M+1 --->
+      n := 1;
+      {Loop invariant I<sub>(n)</sub>: I<sub>m</sub> &and; (&forall;j | 0&le;j&lt;n : llcs[m,j] = LLCS.m.j) &and; 1&le;n&le;N+1 }
+      {Bound function t: N+1-n}
+      <b>do</b> n &ne; N+1 --->
+         <b>if</b> X[m]= Y[n] ---> llcs[m,n] := llcs[m-1,n-1] + 1
+         [] X[m] &ne; Y[n] ---> llcs[m,n] := llcs[m,n-1] max llcs[m-1,n]
+         <b>fi</b>
+         ;n := n+1
+      <b>od</b>
+      ;m := m+1;
+   <b>od</b>
+   {I<sub>(m)</sub> &and; m=M+1, from which it follows that llcs[M,N] = LLCS.M.N}
+   ;r := llcs[M,N]
+   {Q: r = LLCS.M.N }
+]|</code></pre>
+</td></tr>
+</table>
+
+</p><p>
+Informally, the invariant I<sub>(m)</sub> says that rows 0..m-1 of
+the <tt>llcs[]</tt> array are filled correctly (with the corresponding
+values of LLCS) and the invariant I<sub>(n)</sub> says that, 
+within row m of <tt>llcs[]</tt>, columns 0..n-1 are filled correctly.
+
+</p><p>
+Here is an alternative way of doing the looping, so that a single loop
+(with multiple guards) suffices, rather than nesting one loop inside
+the other:
+
+</p><p>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre><code>|[ con M, N : nat;
+   con X : array [1..M] of T;
+   con Y : array [1..N] of T;
+   var r : nat;
+   var m,n : nat;
+   var llcs : array[0..M,0..N] of nat;
+
+   llcs[0,0..N] := 0;   // fill row zero of llcs with zeros
+   llcs[0..M,0] := 0;   // fill column zero of llcs with zeros
+
+   m,n := 1,1;
+   {Loop invariant I: I<sub>(m)</sub> &and; I<sub>(n)</sub>, where
+    I<sub>(m)</sub> : (&forall;i,j | 0&le;i&lt;m &and; 0&le;j&le;N : llcs[i,j] = LLCS.i.j) &and; 1&le;m&le;M+1
+    I<sub>(n)</sub> : (&forall;j | 0&le;j&lt;n : llcs[m,j] = LLCS.m.j) &and; 1&le;n&le;N+1
+   }
+   {Bound function t: (M+1)(N+1) - (N+1)m - n}
+   <b>do</b> m &ne; M+1 &and; n = N+1 ---> m,n := m+1,1
+   [] m &ne; M+1 &and; n &ne; N+1 --->
+
+        <b>if</b> X.m = Y.n ---> llcs[m,n] := llcs[m-1,n-1] + 1
+        [] X[m] &ne; Y[n] ---> llcs[m,n] := llcs[m,n-1] max llcs[m-1,n]
+        <b>fi</b>
+        ;n := n+1
+   <b>od</b>
+   {I<sub>(m)</sub> &and; m=M+1, from which it follows that llcs[M,N] = LLCS.M.N}
+   ;r := llcs[M,N]
+   {Q: r = LLCS.M.N }
+]|</code></pre>
+</td></tr>
+</table>
+
+</p><p>
+For that matter, we don't need the selection command if we split the
+second loop guard into two (and distribute the assignment 
+<tt>n&nbsp;:=&nbsp;n+1</tt> over both resulting guarded commands):
+
+</p><p>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre><code>|[ con M, N : nat;
+   con X : array [1..M] of T;
+   con Y : array [1..N] of T;
+   var r : nat;
+   var m,n : nat;
+   var llcs : array[0..M,0..N] of nat;
+
+   llcs[0,0..N] := 0;   // fill row zero of llcs with zeros
+   llcs[0..M,0] := 0;   // fill column zero of llcs with zeros
+
+   m,n := 1,1;
+
+   {Loop invariant I: I<sub>(m)</sub> &and; I<sub>(n)</sub>, where
+    I<sub>(m)</sub> : (&forall;i,j | 0&le;i&lt;m &and; 0&le;j&le;N : llcs[i,j] = LLCS.i.j) &and; 1&le;m&le;M+1
+    I<sub>(n)</sub> : (&forall;j | 0&le;j&lt;n : llcs[m,j] = LLCS.m.j) &and; 1&le;n&le;N+1
+   }
+   {Bound function t: (M+1)(N+1) - (N+1)m - n}
+   <b>do</b> m &ne; M+1 &and; n = N+1 ---> m,n := m+1,1
+   [] m &ne; M+1 &and; n &ne; N+1 &and; X[m] = Y[n] ---> n, llcs[m,n] := n+1, llcs[m-1,n-1] + 1
+   [] m &ne; M+1 &and; n &ne; N+1 &and; X[m] &ne; Y[n] ---> n, llcs[m,n] := n+1, llcs[m,n-1] max llcs[m-1,n]
+   <b>od</b>
+   {I<sub>(m)</sub> &and; m=M+1, from which it follows that llcs[M,N] = LLCS.M.N}
+   ;r := llcs.M.N
+   {Q: r = LLCS.M.N }
+]|</code></pre>
+</td></tr>
+</table>
+
+
+<hr>
+<h3>Reducing Space Usage</h3>
+</p><p>
+The solution above uses a quantity of space that is proportional to the
+product <tt>M&times;N</tt> of the lengths of the two input sequences.
+(Indeed, the two-dimensional array <tt>llcs</tt> has
+<tt>(M+1)&times;(N+1)</tt> elements.)
+Can we rewrite the program to use significantly less space?
+Consider that as we fill the elements of <tt>llcs</tt> in a row-by-row
+fashion, at no time is it necessary to refer to any element that is not
+either in the row currently being filled or the row immediately preceding
+that one.  From this we conclude that it suffices to store two rows of
+<tt>llcs</tt>, the "current" one and the preceding one.
+Based on this idea, we offer the following program, in which arrays
+<tt>llcsCur</tt> and <tt>llcsPrev</tt> are used for storing the
+"current" row (<tt>m</tt>) and the preceding row (<tt>m-1</tt>) of
+the table containing the <tt>LLCS</tt> values.
+
+</p><p>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre><code>|[ con M, N : nat;
+   con X : array [1..M] of T;
+   con Y : array [1..N] of T;
+   var r : nat;
+   var m,n : nat;
+   var llcsCur, llcsPrev : array[0..N] of nat;
+
+   llcsPrev[0..N] := 0;   // fill llcsPrev[] with zeros
+   llcsCur[0] := 0;       // fill zero-th elem of llcsCur[] with zero
+
+   m := 1;
+   {Loop invariant I<sub>(m)</sub> : llcsPrev[0..N] = LLCS.(m-1).[0..N] &and; 1&le;m&le;M+1 }
+   {Bound function t: M+1-m}
+   <b>do</b> m &ne; M+1 --->
+      n := 1;
+      {Loop invariant I<sub>(n)</sub> : I<sub>(m)</sub> &and; llcsCur[0..n) = LLCS.m[0..n) &and; 1&le;n&le;N+1 }
+      {Bound function t: N+1-n
+      <b>do</b> n &ne; N+1 --->
+         <b>if</b> X[m] = Y[n] ---> llcsCur[n] := llcsPrev[n-1] + 1
+         [] X[m] &ne; Y[n] ---> llcsCur[n] := llcsCur[n-1] max llcsPrev[n]
+         <b>fi</b>
+         ;n := n+1
+      <b>od</b>
+      ;llcsCur, llcsPrev := llcsPrev, llcsCur  // swap (references to) the two arrays
+      ;m := m+1;
+   <b>od</b>
+   {I<sub>(m)</sub> &and; m=M+1, from which it follows that llcsPrev[N] = LLCS.M.N}
+   ;r := llcsPrev[N]
+   {Q: r = LLCS.M.N }
+]| </code></pre>
+</td></tr>
+</table>
+
+</p><p>
+Here is the alternative single-loop version:
+</p><p>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre><code>|[ con M, N : nat;
+   con X : array [1..M] of T;
+   con Y : array [1..N] of T;
+   var r : nat;
+   var m,n : nat;
+   var llcsCur, llcsPrev : array[0..N] of nat;
+
+   llcsPrev[0..N] := 0;   // fill llcsPrev with zeros
+   llcsCur[0] := 0;       // fill zero-th element of llcsCur with zero
+
+   m,n := 1,1;
+   {Loop invariant I: I<sub>(m)</sub> &and; I<sub>(n)</sub>, where
+    I<sub>(m)</sub> : llcsPrev[0..N] = LLCS.(m-1).[0..N] &and; 1&le;m&le;M+1 
+    I<sub>(n)</sub> : llcsCur[0..n) = LLCS.m.[0..n) &and; 1&le;n&le;N+1
+   }
+   {Bound function t: (M+1)(N+1) - (N+1)m - n}
+   <b>do</b> m &ne; M+1 &and; n = N+1 ---> 
+
+      llcsCur, llcsPrev := llcsPrev, llcsCur; // swap (references to) the arrays
+      m,n := m+1,1;
+
+   [] m &ne; M+1 &and; n &ne; N+1 --->
+
+      <b>if</b> X[m] = Y[n] ---> llcsCur[n] := llcsPrev[n-1] + 1
+      [] X[m] &ne; Y[n] ---> llcsCur[n] := llcsCur[n-1] max llcsPrev[n]
+      <b>fi</b>
+      ;n := n+1
+   <b>od</b> 
+   {I<sub>(m)</sub> &and; m=M+1, from which it follows that llcsPrev[N] = LLCS.M.N}
+   ;r := llcsPrev.N
+   {Q: r = LLCS.M.N }
+]|</code></pre>
+</td></tr>
+</table>
+
+</p><p>
+Having replaced the two dimensional array <tt>llcs[]</tt> by the two
+one-dimensional arrays <tt>llcsPrev[]</tt> and <tt>llcsCur[]</tt>, the
+program's space complexity falls from <tt>&Theta;(MN)</tt> to 
+<tt>&Theta;(N)</tt>, which is a huge improvement.
+
+</p><p>
+It turns out that we can do a little bit better, however, as we
+don't really need both of the arrays!
+Consider that, as <tt>llcsCur[]</tt> is being "filled up",
+we have <tt>llcsCur[0..n) = LLCS.m.[0..n)</tt>.  Because we also
+have <tt>llcsPrev[0..N] = LLCS.(m-1).[0..N]</tt> and nothing has
+been done to any element in <tt>llcsCur[n..N]</tt> since the last
+time the two arrays were swapped, it must also be that
+<tt>llcsCur[n..N] = LLCS.(m-1).[n..N]</tt>.  In other words, the 
+elements in <tt>llcsCur[n..N]</tt> still contain the corresponding 
+values from the previous row, <tt>m-1</tt>, of <tt>LLCS</tt>.
+In particular, <tt>llcsCur[n] = llcsPrev[n]</tt>.  Hence, the assignment
+</p><p><center>
+<tt>llcsCur[n] := llcsCur[n-1] max llcsPrev[n]</tt>
+</center>
+
+</p><p>
+could just as well have been written
+
+</p><p><center>
+<tt>llcsCur[n] := llcsCur[n-1] max llcsCur[n]</tt>
+</center>
+
+</p><p>
+Rewriting the assignment
+
+</p><p><center>
+<tt>llcsCur[n] := llcsPrev[n-1] + 1</tt>
+</center>
+
+</p><p>
+without referring to <tt>llcsPrev</tt> is more problematic, however,
+because <tt>llcsCur[n-1] = LLCS.m.(n-1)</tt> but
+<tt>llcsPrev[n-1] = LLCS.(m-1).(n-1)</tt>. 
+(What happened is that, on the previous loop iteration, the value that 
+had been in <tt>llcsCur[n-1]</tt> 
+&mdash;namely, <tt>LLCS.(m-1).(n-1)</tt>&mdash;
+was overwritten by <tt>LLCS.m.(n-1)</tt>.
+What we need is a way to "remember" the value previously occupying
+<tt>llcsCur[n-1]</tt>!  Ah, but that is solved by introducing a
+fresh variable, <tt>old</tt>, and strengthening the invariant by
+stipulating that <tt>old = LLCS.(m-1).(n-1)</tt>.
+Having done that, the job of the two arrays <tt>llcsPrev[]</tt> and
+<tt>llcsCur[]</tt> can be served by a single array, which we call
+<tt>llcs[]</tt>.  The "trick" to maintaining the new invariant is to
+assign the value of <tt>llcs[n]</tt> to <tt>old</tt> while simultaneously
+modifying <tt>llcs[n]</tt>.  Here is the program, using the single-loop
+and selection-free approach:
+
+</p><p>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre><code>|[ con M, N : nat;
+   con X : array [1..M] of T;
+   con Y : array [1..N] of T;
+   var r : nat;
+   var m,n : nat;
+   var llcs : array[0..N] of nat;
+   var old  : nat;
+
+   llcs[0..N] := 0;   // fill llcs[] with zeros
+   m, n, old := 1, 1, 0;
+
+   {Loop invariant I: llcs[0..n) = LLCS.m.[0..n) &and; llcs[n..N] = LLCS.(m-1).[n..N] &and;
+        old = LLCS.(m-1).(n-1) &and; 1&le;m&le;M+1 &and; 1&le;n&le;N+1
+   }
+   {Bound function t: (M+1)(N+1) - (N+1)m - n}
+   <b>do</b> m &ne; M+1 &and; n = N+1 ---> m, n, old := m+1, 1, 0
+   [] m &ne; M+1 &and; n &ne; N+1 &and; X[m] = Y[n] ---> n, old, llcs.n := n+1, llcs[n], old + 1
+   [] m &ne; M+1 &and; n &ne; N+1 &and; X[m] &ne; Y[n] ---> n, old, llcs[n] := n+1, llcs[n], llcs[n-1] max llcs[n]
+   <b>od</b>
+   {I &and; m=M+1 &and; n=1, from which it follows that llcs[N] = LLCS.M.N}
+   ;r := llcs[N];
+   {Q: r = LLCS.M.N }
+]|</code></pre>
+</td></tr>
+</table>
+
+</p><p>
+Note that the claim that <tt>n=1</tt> is necessarily true when the 
+loop terminates is not rigorously justified here, but it is clearly true,
+because the loop's final iteration will be one in which <tt>m</tt> is 
+increased from <tt>M</tt> to <tt>M+1</tt> and <tt>n</tt> is set to <tt>1</tt>.
+To justify the claim rigorously, we should add the implication
+<tt>m=M+1 &rArr; n=1</tt> as a new conjunct to the loop invariant.
+
+</body>
+</html>
+
+

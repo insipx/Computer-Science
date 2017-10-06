@@ -1,0 +1,532 @@
+<html>
+<head>
+  <title>Negative/Positive Array Element Pair Counting</title>
+</head>
+<body>
+<H2>
+SE 504 <br />
+Negative-Positive Array Element Pair Counting: 
+A Program Development Example Illustrating Heuristics for 
+Obtaining Loop Invariants from Postconditions
+</H2>
+
+</p><p>
+<b>Problem:</b> 
+Develop a program that, given a fixed array b[] of ints, counts the number of
+pairs of elements in which the first is non-positive and the other, appearing
+later, is non-negative.  That is, develop a program that meets the following
+specification:
+
+<pre><code>
+|[con b : array of int;
+  var r : int;
+  neg-pos-index-pair-counter
+  {Q: r = (#i,j | 0&le;i&lt;j&lt;#b : b.i &le; 0  &and;  b.j &ge; 0) }
+]|
+</code></pre>
+
+</p><p>
+It is clear that the solution will require a loop.  Hence, following the
+heuristic of "replacing a constant (in the postcondition) by a fresh
+variable", we replace <tt>#b</tt> by <tt>n</tt> to obtain the slightly
+stronger postcondition
+<p><center><tt>
+  Q': r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0  &and;  b.j &ge; 0) 
+       &nbsp; &and; &nbsp; n = #b
+   </tt></center>
+<p>
+to which we can apply the "remove a conjunct" heuristic to obtain as
+a candidate for loop invariant
+
+<p><center><tt>I: r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0 &and; b.j &ge; 0)
+</tt></center>
+<p>
+The loop guard, <tt>B</tt>, should be the negation of the remaining 
+conjunct, <tt>n &ne; #b</tt>.  (By making such choices for <tt>I</tt>
+and <tt>B</tt>, we have <tt>[I &and; &not;B &nbsp;&rArr;&nbsp; Q']</tt>,
+which is item (iii) among our five proof obligations for a loop. 
+In order to truthify <tt>I</tt>, we can initialize both <tt>n</tt> and 
+<tt>r</tt> to zero.  The obvious modification to make to n inside the 
+loop is to increment it.  Our program is thus
+<pre>
+|[con b : array of int;
+  var r : int;
+  var n : int;
+  n,r := 0,0;
+  {loop invariant I: r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0 &and; b.j &ge; 0) }
+  <b>do</b> n &ne; #b  ---&gt;
+     r := E;
+     { I(n:=n+1) }
+     n := n+1;
+  <b>od</b>
+  {Q': r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0  &and;  b.j &ge; 0) &nbsp; &and; &nbsp; n = #b }
+  {Q: r = (#i,j | 0&le;i&lt;j&lt;#b : b.i &le; 0 &and; b.j &ge; 0) }
+]|
+</pre>
+<p>
+Our choice to increment <tt>n</tt> as the last command in the body of the loop
+(rather than simultaneously with the assignment to <tt>r</tt>) is somewhat
+arbitrary, but this is usually a good choice.  Often, selection and/or loop
+commands must be involved in making updates (inside the body of a loop) to the
+variables other than the "loop control" variable, and so it is usually
+easier to think about the increment to the loop control variable 
+(here, <tt>n</tt>) being made after all those other updates.
+<p>
+Notice the "intermediate assertion" in the middle of the loop body.  This
+reflects the fact that the desired postcondition of <tt>r:=E</tt> is
+<tt>I(n:=n+1)</tt>, which, by now, should be immediately apparent to you.
+In case it is not, here is the reasoning:  In order to prove item (ii) of the
+loop checklist, we need <tt>{I &and; B} r:=E; n:=n+1 {I}</tt>.
+According to the Hoare Triple Catenation Law, to prove this it suffices to 
+find a predicate R such that both (a) <tt>{I&and;B} r:=E {R}</tt> and 
+(b) <tt>{R} n:=n+1 {I}</tt>.  But here the choice for <tt>R</tt> is obvious:
+<tt>wp.(n:=n+1).I</tt>, which is <tt>I(n:=n+1)</tt>.
+(See Hoare Triple Assignment Law and wp Assignment Law.)
+By making this choice, we get (b) "for free" and we get the weakest
+possible postcondition for (a).
+<p>
+Let's try to derive E by attempting to prove
+<tt>{I &and; B} r:=E {I(n:=n+1)}</tt>.
+By the law relating Hoare Triples to wp, this is equivalent to 
+
+<p><center><tt>[I &and; B &nbsp;==&gt;&nbsp;  wp.(r:=E).(I(n:=n+1))]</tt>
+</center>
+
+<p>
+We prove it by assuming the antecedant and showing the consequent:
+<pre>
+Assume I and B.
+
+    wp.(r:=E).I(n:=n+1)
+
+ =    < wp assignment rule >
+
+    (I(n:=n+1))(r:=E)
+
+ =    < defn of I; textual sub. >
+
+    E = (#i,j | 0&le;i&lt;j&lt;n+1 : b.i &le; 0  &and;  b.j &ge; 0) 
+
+ =    < Split range (See Lemma 0 in Appendix) >
+
+    E = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0  &and;  b.j &ge; 0) +
+        (#i,j | 0&le;i&lt;j=n : b.i &le; 0  &and;  b.j &ge; 0)
+
+ =    < simplifying 2nd quantification (see Lemma 1 in Appendix) >
+
+    E = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0  &and;  b.j &ge; 0) +
+        (#i | 0&le;i&lt;n : b.i &le; 0  &and;  b.n &ge; 0)
+
+ =    < assumption I: r = (...) >
+
+    E = r + (#i | 0&le;i&lt;n : b.i &le; 0  &and;  b.n &ge; 0)
+
+ =    < Notice that 2nd conjunct of body of quantification does not depend
+        upon value of dummy.  Hence, there are two cases.  If b.n &ge; 0,
+        the quantification has value (#i | 0&le;i&lt;n : b.i &le; 0), but if
+        b.n &lt; 0, it has value zero.  Rewrite the quantification in terms of
+        the "if" function: if(true,b,c) = b and if(false,b,c) = c 
+        For a more complete account, see Lemma 2 in the Appendix.             >
+
+    E = r +  if(b.n &ge; 0, (#i | 0&le;i&lt;n: b.i &le; 0), 0)
+
+ =    < strengthen invariant: s = (#i | 0&le;i&lt;n : b.i &le; 0) >
+
+    E = r +  if(b.n &ge; 0, s, 0)
+</pre>
+<p>
+We now have
+<pre>
+|[con b : array of int;
+  var r : int;
+  var n : int;
+  var s : int;
+  n,r,s := 0,0,0;
+  {loop invariant I: I<sub>0</sub> &and; I<sub>1</sub>, where
+      I<sub>0</sub>: r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0 &and; b.j &ge; 0) and
+      I<sub>1</sub>: s = (#i | 0&le;i&lt;n : b.i &le; 0)
+  }
+  <b>do</b> n &ne; #b  ---&gt;
+     r := r + if(b.n &ge; 0, s, 0);
+     s := F;
+     { I(n:=n+1) }
+     n := n+1
+  <b>od</b>
+  {Q': r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0  &and;  b.j &ge; 0) &nbsp; &and; &nbsp; n = #b }
+  {Q: r = (#i,j | 0&le;i&lt;j&lt;#b : b.i &le; 0 &and; b.j &ge; 0) }
+]|
+</pre>
+<p>
+The proper initialization for <tt>s</tt> is obvious.
+Somewhat arbitrarily, we decided to place the assignment to <tt>s</tt> 
+<b>after</b> that to <tt>r</tt>, because it seems unlikely that <tt>r</tt> 
+will be needed inside <tt>F</tt>.
+We could have made the assignments simultaneous.
+However, it would not have been a good idea to place the assignment to 
+<tt>s</tt> <b>before</b> the assignment to <tt>r</tt>, because we 
+calculated the right hand side of the assignment to <tt>r</tt> based upon
+<tt>s</tt> having the same value then as it had at the beginning of the
+loop iteration!
+<p>
+Let us try to calculate <tt>F</tt> so that the relevant conjunct of 
+<tt>I(n:=n+1)</tt> necessarily holds after the assignment <tt>s:=F</tt>:
+<pre>
+    wp.(s:=F).(I<sub>1</sub>(n:=n+1))
+
+ =    < wp assignment law >
+
+    (I<sub>1</sub>(n:=n+1))(s:=F)
+
+ =    < defn. of I<sub>1</sub>, textual sub. (twice) >
+
+    F = (#i | 0&le;i&lt;n+1 : b.i &le; 0)  
+
+ =    < split range (8.16) >
+
+    F = (#i | 0&le;i&lt;n : b.i &le; 0)  +  (#i | i=n : b.i &le; 0)
+
+ =    < assumption s = (+i | 0&le;i&lt;n: b.i &le; 0) >
+
+    F = s + (#i | i=n : b.i &le; 0)
+
+ =    < defn of # quantifier >
+
+    F = s + (+i | i=n &and; b.i &le; 0 : 1)
+
+ =    < Substitution (Gries 3.84a) >
+
+    F = s + (+i | i=n &and; b.n &le; 0 : 1)
+
+ =    < See theorem at end of Lemma 2 in the Appendix >
+
+    F = s + if(b.n &le; 0, (+i | i=n  : 1), 0)
+
+ =    < one-point rule (Gries 8.14); text. sub. >
+
+    F = s + if(b.n &le; 0, 1, 0)
+</pre>
+
+<p>
+This yields the program
+
+<pre>
+|[con b : array of int;
+  var r : int;
+  var n : int;
+  var s : int;
+  n,r,s := 0,0,0;
+  {loop invariant I: I<sub>0</sub> &and; I<sub>1</sub>, where
+      I<sub>0</sub>: r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0 &and; b.j &ge; 0) and
+      I<sub>1</sub>: s = (#i | 0&le;i&lt;n : b.i &le; 0)
+  }
+  <b>do</b> n &ne; #b  ---&gt;
+     r := r + if(b.n &ge; 0, s, 0);
+     s := s + if(b.n &le; 0, 1, 0);
+     { I(n:=n+1) }
+     n := n+1
+  <b>od</b>
+  {Q': r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0  &and;  b.j &ge; 0) &nbsp; &and; &nbsp; n = #b }
+  {Q: r = (#i,j | 0&le;i&lt;j&lt;#b : b.i &le; 0 &and; b.j &ge; 0) }
+]|
+</pre>
+<p>
+The usual definition of Dijkstra's Guarded Command Language doesn't include
+the "if" construct as used above.  But it is clear how to translate it
+into our usual notation:
+<pre>
+|[con b : array of int;
+  var r : int;
+  var n : int;
+  var s : int;
+  n,r,s := 0,0,0;
+  {loop invariant I: I<sub>0</sub> &and; I<sub>1</sub>, where 
+      I<sub>0</sub>: r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0 &and; b.j &ge; 0) and
+      I<sub>1</sub>: s = (#i | 0&le;i&lt;n : b.i &le; 0)
+  }
+  <b>do</b> n &ne; #b  ---&gt;
+     <b>if</b> b.n &ge; 0  --&gt;  r := r+s;
+     [] b.n < 0  --&gt;  r := r+0;
+     <b>fi</b>
+     <b>if</b> b.n &le; 0  --&gt;  s := s+1;
+     [] b.n > 0  --&gt;  s := s+0;
+     <b>fi</b>
+     { I(n:=n+1) }
+     n := n+1
+  <b>od</b>
+  {Q': r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0  &and;  b.j &ge; 0) &nbsp; &and; &nbsp; n = #b }
+  {Q: r = (#i,j | 0&le;i&lt;j&lt;#b : b.i &le; 0 &and; b.j &ge; 0) }
+]|</pre>
+
+</p><p>
+By examining the guards of the two selection commands, it is clear that,
+if we separate the guards into <tt>b.n > 0</tt>, <tt>b.n = 0</tt>, and 
+<tt>b.n < 0</tt>,  we can combine the two commands as follows:
+<pre>
+     <b>if</b> b.n > 0  --&gt;  r, s := r+s, s+0;
+     [] b.n = 0  --&gt;  r, s := r+s, s+1;
+     [] b.n < 0  --&gt;  r, s := r+0, s+1;
+     <b>fi</b>
+</pre>
+</p><p>
+Of course, assignments such as <tt>s:=s+0</tt> have no effect and can be
+omitted.  Doing so, the selection command can be rewritten as
+<pre>
+     <b>if</b> b.n > 0  --&gt;  r    := r+s;
+     [] b.n = 0  --&gt;  r, s := r+s, s+1;
+     [] b.n < 0  --&gt;  s    := s+1;
+     <b>fi</b>
+</pre>
+</p><p>
+Finally, it is obvious that the program will terminate, as <tt>n</tt> 
+is initialized to 0, is incremented during each loop iteration, and the
+loop terminates upon <tt>n</tt> reaching value <tt>#b</tt>.
+(The obvious bound function is <tt>#b - n</tt>.)
+To prove items (iv) and (v) rigorously, we will need to include in the
+loop invarant the extra conjunct <tt>0&le;n&le;#b</tt>.
+We are left with the program
+
+<pre>
+|[con b : array of int;
+  var r : int;
+  var n : int;
+  var s : int;
+  n,r,s := 0,0,0;
+  {loop invariant I: I<sub>0</sub> &and; I<sub>1</sub> &and; I<sub>2</sub>, where 
+      I<sub>0</sub>: r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0 &and; b.j &ge; 0),
+      I<sub>1</sub>: s = (#i | 0&le;i&lt;n : b.i &le; 0), and
+      I<sub>2</sub>: 0&le;n&le;#b 
+  }
+  {bound function t: #b - n}
+  <b>do</b> n &ne; #b  ---&gt;
+     <b>if</b> b.n > 0  --&gt;  r    := r+s;
+     [] b.n = 0  --&gt;  r, s := r+s, s+1;
+     [] b.n < 0  --&gt;  s    := s+1;
+     <b>fi</b>
+     { I(n:=n+1) }
+     n := n+1
+  <b>od</b>
+  {Q': r = (#i,j | 0&le;i&lt;j&lt;n : b.i &le; 0  &and;  b.j &ge; 0) &nbsp; &and; &nbsp; n = #b }
+  {Q: r = (#i,j | 0&le;i&lt;j&lt;#b : b.i &le; 0 &and; b.j &ge; 0) }
+]|</pre>
+
+</p><p>
+Depending upon your stylistic preferences, you may prefer to rewrite
+the loop as follows:
+
+<pre>
+  <b>do</b> n &ne; #b &and; b.n > 0  &xrarr;  r,n := r+s,n+1;
+  [] n &ne; #b &and; b.n = 0  &xrarr;  r,s,n := r+s,s+1,n+1;
+  [] n &ne; #b &and; b.n < 0  &xrarr;  s,n := s+1,n+1;
+  <b>od</b></pre>
+
+
+<hr>
+
+<H3>APPENDIX</H3>
+
+<p>
+<b>Lemma 0:</b> Assuming that <tt>n &ge; 0</tt>,
+<pre>
+     (#i,j | 0&le;i&lt;j&lt;n+1 : R) = (#i,j | 0&le;i&lt;j&lt;n : R) + (#i,j | 0&le;i&lt;j=n : R)
+</pre>
+
+</p><p>
+Here is a proof, which transforms the left-hand side to the right-hand side:
+<pre>
+     (#i,j | 0&le;i&lt;j&lt;n+1 : R)  
+
+  =    < defn of # quantifier >
+
+     (+i,j | 0&le;i&lt;j&lt;n+1 &and; R : 1)  
+
+  =    < rewrite range; note that j=0 is allowed by the 2nd conjunct in range
+         below but not by the 1st, so no harm occurs by using 0&le;j rather than 0&lt;j  >
+
+     (+i,j | 0&le;i&lt;j &and; 0&le;j&lt;n+1 &and; R : 1)  
+
+  =    < (Gries 8.20) Nesting >
+
+     (+j | 0&le;j&lt;n+1  : (+i | 0&le;i&lt;j &and; R : 1))
+
+  =    < (Gries 8.23) Split off term;
+         note that assumption n&ge;0 guarantees that range is not empty >
+
+     (+j | 0&le;j&lt;n : (+i | 0&le;i&lt;j &and; R : 1))  +  (+j | j=n : (+i | 0&le;i&lt;j &and; R : 1)) 
+
+  =    < (Gries 8.20) Nesting, twice >
+
+     (+i,j | 0&le;j&lt;n &and; 0&le;i&lt;j &and; R : 1) + (+i,j | j=n &and; 0&le;i&lt;j &and; R : 1)
+
+  =    < rewrite ranges >
+
+     (+i,j | 0&le;i&lt;j&lt;n &and; R : 1) + (+i,j | 0&le;i&lt;j=n &and; R : 1) 
+
+  =    < defn of # quantifier, twice >
+
+     (#i,j | 0&le;i&lt;j&lt;n : R) + (#i,j | 0&le;i&lt;j=n : R)
+</pre>
+
+<hr>
+
+<p>
+<b>Lemma 1:</b>
+<pre>
+[(#i,j | 0&le;i&lt;j=n : b.i &le; 0 &and; b.j &ge; 0)  =  (#i | 0&le;i&lt;n : b.i &le; 0 &and; b.n &ge; 0)]
+</pre>
+<p>
+Here we justify that claim by transforming the left-hand side into the
+right-hand side:
+<pre>
+    (#i,j | 0&le;i&lt;j=n : b.i &le; 0 &and; b.j &ge; 0)
+
+ =    < defn of # quantifier >
+
+    (+i,j | 0&le;i&lt;j=n &and; b.i &le; 0 &and; b.j &ge; 0 : 1)
+
+ =    < rewrite 1st conjunct of range >
+
+    (+i,j | 0&le;i&lt;j &and; j=n &and; b.i &le; 0 &and; b.j &ge; 0 : 1)
+
+ =    < (3.84a) >
+
+    (+i,j | 0&le;i&lt;n &and; j=n &and; b.i &le; 0 &and; b.n &ge; 0 : 1)
+
+ =    < Nesting (8.20) > 
+
+    (+i | 0&le;i&lt;n &and; b.i &le; 0 &and; b.n &ge; 0 : (+j | j=n : 1))
+
+ =    < (8.14) One-point rule, applied to nested quantification >
+
+    (+i | 0&le;i&lt;n &and; b.i &le; 0 &and; b.n &ge; 0 : 1)
+
+ =    < defn of # quantifier >
+
+    (#i |: 0&le;i&lt;n &and; b.i &le; 0 &and; b.n &ge; 0)
+
+ =    < Trading: (#x |: S&and;T) = (#x | S : T) >
+
+    (#i | 0&le;i&lt;n : b.i &le; 0 &and; b.n &ge; 0)
+</pre>
+
+<hr>
+
+<p>
+<b>Lemma 2:</b>
+<pre>
+[(#i | 0&le;i&lt;n : b.i &le; 0 &and; b.n &ge; 0) = if(b.n &ge; 0, (#i | 0&le;i&lt;n : b.i &le; 0), 0)]
+</pre>
+<p>
+Letting z be the left-hand side of the equation and a, b, and c be the
+three arguments of if, respectively, we find that this equation is of
+the form <tt>z = if(a, b, c)</tt>.  We manipulate this to arrive at something
+that suggests a proof strategy:
+
+<pre>
+    z = if(a,b,c)
+
+ =    < (Gries 3.73) (true ==&gt; p) = p, with p := z=if(a,b,c) >
+
+    true  ==&gt;  z = if(a,b,c)
+
+ =    < (Gries 3.28) excluded middle >
+
+    a &or; &not;a  ==&gt;  z = if(a,b,c)
+
+ =    < Gries 3.78) >
+
+    (a  ==&gt;  z = if(a,b,c)) &and; (&not;a  ==&gt;  z = if(a,b,c))
+
+ =    < replace by true (Gries 3.85a) >
+
+    (a  ==&gt;  z = if(true,b,c)) &and; (&not;a  ==&gt;  z = if(a,b,c))
+
+ =    < defn of if says if(true,b,c) = b >
+
+    (a  ==&gt;  z = b) &and; (&not;a  ==&gt;  z = if(a,b,c))
+
+ =    < defn of implication (Gries 3.59); double negation (Gries 3.12) >
+
+    (a  ==&gt;  z = b) &and; (a &or; (z = if(a,b,c)))
+
+ =    < replace by false (Gries 3.88) >
+
+    (a  ==&gt;  z = b) &and; (a &or; (z = if(false,b,c)))
+
+ =    < defn of if says if(false,b,c) = c >
+
+    (a  ==&gt;  z = b) &and; (a &or; (z = c)))
+
+ =    < defn of implication (Gries 3.59); double negation (Gries 3.12) >
+
+    (a  ==&gt;  z = b) &and; (&not;a  ==&gt;  z = c)
+</pre>
+</p><p>
+Thus, to prove the original equation, it suffices to prove each of the
+two conjuncts (instantiated appropriately) immediately above.  That is,
+it suffices to prove both
+<p>
+(a) <tt>b.n &ge; 0  &nbsp; ==&gt; &nbsp;
+     (#i | 0&le;i&lt;n : b.i &le; 0 &and; b.n &ge; 0) = 
+     (#i | 0&le;i&lt;n : b.i &le; 0) 
+   </tt> and
+<p>
+(b) <tt>&not;(b.n &ge; 0) &nbsp; ==&gt; &nbsp; 
+     (#i | 0&le;i&lt;n : b.i &le; 0&and;b.n &ge; 0) = 0
+   </tt>
+
+<p>
+Proof of (a):
+<pre>
+  Assume the antecedant b.n &ge; 0.
+
+    (#i | 0&le;i&lt;n : b.i &le; 0 &and; b.n &ge; 0)
+
+ =    < assumption b.n &ge; 0 >
+
+    (#i | 0&le;i&lt;n : b.i &le; 0 &and; true)
+
+ =    < Identity of &and; (Gries 3.39) >
+
+    (#i | 0&le;i&lt;n : b.i &le; 0) 
+</pre>
+<p>
+Proof of (b):
+<pre>
+  Assume the antecedant &not;(b.n &ge; 0).
+
+    (#i | 0&le;i&lt;n : b.i &le; 0 &and; b.n &ge; 0)
+
+ =    < assumption &not;(b.n &ge; 0) >
+
+    (#i | 0&le;i&lt;n : b.i &le; 0 &and; false)
+
+ =    < Zero of &and; (Gries 3.40) >
+
+    (#i | 0&le;i&lt;n : false)
+
+ =    < defn of # quantifier >
+
+    (+i | 0&le;i&lt;n &and; false : 1)
+
+ =    < Zero of &and; (Gries 3.40) >
+
+    (+i | false : 1)
+
+ =    < Empty range (Gries 8.13), 0 is identity of + >
+
+    0
+</pre>
+
+<p>
+Note that what we proved is nothing more than a special case of 
+
+<p>
+<b>Theorem:</b> Provided that there are no free occurrences of
+   x in R,
+<pre>
+     [(*x | Q &and; R : B)  =  if(R, (*x | Q : B), e)]
+</pre>
+  where e is the identity of <tt>*</tt>.
+
+</body>
+</html>

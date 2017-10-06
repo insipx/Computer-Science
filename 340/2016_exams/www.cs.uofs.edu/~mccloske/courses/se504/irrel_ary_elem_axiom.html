@@ -1,0 +1,73 @@
+<html>
+<head> <title>Irrelevant Array Element Axiom</title>
+</head>
+<body>
+<H2>
+SE 504 (Formal Methods and Models) <br />
+Irrelevant Array Element Axiom 
+</H2>
+
+<p>
+An important axiom pertaining to array element evaluation is as follows:
+<blockquote>
+   Provided that <tt>R</tt> does not depend upon the contents of array
+   <tt>b</tt> and that every expression <tt>F</tt> occurring in <tt>P</tt>
+   as a subscript of <tt>b</tt> (i.e., in a subexpression of the form
+   <tt>b.F</tt>) satisfies <tt>[R &rArr; F &ne; k]</tt>, we have
+<p><center><tt>[(*i | R : P)(b := b(k:E))  =  (*i | R : P)]</tt></center>
+where <tt>*</tt> is any quantifier.
+</blockquote>
+
+<p>
+Intuitively, this says that if <tt>b.k</tt> is not needed to evaluate
+<tt>(*i | R : P)</tt>, then replacing every occurrence of <tt>b</tt> in 
+<tt>P</tt> by <tt>b(k:E)</tt>
+(or vice versa) will have no effect upon the result of such evaluation.
+
+<p>
+To illustrate, suppose we have the expression
+
+<p><center><tt>G:  (+i | 0&le;i&lt;n : b.i)</tt></center>
+
+<p>
+It is clear that the value of this expression depends upon each of 
+<tt>b.0</tt>, <tt>b.1</tt>, <tt>...</tt>, <tt>b.(n-1)</tt>,
+but not upon <tt>b.n</tt>.  Hence, it should be clear that the
+expression
+
+<p><center><tt>G':  (+i | 0&le;i&lt;n : b.i)(b := b(n:27))</tt></center>
+
+<p>
+obtained by replacing every occurrence of <tt>b</tt> in <tt>G</tt> by 
+<tt>b(n:27))</tt> has the same value as <tt>G</tt> in all states.
+
+<p>
+To apply the axiom formally, we instantiate it using 
+<tt>R := 0&le;i&lt;n</tt>, <tt>P := b.i</tt>, <tt>k := n</tt>, 
+<tt>E := 27</tt>, <tt>i := i</tt>, <tt>b := b</tt>, and <tt>* := +</tt>,
+from which we obtain:
+
+<blockquote>
+   Provided that <tt>0&le;i&lt;n</tt> does not depend upon the contents
+   of elements of array <tt>b</tt> and that every expression <tt>F</tt>
+   occurring in <tt>b.i</tt> as a subscript of <tt>b</tt>
+   (i.e., in a subexpression of the form <tt>b.F</tt>) satisfies 
+   <tt>[0&le;i&lt;n &rArr; F &ne; n]</tt>, we have
+<p><center><tt>[(*i | 0&le;i&lt;n : b.i)(b := b(n:27))  =  
+               (*i | 0&le;i&lt;n : b.i)]</tt></center>
+</blockquote>
+
+<p>
+Clearly, <tt>0&le;i&lt;n</tt> does not depend upon the contents of <tt>b</tt>.
+Furthermore, as the only expression that occurs as a subscript of <tt>b</tt>
+in <tt>b.i</tt> is <tt>i</tt>, we need only verify, in addition, that 
+<tt>[0&le;i&lt;n &rArr; i&ne;n]</tt>.  This clearly holds.  Hence,
+the two premises of the axiom hold, which means that, according to the axiom,
+so does its conclusion (which is <tt>[G' = G]</tt>).
+
+<p>
+For an application of this axiom in the context of developing a program,
+see the <A HREF="prefix_sums_sol.html">solution to the Prefix Sums problem</A>.
+
+</body>
+</html>

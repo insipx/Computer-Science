@@ -1,0 +1,86 @@
+<html>
+<head><title>CMPS 134 Spring 2017 Test #2 Sample Solutions (Sect. 31)</title>
+</head>
+<body>
+<h2>CMPS 134 Spring 2017<br />
+Test #2 Sample Solutions (Sect. 31)</h2>
+
+</p><p>
+<b>1.</b> Correct answers were indicated on students' test papers.
+
+</p><p>
+<b>2.</b> Correct answers were indicated on students' test papers.
+
+</p><p>
+<b>3.</b> 
+<b>(a)</b> "<tt>moon the over jumped Cow </tt>"
+</p><p>
+<b>(b)</b>
+<table border="2" cellpadding="4">
+<tr><th>When</th><th>fore</th><th>aft</th><th>result</th></tr>
+<tr><th>Just before 1st loop iteration</th>
+    <td>3</td><td>0</td><td>""</td>
+</tr>
+<tr><th>At end of 1st loop iteration</th>
+    <td>10</td><td>4</td><td>"<tt>Cow </tt>"</td>
+</tr>
+<tr><th>At end of 2nd loop iteration</th>
+    <td>15</td><td>11</td><td>"<tt>jumped Cow </tt>"</td>
+</tr>
+<tr><th>At end of 3rd loop iteration</th>
+    <td>19</td><td>16</td><td>"<tt>over jumped Cow </tt>"</td>
+</tr>
+<tr><th>At end of 4th loop iteration</th>
+    <td>-1</td><td>20</td><td>"<tt>the over jumped Cow </tt>"</td>
+</tr>
+</table>
+
+</p><p>
+To run the test yourself, download Java application
+<a href="Prob3_31.java">Prob3_31</a>.
+
+<hr>
+</p><p>
+<b>4.</b>
+<b>(a)</b>
+<table border="1" cellpadding="4">
+<tr><td>
+<tt>s1 : OFF; 0<br />
+s1: ON; 1<br />
+s1: OFF; 2<br />
+s2: ON; 5</tt>
+</td></tr>
+</table>
+
+</p><p>
+<b>(b)</b> To make it possible for the client to specify the initial state
+of a <tt>Switch</tt> object (ON vs. OFF), introduce a constructor with a
+formal parameter through which that information can be received.  One
+possibility would be for such a parameter to be <tt>boolean</tt>, in which
+case the new constructor would look like this:
+
+</p><p>
+<table border="1" cellpadding="0">
+<tr><td>
+<pre>public Switch(boolean initiallyOn)
+   { isOn = initiallyOn;  flipCntr = 0; }</pre>
+</td></tr>
+</table>
+
+</p><p>
+Using this constructor, a client could create a new <tt>Switch</tt>
+object using either <tt>&nbsp; new Switch(false) &nbsp;</tt> or 
+<tt>&nbsp; new Switch(true) &nbsp;</tt>, depending upon whether
+or not, respectively, the new switch should be initially OFF or ON.
+
+</p><p>
+To explore the <tt>Switch</tt> class yourself, here it is:
+<a href="Switch.java">Switch</a>.
+
+<hr>
+</p><p>
+<b>5.</b> 
+<a href="PersonName_31.java">Solution</a>
+
+</body>
+</html>

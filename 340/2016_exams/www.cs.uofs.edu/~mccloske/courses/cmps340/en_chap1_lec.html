@@ -1,0 +1,586 @@
+<html>
+<head>
+   <title>&nbsp Notes on Chapter 1 of Elmasri &amp; Navathe</title>
+</head>
+<body>
+<h2>Notes on Chapter 1 of Elmasri &amp; Navathe (5th/6th editions):
+   Databases and Database Users</h2>  
+
+
+
+<h3>1.1 Introduction</h3>
+
+</p><p>
+<b>Importance:</b> Database systems have become an essential component of
+   life in modern society, in that many frequently occurring events trigger
+   the accessing of at least one database:  bibliographic library searches,
+   bank transactions, hotel/airline reservations, grocery store purchases,
+   online (Web) purchases, etc., etc.
+
+</p><p>
+<b>Traditional vs. more recent applications of databases</b>:
+</p><p>
+The applications mentioned above are all "traditional" ones for which the
+use of rigidly-structured textual and numeric data suffices.
+Recent advances have led to the application of database technology to a
+wider class of data.
+Examples include <b>multimedia</b> databases
+(involving pictures, video clips, and sound messages) and 
+<b>geographic</b> databases (involving maps, satellite images).
+
+</p><p>
+Also, database search techniques are applied by some WWW search engines.
+
+<h4>Definitions</h4>
+
+The term <b>database</b> is often used, rather loosely, to refer to
+just about any collection of related data.
+E&amp;N say that, in addition to being a collection of related data, a
+database must have the following properties:
+<ul>
+  <li>It represents some aspect of the real (or an imagined) world, called the
+    <b>miniworld</b> or <b>universe of discourse</b>.
+    Changes to the miniworld are reflected in the database.
+    Imagine, for example, a UNIVERSITY miniworld concerned with
+    students, courses, course sections, grades, and course prerequisites.
+  </li>
+  <li>It is a logically coherent collection of data, to which some meaning
+    can be attached.  (Logical coherency requires, in part, that the
+    database not be self-contradictory.)
+  </li>
+  <li>It has a purpose: there is an intended group of users and some
+    preconceived applications that the users are interested in employing.
+  </li>
+</ul>
+
+</p><p>
+To summarize: a database has some source (i.e., the miniworld) from which
+(logically consistent) data are derived,
+some degree of interaction with events in the represented miniworld
+(at least insofar as the data is updated in response to changes in the
+state of the miniworld),
+and an audience that is interested in using it.
+
+</p><p>
+<b>An Aside: data vs. information vs. knowledge</b>:
+Data is the representation of "facts" or "observations" whereas information
+refers to the meaning thereof (according to some interpretation).
+Knowledge, on the other hand, refers to the ability to use information
+to achieve intended ends.
+
+
+</p><p>
+<b>Computerized vs. manual:</b>
+Not surprisingly (this being a CS course), our concern will be with
+computerized database systems, as opposed to manual ones, such as the
+card catalog-based systems that were used in libraries in ancient times
+(i.e., before the year 2000). 
+(Some authors wouldn't even recognize a non-computerized collection of 
+data as a database, but E&amp;N do.)
+
+<p>
+<b>Size/Complexity:</b>
+Databases run the range from being small/simple (e.g., one person's
+recipe database) to being huge/complex (e.g., Amazon's database that
+keeps track of all its products, customers, and suppliers).
+
+<p>
+<b>Definition:</b> A <b>database management system</b> (DBMS) is a 
+collection of programs enabling users to create and maintain a database.
+
+<p>
+More specifically, a DBMS is a <em>general purpose</em>
+software system facilitating each of the following
+(with respect to a database):
+<ul>
+  <li><b>definition:</b> 
+      specifying data types 
+      (and other constraints to which the data must conform) and
+      data organization 
+  </li>
+  <li><b>construction:</b>
+      the process of storing the data on some medium
+      (e.g., magnetic disk) that is controlled by the DBMS
+  </li>
+  <li><b>manipulation:</b> querying, updating, report generation
+  </li>
+  <li><b>sharing:</b> allowing multiple users and programs to access
+      the database "simultaneously"
+  </li>
+  <li><b>system protection:</b> preventing database from becoming corrupted
+      when hardware or software failures occur
+  </li>
+  <li><b>security protection:</b> preventing unauthorized or malicious access
+      to database.
+  </li>
+</ul>
+
+</p><p>
+Given all its responsibilities, it is not surprising that a typical
+DBMS is a complex piece of software.
+</p><p>
+A database together with the DBMS software is referred to as a
+<b>database system</b>.  (See Figure 1.1, page 7.)
+
+
+<h3>1.2: An Example:</h3>
+ UNIVERSITY database in Figure 1.2.  Notice that it is relational!
+
+</p><p>
+Among the main ideas illustrated in this example is that 
+each file/relation/table has a set of named fields/attributes/columns,
+each of which is specified to be of some data type.
+(In addition to a data type, we might put further restrictions upon a 
+field, e.g., the <b>Grade</b> field in the <b>GRADE_REPORT</b> table
+must have a value from the set {'A', 'B', ..., 'F'}.)
+
+</p><p>
+The idea is that, of course, each table will be populated with data
+in the form of records/tuples/rows, each of which represents some
+entity (in the miniworld) or some relationship between entities.
+<!-- (The previous remark alludes to the crucial idea that records,
+based upon their contents, can refer to one another.)
+-->
+
+</p><p>
+For example, each record in the <b>STUDENT</b> table represents a 
+&mdash;surprise!&mdash; student.  Similarly for the <b>COURSE</b> and
+<b>SECTION</b> tables.
+
+</p><p>
+On the other hand, each record in <b>GRADE_REPORT</b> represents a
+relationship between a student and a section of a course.  And each
+record in <b>PREREQUISITE</b> represents a relationship between two
+courses.
+
+</p><p>
+Database <em>manipulation</em> involves <em>querying</em> and 
+<em>updating</em>.
+</p><p>
+Examples of (informal) queries:
+<ul>
+  <li>Retrieve the transcript(s) of student(s) named 'Smith'.</li>
+  <li>List the names of students who were enrolled in a section of 
+      the 'Database' course in Spring 2006, as well as their grades
+      in that course section.
+  </li>
+  <li>List all prerequisites of the 'Database' course.</li>
+</ul>
+
+</p><p>
+Examples of (informal) updates:
+<ul>
+  <li>Change the CLASS value of 'Smith' to sophomore (i.e., 2).</li>
+  <li>Insert a record for a section of 'File Processing' for this semester.
+  </li>
+  <li>Remove from the prerequisites of course 'CMPS 340' the course 'CMPS 144'.
+  </li>
+</ul>
+
+</p><p>
+Of course, a query/update must be conveyed to the DBMS in a precise way
+(via the query language of the DBMS) in order to be processed.
+
+</p><p>
+As with software in general, developing a new database (or a new application
+for an existing database) proceeds in phases, including 
+<b>requirements analysis</b> and various levels of <b>design</b> 
+(conceptual (e.g., Entity-Relationship Modeling), logical (e.g., relational),
+and physical (file structures)).
+
+
+<h3>1.3: Characteristics of the Database Approach:</h3>
+
+<b>Database approach vs. File Processing approach:</b>
+Consider an organization/enterprise that is organized as a collection
+of departments/offices.  Each department has certain data processing
+"needs", many of which are unique to it.
+In the <b>file processing approach</b>, each department would control
+a collection of relevant data files and software applications to 
+manipulate that data.
+
+</p><p>
+For example, a university's Registrar's Office would maintain data 
+(and programs) relevant to student grades and course enrollments.
+The Bursar's Office would maintain data (and programs) pertaining to
+fees owed by students for tuition, room and board, etc.
+(Most likely, the people in these offices would not be in direct
+possession of their data and programs, but rather the university's
+Information Technology Department would be responsible for providing
+services such as data storage, report generation, and programming.)
+
+</p><p>
+One result of this approach is, typically,
+<b>data redundancy</b>, which not only wastes storage space but also
+makes it more difficult to keep changing data items consistent with one
+another, as a change to one copy of a data item must be made to all of them 
+(called <b>duplication-of-effort</b>).
+<b>Inconsistency</b> results when one (or more) copies of a datum are
+changed but not others.
+(E.g., If you change your address, informing the Registrar's Office
+should suffice to ensure that your grades are sent to the right place,
+but does not guarantee that your next bill will be, as the copy of
+your address maintained by the Bursar's Office might not have been changed.)
+
+</p><p>
+In the <b>database approach</b>, a single repository of data 
+is maintained that is used by all the departments in the organization.
+(Note that "single repository" is used in the logical sense.
+In physical terms, the data may be <em>distributed</em> among various sites,
+and possibly <em>mirrored</em>.) 
+
+</p><p>
+<b>Main Characteristics of database approach:</b>
+
+<ol>
+  <li><b>Self-Description:</b>
+      A database system includes &mdash;in addition to the data stored that is
+      of relevance to the organization&mdash; a complete definition/description
+      of the database's structure and constraints.  This <b>meta-data</b>
+      (i.e., data about data) is stored in the so-called
+      <b>system catalog</b>, which contains a description of the
+      structure of each file, the type and storage format of each field,
+      and the various constraints on the data (i.e., conditions that the
+      data must satisfy).
+      </p><p>
+      See Figures 1.1 and 1.3.
+      </p><p>
+      The system catalog is used not only by users (e.g., who need to
+      know the names of tables and attributes, and sometimes data type
+      information and other things), but also by the DBMS software,
+      which certainly needs to "know" how the data is structured/organized
+      in order to interpret it in a manner consistent with that structure.
+      Recall that a DBMS is <em>general purpose</em>, as opposed to being
+      a specific database application.  Hence, the structure of the data
+      cannot be "hard-coded" in its programs (such as is the case in typical
+      <em>file processing</em> approaches), but rather must be treated as
+      a "parameter" in some sense.
+  </li>
+  </p><p>
+  <li><b>Insulation between Programs and Data; Data Abstraction:</b>
+      </p><p>
+      <b>Program-Data Independence</b>:
+      In traditional file processing, the structure of the data files
+      accessed by an application is "hard-coded" in its source code.
+      (E.g., Consider a file descriptor in a COBOL program: it gives a
+      detailed description of the layout of the records in a file by
+      describing, for each field, how many bytes it occupies.)
+      </p><p>
+      If, for some reason, we decide to change the structure of the
+      data (e.g., by adding the first two digits to the YEAR field,
+      in order to make the program Y2K compliant!),
+      <b>every</b> application in which a description of that file's
+      structure is hard-coded must be changed!
+
+      </p><p>
+      In contrast, DBMS access programs, in most cases, do not
+      require such changes, because the structure of the data is
+      described (in the system catalog) separately from the programs
+      that access it and those programs consult the catalog in order
+      to ascertain the structure of the data (i.e., providing a
+      means by which to determine boundaries between records and
+      between fields within records) so that they interpret
+      that data properly.
+
+      </p><p>
+      See Figure 1.4.
+
+      </p><p>
+      In other words, the DBMS provides a conceptual or logical view
+      of the data to application programs, so that the underlying
+      implementation may be changed without the programs being modified.
+      (This is referred to as <em>program-data independence</em>.)
+
+      </p><p>
+      Also, which access paths (e.g., indexes) exist are listed in the
+      catalog, helping the DBMS to determine the most efficient way to
+      search for items in response to a query.
+
+      </p><p>    
+      <em>Note:</em> In fairness to COBOL, it should be pointed out that
+      it has a <tt>COPY</tt> feature that allows different application
+      programs to make use of the same file descriptor stored in a "library".
+      This provides some degree of program-data independence, but not
+      nearly as much as a good DBMS does. <em>End of note.</em>
+ 
+      </p><p>
+      <b>Example</b> by which to illustrate this concept: Suppose that
+      you are given the task of developing a program that displays 
+      the contents of a particular data file.  Specifically,
+      each record should be displayed as follows:
+<pre> 
+            Record #i:
+              value of first field
+              value of second field
+              ...
+              ...
+              value of last field
+</pre>
+      To keep things very simple, suppose that the file in question has
+      fixed-length records of 57 bytes with six fixed-length fields of
+      lengths 12, 4, 17, 2, 15, and 7 bytes, respectively, all of which
+      are ASCII strings. 
+      Developing such a program would not be difficult.  However, the
+      obvious solution would be tailored specifically for a file having
+      the particular structure described here and would be of no use for
+      a file with a different structure.
+      </p><p>
+      Now suppose that the problem is generalized to say that the program
+      you are to develop must be able to display <em>any</em> file having
+      fixed-length records with fixed-length fields that are ASCII strings.
+      Impossible, you say?  Well, yes, unless the program has the ability
+      to access a description of the file's record layout (i.e., lengths of 
+      its records and the fields therein), in which case the problem is
+      not hard at all.  This illustrates the power of metadata, i.e.,
+      data describing other data.
+  </li>
+  </p><p>
+  <li><b>Multiple Views of Data:</b>
+      Different users (e.g., in different departments of an organization)
+      have different "views" or perspectives on the database.  For example,
+      from the point of view of a Bursar's Office employee, student data
+      does not include anything about which courses were taken or which
+      grades were earned.  (This is an example of a <b>subset</b> view.)
+      <p>
+      As another example, a Registrar's Office employee might think that
+      <tt>GPA</tt> is a field of data in each student's record.
+      In reality, the underlying database might calculate that value
+      each time it is needed.  This is called <b>virtual</b>
+      (or <b>derived</b>) data.
+      <p>
+      A view designed for an academic advisor might give the appearance
+      that the data is structured to point out the prerequisites of each
+      course.
+      <p>
+      (See Figure 1.5, page 14.)
+      <p>
+      A good DBMS has facilities for defining multiple views.
+      This is not only convenient for users, but also addresses
+      security issues of data access.  (E.g., The Registrar's Office
+      view should not provide any means to access financial data.)
+  </li>
+  <p>
+  <li><b>Data Sharing and Multi-user Transaction Processing:</b>
+      As you learned about (or will) in the OS course, the simultaneous 
+      access of computer resources by multiple users/processes is a 
+      major source of complexity.
+      The same is true for multi-user DBMS's.
+      <p>
+      Arising from this is the need for <b>concurrency control</b>,
+      which is supposed to ensure that several users trying to update
+      the same data do so in a "controlled" manner so that the results
+      of the updates are as though they were done in some sequential
+      order (rather than interleaved, which could result in data being
+      incorrect).
+      <p>
+      This gives rise to the concept of a <b>transaction</b>, which is
+      a process that makes one or more accesses to a database and which
+      must have the appearance of executing in <em>isolation</em> from
+      all other transactions (even ones that access the same data at
+      the "same time") and of being <em>atomic</em> (in the sense that,
+      if the system crashes in the middle of its execution, the database
+      contents must be as though it did not execute at all).
+      <p>
+      Applications such as <b>airline reservation systems</b> are known
+      as <b>online transaction processing</b> applications.
+  </li>
+</ol>
+
+<H3>1.4: Actors on the Scene</H3>
+<p>These apply to "large" databases, not "personal" databases 
+that are defined, constructed, and used by a single person via,
+say, Microsoft Access.
+ 
+<p>
+<ol>
+  <li><b>Database Administrator</b> (DBA):
+      This is the chief administrator, who oversees and manages the
+      database system (including the data and software).
+      Duties include authorizing users to access the database,
+      coordinating/monitoring its use, acquiring hardware/software
+      for upgrades, etc.
+      In large organizations, the DBA might have a support staff.
+  </li> 
+  <li><b>Database Designers</b>:
+     They are responsible for identifying the data to be stored and for
+     choosing an appropriate way to organize it.  They also define
+     <b>views</b> for different categories of users.  The final design
+     must be able to support the requirements of all the user sub-groups.
+  </li> 
+  <li><b>End Users</b>:
+     These are persons who access the database for <b>querying</b>,
+     <b>updating</b>, and <b>report generation</b>.
+     They are main reason for database's existence!
+     <ul>
+       <li><b>Casual end users:</b> use database occasionally, needing
+           different information each time; use query language to specify
+           their requests; typically middle- or high-level managers.
+       </li>
+       <li><b>Naive/Parametric end users</b>:
+           Typically the biggest group of users; frequently query/update
+           the database using standard <b>canned transactions</b>
+           that have been carefully programmed and tested in advance.
+           Examples:
+           <ul>
+             <li>bank tellers check account balances, post withdrawals/deposits
+             </li>
+             <li>reservation clerks for airlines, hotels, etc.,
+                 check availability of seats/rooms and make reservations.
+             </li>
+             <li>shipping clerks (e.g., at UPS) who use buttons, bar code
+                 scanners, etc., to update status of in-transit packages.
+             </li>
+           </ul>
+       </li>
+       <li><b>Sophisticated end users</b>:
+           engineers, scientists, business analysts who implement their
+           own applications to meet their complex needs.
+       </li>
+       <li><b>Stand-alone users</b>: Use "personal" databases, possibly
+          employing a special-purpose (e.g., financial) software package.
+       </li>
+     </ul>
+  </li> 
+  <li><b>System Analysts, Application Programmers, Software Engineers</b>:
+    <ul>
+      <li><b>System Analysts</b>: determine needs of end users,
+        especially naive and parametric users, and develop specifications
+        for canned transactions that meet these needs.
+      </li> 
+      <li><b>Application Programmers</b>: Implement, test, document, and
+          maintain programs that satisfy the specifications mentioned above.
+      </li> 
+    </ul>
+  </li> 
+</ol>
+
+
+<h3>1.5: Workers Behind the Scene</h3>
+<ul>
+  <li><b>DBMS system designers/implementors:</b> provide the DBMS software
+      that is at the foundation of all this!
+  </li>
+  <li><b>tool developers</b>: design and implement software tools
+      facilitating database system design, performance monitoring,
+      creation of graphical user interfaces, prototyping, etc.
+  </li>
+  <li><b>operators and maintenance personnel</b>: responsible for the
+      day-to-day operation of the system.
+  </li>
+</ul>
+
+<h3>1.6: Capabilities/Advantages of DBMS's</h3>
+  <ol>
+    <li><b>Controlling Redundancy:</b>
+        Data redundancy (such as tends to
+        occur in the "file processing" approach) leads to
+        <b>wasted storage space</b>, <b>duplication of effort</b>
+        (when multiple copies of a datum need to be updated),
+        and a higher liklihood of the introduction of <b>inconsistency</b>.
+        </p><p>
+        On the other hand, redundancy can be used to improve performance
+        of queries.  Indexes, for example, are entirely redundant, but
+        help the DBMS in processing queries more quickly.
+        </p><p>
+        Another example of using redundancy to improve performance
+        is to store an "extra" field in order to avoid the need to access
+        other tables (as when doing a JOIN, for example).  See Figure 1.6
+        (page 18): the <tt>StudentName</tt> and <tt>CourseNumber</tt>
+        fields need not be there.
+        </p><p>
+        A DBMS should provide the capability to automatically enforce the
+        rule that no inconsistencies are introduced when data is updated.
+        (Figure 1.6 again, in which <tt>Student_name</tt> does not match
+        <tt>Student_number</tt>.) 
+    </li>
+    </p><p>
+    <li><b>Restricting Unauthorized Access:</b>
+        A DBMS should provide a <b>security and authorization subsystem</b>,
+        which is used for specifying restrictions on user accounts.
+        Common kinds of restrictions are to allow read-only access
+        (no updating), or access only to a subset of the data
+        (e.g., recall the Bursar's and Registrar's office examples from above).
+    </li>
+    </p><p>
+    <li><b>Providing Persistent Storage for Program Objects:</b>
+        Object-oriented database systems make it easier for complex
+        runtime objects (e.g., lists, trees) to be saved in secondary storage
+        so as to survive beyond program termination and to be retrievable at a
+        later time.
+    </li>
+    </p><p>
+    <li><b>Providing Storage Structures for Efficient Query Processing:</b>
+        The DBMS maintains indexes (typically in the form of trees and/or
+        hash tables) that are utilized to improve the execution time of
+        queries and updates.  (The choice of which indexes to create and
+        maintain is part of <em>physical database design and tuning</em>
+        (see Chapter 16) and is the responsibility of the DBA.
+        <p>
+        The <b>query processing and optimization</b> module is responsible
+        for choosing an efficient query execution plan for each query
+        submitted to the system.  (See Chapter 15.)
+    </li>
+    </p><p>
+    <li><b>Providing Backup and Recovery:</b>
+        The subsystem having this responsibility ensures that recovery
+        is possible in the case of a system crash during execution of
+        one or more transactions.  
+    </li>
+    </p>
+    <li><b>Providing Multiple User Interfaces:</b>
+        For example, query languages for casual users, programming language
+        interfaces for application programmers, forms and/or command codes
+        for parametric users, menu-driven interfaces for stand-alone users.
+    </li>
+    </p>
+    <li><b>Representing Complex Relationships Among Data:</b>
+        A DBMS should have the capability to represent such relationships
+        and to retrieve related data quickly.
+    </li>
+    </p>
+    <li><b>Enforcing Integrity Constraints:</b>
+        Most database applications are such that the semantics (i.e.,
+        meaning) of the data require that it satisfy certain restrictions
+        in order to make sense.  Perhaps the most fundamental constraint 
+        on a data item is its data type, which specifies the universe of
+        values from which its value may be drawn.  (E.g., a <tt>Grade</tt>
+        field could be defined to be of type <tt>Grade_Type</tt>, which,
+        say, we have defined as including precisely the values in the set
+        { "A", "A-", "B+", ..., "F" }.
+        </p><p>
+        Another kind of constraint is <em>referential integrity</em>, which
+        says that if the database includes an entity that refers to another
+        one, the latter entity must exist in the database.  For example,
+        if <tt>(R56547, CIL102)</tt> is a tuple in the <tt>Enrolled_In</tt>
+        relation, indicating that a student with ID <tt>R56547</tt> is taking
+        a course with ID <tt>CIL102</tt>, there <em>must be</em> tuples in
+        the <tt>Student</tt> and <tt>Course</tt> relations, respectively,
+        that describe a student and a course with those ID's.
+    </li>
+    </p>
+    <li><b>Permitting Inferencing and Actions Via Rules:</b>
+        In a <b>deductive</b> database system, one may specify
+        <em>declarative</em> rules that allow the database to infer new data!
+        E.g., Figure out which students are on academic probation.
+        Such capabilities would take the place of application programs
+        that would be used to ascertain such information otherwise.
+        </p>
+        <b>Active</b> database systems go one step further by allowing
+        "active rules" that can be used to initiate actions automatically.
+    </li>
+  </ol>
+
+<H3>1.7: A Brief History of Database Applications</H3>
+<H3>1.8: When Not to Use a DBMS</H3>
+
+<!--
+<p>
+There are logical boundaries between users,
+application programs, DBMS software, and the data itself.  Note that the
+database catalog contains "meta-data" (i.e., data about data) describing the
+way that data is to be organized. 
+
+-->
+
+</body>
+</html>

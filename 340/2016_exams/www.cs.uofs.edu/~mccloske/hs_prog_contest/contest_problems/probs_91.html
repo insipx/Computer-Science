@@ -1,0 +1,288 @@
+<HTML>
+<HEAD>
+<TITLE>1991 U of S High School Programming Contest Problems</TITLE>
+</HEAD>
+<BODY>
+<H2>University of Scranton 1991 High School Programming Contest Problems</H2>
+
+<p>
+<A HREF="#Fibonacci_Roots">Problem 1: Fibonacci Roots</A><br />
+<A HREF="#Determine_Mode">Problem 2: Determine the Mode</A><br />
+<A HREF="#Subset_Determination">Problem 3: Subset Determination</A><br />
+<A HREF="#Tiling">Problem 4: Tiling</A><br />
+<A HREF="#Hexadecimal_Addition">Problem 5: Hexadecimal Addition</A>
+        <b>Warning: Under Construction</b><br />
+<A HREF="#Speeders_Beware">Problem 6: Speeders Beware</A>
+
+
+<p> &nbsp;
+<p>
+<A NAME="Fibonacci_Roots">
+<hr>
+<b>Problem 1: Fibonacci Roots</b></A>
+
+<p>
+The first two terms in the <em>Fibonacci sequence</em> are 0 and 1, 
+respectively, and each subsequent term is the sum of the previous two.
+Using this definition to calculate the first several terms in the sequence,
+we get 
+<p>
+<center>
+0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
+</center>
+
+<p>
+Let us define the <em>Fibonacci roots</em> of a positive integer <em>n</em>
+to be the two smallest consecutive Fibonacci numbers whose sum is greater
+than or equal to <em>n</em>.
+
+<p>
+Develop a program that, given as input a positive integer, produces as
+output its Fibonacci roots.  The program should repeat until the user
+enters zero as input.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter input: <u>31</u><br />
+Fibonacci roots: 13 21<br />
+<br />
+Enter input: <u>89</u><br />
+Fibonacci roots: 34 55<br />
+<br />
+Enter input: <u>0</u>
+</tt>
+
+<p> &nbsp;
+<p>
+<A NAME="Determine_Mode">
+<hr>
+<b>Problem 2: Determine the Mode</b></A>
+
+<p>
+In statistics, the <em>mode</em> of a collection of values is defined to be
+any value that occurs with highest frequency in the collection.
+The mode need not be unique, as there may be two or more values that occur
+with the same highest frequency.
+
+
+<p>
+Develop a program that, given as input a collection of integers, lists
+any that qualify as a mode of the collection.  The program should repeat
+until the user indicates that the collection of numbers to be analyzed
+is empty.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter number of items in the collection: <u>16</u><br />
+Enter item 1: <u>12</u><br />
+Enter item 2: <u>-34</u><br />
+Enter item 3: <u>12</u><br />
+Enter item 4: <u>9868</u><br />
+Enter item 5: <u>89</u><br />
+Enter item 6: <u>23</u><br />
+Enter item 7: <u>28973</u><br />
+Enter item 8: <u>88</u><br />
+Enter item 9: <u>-7</u><br />
+Enter item 10: <u>12</u><br />
+Enter item 11: <u>-7</u><br />
+Enter item 12: <u>-3435</u><br />
+Enter item 13: <u>23</u><br />
+Enter item 14: <u>0</u><br />
+Enter item 15: <u>23</u><br />
+Enter item 16: <u>88</u><br />
+<br />
+Modes: 12 23
+</tt>
+
+<p>&nbsp;
+<p>
+<A NAME="Subset_Determination">
+<hr>
+<b>Problem 3: Subset Determination</b></A>
+
+<p>
+A <em>set</em> is collection of elements, or members.
+A set <b>S</b> is said to be a <em>subset of </em> the set <b>T</b>
+if every member of <b>S</b> is also a member of <b>T</b>.
+<b>S</b> is said to be a <em>proper subset of </em> <b>T</b>
+if <b>S</b> is a subset of <b>T</b> and, in addition,
+at least one of the members of <b>T</b> is not a member of <b>S</b>.
+
+<p>
+Develop a program that determines whether one set of identifiers
+(strings containing only upper case letters) is a proper subset of another.
+The user enters the identifiers in each set all at once, with the identifiers
+separated by commas and with the entire list enclosed in parentheses.
+No set given as input will contain more than ten members, and no 
+identifier will be longer than twelve characters.
+The output is simply <b>YES</b> or <b>NO</b>, the former if the second
+set is a proper subset of the first and the latter otherwise.
+The program should repeat until the user enters as a first set one
+containing no members.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter 1st set: <u>(APPLE,GRAPE,PEAR,ORANGE,GRAPEFRUIT)</u><br />
+Enter 2nd set: <u>(ORANGE,GRAPE)</u><br />
+YES<br />
+<br />
+Enter 1st set: <u>(APPLE,GRAPE,PEAR,ORANGE,GRAPEFRUIT)</u><br />
+Enter 2nd set: <u>(ORANGE,BANANA,GRAPE)</u><br />
+NO<br />
+<br />
+Enter 1st set: <u>()</u>
+</tt>
+
+
+<p>&nbsp;
+<p>
+<A NAME="Tiling">
+<hr>
+<b>Problem 4: Tiling</b></A>
+
+<p>
+When contractors lay floor tile in a rectangular room, they should 
+make sure that each tile on the perimeter has the same size as the one
+on the opposite side of the room.
+This gives a more appealing look to the final result.
+
+<p>
+Develop a program that, given as input
+<ul>
+  <li>the dimensions (i.e., length and width) of a 
+      rectangular floor area,</li>
+  <li>the size (i.e., length of each side) of the square tiles 
+      to be laid on the floor, and</li>
+  <li>the grout gap (i.e., the distance between adjacent tiles 
+      due to grouting),</li>
+</ul>
+reports the number of full and partial tiles needed to cover
+the floor, as well as the dimensions of the partial tiles.
+(All measurements are expressed in the same unit of distance, e.g., inches).
+The program should repeat until the user enters zero as the
+floor length.
+
+<p>
+Partial tiles are ones that have been cut in order to reduce either 
+their length, their width, or both.  Such tiles are to be laid only
+on the perimeter of the floor.
+(The only tiles that need to be cut twice &mdash;in order to reduce
+both length <em>and </em> width&mdash; are corner tiles, the number 
+of which is always either zero or four.)
+
+<p>
+Tiles are to be laid out so that grout gaps exist only between
+adjacent tiles, and never at the perimeter of the floor area.
+Thus, the number of tiles in any "row" or "column" is always exactly one
+greater than the number of grout gaps.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter floor length: <u>25.0</u><br />
+Enter floor width: <u>19.0</u><br />
+Enter length/width of tiles: <u>4.75</u><br />
+Enter grout gap: <u>0.25</u><br />
+<br />
+12 full tiles<br />
+6 length-reduced tiles of length 2.375<br />
+8 width-reduced tiles of width 1.875<br />
+4 corner tiles<br />
+<br />
+Enter floor length: <u>324.5</u><br />
+Enter floor width: <u>200.0</u><br />
+Enter length/width of tile: <u>6.0</u><br />
+Enter grout gap: <u>0.5</u><br />
+<br />
+1500 full tiles<br />
+0 length-reduced tiles<br />
+100 width-reduced tiles of width 2.25<br />
+0 corner tiles<br />
+<br />
+Enter floor length: <u>128.8</u><br />
+Enter floor width: <u>171.8</u><br />
+Enter length/width of tile: <u>4.1</u><br />
+Enter grout gap: <u>0.2</u><br />
+<br />
+1200 full tiles<br />
+0 length-reduced tiles<br />
+0 width-reduced tiles<br />
+0 corner tiles<br />
+<br />
+Enter floor length: <u>0.0</u>
+</tt>
+
+<p>&nbsp;
+<p>
+<A NAME="Hexadecimal_Addition">
+<hr>
+<b>Problem 5: Hexadecimal Addition</b></A>
+
+<p>
+Description omitted.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+
+</tt>
+
+
+<p>&nbsp;
+<p>
+<A NAME="Speeders_Beware">
+<hr>
+<b>Problem 6: Speeders Beware</b></A>
+
+<p>
+Write a program that, given as input
+<ul>
+  <li>the distance (in feet) between two "checkpoints",</li>
+  <li>the time (in seconds) taken by an automobile to travel from
+      the first checkpoint to the second, and</li>
+  <li>the speed limit (in miles per hour)</li>
+</ul>
+determines whether or not the average speed of the automobile 
+---in traveling from one checkpoint to the other---
+exceeded the speed limit.  All inputs are real numbers.
+The program should repeat until the user enters zero for the
+distance between checkpoints.
+
+<p>
+<b>Reminder:</b>
+There are 5280 feet in a mile and 3600 seconds in an hour.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter distance between checkpoints: <u>50.0</u><br />
+Enter time between checkpoints: <u>0.6</u><br />
+Enter speed limit: <u>55.0</u><br />
+SPEEDING<br />
+<br />
+Enter distance between checkpoints: <u>2.5</u><br />
+Enter time between checkpoints: <u>0.035</u><br />
+Enter speed limit: <u>55.0</u><br />
+NOT SPEEDING<br />
+<br />
+Enter distance between checkpoints: <u>0.0</u>
+</tt>
+
+</body>
+</html>
+

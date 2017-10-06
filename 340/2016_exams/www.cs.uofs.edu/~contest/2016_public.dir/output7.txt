@@ -1,0 +1,4 @@
+(3x^4 + -1x^3 + 0x^2 + 4x + -7) / (x + 1) = 3x^3 + -4x^2 + 4x + 0 remainder -7
+(-1x^2 + 4x + 0) / (x + -3) = -1x + 1 remainder 3
+(3x^2 + -4x + 0) / (x + 0) = 3x + -4 remainder 0
+

@@ -1,0 +1,410 @@
+<html>
+<head><title>Proof of Correctness of a Linear Search Program</title>
+</head>
+<body>
+<h2>SE 504 <br />
+Proof of Correctness of a Linear Search Program
+</h2>
+
+<p>
+Note that this is a variation on what appears on pages 131-134 of
+<em>Programming in the 1990's</em>, by Cohen.
+
+</p><p>
+Given the following specification, devise a program that meets it, and
+prove the program's correctness.
+
+<pre>|[ con N : int;  { N>0 }
+   con b : array [0..N) of bool;  { (&exist;j | 0&le;j&lt;N : b.j) }
+   var k : int;
+
+   find_first_true
+
+   {Q: b.k  &and;  (&forall;j | 0&le;j&lt;k : &not;b.j) }
+]| </pre>
+
+</p><p>
+In informal terms, the above specification describes a program that, given
+a fixed boolean array <tt>b[0..N)</tt> containing at least one occurrence
+of <b>true</b>, 
+terminates with variable <tt>k</tt> equal to the lowest-numbered location
+containing <b>true</b>.
+<!--finds the location <tt>k</tt> of the first such occurrence. -->
+
+</p><p>
+Let us refer to the two conjuncts of postcondition <tt>Q</tt> as 
+<tt>Q<sub>0</sub></tt> and <tt>Q<sub>1</sub></tt>.
+
+</p><p>
+It would seem that, in order to find an occurrence of <b>true</b> in a
+boolean array, it is necessary to search for it using a loop.
+One of the <em>heuristics</em> for developing a loop is sometimes called
+<b>deleting a conjunct</b>.
+It suggests that we take the loop invariant to be the same as the
+postcondition, except with one (or more) of its conjuncts omitted.
+The negation of the omitted conjunct(s) is taken to be the guard of the loop.
+Applying that heuristic here, suppose that we take <tt>Q<sub>1</sub></tt> 
+to be the loop invariant and <tt>&not;Q<sub>0</sub></tt> to be the loop guard.
+(The opposite choice would not have been wise, as it would have required
+us to initialize <tt>k</tt> so as to establish <tt>b.k</tt>, which
+is almost as difficult as the original problem.)
+
+</p><p>
+Keeping in mind that we should initialize the variable k prior to the loop,
+we get
+<pre>
+|[ con N : int;  { N>0 }
+   con b : array [0..N) of bool;  { (&exist;j | 0&le;j&lt;N : b.j) }
+   var k : int;
+   k := ?;
+   {invariant I: (&forall;j | 0&le;j&lt;k : &not;b.j) }
+   do &not;b.k  --->  ?
+   od
+   {postcondition Q: b.k  &and;  (&forall;j | 0&le;j&lt;k : &not;b.j) }
+]| </pre>
+
+</p><p>
+The loop guard is <tt>&not;b.k</tt>.
+As the index range of <tt>b</tt> is <tt>[0..N)</tt>, evaluation 
+of the guard in a state in which <tt>k&lt;0</tt> or <tt>k&ge;N</tt> 
+results in abortion (due to an "array subscript out-of-bounds error").
+Hence, we should include <tt>0&le;k&lt;N</tt>
+(equivalently, <tt>0&le;k &and; k&lt;N</tt>) 
+as another conjunct in the loop invariant.
+That is, we augment <tt>I</tt> to become 
+<tt>I: (&forall;j | 0&le;j&lt;k : &not;b.j)  &and;  0&le;k  &and;  k&lt;N</tt>.
+
+</p><p>
+To what value should we initialize <tt>k</tt>?
+As the loop immediately follows, the initialization of <tt>k</tt> 
+must result in a state satisfying the loop invariant.
+Examining the invariant, we notice that, if <tt>k</tt> has value zero,
+the universal quantification in <tt>I</tt> has an empty range,
+which makes it true.
+(To prove this, use (9.2), (3.75), and (9.8) from Gries &amp; Schneider.)
+Hence, we choose <tt>k := 0</tt> as our initialization.
+
+</p><p>
+Now consider the body of the loop.  The only variable in the program is
+<tt>k</tt>; hence, the loop body should modify <tt>k</tt> in some way.
+Because the loop invariant says that every value in <tt>b[0..k)</tt> is
+<b>false</b> and we are trying to find the first element that is <b>true</b>,
+it would seem that the appropriate way to change <tt>k</tt> is to increase it
+by one.  (If we increase it by more than one, we may "miss" the first element
+containing <b>true</b>; if we fail to increase <tt>k</tt> at all,
+the next loop iteration cannot possibly find the first occurrence
+of <b>true</b>, as we already know that <b>true</b> does not occur in
+<tt>b[0..k]</tt>.  (The loop invariant <tt>I</tt> tells us that <b>true</b>
+fails to occur in <tt>b[0..k)</tt> and the loop guard <tt>&not;b.k</tt>
+tells us that <tt>b.k</tt> is not <b>true</b>.)
+
+</p><p>
+What about a bound function?  As <tt>k</tt> increases during every
+loop iteration (in accord with what we said in the previous paragraph),
+one possible bound function is <tt>t: C-k</tt>, where <tt>C</tt> is
+some constant that <tt>k</tt> cannot possibly exceed.
+(Such a choice for the bound function guarantees that its value will decrease
+on every iteration, in compliance with checkpoint (v), and that its value
+will never fall below the lower bound of zero, in compliance with (iv).)
+As <tt>k</tt>'s value should never go as high as <tt>N</tt> 
+(because the precondition tells us that we should find a <b>true</b>
+element somewhere within <tt>b[0..N)</tt>), we choose bound function
+<tt>t: N-k</tt>.
+
+</p><p>
+What we have, then, is
+<pre>
+|[ con N : int;  { N&gt;0 }
+   con b : array [0..N) of bool;  { (&exist;j | 0&le;j&lt;N : b.j) }
+   var k : int;
+   k := 0;
+   {invariant I: (&forall;j | 0&le;j&lt;k : &not;b.j)  &and;  0&le;k  &and;  k&lt;N }
+   {bound t: N-k }
+   do &not;b.k  --->  k := k+1
+   od
+   {postcondition Q: b.k  &and;  (&forall;j | 0&le;j&lt;k : &not;b.j) }
+]| </pre>
+
+</p><p>
+Let us now prove the five items on the <b>loop checklist</b>.
+Note that any assertion made in the program about one of its constants
+can be taken to be a "global invariant" and can be assumed in proving
+any of the five items.
+(For example, we can make use of the fact that <tt>N&gt;0</tt>.)
+For convenience, we refer to the three conjuncts of <tt>I</tt> as 
+<tt>I<sub>0</sub></tt>, <tt>I<sub>1</sub></tt>, and <tt>I<sub>2</sub></tt>.
+
+</p><p>
+<b>(i)</b> <tt>{P} S<sub>init</sub> {I}</tt>
+    (equivalently, <tt>[P ==> wp.S<sub>init</sub>.I]</tt>)
+</p><p>
+As no precondition <tt>P</tt> is explicitly given in the program
+(aside from the global invariants already mentioned), we take it to be
+<b>true</b>.
+<pre>
+    wp.S<sub>init</sub>.I
+
+ =    < defn of S<sub>init</sub> >
+
+    wp.(k := 0).I
+
+ =    < wp assignment law >
+
+    I(k:=0)
+
+ =    < defn of I, textual sub. >
+
+    (&forall;j | 0&le;j&lt;0 : &not;b.j)  &and;  0&le;0  &and;  0&lt;N 
+
+ =    < 0&le;0 is trivial (reflexivity of &le;), 0&lt;N is assumed, (3.39) >
+
+    (&forall;j | 0&le;j&lt;0 : &not;b.j) 
+
+ =    < 0&le;j&lt;0  =  false >
+
+    (&forall;j | false : &not;b.j) 
+
+ =    < (9.2); (3.75); (9.8) >
+
+    true
+</pre>
+
+</p><p>
+<b>(ii)</b> <tt>{I &and; &not;b.k} k := k+1 { I }</tt>
+    (equivalently, <tt>[I &and; &not;b.k ==> wp.(k:=k+1).I]</tt>)
+</p><p>
+We (attempt to) prove <tt>wp.(k:=k+1).I</tt> using <tt>I</tt> and 
+<tt>&not;b.k</tt> as assumptions.
+
+<pre>
+    wp.(k:=k+1).I
+
+ =    < wp assignment law >
+
+    I(k:=k+1)
+
+ =    < defn of I, textual sub. >
+
+    (&forall;j | 0&le;j&lt;k+1 : &not;b.j)  &and;  0&le;k+1  &and;  k+1&lt;N 
+
+ =    < split off term (8.23) >
+
+    (&forall;j | 0&le;j&lt;k : &not;b.j) &and; &not;b.k  &and;  0&le;k+1  &and;  k+1&lt;N 
+
+ =    < 1st conjunct above is assumption I<sub>0</sub>; second is assumed, too; (3.39) >
+
+    0&le;k+1  &and;  k+1&lt;N 
+
+ =    < 0&le;k+1 follows from assumption I<sub>1</sub>; (3.39) >
+
+    k+1&lt;N 
+
+ =    < algebra >
+
+    k&lt;N-1
+</pre>
+
+</p><p>
+At this point, we get stuck!  It remains to show that <tt>k&lt;N-1</tt> 
+is true, assuming <tt>I &and; &not;b.k</tt>.
+In other words, it remains to show <tt>[I &and; &not;b.k ==> k&lt;N-1]</tt>.
+We have
+<pre>
+    I &and; &not;b.k  ==>  k&lt;N-1
+
+ =    < contrapositive (3.61) >
+
+    &not;(k&lt;N-1)  ==>  &not;(I &and; &not;b.k)
+
+ =    < &not;(a&lt;b) = a&ge;b; DeMorgan (3.47a), (3.12) >
+
+    k &ge; N-1  ==>  &not;I &or; b.k
+
+ =    < defn of &ge; : a&ge;b  =  a&gt;b &or; a=b >
+
+    (k&gt;N-1 &or; k=N-1)  ==>  &not;I &or; b.k
+
+ =    < (3.78) >
+
+    (k&gt;N-1 ==> &not;I &or; b.k)  &and;  (k=N-1 ==> &not;I &or; b.k)
+</pre>
+
+</p><p>
+Thus, it suffices to prove each of the two conjuncts of the above.  We prove
+the first by assuming its antecedant (<tt>k&gt;N-1</tt>)
+and showing its consequent:
+<pre>
+    &not;I &or; b.k
+
+ =    < defn of I >
+
+    &not;((&forall;j | 0&le;j&lt;k : &not;b.j)  &and;  0&le;k  &and;  k&lt;N)  &or;  b.k
+
+ =    < DeMorgan (3.47a)  >
+
+    &not;(&forall;j | 0&le;j&lt;k : &not;b.j)  &or;  &not;(0&le;k)  &or;  &not;(k&lt;N)  &or;  b.k
+
+ =    < generalized DeMorgan (9.17); (3.12); &not;(a&lt;b) = a&ge;b >
+
+    (&exist;j | 0&le;j&lt;k : b.j)  &or;  &not;(0&le;k)  &or;  k&ge;N  &or;  b.k
+
+ =    < assumption k&gt;N-1 is equivalant to 3rd disjunct above >
+
+    (&exist;j | 0&le;j&lt;k : b.j)  &or;  &not;(0&le;k)  &or;  true  &or;  b.k
+
+ =    < (3.29) >
+
+    true
+</pre>
+
+</p><p>
+Now we prove the 2nd conjunct (again, by assuming the antecedant
+(<tt>k=N-1</tt>) and showing the consequent):
+
+<pre>
+    &not;I &or; b.k
+
+ =    < repeating the first three steps from proof of 1st conjunct >
+
+    (&exist;j | 0&le;j&lt;k : b.j)  &or;  &not;(0&le;k)  &or;  k&ge;N  &or;  b.k
+
+ =    < split off term (8.23) >
+
+    (&exist;j | 0&le;j&lt;k+1 : b.j)  &or;  &not;(0&le;k)  &or;  k&ge;N 
+
+ =    < assumption k=N-1 and (3.84a) >
+
+    (&exist;j | 0&le;j&lt;N-1+1 : b.j)  &or;  &not;(0&le;k)  &or;  k&ge;N 
+
+ =    < algebra >
+
+    (&exist;j | 0&le;j&lt;N : b.j)  &or;  &not;(0&le;k)  &or;  k&ge;N 
+
+ =    < 1st disjunct above is global invariant >
+
+    true  &or;  ...
+
+ =    < (3.29) >
+
+    true
+</pre>
+
+</p><p>
+This completes the proof of item (ii) in the loop checklist!!
+
+</p><p>
+<b>(iii)</b> <tt>[I &and; &not;B ==> Q]</tt>
+</p><p>
+We need not even go through the proof, because the invariant and loop
+guard were chosen to satisfy this!  The loop invariant <tt>I</tt> is 
+<tt>I<sub>0</sub> &and; I<sub>1</sub> &and; I<sub>2</sub></tt>, the loop guard is <tt>&not;B</tt>,
+and the postcondition is <tt>Q: I<sub>0</sub> &and; B</tt>.  Hence, we have
+
+<pre>
+    I &and; &not;B
+
+ =     < I is I<sub>0</sub> &and; I<sub>1</sub> &and; P2 >
+
+    I<sub>0</sub> &and; I<sub>1</sub> &and; I<sub>2</sub> &and; &not;B
+
+==>    < (3.76b) > 
+
+    I<sub>0</sub> &and; &not;B
+
+ =     < Q is I<sub>0</sub> &and; &not;B >
+
+   Q 
+</pre>    
+
+</p><p>
+Postponing checkpoint (iv), we now do (v):
+
+</p><p>
+<b>(v)</b> <tt>{I &and; &not;&not;b.k &and; N-k=C} k:=k+1 { N-k&lt;C }</tt>
+<pre>
+    wp.(k:=k+1).(N-k < C)
+
+ =    < wp assignment law >
+
+    (N-k < C)(k:=k+1)
+
+ =    < textual sub. >
+
+    N - (k+1) < C
+
+ =    < assumption N-k=C >
+
+    N - (k+1) < N-k
+
+ =    < algebra >
+
+    0 < 1
+
+ =    < number theory !! >
+
+    true
+</pre>
+
+</p><p>
+Finally, let us prove loop checkpoint (iv):
+
+</p><p>
+<b>(iv)</b> <tt>[I &and; &not;b.k ==> N-k > 0]</tt>.
+
+<pre>
+    N-k > 0
+
+ =    < algebra >
+
+    N > k
+
+ =    < assumption I<sub>2</sub>: k&lt;N >
+
+    true
+</pre>
+
+</p><p>
+Just for fun, let's show that, even if neither <tt>I<sub>1</sub></tt> nor <tt>I<sub>2</sub></tt>
+were included as conjuncts of <tt>I</tt>, we could still carry out a proof
+of (iv).  That is, we will show <tt>[I<sub>0</sub> &and; &not;b.k ==> N-k > 0]</tt>.
+To do this, we show its contrapositive, 
+
+                 <tt>[N <= k  ==>  &not;I<sub>0</sub> &or; b.k]</tt>
+
+by assuming the antecedant and proving the consequent.
+
+<pre>
+     &not;I<sub>0</sub> &or; b.k
+
+  =    < defn of I<sub>0</sub> >
+
+     &not;(&forall;j | 0&le;j&lt;k : &not;b.j) &or; b.k
+
+  =    < generalized De Morgan (9.17) >
+
+     (&exist;j | 0&le;j&lt;k : b.j) &or; b.k
+
+  =    < Split off term (8.23) >
+
+     (&exist;j | 0&le;j&lt;k+1 : b.j)
+
+  =    < from assumption N&le;k it follows
+         that (0&le;j&lt;k+1)  =  (0&le;j&lt;N &or; N&le;j&lt;k+1) >
+
+     (&exist;j | 0&le;j&lt;N &or; N&le;j&lt;k+1 : b.j) 
+
+  =    < Range Split (8.16) >
+
+     (&exist;j | 0&le;j&lt;N : b.j) &or; (&exist;j | N&le;j&lt;k+1 : b.j) 
+
+  =    < 1st conjunct above is assumed "global invariant" >
+
+     true  v  (&exist;j | N&le;j&lt;k+1 : b.j)
+
+  =    < true is zero of disjunction (3.29) >
+
+     true
+</pre>
+
+</body>
+</html>

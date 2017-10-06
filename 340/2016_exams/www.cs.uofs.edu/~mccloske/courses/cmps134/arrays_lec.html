@@ -1,0 +1,676 @@
+<html>
+<head>
+</head>
+<body>
+<h2>Arrays in Java: Some Examples of Program Development
+</h2>
+
+<h3>Array Sum</h3>
+</p><p>
+Suppose that you had a list of numbers and wanted to find the sum.
+Assuming that each number was relatively small in magnitude and the
+list was relatively short (so that even the sum would be relatively
+small in magnitude), one reasonable approach would be to keep in
+mind a "sum-so-far", initially zero, and then examine the numbers
+in the list one by one, each time adding the "current" number to
+the sum-so-far.
+
+</p><p>
+For example, suppose that the list were
+&lt; 4 12 -6 2 5 -3 &gt;.  Then you would go through a mental
+process as described by this table:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><th>current<br />number</th><th>sum-so-far</th></tr>
+<tr><td>-</td><td>0</td></tr>
+<tr><td>4</td><td>4</td></tr>
+<tr><td>12</td><td>16 (i.e., 4+12)</td></tr>
+<tr><td>-6</td><td>10 (i.e., 4+12+-6)</td></tr>
+<tr><td>2</td><td>12 (i.e., 4+12+-6+2)</td></tr>
+<tr><td>5</td><td>17 (i.e., 4+12+-6+2+5)</td></tr>
+<tr><td>-3</td><td>14 (i.e., 4+12+-6+2+5+-3)</td></tr>
+</table>
+</center>
+
+</p><p>
+The first row shows the initial situation, before examining any
+of the numbers in the list.  Each subsequent row shows the number
+currently being examined and the result of adding it to the 
+"sum-so-far".  Obviously, by the time we have examined the last
+number and added it to the sum-so-far, the sum-so-far is equal
+to the sum of all the numbers in the list.
+(In fact, more generally you can say that, at any given moment,
+the sum-so-far value is equal to the sum of the numbers that have
+been examined up to that moment.)
+
+</p><p>
+We can mimic this process using Java in a straightforward way, as 
+expressed in the following method.  The role of the "list of numbers"
+is played by the parameter <tt>a[]</tt>, which is an array of values
+of type <tt>int</tt>.  (Of course, the same logic would work just as
+well with an array of type <tt>double[]</tt>.)
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns the sum of the elements in the specified array (a[]).
+*/
+public static int sumOf(int[] a)
+{
+   int sumSoFar = 0;
+   // loop invariant: sumSoFar = sum of elements in a[0..i-1]
+   for (int i=0; i != a.length; i = i+1)
+   {
+      sumSoFar = sumSoFar + a[i];
+   }
+   return sumSoFar;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+A more versatile version of the <tt>sumof()</tt> method would allow
+a caller to identify a segment of the array to be summed.
+(An <b>array segment</b> is simply a contiguous portion of an array.)
+In analogy to the <tt>substring()</tt> method of the class
+<tt>String</tt>, we identify an array segment by referring
+to the location at which it begins and the location immediately
+after where it ends.
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns the sum of the elements in the specified array segment
+** (a[low..high-1]).
+** Precondition: 0<=low<=high<=a.length
+*/
+public static int sumOf(int[] a, int low, int high)
+{
+   int sumSoFar = 0;
+   // loop invariant: sumSoFar = sum of elements in a[low..i-1]
+   for (int i=<font color="red">low</font>; i != <font color="red">high</font>; i = i+1)
+   {
+      sumSoFar = sumSoFar + a[i];
+   }
+   return sumSoFar;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+<hr>
+<h3>Array Maximum</h3>
+</p><p>
+Now we turn to a similar problem, that of finding the maximum value
+in an array.  Again consider how you might do this "manually" if given
+a list of numbers.  As with finding the sum, here you would examine
+each number in the list, one by one.  But this time, rather than adding
+the current number to the sum-so-far, you would compare it to a
+max-so-far value that you were keeping in mind.  If the current value
+exceeded that of the max-so-far value, you would replace the latter with
+the current number, as now it qualifies as the maximum of the numbers
+seen so far.
+
+</p><p>
+For example, suppose that the list were
+&lt; 4 7 0 2 9 -3 &gt;.  Then you would go through a mental
+process as described by this table:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><th>current<br />number</th><th>max-so-far</th></tr>
+<tr><td>-</td><td>-&infin; (i.e., maximum of {})</td></tr>
+<tr><td>4</td><td>4 (i.e., maximum of {4})</td></tr>
+<tr><td>7</td><td>7 (i.e., maximum of {4,7}</td></tr>
+<tr><td>0</td><td>7 (i.e., maximum of {4,7,0}</td></tr>
+<tr><td>2</td><td>7 (i.e., maximum of {4,7,0,2}</td></tr>
+<tr><td>9</td><td>9 (i.e., maximum of {4,7,0,2,9}</td></tr>
+<tr><td>-3</td><td>9 (i.e., maximum of {4,7,0,2,9,-3}</td></tr>
+</table>
+</center>
+
+</p><p>
+We chose -&infin; as the initial value of max-so-far because 
+it guarantees that any number in the list is larger.
+From a mathematician's perspective, the reason why we chose
+zero as the initial value of sum-so-far above is because
+zero is the identity element of addition.  Similarly,
+-&infin; is the identity element of the maximum operation,
+so it is the appropriate initial value for max-so-far.
+In Java, the closest we can come to -&infin; is
+<tt>Integer.MIN_INT</tt>, which is -2<sup>31</sup>, the 
+minimum value among all those in the <tt>int</tt> data type.
+
+</p><p>
+Using the <tt>sumOf()</tt> method as a template, we modify it in
+the rather obvious way to obtain this:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns the maximum of the elements in the specified array (a[]).
+*/
+public static int maxOf(int[] a)
+{
+   int maxSoFar = Integer.MIN_INT;
+   // loop invariant: maxSoFar = maximum of the elements in a[0..i-1]
+   for (int i=0; i != a.length; i = i+1)
+   {
+      if (a[i] > maxSoFar) { maxSoFar = a[i]; }
+   }
+   return maxSoFar;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+To generalize <tt>maxOf()</tt> to return the maximum element in an
+array segment, we would follow exactly the same steps as
+we did in generalizing <tt>sumOf()</tt> above.  Specifically,
+we would replace <tt>0</tt> and <tt>a.length</tt> in the 
+for-loop heading by <tt>low</tt> and <tt>high</tt>, respectively.
+
+</p><p>
+From a client's point of view, having a method that identifies the
+maximum value in an array could be useful.  
+More useful, however, would be to have a method that identifies a
+<b>location</b> at which an array's maximum value occurs.
+After all, if you know where the maximum is located, you can easily
+determine its value simply by referring to the array and using the
+location of the maximum as the subscript!  That is, if <tt>r</tt>
+is a location of array <tt>b</tt> at which <tt>b</tt>'s maximum
+occurs, the expression <tt>b[r]</tt> is that maximum value.
+
+</p><p>
+So let's develop a new method, <tt>locOfMax()</tt>, that identifies
+the lowest-numbered location of an array where the array's maximum value
+occurs.  Given that we already have the <tt>maxOf()</tt> method,
+perhaps the most obvious solution is this:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns the lowest-numbered location at which occurs the maximum
+** value of the specified array (a[]).
+*/
+public static int locOfMax(int[] a)
+{
+   int maxVal = maxOf(a);   // determine the maximum value in a[]
+
+   // Now search a[] until we find that maximum value
+   int i=0;
+   // loop invariant: maxVal does not occur in a[0..i-1]
+   while (a[i] != maxVal) 
+      { i = i+1; }
+   return i;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+This works, but notice that determining the maximum requires a complete
+"pass" over the array and then finding its first occurrence requires
+at least a partial pass and up to a full pass.
+If, during the first pass, we remember not only the max-so-far value
+but also its location, no second pass would be necessary.
+Following this idea, and also assuming that the array's length is
+non-zero, we get:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns the lowest-numbered location containing a maximum of 
+** the elements in the specified array (a[]).
+*/
+public static int locOfMax(int[] a)
+{
+   int maxSoFar = a[0];
+   int locOfMaxSoFar = 0;
+   // loop invariant: maxSoFar = maximum of the elements in a[0..i-1]  &&
+   //                 maxSoFar = a[locOfMaxSoFar]
+   for (int i=1; i != a.length; i = i+1)
+   {
+      if (a[i] > maxSoFar) { 
+         maxSoFar = a[i];  locOfMaxSoFar = i;
+      }
+   }
+   return locOfMaxSoFar;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+But notice that <tt>maxSoFar = a[locOfMaxSoFar]</tt> is an invariant
+of the loop.  Which means that wherever the value of <tt>maxSoFar</tt>
+is used, we could just as well use <tt>a[locOfMaxSoFar]</tt>.
+Which is to say that we can write the method without the 
+<tt>maxSoFar</tt> variable, like this:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns the lowest-numbered location containing a maximum of 
+** the elements in the specified array (a[]).
+*/
+public static int locOfMax(int[] a)
+{
+   int locOfMaxSoFar = 0;
+   // loop invariant: a[locOfMaxSoFar] = maximum of the elements in a[0..i-1]
+   for (int i=1; i != a.length; i = i+1)
+   {
+      if (a[i] > a[locOfMaxSoFar]) { 
+         locOfMaxSoFar = i;
+      }
+   }
+   return locOfMaxSoFar;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Generalizing this (as we did for sumOf()) to allow a caller to ask for the
+location of a maximum within an array segment, we get this:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns the lowest-numbered location within a[low..high-1] 
+** occupied by a maximum of that segment.
+*/
+public static int locOfMax(int[] a, int low, int high)
+{
+   int locOfMaxSoFar = low;
+   // loop invariant: a[locOfMaxSoFar] = maximum of the elements in a[low..i-1]
+   for (int i=low+1; i != high; i = i+1)
+   {
+      if (a[i] > a[locOfMaxSoFar]) { 
+         locOfMaxSoFar = i;
+      }
+   }
+   return locOfMaxSoFar;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+So now we can write the non-generalized version so that it makes use
+of the generalized version:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns the lowest-numbered location containing a maximum of 
+** the elements in the specified array (a[]).
+*/
+public static int locOfMax(int[] a) { return locOfMax(a, 0, a.length); }
+</td></tr>
+</table>
+</center>
+
+
+</p><p>
+Having written the generalized and non-generalized versions of 
+<tt>locOfMax()</tt> in this way, now we can write proper versions 
+of <tt>maxOf()</tt>:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns the maximum of the elements in the specified array 
+** segment (a[low..high-1]).
+*/
+public static int maxOf(int[] a, int low, int high) { 
+   return a[locOfmax(a, low, high)]; 
+}</pre>
+</td></tr>
+</table>
+</center>
+
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns the maximum of the elements in the specified array (a[]).
+*/
+public static int maxOf(int[] a) { return maxOf(a,0,a.length); }
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+
+
+<hr>
+<h3>Array Reversal</h3>
+</p><p>
+Now we consider the problem of reversing the elements in an array.
+That is, we want to modify the contents of an array so that, in the end,
+the values are in reverse order relative to their original order.
+
+</p><p>
+For example, if initially the array were
+<center>
+<pre>
+   0    1    2    3    4    5    6    7  
++----+----+----+----+----+----+----+----+
+|  5 | 12 | -7 |  2 |  0 | 14 | -1 |  3 |
++----+----+----+----+----+----+----+----+
+</pre>
+</center>
+
+then, at the end, we would want it to be
+
+</p><p>
+<center>
+<pre>  
+   0    1    2    3    4    5    6    7  
++----+----+----+----+----+----+----+----+
+|  3 | -1 | 14 |  0 |  2 | -7 | 12 |  5 |
++----+----+----+----+----+----+----+----+
+</pre>
+</center>
+
+</p><p>
+One way to achieve this result is to carry out a bunch of
+<b>swap</b> operations.  This term is commonly used to refer to
+the act of interchanging the values of two variables.
+In particular, we would swap the values at these pairs of locations:
+(0,7), (1,6), (2,5), and (3,4).
+
+</p><p>
+Do you detect a pattern here?  Each pair of locations has the same
+sum, 7, which, not coincidentally, is one less than the array's length.
+Try it with an array of any length and you will see that the same
+pattern holds.  Indeed, if the array's length is N (and thus its
+index range is 0..N-1), the pairs of locations whose values should
+be swapped is (0,N-1), (1,N-2), (2,N-3), ...., each of which 
+adds up to N-1.  Thus, letting i be the first (and smaller) component
+of any such pair of locations, the second component j must satisfy 
+both i+j = N-1 and i < j.  Solving the former for j, we get j = N-1-i.
+Thus, each pair of locations whose values should be swapped is of the 
+form (i, N-1-i). 
+
+</p><p>
+Given that j = N-1-i, the inequality i &lt; j translates to i &lt; N-1-i,
+which is equivalent to 2i < N-1.
+All this analysis leads to the following Java method, which employs
+the yet-to-be-written <tt>swap()</tt> method:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Reverses the elements in the specified array (a[]).
+*/
+public static int reverse(int[] a)
+{
+   final int N = a.length;
+   for (int i=0; 2*i < N-1; i = i+1)
+   {
+      swap(a, i, N-1-i);
+   }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+As the reader should have surmised, the method call <tt>swap(b,k,m)</tt>
+is intended to have as its effect to swap the elements at locations 
+k and m of array b[].
+
+</p><p>
+Before we deal with the design of the <tt>swap()</tt> method,
+let's develop an alternative version of <tt>reverse()</tt>.
+Above we reasoned that every "swap location pair" (i,j) must
+satisfy i &lt; j and j = N-1-i.  We used these to determine the
+loop guard and the second argument to be passed to the <tt>swap()</tt>
+method.
+
+
+</p><p>
+But we could just as well use j as a program variable and maintain its
+value so that j = N-1-i is an invariant.  Here is the new version of
+<tt>reverse()</tt>:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre><font color="red">Syntax error!</font>
+/* Reverses the elements in the specified array (a[]).
+*/
+public static int reverse(int[] a)
+{
+   final int N = a.length;
+   for (int i=0, j=N-1; i < j; i = i+1; j = j-1)
+   {
+      swap(a, i, j);
+   }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Unfortunately, Java does not allow the third component in a for-loop
+heading (the "update the loop control variable" component) to be
+a sequence of more than one statement.  Indeed, nor does the compiler
+allow it to be a single but compound statement (which you obtain by
+enlosing a sequence of statements within curly braces). 
+Thus, we cannot update both <tt>i</tt> and <tt>j</tt> there.
+
+</p><p>
+Since <tt>i</tt> and <tt>j</tt> are equally deserving of being the
+for-loop's control variable, but we cannot have both of them be 
+loop control variables, good style suggests that neither of them be.
+So we change the loop into a <b>while-loop</b>.  The resulting 
+method looks like this:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Reverses the elements in the specified array (a[]).
+*/
+public static int reverse(int[] a)
+{
+   int i=0, j = a.length - 1;
+   while (i < j) 
+   {
+      swap(a, i, j);
+      i = i+1; j = j-1;
+   }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+As for swapping the values of two variables, suppose that you have 
+variables <tt>x</tt> and <tt>y</tt> and you want to swap their values.
+Your first inclination might be to use the following pair of assignments:
+
+</p><p>
+<center>
+<tt>x = y; y = x;</tt>
+</center>
+
+</p><p>
+But that won't work, because not only will <tt>x</tt> end up with
+<tt>y</tt>'s original value, but so will <tt>y</tt>!  Why?  Because
+the first assignment obliterates <tt>x</tt>'s original value, replacing
+it with <tt>y</tt>'s.  Thus, the second assignment copies <tt>x</tt>'s
+new value (which was <tt>y</tt>'s original value) back into <tt>y</tt>!
+
+</p><p>
+To do it correctly, we need to employ an auxiliary variable to
+"remember" <tt>x</tt>'s original value and then, after copying
+<tt>y</tt>'s value into <tt>x</tt>, to assign the remembered value
+to <tt>y</tt>:
+
+</p><p>
+<center>
+<tt>temp = x; x = y; y = temp;</tt>
+</center>
+
+</p><p>
+Using the same idea but where the variables being swapped are 
+array elements, we get the following method:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Swaps the elements in the specified locations (k and m) of
+** the specified array (b[]).
+*/
+public static void swap(int[] b, int k, int m)
+{
+   int temp = a[k];
+   a[k] = a[m];
+   a[m] = temp;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+
+</p><p>
+In analogy with the <tt>sumOf()</tt> and <tt>maxOf()</tt> examples,
+we can make the <tt>reverse()</tt> method more versatile by allowing 
+a caller to specify an array segment that is to be reversed.
+Here it is:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Reverses the elements in the specified array segment (a[low..high-1]).
+*/
+public static int reverse(int[] a, int low, int high)
+{
+   int i = <font color="red">low</font>, j = <font color="red">high</font> - 1;
+   while (i < j) 
+   {
+      swap(a, i, j);
+      i = i+1; j = j-1;
+   }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+For another variation, consider that the caller may not want to modify
+an existing array but rather to create a new array containing the same
+values as those in an existing array segment but in reverse order. 
+Here is a method that does that:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns a new array whose elements are those in the specified array
+** segment (a[low..high-1]) but in reverse order.
+** pre: 0 <= low <= high <= a.length
+*/
+public static int[] reverseOf(int[] a, int low, int high)
+{
+   final int N = high - low;   // length of array to be returned.
+   int[] result = new int[N];  // create array to be returned
+
+   // loop invariant: result[0..i-1] contains the elements in a[high-i..high-1]
+   // in reverse order.
+   for (int i=0; i != N; i = i+1) {  // Fill new array
+      result[i] = a[high-1-i];
+   }
+   return result;   
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+In case you don't appreciate the difference between the effects of the
+methods <tt>reverse()</tt> and <tt>reverseOf()</tt>, here is an example.
+Suppose that we have an array <tt>junk[]</tt> as follows:
+
+<pre>        0    1    2    3    4    5    6    7    8
+     +----+----+----+----+----+----+----+----+----+
+junk |  3 | 12 |  5 | -2 |  0 |  9 | 15 | -4 |  7 |
+     +----+----+----+----+----+----+----+----+----+</pre>
+
+</p><p>
+Then making the call <tt>ArrayExamples.reverse(junk, 1, 7)</tt>
+(here we're assuming that the <tt>reverse()</tt> method is in the
+<tt>ArrayExamples</tt> class) will have the effect of reversing
+the order of the values occupying <tt>junk[1..6]</tt> so that it
+looks like this:
+
+<pre>        0    1    2    3    4    5    6    7    8
+     +----+----+----+----+----+----+----+----+----+
+junk |  3 | 15 |  9 |  0 | -2 |  5 | 12 | -4 |  7 |
+     +----+----+----+----+----+----+----+----+----+</pre>
+
+</p><p>
+On the other hand, the call <tt>ArrayExamples.reverseOf(junk, 1, 7)</tt>
+will leave the contents of <tt>junk[]</tt> undisturbed but will create,
+and return a reference to, a new array like this:
+<pre>        0    1    2    3    4    5  
+     +----+----+----+----+----+----+
+     | 15 |  9 |  0 | -2 |  5 | 12 |
+     +----+----+----+----+----+----+</pre>
+
+</p><p>
+Of course, the client would not have called the method in the first place
+unless it wanted to make use of the resulting array, so typically 
+(but not always) such a call would occur on the right-hand side of an
+assignment statement.  Typical client code might be like this:
+
+<pre>
+   garbage = ArrayExamples.reverseOf(junk, 1, 7);
+</pre>
+
+This would assign to <tt>garbage</tt> a reference to the array shown
+above.
+This assumes, of course, that <tt>garbage</tt> has been declared to
+be a variable of type <tt>int[]</tt>.
+
+<!--
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+
+</pre>
+</td></tr>
+</table>
+</center>
+-->
+
+
+
+</body>
+</html>

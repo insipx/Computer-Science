@@ -1,0 +1,224 @@
+<html>
+<head>
+<title>On Proofs Involving the Replacement of A by B, where A <tt>&rArr;</tt> B
+</title>
+</head>
+<h2>
+SE 500 (Math for Software Engineering) <br />
+SE 504 (Formal Methods and Models) <br />
+SE 507 (Requirements Analysis and Software Specification) <br />
+Weakening/Strengthening Proofs<br />
+(or: On Proofs Involving the Replacement of A by B, where A <tt>&rArr;</tt> B)
+</h2>
+
+</p><p>
+In the following, A, B, and C represent arbitrary boolean expressions
+satisfying [A <tt>&rArr;</tt> B] (i.e., in all states, A implies B), and
+<tt>&oplus;</tt> represents any one of the operators &and; (conjunction),
+&or; (disjunction), &equiv; (equivalence), <tt>&rArr;</tt> (implication),
+or <tt>&lt;==</tt>  <!--<tt>&lArr;</tt> --> (consequence).
+Students often assume, wrongly, that, regardless of what <tt>&oplus;</tt> 
+is, the following is a valid proof step:
+
+<pre>      A &oplus; C 
+
+&rArr;      < hint as to why [A &rArr; B] >
+
+      B &oplus; C </pre>  
+
+(You can easily imagine similar scenarios in which the two operands of
+<tt>&oplus;</tt>
+are swapped in each expression and/or in which each occurrence of
+<tt>&rArr;</tt> is replaced by <tt>&lt;==</tt>.)
+<!-- <tt>&lArr;</tt>.) -->
+
+<p>
+Do you see anything wrong?
+
+<p>
+What is wrong is that this step is not valid, unless <tt>&oplus;</tt> 
+happens to be either &or;, &and;, or &lArr;.
+In the first two of these cases, the step is justified by the
+Monotonicity Theorems (4.2) and (4.3), respectively, in Gries and Schneider.
+Analogous theorems for the other two binary boolean operators 
+(namely &equiv; and &rArr;) do not exist!!
+Indeed, it is easy to devise counterexamples to demonstrate that, 
+for each of the operators  &equiv; and <tt>&rArr;</tt>,
+the above proof step is not valid.
+This is left as an exercise for the reader.
+
+<p>
+The following theorem indicates for which combinations of operators
+<tt>&oplus;</tt> and <tt>&lowast;</tt>
+a proof step of the form
+<pre>      A &oplus; C 
+
+&lowast;      < hint as to why [A &rArr; B] >
+
+      B &oplus; C </pre>
+
+is valid.
+
+<p>
+<b>Theorem:</b>
+<ol type=a>
+  <li>
+      (p <tt>&rArr;</tt> q) &nbsp;<tt>&rArr;</tt>&nbsp;
+      (p &or; r  <tt>&rArr;</tt>  q &or; r)  &nbsp; (4.2)
+      &nbsp; (weakening a disjunct weakens a disjunction)
+  </li>
+  <li>
+      (p <tt>&rArr;</tt> q) &nbsp;<tt>&rArr;</tt>&nbsp;
+      (p &and; r  <tt>&rArr;</tt>  q &and; r) &nbsp; (4.3)
+      &nbsp; (weakening a conjunct weakens a conjunction)
+ </li>
+  <li>(p <tt>&rArr;</tt> q) &nbsp;<tt>&rArr;</tt>&nbsp;
+      ((p <tt>&rArr;</tt> r) <tt>&lt;==</tt> <!-- <tt>&lArr;</tt> -->
+      (q <tt>&rArr;</tt> r))
+      &nbsp; (weakening the antecedant strengthens an implication)
+  </li>
+  <li>(p <tt>&rArr;</tt> q) &nbsp;<tt>&rArr;</tt>&nbsp;
+      ((r <tt>&rArr;</tt> p) <tt>&rArr;</tt> (r <tt>&rArr;</tt> q))
+      <!--
+      ((p <tt>&lt;==</tt> <!-- <tt>&lArr;</tt> - -> r) <tt>&rArr;</tt>
+      (q <tt>&lt;==</tt> <!-- <tt>&lArr;</tt> - -> r))
+      -->
+      &nbsp; (weakening the consequent weakens an implication)
+  </li>
+  <li>(p <tt>&rArr;</tt> q) &nbsp;<tt>&rArr;</tt>&nbsp;
+      (&not;q <tt>&rArr;</tt> <!-- <tt>&lArr;</tt> --> &not;p) &nbsp;
+      (weakened form of (3.61) Contrapositive)
+  </li>
+</ol>
+
+</p><p>
+You may find it helpful to think of each of these as giving rise to
+a rule of inference that can be applied in carrying out proofs in
+equational logic:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr>
+  <th>(a)</th> <th>(b)</th> <th>(c)</th> <th>(d)</th> <th>(e)</th>
+</tr>
+<tr>
+  <td>
+     <center>
+     <tt>P &rArr; Q<br />
+         ---------------<br />
+         P &or; R &rArr; Q &or; R
+     </tt>
+     </center>
+  </td>
+  <td>
+     <center>
+     <tt>P &rArr; Q<br />
+         ---------------<br />
+         P &and; R &rArr; Q &and; R
+     </tt>
+     </center>
+  </td>
+  <td>
+     <center>
+     <tt>P &rArr; Q<br />
+         --------------------<br />
+         (P &rArr; R) &lt;== (Q &rArr; R)
+     </tt>
+     </center>
+  </td>
+  <td>
+     <center>
+     <tt>P &rArr; Q<br />
+         -------------------<br />
+         (R &rArr; P) &rArr; (R &rArr; Q)
+     </tt>
+     </center>
+  </td>
+  <td>
+     <center>
+     <tt>P &rArr; Q<br />
+         -----------<br />
+         &not;Q &rArr; &not;P
+     </tt>
+     </center>
+  </td>
+</tr>
+</table>
+</center>
+
+</p><p>
+For example, from (c) it follows that for any boolean expressions A, B, C
+satisfying [A <tt>&rArr;</tt> B], the following is valid:
+<pre>
+      A &rArr; C 
+
+&lt;==      < hint as to why [A &rArr; B] >
+
+      B &rArr; C
+</pre>
+
+From (d) it follows that
+
+<pre>
+      C &rArr; A 
+
+&rArr;      < hint as to why [A &rArr; B] >
+
+      C &rArr; B
+</pre>
+is valid.
+
+<p>
+From (e), it follows that
+<pre>
+      &not;A 
+
+&lt;==      < hint as to why [A &rArr; B] >
+
+      &not;B
+</pre>
+is valid.
+
+</p><p>
+If the subexpression that we replace with a weaker one in a given step
+is an operand not of the primary operator of the expression but rather
+a secondary (or tertiary, etc.) operator, then the theorems listed
+above need to be applied in sequence.
+For example, consider this proof step:
+
+<pre>
+      D &rArr; C &or; A
+
+&rArr;      < hint as to why [A &rArr; B] >
+
+      D &rArr; C &or; B
+</pre>
+
+</p><p>
+This step's validity rests upon both parts (a) and (d) of the theorem
+above.  Specifically, replacing <tt>A</tt> by <tt>B</tt> transforms
+<tt>C&or;A</tt> into the weaker <tt>C&or;B</tt>, according to
+part (a) of the theorem (which is Theorem (4.2) in Gries &amp; Schneider).
+Which is to say that we have weakened the consequent of the implication,
+so that by part (d) of the theorem, the resulting implication 
+(<tt>D &rArr; C &or; B</tt>) is weaker than the original
+(<tt>D &rArr; C &or; A</tt>).
+
+<hr>
+<b>Exercises:</b>
+</p><p>
+Suppose that <tt>[A&rArr;B]</tt> (i.e., <tt>A&rArr;B</tt> is a theorem).
+For each pair of expressions given, tell what relationship, if any,
+we can we claim holds between them.
+
+</p><p>
+<b>1.</b> <tt>D &and; A &rArr; C</tt> &nbsp;and&nbsp;
+ <tt>D &and; B &rArr; C</tt>. 
+
+</p><p>
+<b>2.</b> <tt>D &and; &not;A &rArr; C</tt> &nbsp;and&nbsp;
+ <tt>D &and; &not;B &rArr; C</tt>. 
+
+</body>
+</html>

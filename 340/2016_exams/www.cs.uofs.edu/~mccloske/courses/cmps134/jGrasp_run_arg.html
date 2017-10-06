@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>Specifying Run Arguments in jGrasp</title>
+</head>
+<body>
+<h2>Specifying Run Arguments in jGrasp</h2>
+
+</p><p>
+A Java class that can serve as an <b>application program</b>
+(meaning that you can "run" it) must have a <tt>main()</tt> method.
+When the application is run, execution begins in that method,
+the heading of which must be as follows:
+
+</p><p>
+<center>
+<tt>public static void main(String[] args)</tt>
+</center>
+
+</p><p>
+Well, you can change <tt>args</tt> to any legal identifier,
+but otherwise the heading must look like this.
+
+</p><p>
+What this heading indicates is that <tt>main()</tt> 
+receives as a parameter an array of <tt>String</tt> objects.
+But how does one, when running a program, "pass" a parameter to it?
+
+</p><p>
+In the context of the IDE jGrasp, you would do this:
+
+<ol>
+  <li>Make the application program to be run the current class
+      (by clicking on the window containing its source code).
+  </li>
+  <li>Click on <b>Build</b> (in the Menu Bar) so that the associated
+      menu appears.
+  </li>
+  <li>Click on the <b>Run Arguments</b> box on the menu so that it has a
+      checkmark in it.
+      (Recall that "parameter" and "argument" are somewhat synonymous.)
+      A text box should immediately appear above the application program's
+      source code.
+  </li>
+  <li>Enter into that text box one or more arguments, separated by
+      spaces.  Typically, such an argument might be the name of a
+      file that you intend for the program to use as input.
+      If that file were named <tt>data.txt</tt>, you would enter that
+      into the text box (with no quotes).
+  </li>
+  <li>Click on the Run icon.
+  </li>
+</ol>
+
+</body>
+</html>

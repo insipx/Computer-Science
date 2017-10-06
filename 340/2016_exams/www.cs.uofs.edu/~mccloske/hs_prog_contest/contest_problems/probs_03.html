@@ -1,0 +1,732 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+           "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<meta name="GENERATOR" content="TtH 2.78">
+                                                                                               
+         <b>
+<title>University of Scranton</title>
+
+University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+13th Annual High School Programming Contest (2003)<br />
+</b>
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 1: Min/Max Search</b>
+
+
+<p>
+Develop a program that, given a sequence S of integers as input, produces
+as output two sequences of positive integers, the first of which indicates
+all those positions in S at which S's minimum value occurs and the second
+of which indicates all those positions at which S's maximum value occurs.
+Positions are numbered starting at one (1).
+
+<p>
+<b>Input</b>
+
+<p>
+The first line of input contains a positive integer m indicating how many
+sequences are to be processed.  The next 2m lines contain descriptions of
+the m sequences, two lines per sequence.  The first line of each description
+contains a positive integer n &le; 40) indicating the length of (i.e.,
+number of values in) the sequence, and the second line contains the values
+in the sequence.
+Each such value is separated from the next by at least one space.
+
+<p>
+<b>Output</b>
+
+<p>
+For each sequence given as input, there should be four lines of output.
+The first line echos the given sequence.
+The second line indicates the positions at which the minimum value occurs.
+The third line indicates the positions at which the maximum value occurs.
+The fourth line is blank.
+
+<p>
+<b>Sample input</b>
+<tt><br />
+<p>
+3 <br />
+7 <br />
+3 6 -1 4 6 5 3 <br />
+4 <br />
+0 0 0 0 <br />
+14 <br />
+-4 45 2 0 3 5 11 -7 854 25 3 -7 4 -3
+</tt>
+
+<p>
+<b>Corresponding output</b>
+<tt><br />
+<p>
+3 6 -1 4 6 5 3 <br />
+3 <br />
+2 5 <br />
+<br />
+<p>
+0 0 0 0 <br />
+1 2 3 4 <br />
+1 2 3 4 <br />
+<br />
+<p>
+-4 45 2 0 3 5 11 -7 854 25 3 -7 4 -3 <br />
+8 12 <br />
+9
+</tt>
+
+<p>
+<b>University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+13th Annual High School Programming Contest (2003)<br />
+</b>
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 2: Follow the Yellow Brick Road</b>
+
+
+<p>
+Consider the following, which is intended to depict a string
+M = <tt>OELRO!LWLH D</tt> with characters occupying positions
+one through twelve and a sequence S of integers whose elements
+occupy positions zero through twelve.
+M is a scrambled message and S, if interpreted properly,
+provides a ``roadmap'' for unscrambling M.
+
+<pre>
+  0  1  2  3  4  5  6  7  8  9  10  11  12
+ -----------------------------------------
+     O  E  L  R  O  !  L  W  L   H       D
+ 10 10  5 -2  5 -1  0 -4 -3  3  -8  -3  -6 
+</pre>
+The zero-th element of S, 10, tells us that we should begin at
+position ten.  As <tt>H</tt> occupies position ten of M, it is
+the first character in the unscrambled message.
+As <font face="symbol">-</font
+>8 occupies position ten of S, we move eight places
+to the left (i.e., to position two) in order to find the
+next character, which is <tt>E</tt>.  We find that 5 occupies
+position two of S; hence we move five positions to the right
+(i.e., to position seven) to find the next character, which is
+<tt>L</tt>.  We continue in this fashion until reaching a
+position of S occupied by 0; the character in the corresponding
+position of M is the last character in the unscrambled message.
+For this example, the unscrambled message you obtain is
+<tt>HELLO WORLD!</tt>.
+
+<p>
+Develop a program that, given as input some scrambled messages
+together with integer sequences to be used as roadmaps in
+unscrambling them, outputs the unscrambled messages.
+
+<p>
+<b>Input</b>
+
+<p>
+The first line of input contains a positive integer n indicating
+how many scrambled messages are to be unscrambled.
+The following 3n lines contain descriptions of the scrambled
+messages and the roadmaps for unscrambling them.
+Each such description occupies three lines,
+the first containing a positive integer m (m  <font face="symbol">£</font
+> 40)
+indicating the length of the message, the second containing the
+message itself (a string of length m), and the third containing
+a sequence of m+1 integers to be used for unscrambling.
+
+<p>
+You may assume that the input data is such that the unscrambling
+process, as described above, will never lead you to a position
+that is ``out of bounds'' (i.e., less than one or greater than m).
+You may also assume that the input data will not cause this process
+to enter an infinite loop.
+
+<p>
+<b>Output</b>
+
+<p>
+For each scrambled message, simply display the string obtained
+by unscrambling it.
+Note that it is possible for the unscrambled message to be shorter
+than the scrambled one.  (See sample below.)
+
+<p>
+<b>Sample input</b>
+
+<tt><br />
+<p>
+3 <br />
+12 <br />
+OELRO!LWLH D <br />
+10 10  5 -2  5 -1  0 -4 -3  3  -8  -3  -6 <br />
+5 <br />
+TODGB <br />
+4 2 0 -1 -2 0 <br />
+28 <br />
+Y COFLWR L LDIBHLEOKR OAEOWT <br />
+5 24 13 17 20 18 13 15 6 12 16 -10 -6 0 -11 -7 2 -7 -7 -12 -11 -17 6 -11 -11 -8 1 -25 -12 <br />
+</tt>
+
+
+<p>
+<b>Corresponding output</b>
+<tt><br />
+<p>
+HELLO WORLD! <br />
+GO <br />
+FOLLOW THE YELLOW BRICK ROAD
+</tt>
+
+<p>
+<b>University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+13th Annual High School Programming Contest (2003)<br />
+</b>
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 3: L-I-N-G-O</b>
+
+
+<p>
+A current TV game show asks contestants to guess at hidden five-letter words.
+Contestants are told the first letter of the word and are allowed to make
+up to five guesses at the word.
+Feedback is provided in response to each guess, as contestants
+are told which letters in the guessed word also occur in the hidden word
+and, for each such letter, whether it occurs in the same position in
+the two words.
+
+<p>
+Develop a program that, given as input a number of ``games'', each
+described by a hidden five-letter word followed by some guesses
+(all of which are five letters in length), produces as output
+the appropriate feedback for each guess, plus the ``initial feedback''
+that is given before the first guess is made.
+The feedback for a guess is the guess itself (in upper case), except
+that any letter occurring in the guess that fails to occur in the
+hidden word is replaced by a period (<tt>.</tt>) and any letter
+occurring in the guess that occurs in the hidden word,
+<em>but not in the same position</em>, is replaced by the lower case
+version of that letter.
+
+<p>
+As an example, suppose that the hidden word starts with <tt>A</tt>.
+Then the initial feedback would be <tt>A....</tt> .
+Suppose that our first guess is <tt>APPLE</tt>, which (aside from the
+first letter) is similar to the hidden word only in that they both
+contain <tt>L</tt>, but in different positions.  The resulting feedback
+would be <tt>A..l.</tt> .
+Looking for more help, we next try the word <tt>AMIGO</tt>, 
+whose only similarity to the hidden word (aside from the first letter)
+is that <tt>I</tt> appears in the same position.  The resulting feedback
+is <tt>A.I..</tt> .  Working with the <tt>I</tt>, we next try the word 
+<tt>ASIAN</tt>.  The <tt>I</tt> is still correctly placed, but now so too
+is the (second) <tt>A</tt>.  In addition, <tt>S</tt> occurs in both
+words, but in different positions.  Hence, we get as feedback
+<tt>AsIA.</tt> .  From these clues, plus the clue regarding <tt>L</tt> 
+obtained as a result of the first guess, it follows that the hidden word is 
+<tt>ALIAS</tt>, which we make our fourth guess.  The resulting
+feedback is <tt>ALIAS</tt> (indicating an exact match),
+which ends the game.
+
+<p>
+<b>Input</b> 
+
+<p>
+The first line of input contains a positive integer n indicating
+how many games are to be played. 
+Each game is described by a ``hidden'' five-letter word, followed
+by at most five guesses, each of which is a five-letter word.
+Each word appears on a line by itself, left justified and
+entirely in upper case.
+Any guess that is correct is the last guess of that game.
+If no guess is correct, the last guess is the fifth one.
+
+<p>
+The last guess of one game is separated from the hidden word of
+the next game by a blank line containing at least one space.
+
+<p>
+<b>Output</b> 
+
+<p>
+The first line of output for each game contains the ``initial feedback'',
+which is the first letter of the hidden word followed by four periods.
+Each subsequent line of output for that game contains the feedback in
+response to the corresponding guess (as described above).
+A single blank line should appear between the outputs for two consecutive
+games.
+
+<p>
+<b>Sample input</b>
+<tt><br />
+<p>
+3 <br />
+ALIAS <br />
+APPLE <br />
+AMIGO <br />
+ASIAN <br />
+ALIAS <br />
+<br />
+<p>
+LAUGH <br />
+LAKES<br />
+LUGER <br />
+LIGHT <br />
+LINGO <br />
+LAUGH <br />
+ <br />
+<p>
+SWAMP <br />
+SOLVE <br />
+STUDY <br />
+SLIPS <br />
+SPATE <br />
+SWARM <br />
+</tt>
+
+<p>
+<b>Corresponding output</b>
+<tt><br />
+<p>
+A.... <br />
+A..l. <br />
+A.I.. <br />
+AsIA. <br />
+ALIAS <br />
+<br />
+<p>
+L.... <br />
+LA... <br />
+Lug.. <br />
+L.gh. <br />
+L..G. <br />
+LAUGH <br />
+<br />
+<p>
+S.... <br />
+S.... <br />
+S.... <br />
+S..ps <br />
+SpA.. <br />
+SWA.m 
+</tt>
+
+<p>
+<b>University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+13th Annual High School Programming Contest (2003)<br />
+</b>
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 4: Goldbach's Conjecture</b>
+
+
+<p>
+A <em>prime</em> number is a positive integer having exactly two
+divisors among the positive integers (namely, itself and one).
+The first several primes are 2, 3, 5, 7, 11, and 13.
+(Note that 1 is <em>not prime</em>, as it has only one divisor
+(namely itself) among the positive integers.)
+
+<p>
+In a letter to Euler in 1742, Christian Goldbach conjectured that
+every even integer greater than two is the sum of two prime numbers.
+Euler agreed that the conjecture was probably true, but, despite the
+efforts of a number of mathematicians over the past two hundred sixty
+years, no one has yet been able to prove or disprove it.
+Recently, with the help of electronic computers, it has been shown
+that the conjecture holds for numbers up to 4 &times;10<sup>14</sup>.
+
+<p>
+Develop a program that, given as input a list of even integers greater
+than two (but no greater than one thousand), produces as output,
+for each number in the list, 
+every pair of prime numbers that sum to it.
+
+<p>
+<b>Input</b>
+
+<p>
+The first line of input contains a positive integer n
+indicating how many numbers are to be processed.  On each of
+the next n lines is an even integer greater than two (but
+no greater than 1000).
+
+<p>
+<b>Output</b>
+
+<p>
+For each of the n numbers given as input, that number should
+be displayed on one line.  On the following lines, every distinct pair
+of primes summing to it should be displayed, one pair per line,
+with the smaller of the two primes in each pair listed first.
+The pairs should be listed in increasing order with respect to the 
+smaller prime in each one.
+Following that should be a blank line.
+
+<p>
+<b>Sample input</b>
+<tt><br />
+<p>
+4 <br />
+48 <br />
+38 <br />
+12 <br />
+100
+</tt>
+
+<p>
+<b>Corresponding output</b>
+<tt><br />
+<p>
+48 <br />
+5 43 <br />
+7 41 <br />
+11 37 <br />
+17 31 <br />
+19 29 <br />
+<br />
+<p>
+38 <br />
+7 31 <br />
+19 19 <br />
+<br />
+<p>
+12 <br />
+5 7 <br />
+<br />
+<p>
+100 <br />
+3 97 <br />
+11 89 <br />
+17 83 <br />
+29 71 <br />
+41 59 
+</tt>
+
+<p>
+<b>University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+13th Annual High School Programming Contest (2003)<br />
+</b>
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 5: Decimal to Base Fibonacci Conversion</b>
+
+
+<p>
+Let us define the fibonacci sequence f<sub>0</sub>, f<sub>1</sub>, f<sub>2</sub>, ... as follows: 
+f<sub>0</sub> = 1, f<sub>1</sub> = 2, and, for k &gt; 1, f<sub>k</sub> = f<sub>k<font face="symbol">-</font
+>2</sub> + f<sub>k<font face="symbol">-</font
+>1</sub>. 
+That is, the first two elements are 1 and 2, respectively, and
+each element thereafter is the sum of the two elements preceding it.
+The sequence begins as follows:
+
+<p>
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table align="center"><tr><td nowrap="nowrap" align="center">
+1, 2, 3, 5, 8, 13, 21, 34, 55, ...</td></tr></table>
+</td></tr></table>
+
+
+
+<p>
+In the decimal (i.e., base 10) number system, the numeral 57082
+(for example) has value 
+
+<p>
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table align="center"><tr><td nowrap="nowrap" align="center">
+2 &#183;10<sup>0</sup> &nbsp;+ &nbsp;8 &#183;10<sup>1</sup> &nbsp;+ &nbsp;0 &#183;10<sup>2</sup> &nbsp;+ &nbsp; 7 &#183;10<sup>3</sup> &nbsp;+ &nbsp;5 &#183;10<sup>4</sup></td></tr></table>
+</td></tr></table>
+
+
+That is, the value of a numeral is obtained by multiplying each
+of its digits by the appropriate power of 10 (beginning at 10<sup>0</sup>
+for the rightmost digit) and adding up the results.  Writing this
+more generally, we have that the value of the n-digit numeral
+d<sub>n<font face="symbol">-</font
+>1</sub> d<sub>n<font face="symbol">-</font
+>2</sub> <font face="symbol">¼</font
+>d<sub>1</sub> d<sub>0</sub> (where each d<sub>i</sub> is one of
+the ten digits 0 through 9) is
+
+<p>
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table align="center"><tr><td nowrap="nowrap" align="center">
+d<sub>0</sub> &#183;10<sup>0</sup> &nbsp;+ 
+&nbsp;d<sub>1</sub> &#183;10<sup>1</sup> 
+&nbsp;+ &nbsp; ... &nbsp;+ &nbsp; d<sub>n-2</sub>
+&#183;10<sup>n-2</sup> &nbsp;+ &nbsp;d<sub>n-1</sub>
+&#183;10<sup>n-1</sup> </td></tr></table>
+</td></tr></table>
+
+
+
+<p>
+Consider using the Fibonacci numbers as the ``weights'' of the columns
+in a numeral, rather than using the powers of ten.  That is, suppose
+that we interpret an n-digit numeral
+d<sub>n-1</sub> d<sub>n-2</sub> ... d<sub>1</sub> d<sub>0</sub>
+as having value
+
+<p>
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table align="center"><tr><td nowrap="nowrap" align="center">
+d<sub>0</sub> &#183;f<sub>0</sub> &nbsp;+ 
+&nbsp;d<sub>1</sub> &#183;f<sub>1</sub> &nbsp;+ 
+&nbsp; ... &nbsp;+ &nbsp; d<sub>n-2</sub> 
+&#183;f<sub>n-2</sub> &nbsp;+ &nbsp;d<sub>n-1</sub> 
+&#183;f<sub>n-1</sub> </td></tr></table>
+</td></tr></table>
+
+
+
+<p>
+It turns out that, even if we limit ourselves to using the two digits
+0 and 1,
+every positive integer can be expressed in this way!
+For example, 
+111010<sub>fib</sub> 
+(the subscript indicates that this is a
+``base-fibonacci'' numeral) would be evaluated as follows:
+
+<p>
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table border="0" width="80%" align="right"><tr><td nowrap="nowrap" align="right">
+<table border="0"><tr><td nowrap="nowrap" Align="left">
+111010<sub>fib</sub> </td></tr></table></td><td nowrap="nowrap" align="left">
+<table border="0"><tr><td nowrap="nowrap" Align="left">
+ = </td></tr></table></td><td nowrap="nowrap" align="left">
+<table border="0"><tr><td nowrap="nowrap" Align="left">
+0 &#183;f<sub>0</sub> &nbsp;+ &nbsp;1 &#183;f<sub>1</sub> &nbsp;+ &nbsp; 0 &#183;f<sub>2</sub> &nbsp;+ &nbsp;1 &#183;f<sub>3</sub> &nbsp;+ &nbsp; 1 &#183;f<sub>4</sub> &nbsp;+ &nbsp;1 &#183;f<sub>5</sub> </td></tr></table></TD></TR><tr><td nowrap="nowrap" align="right" colspan="0"><table border="0"><tr><td nowrap="nowrap" Align="left">
+ </td></tr></table></td><td nowrap="nowrap" align="left">
+<table border="0"><tr><td nowrap="nowrap" Align="left">
+ = </td></tr></table></td><td nowrap="nowrap" align="left">
+<table border="0"><tr><td nowrap="nowrap" Align="left">
+0 &#183;1 &nbsp;+ &nbsp;1 &#183;2 &nbsp;+ &nbsp; 0 &#183;3 &nbsp;+ &nbsp;1 &#183;5 &nbsp;+ &nbsp; 1 &#183;8 &nbsp;+ &nbsp;1 &#183;13 </td></tr></table></TD></TR><tr><td nowrap="nowrap" align="right" colspan="0"><table border="0"><tr><td nowrap="nowrap" Align="left">
+ </td></tr></table></td><td nowrap="nowrap" align="left">
+<table border="0"><tr><td nowrap="nowrap" Align="left">
+ = </td></tr></table></td><td nowrap="nowrap" align="left">
+<table border="0"><tr><td nowrap="nowrap" Align="left">
+0 + 2 + 0 + 5 + 8 + 13 </td></tr></table></TD></TR><tr><td nowrap="nowrap" align="right" colspan="0"><table border="0"><tr><td nowrap="nowrap" Align="left">
+ </td></tr></table></td><td nowrap="nowrap" align="left">
+<table border="0"><tr><td nowrap="nowrap" Align="left">
+ = </td></tr></table></td><td nowrap="nowrap" align="left">
+<table border="0"><tr><td nowrap="nowrap" Align="left">
+28 </td></tr></table></TD></TR><tr><td nowrap="nowrap" align="right" colspan="0"><table><tr><td nowrap="nowrap" align="right" colspan="0"></td></tr></table></TD></TR></table>
+</td></tr></table>
+
+
+
+<p>
+Note that, unlike the decimal number system, it is possible for
+two different base-fibonacci numerals, neither having leading zeros, 
+to represent the same number.
+For example, 10000<sub>fib</sub>, 1100<sub>fib</sub>, and 1011<sub>fib</sub> all
+represent the number that is written as 8 in decimal.
+Indeed, within a base-fibonacci numeral, any occurrence of 100
+may be replaced by 011, or vice versa, without changing the value
+associated with that numeral.
+(This is so because the sum of the weights of the two less
+significant digits among the three is equal to the weight of the
+most significant digit among the three.)
+
+<p>
+We say that a base-fibonacci numeral is in
+<em>canonical form</em> if it has no leading zeros and includes
+no occurrences of 100 among its digits.
+Two different canonical-form base-fibonacci
+numerals necessarily represent two different numbers.
+
+<p>
+Develop a program that, given a list of positive integers (written
+in the usual decimal notation) as input, produces as output the
+same values expressed as canonical-form base-fibonacci numerals.
+
+<p>
+<b>Input</b>
+
+<p>
+The first line of input contains a positive integer n,
+indicating how many numbers are to be processed.
+Each of the next n lines contains a positive integer no
+greater than one thousand (1000).
+
+<p>
+<b>Output</b>
+
+<p>
+For each of the n integers given as input, display it on one line,
+display the corresponding canonical-form base-fibonacci number
+on the next, and make the next line blank.
+
+<p>
+<b>Sample input</b>
+<tt><br />
+<p>
+5 <br />
+19 <br />
+49 <br />
+248 <br />
+159 <br />
+2 
+</tt>
+
+<p>
+<b>Corresponding output</b>
+<tt> <br />
+<p>
+19<br />
+11111<br />
+<br />
+<p>
+49<br />
+1111010<br />
+<br />
+<p>
+248<br />
+10101111010<br />
+<br />
+<p>
+159<br />
+1011011010<br />
+<br />
+<p>
+2<br />
+10
+</tt>
+
+<p>
+<b>University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+13th Annual High School Programming Contest (2003)<br />
+</b>
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 6: Overlapping Taping Schedules</b>
+
+
+<p>
+The digital video recorder (DVR) is becoming a popular item for
+home entertainment systems.  One of the benefits of a DVR compared to the
+older video cassette recorder (VCR) is that the former, unlike the latter,
+is capable of taping two or more shows simultaneously.
+
+<p>
+Develop a program that takes as input the taping schedule of a DVR
+and determines the time periods during which the machine will be required
+to tape two or more shows simultaneously.
+
+<p>
+<b>Input</b>
+
+<p>
+The first line of input contains a positive integer m
+indicating how many taping schedules are to be analyzed.
+Subsequent lines of input contain descriptions of m
+taping schedules.
+
+<p>
+Each description of a taping schedule begins with a
+line containing a positive integer n (n  <font face="symbol">£</font
+> 50)
+indicating the number of shows on that schedule.
+Each of the next n lines contains a day-time interval
+during which a particular show is to be recorded.
+A day-time interval consists of a starting 
+day-time and an ending day-time, separated by a space.
+A day-time consists of a three-letter abbreviation for 
+a day of the week
+(i.e., one of <tt>SUN</tt>, <tt>MON</tt>, <tt>TUE</tt>, <tt>WED</tt>,
+<tt>THU</tt>, <tt>FRI</tt>, or <tt>SAT</tt>), followed by a space, 
+followed by the time of day, expressed in ``military time'',
+i.e., as a four-digit sequence whose first two digits are in
+the range 00..23 (indicating the number of hours since midnight)
+and whose last two digits are in the range 00..59
+(indicating the number of minutes since the beginning of the
+current hour).  In order to simplify matters, you may assume
+that, in any day-time given as input, the last two digits
+are either 00, 15, 30, or 45.
+
+<p>
+The day-time intervals given as input should be assumed to
+fall within the same week but should not be assumed
+to be in any particular order.
+
+<p>
+<b>Output</b>
+
+<p>
+For each schedule given as input, your program should produce as
+output a <em>minimum-length</em> list of day-time intervals covering
+exactly the time periods during which the DVR is scheduled to
+record two or more shows simultaneously.
+These day-time intervals should be listed in chronological order,
+one per line, beginning with Sunday at midnight
+(i.e., when Saturday turns into Sunday).
+
+<p>
+The results for each schedule should be preceded by a message
+like that shown in the sample output below.  The results for
+each schedule should be followed by a blank line.
+
+<p>
+<b>Sample input</b>
+<tt><br />
+<p>
+2 <br />
+8 <br />
+MON 0200 MON 0500 <br />
+TUE 1100 TUE 1300 <br />
+TUE 1200 TUE 1400 <br />
+WED 0000 WED 0200 <br />
+TUE 2300 WED 0000 <br />
+MON 1600 MON 1645 <br />
+TUE 2330 WED 0030 <br />
+WED 0100 WED 0130 <br />
+2 <br />
+THU 1345 THU 1515 <br />
+FRI 1500 SAT 0145 
+</tt>
+
+<p>
+<b>Corresponding output</b>
+<tt><br />
+<p>
+Schedule 1 overlaps:<br />
+TUE 1200 TUE 1300 <br />
+TUE 2330 WED 0130 <br />
+ <br />
+<p>
+Schedule 2 overlaps:<br />
+</tt>
+
+<p>
+
+<br /><br /><hr /><small>File translated from
+T<sub><font size="-1">E</font></sub>X
+by <a href="http://hutchinson.belmont.ma.us/tth/">
+T<sub><font size="-1">T</font></sub>H</a>,
+version 2.78.<br />On 14 Mar 2005, 16:05.</small>
+</html>

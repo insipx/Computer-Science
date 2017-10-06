@@ -1,0 +1,219 @@
+<html>
+<head><title>CMPS 034L  Lab #11</title>
+</head>
+<body>
+<h2>CMPS 034L &nbsp; Spring 2017<br />
+Lab #11: ReCURsion 
+</h2>
+
+</p><p>
+You are to work in groups of two, with one group of three in the
+case that an odd number of students is present.
+
+</p><p>
+Go to the
+<a href="http://practiceit.cs.washington.edu" target="_blank">Practice-It 
+website</a>, log in, and click on the <b>Start Practicing</b> button,
+then on the link labeled <b>Building Java Programs, 4th Edition</b>,
+and then on the link indicating <b>BJP4 Chapter 12</b>.
+
+</p><p>
+<h3>Activity #1: Practice-It Self-Checks from Chapter 12</h3>
+
+<ol>
+  <li><b>BJP4 Self-Check 12.3 (mystery1)</b>:
+     You are given a recursive method and asked to show, for several different
+     parameter values, what output the method would produce.  Notice that
+     the method is very similar to the <tt>printUpTo()</tt> method discussed
+     in lecture.  The main difference is that the parameter passed in the
+     recursive call is <tt>n/2</tt> rather than <tt>n-1</tt>.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 12.4 (mystery2)</b>:
+     Similar to Self-Check 12.3, but this recursive method is unusual in that the
+     base case applies when the parameter's value exceeds some upper bound
+     (here 100) rather than when it reaches some lower bound (typically
+     either zero or one).
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 12.5 (mystery3)</b>:
+     Similar to Self-Check 12.3 again, but this method sandwiches
+     a recursive call in between printing a left parenthesis (or bracket)
+     and printing a right parenthesis (or bracket).  (Which pair of symbols
+     is printed depends upon whether or not the parameter is even.)
+     </p><p>
+     Thus, the output is going to be a well-formed nested bunch of 
+     alternating parentheses/brackets.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 12.13 (mystery4)</b>:
+     Similar to Self-Check 12.3 again, but this recursive method has
+     two parameters.  Only the first one "changes" from call to call.
+  </li>
+</ol>
+
+<hr>
+</p><p>
+<h3>Activity #2: Practice-It Exercises from Chapter 12</h3>
+</p><p>
+Place each method that you develop for the exercises here into
+Java class <a href="Lab11.java">Lab11</a> and, at the end, 
+<a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab11_dir">submit</a> it.
+
+<ol>
+  <li><b>BJP4 Exercise 12.1 (starString)</b>:
+     You are to develop a recursive method <tt>starString()</tt>
+     so that the call <tt>starString(n)</tt> returns a <tt>String</tt>
+     containing 2<sup>n</sup> asterisks.  Keep in mind that 2<sup>n-1</sup>
+     is half of 2<sup>n</sup>.
+     </p><p>
+     Unfortunately, the Practice-It site requires that the method
+     throw an exception if the parameter passed to it is negative.
+     Here is a template for you to complete in order to arrive at a
+     correct solution:
+     </p><p>
+     <center>
+     <table border="1" cellpadding="4">
+     <tr><td><pre>
+public static String starString(int n)
+{
+   // Check for negative parameter and throw an exception in that case.
+   if (n < 0) { throw new IllegalArgumentException(); }
+
+   // Parameter is legal, so use normal pattern for a recursive functional method
+   if (n == 0) {    // the base case
+      return ??;
+   }
+   else {  // the recursive case
+      String half = ??;        // form a String with half the required *'s
+      return ??;
+   }
+}</pre>
+     </td></tr>
+     </table>
+     </center>
+  </li>    
+  </p><p>
+  <li><b>BJP4 Exercise 12.2 (writeNums)</b>:
+     Develop recursive method <tt>writeNums()</tt> that accepts integer
+     n via its parameter and prints the integers 1 through n, all but the
+     first preceded by a comma and space.  Thus, it is almost the same
+     as the <tt>printUpTo()</tt> method developed in lecture, with the
+     only significant difference being the insertion of commas.
+     </p><p>
+     Here is an almost correct solution, but it fails to print any
+     commas or spaces.  Fix it.
+     </p><p>
+     <center>
+     <table border="1" cellpadding="4">
+     <tr><td><pre>
+public static void writeNums(int n)
+{
+   // Check for non-positive parameter and throw an exception in that case.
+   if (n < 1) { throw new IllegalArgumentException(); }
+
+   // Parameter is legal, so use normal pattern for a recursive functional method
+   if (n == 1) {    // the base case
+      System.out.print(n);
+   }
+   else {  // the recursive case
+      writeNums(n-1);
+      System.out.print(n);
+   }
+}</pre>
+     </td></tr>
+     </table>
+     </center>
+  </li>
+  </p><p> 
+  <li><b>BJP4 Exercise 12.3 (writeSequence)</b>:
+     Develop recursive method <tt>writeSequence()</tt> that accepts integer
+     n via its parameter and prints &lceil;n/2&rceil; down to 1 and 1 back
+     up to &lceil;n/2&rceil; (separated by spaces, but no commas this time),
+     with 1 appearing twice only if n is even. 
+     Use the template from the previous exercise to get you started.
+     </p><p>
+     The Practice-It instructions indicate that zero is an illegal
+     parameter value.  That is unfortunate, because as a result you
+     need both <tt>n==1</tt> and <tt>n==2</tt> to be base cases.
+     A better design would have had <tt>n==0</tt> be a base case 
+     that resulted in nothing being printed.
+     If you do it that way, it will be fine, but the Practice-It site
+     will probably reject your solution.
+     </p><p>
+     Look at the table of examples on the Practice-It web page.
+     Notice that (except for the base cases of <tt>n==1</tt> and 
+     <tt>n==2</tt>), what gets printed as a result of the call
+     <tt>writeSequence(n)</tt> is just what <tt>writeSequence(n-2)</tt> 
+     prints, sandwiched in between occurrences of &lceil;n/2&rceil;.
+     </p><p>
+  </li>
+</ol>
+
+<hr>
+<h3>Activity #3: Homegrown Recursive Programming Problems</h3>
+</p><p>
+As with your solutions to the exercises in Activity #2,
+place the methods that you develop here into the <tt>Lab11</tt>
+class and, when you're finished, 
+<a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab11_dir">submit</a> it.
+
+<ol>
+  <li>
+    Develop a recursive method <tt>digitSum(int n)</tt> that, given a 
+    nonnegative integer via its parameter, returns the sum of the
+    digits in the (decimal) numeral representing that number.  Thus, for 
+    example, the call <tt>digitSum(6305)</tt> should yield 14, because that
+    is the sum of 6, 3, 0, and 5.
+    </p><p>
+    What is the base case?  It could be <tt>n &lt; 10</tt>
+    (meaning that <tt>n</tt> is represented by a one-digit numeral. 
+    Or it could be <tt>n==0</tt> (meaning, conceptually, that <tt>n</tt>
+    is represented by a zero-digit numeral?).  Either one will work.
+    </p><p>
+    As for the recursive case, note that the sum of the digits in
+    <tt>6305</tt> (to use that example again) is the sum of the digits in 
+    <tt>630</tt>, plus the one's digit, <tt>5</tt>.
+    So the key to solving (this instance of) the problem lies in obtaining
+    <tt>630</tt> and <tt>5</tt> from <tt>6305</tt>.  But these are just the
+    quotient and remainder resulting from dividing <tt>6305</tt> by ten!
+    The same approach works for any integer. 
+  </li>
+  <li>
+    Here is a recursive definition of the multiplication function on 
+    nonnegative integers:
+    </p><p>
+    <center>
+    <table border="0" cellpadding="4">
+    <tr>
+      <td rowspan="3">productOf(m,n) =</td>
+      <td>{ 0</td><td>if n = 0</td>
+   </tr>
+   <tr><td>{ productOf(2m, n/2)</td><td>if n&gt;0 and n is even</td>
+   </tr>
+   <tr><td>{ productOf(2m, (n-1)/2) + m</td><td>if n&gt;0 and n is odd</td>
+   </tr>
+   </table>
+   </center>
+   </p><p>
+   Use this as the basis for completing the following recursive
+   Java method, which has two recursive cases rather than only one.
+    </p><p>
+    <center>
+    <table border="1" cellpadding="1">
+    <tr><td><pre>
+/* Returns the product of the two given integers, which are assumed
+** to be nonnegative.  (Well, m can be negative!)
+*/
+public static int productOf(int m, int n) {
+
+
+}</pre>
+    </td></tr>
+    </table>
+    </center>
+  </li>
+</ol>
+
+</body>
+</html>

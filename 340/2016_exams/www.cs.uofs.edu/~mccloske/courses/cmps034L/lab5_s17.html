@@ -1,0 +1,168 @@
+<html>
+<head><title>CMPS 034L  Lab #5</title>
+</head>
+<body>
+<h2>CMPS 034L &nbsp; Spring 2017<br />
+Lab #5: "Functional" Methods and Strings
+</h2>
+
+</p><p>
+You are to work in groups of two, with one group of three in the
+case that an odd number of students are attending.
+
+</p><p>
+Go to the
+<a href="http://practiceit.cs.washington.edu" target="_blank">Practice-It 
+website</a>, log in, and click on the <b>Start Practicing</b> button.
+
+<hr>
+<h3>Activity #1: Practice-It Self-Checks and an Exercise from Chapter 3</h3>
+After logging in to Practice-It, click on the link labeled 
+<b>Building Java Programs, 4th Edition</b>
+and then on the link indicating <b>BJP Chapter 3</b>.
+
+</p><p>
+Do the following Self-Checks and, when finished, show your GTA
+(graduate teaching assistant) that you've completed all of them correctly. 
+(Go back to the web page that lists all the Chapter 3 Self-Checks and
+refresh it.
+Any that were answered correctly will be indicated on the page.)
+
+<ol>
+  <li><b>BJP4 Self-Check 3.8 (parameterMysteryTouch)</b>:
+      Show output produced by each call to the method <tt>touch()</tt>.
+      <br />
+      You must remember that the names of the formal parameters in a
+      method have nothing to do with the names of variables that are
+      used as actual parameters in a call to the method.
+      It's the order in which the parameters are listed (in both the
+      call and in the method heading) that determines the correspondence.
+      </p><p>
+      For example (as depicted in the figure below), 
+      the call <tt>touch(ear, elbow)</tt> in <tt>main()</tt> results in the
+      first actual parameter (<tt>ear</tt>, which has value "<tt>eye</tt>")
+      being transmitted to the first formal parameter (<tt>elbow</tt>) and 
+      the value of the second actual parameter (<tt>elbow</tt>, which has
+      value "<tt>head</tt>") being transmitted to the second formal parameter
+      (<tt>ear</tt>).  Thus, in response to this call, <tt>touch()</tt>
+      will begin executing with its formal parameter <tt>elbow</tt>
+      having value "<tt>eye</tt>" and its formal parameter <tt>ear</tt>
+      having value "<tt>head</tt>", which are <b>opposite</b> of the
+      values of the same-named variables in <tt>main()</tt>.
+      </p><p>
+      <center>
+      <table border="2" cellpadding="4">
+      <tr><td><pre>
+                   +-----+             +------+
+In main():     ear |"eye"|       elbow |"head"|
+                   +-----+             +------+
+                      |                   |
+                      |                   |
+                      |                   |
+                      v                   v
+                   +-----+            +------+
+In touch():  elbow |"eye"|        ear |"head"|
+                   +-----+            +------+</pre>
+      </td></tr>
+      </table>
+      </center>
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 3.15 (mathExpressions2)</b>:
+      Given is a sequence of Java statements that make use of 
+      functional methods in the 
+      <a href="http://download.oracle.com/javase/8/docs/api/java/lang/Math.html"
+      target="_blank">java.lang.Math</a> class.
+      The statements are to be executed one after the other.
+      Show the values of the variables where indicated.
+      </p><p>
+      Note that a statement such as <tt>Math.sqrt(count)</tt>
+      evaluates to some value, but because that value is not being assigned
+      to a variable (or being used in any other way, such as as a parameter
+      in a call to a method), it has no lasting effect.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 3.16 (min)</b>:
+      Make use of the <tt>Math.min()</tt> functional method in developing 
+      a functional method <tt>min()</tt> that returns the smallest of the 
+      <b>three</b> integer values passed to it via parameters.
+      <br />
+      <b>Hint:</b> A functional method call can itself be an 
+      actual parameter in a call to a method. 
+  </li>
+  </p><p>
+  <li><b>BJP4 Exercise 3.6 (largerAbsVal)</b>:
+      Make use of the <tt>Math.max()</tt> and <tt>Math.abs()</tt>
+      functional methods in developing a functional method 
+      <tt>largerAbsVal()</tt> that returns the larger of the 
+      absolute values of the two integers passed to it.
+      <b>Hint:</b> A functional method call can itself be an 
+      actual parameter in a call to a method. 
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 3.17 (countQuarters)</b>:
+      Develop a functional method <tt>countQuarters()</tt>.
+      Make use of the division and remainder operators.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 3.20 (stringExpressions2)</b>:
+      Evaluate each of the given expressions, which involve <tt>String</tt>
+      objects and calls to methods from the 
+      <a href="http://download.oracle.com/javase/8/docs/api/java/lang/String.html"
+      target="_blank">java.lang.String</a> class.
+      The methods used here are also explained 
+      <a href="http://www.cs.uofs.edu/~mccloske/courses/cmps134/string_methods.html"
+      target="_blank">here</a>.
+      </p><p>
+      Recall that the positions in a <tt>String</tt> are <b>numbered starting
+      at zero</b>, not one.
+      Also, the <tt>String</tt> returned by the <tt>substring()</tt> method
+      goes from the position indicated by the first parameter up to,
+      <b>but not including</b>, the position indicated by the second parameter.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 3.12 (Temperature-errors)</b>:
+      Make corrections to the given Java program, which makes use of
+      a functional method that translates a Fahrenheit temperature
+      value into the equivalent on the Celsius scale.
+      </p><p>
+      <b>Hint:</b> 
+      The most significant error is in the way that <tt>tempc</tt>
+      is being used.  In particular, assigning a value to 
+      formal parameter <tt>tempc</tt> inside the method <tt>ftoc()</tt>
+      <b>has no effect</b> upon the actual parameter from which it
+      got its initial value, which in this case happens to be
+      the same-named variable in <tt>main()</tt>.  Indeed, there is 
+      no point in passing <tt>tempc</tt> as a parameter to <tt>ftoc()</tt>. 
+  </li>
+</ol>
+
+
+</p><p>
+<hr>
+<h3>Activity #2: In which you submit work!</h3>
+
+</p><p>
+Read <b>BJP4 Exercise 3.8 (quadratic)</b>.
+Then download and complete the Java program 
+<a href="QuadraticRootsZZ.java">QuadraticRoots</a>.
+(Code is needed in each place where the comment 
+<tt>// STUB!!</tt> appears.)
+This program computes the roots of several quadratic (i.e., degree-2)
+polynomials.  You will recall that a root of a polynomial is a value
+such that, when it is substituted for x, the polynomial evaluates
+to zero.  (Such a value is also sometimes called a <b>zero</b> of
+the polynomial.)
+
+</p><p>
+If, after you have it working correctly, you have extra time,
+modify the code so that the reported roots are rounded to the
+nearest thousandth.  Use the <tt>System.out.printf()</tt> method.
+
+</p><p>
+When you have completed the program, use this
+<a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab5_dir">Submit/Review</a> 
+link to submit it.
+
+</body>
+</html>

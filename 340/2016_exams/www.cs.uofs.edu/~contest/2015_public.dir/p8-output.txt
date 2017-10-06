@@ -1,0 +1,17 @@
+     G  S  B  T
+NLD  4  8 10 22
+USA  9	4  2 15
+AUS  8	5  2 15
+RUS  1	4  2  7
+DEU  1	2  4  7
+FRA  1	2  4  7
+CAN  5	0  1  6
+LVA  1	2  2  5
+CHE  1	1  3  5
+GBR  0	2  2  4
+JPN  2	1  0  3
+SWE  0	2  0  2
+AUT  1	0  0  1
+DNK  0	1  0  1
+ITR  0	0  1  1
+NOR  0	0  1  1

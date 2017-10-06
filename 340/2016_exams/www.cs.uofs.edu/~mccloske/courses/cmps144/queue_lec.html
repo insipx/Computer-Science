@@ -1,0 +1,968 @@
+<html>
+<head>
+<title>Queues</title> 
+</head>
+<body>
+<H2><!--CMPS 144<br> -->
+    The Queue ADT/Collection Class </H2>
+
+<p>
+<b>Still Under Construction</b>
+
+<P>
+<A HREF="#concept">The Concept</A><br />
+<A HREF="#applications">Applications</A><br />
+<A HREF="#implementation_ary">Array-based 
+ Implementation/Data Representation</A> <br />
+<A HREF="#implementation_ref">Reference-based 
+ Implementation/Data Representation</A>
+
+<A Name="concept">
+<H3>The Concept</H3>
+<p>
+In Great Britain, what we in the USA refer to as a waiting line (as in a
+bank or grocery store) is usually called a <em>queue</em>.
+The person at the front of the queue receives some kind of service and
+then departs.  A person entering the queue does so at the rear.
+Thus, a queue exhibits a FIFO ("first-in-first-out") arrival/departure
+pattern.  Viewing it slightly differently, we can say that a queue is a
+sequence of items such that insertions occur at one end (called the
+<b>rear</b>) and deletions occur at the other end (called the <b>front</b>).
+The insert and delete operations are usually called <tt>enqueue</tt> and 
+<tt>dequeue</tt>, respectively (even though a good argument could be
+made for referring to them as <tt>insert</tt> and <tt>delete</tt>
+in order to maintain uniformity with other kinds of <em>container</em>
+data types).
+Often, observers of a queue are limited to detecting whether or not it is
+empty (or perhaps even its size) and, if not, to seeing the item at the front.
+
+<p>
+Queues are analogous to stacks in that there are two observer operations
+(one to determine if the queue is empty and the other to examine the item at
+the front) and two mutators (one for insertion and one for deletion).
+
+<p>
+Here is a Java interface for the queue ADT:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public interface Queue&lt;T&gt; {
+
+
+   /*  <<<<<  o b s e r v e r s  >>>>>  */
+   
+   /* pre:  none
+   ** post: returns true if the queue is empty, false otherwise
+   */
+   public boolean isEmpty();
+
+
+   /* pre:  !this.isEmpty()
+   ** post: returns item at front of the queue
+   */
+   public T frontOf();
+
+
+
+   /*  <<<<<  m u t a t o r s  >>>>>  */
+
+   /* pre:  none
+   ** post: item has been placed at the rear of the queue
+   */
+   public void enqueue( T item );
+
+
+   /* pre:  !this.isEmpty()
+   ** post: item at front of the queue has been removed 
+   */
+   public void dequeue();
+
+}</pre>
+</td></tr>
+</table>
+</center>
+
+<A Name="applications">
+<H3>Applications</H3>
+<p>
+<b>Use of queues by computer operating systems:</b>
+A computer operating system manages the resources available to the
+processes running on the machine.  Among these resources are the
+processor(s), space (memory), peripheral devices (e.g., printers, disk units).
+Often, a process will request a resource that is not currently available
+because it is already being used by some other process.
+When this happens, the request is recorded and, later, when the
+resource becomes available, the request is granted.
+Often (but not always), the order in which requests for a particular
+resource are granted corresponds to the order in which they were submitted.
+One way to achieve this is by associating with each resource a queue in
+which the as-yet-ungranted requests for it are stored.
+
+
+<p>
+<b>The uniform-cost single-source shortest paths problem:</b>
+A somewhat more interesting application of a queue is in solving
+this problem.  You are given as input a directed graph <tt>G</tt>
+and one of its vertices, <tt>v</tt>, called the source vertex. 
+(For convenience, we assume that the vertices of <tt>G</tt> are
+identified by the integers 0 through <tt>N-1</tt>, where <tt>N</tt>
+is the number of vertices in <tt>G</tt>.)
+The output is an array <tt>dist[0..N-1]</tt>, such that, for each
+<tt>z</tt>, <tt>0&lt;=z&lt;N</tt>, <tt>dist[z]</tt> equals <em>d(z)</em>,
+i.e., the length of a shortest path from vertex <tt>v</tt> to vertex
+<tt>z</tt>.
+(If there is no path from <tt>v</tt> to <tt>z</tt>, <tt>dist[z]</tt>
+should end up containing, say, <tt>-1</tt>.)
+Here, the length of a path is defined to be the number of edges appearing
+in it.
+(The term "uniform cost" refers to the fact that we assume that 
+traversing one edge costs the same as traversing any other.
+If edges are allowed to have different costs associated with them,
+the problem becomes more difficult to solve.)
+
+<!--
+<p>
+So, we have a graph <tt>G</tt> and a source vertex <tt>v</tt>.
+For any vertex <tt>z</tt>, let <em>d(z)</em> be the length of a
+shortest path from <tt>v</tt> to <tt>z</tt>, or <tt>-1</tt> if <tt>z</tt>
+is not reachable from <tt>v</tt>.
+The goal of the program, then, is to place values into the array
+<tt>dist[0..N-1]</tt> in order to establish <tt>dist[z] == </tt><em>d(z)</em>
+for all <tt>z</tt>.
+
+<p>
+Initially, the only vertex whose <tt>d</tt>-value we know is 
+<tt>v</tt> itself: the shortest path from <tt>v</tt> to itself
+is the "empty path" of length zero.  Hence, we initialize 
+<tt>dist[0..N-1]</tt> by filling it with <tt>-1</tt>'s, except for
+<tt>dist[v]</tt>, into which we place zero.
+In order to get things started, we place <tt>v</tt> into an otherwise 
+empty queue, <tt>q</tt>.  At this point, we consider <tt>v</tt> to
+have been <b>discovered</b>.  Indeed, at any point during execution, 
+the vertices on the queue are precisely those that have been discovered
+but whose edges we have not yet <b>explored</b>.
+
+<p>
+Following the initializations, there is a loop that iterates until the
+queue has become empty.  The purpose of each iteration is to take a
+vertex <tt>x</tt> off the (front of the) queue and to <b>explore</b>
+its outgoing edges in order to discover new (i.e., as yet undiscovered)
+vertices.  Suppose, for example, that we explore the edge going from
+<tt>x</tt> to <tt>y</tt>.  
+  If <tt>y</tt> was not previously discovered,
+it just has been!  Postponing for now the issue of how to tell whether a
+given vertex <tt>y</tt> was previously discovered, consider what 
+actions
+ought to be taken upon discovering <tt>y</tt>.  Well, 
+
+<p>
+Having discovered <tt>y</tt> by virtue of exploring from <tt>x</tt>, 
+we know that there is a path to <tt>y</tt> of length one more than 
+the length of a shortest path to <tt>x</tt>.  Hence, we fill 
+<tt>dist[y]</tt> with <tt>dist[x] + 1</tt>.
+In order to ensure that <tt>y</tt> will be explored
+We also place <tt>y</tt> into the queue so that it will be explored from later).
+
+
+<p>
+The key to why this works is that
+
+-->
+
+<p>
+The following is a Java method that solves the problem.
+Given a digraph and a "source" vertex <tt>v</tt> within that graph, it
+returns an array of <tt>int</tt>'s indicating each vertex's distance
+from <tt>v</tt>.
+The method assumes the existence of a class <tt>DiGraph</tt> having the
+instance methods that it invokes.
+The class <tt>QueueX</tt> can be any class that implements the <tt>Queue</tt>
+interface shown above.
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre><code>public static int[] shortestDistances( DiGraph graph, int v ) {
+
+   final int N = graph.numVertices();
+   int[] dist = new int[N];
+   for (int i = 0; i != N; i++) { dist[i] = -1; }
+   dist[v] = 0;
+   
+   Queue&lt;Integer&gt; q = new QueueX&lt;Integer&gt;();
+   q.enqueue(new Integer(v));   // insert source vertex onto the queue
+
+   while (!q.isEmpty()) {
+      /* grab a vertex off the queue */
+      int x = q.frontOf();   // Integer/int conversion is automatic in Java5.0
+      q.dequeue();
+
+      /* now explore from that vertex */
+      for (int y = 0; y != N; y++) {
+         if (dist[y] == -1  &&  graph.hasEdge(x,y)) { 
+            q.enqueue(new Integer(y)); // y is newly discovered!
+            dist[y] = dist[x] + 1;     // distance to y is one more than to x
+         }
+      }
+   }
+   return dist;
+}</code></pre>
+</td></tr>
+</table>
+</center>
+
+<p>
+As an exercise, apply the above algorithm to the graph given by the
+following adjacency matrix and using vertex 5 as the source:
+<pre>
+13 | 1 0 0 0 0 0 1 0 0 0  0  0  0  0
+12 | 0 0 0 0 0 0 0 0 0 0  0  1  0  0
+11 | 0 0 0 0 0 0 0 0 0 0  0  0  1  0
+10 | 0 0 0 0 0 0 0 0 0 0  0  0  0  0
+ 9 | 0 0 0 1 0 0 1 1 0 0  0  0  0  0
+ 8 | 1 1 1 0 1 1 0 0 0 0  0  0  0  0
+ 7 | 1 0 0 1 0 0 1 0 0 1  0  0  0  0
+ 6 | 0 0 0 0 0 0 0 1 0 1  0  0  0  1
+ 5 | 0 0 1 0 0 0 0 0 1 0  0  0  0  0
+ 4 | 0 0 0 1 0 0 0 0 1 0  0  0  0  0
+ 3 | 0 1 0 0 1 0 0 1 1 1  0  0  0  0
+ 2 | 0 1 0 0 0 1 0 0 1 0  0  0  0  0
+ 1 | 0 0 1 1 0 0 0 0 1 0  0  0  0  0
+ 0 | 0 0 0 0 0 0 0 1 1 0  0  0  0  1
+   +--------------------------------
+     0 1 2 3 4 5 6 7 8 9 10 11 12 13
+</pre>
+<p>
+The main concepts underlying the algorithm are those of
+<em>exploring from</em> a vertex and <em>discovering</em> a vertex.
+In doing the former, we sometimes achieve the latter.
+To explore a vertex, we examine its outgoing edges. 
+If the edge being examined goes to an undiscovered vertex,
+<!-- that we have not encountered before, -->
+that vertex has just been discovered!
+
+<p>
+Any vertex that gets discovered is later explored.  The key to why
+the algorithm works correctly is that
+<ol>
+  <li>Any vertex reachable from the source is eventually discovered.
+  </li>
+  <li>If vertices <em>u</em> and <em>v</em> are such that
+      <em>d(u) < d(v)</em>, then <em>u</em> will be discovered before 
+      <em>v</em>.  Consequently, <em>u</em> will be placed on the
+      queue before <em>v</em> is, and hence <em>u</em>'s outgoing edges
+      will be examined before <em>v</em>'s.
+  </li>
+  <li>If a vertex <em>x</em> has been discovered, then the value occupying
+      <tt>dist[x]</tt> is equal to <em>d(x)</em> (<em>x</em>'s distance
+      from the source vertex).
+  </li>
+  <li>Discovery of a vertex <em>y</em> via exploration from a vertex
+      <em>x</em> guarantees that <em>d(y) = d(x) + 1</em>.  From the
+      above two items, it follows that, upon discovering <em>y</em>, we are
+      justified in storing <tt>dist[x] + 1</tt> into <tt>dist[y]</tt>).
+      (In fact, we must do so in order to maintain the truth of the
+      previous item!)
+  </li>
+</ol>
+
+The key to achieving these properties is the use of the queue to
+"schedule" the explorations of vertices.
+
+
+<h3><b>Proof of queue-based algorithm for
+uniform cost single source shortest path problem</b> (optional)</h3>
+
+Throughout this section, we assume that <em>G</em> is a directed graph
+whose set of edges is <em>E</em>.
+
+<p>
+<b>Lemma 1:</b> 
+Let <em>(x,y)</em> be in <em>E</em>
+and suppose that there is a path in <em>G</em> from <em>v</em> to <em>x</em>.
+Then <em>d(y)</em> &lt;= <em>d(x)</em> + 1.
+<p>
+<b>Proof:</b> 
+Take any shortest path from <em>v</em> to <em>x</em> 
+(which, by definition of <em>d</em>, must
+have length <em>d(x)</em>) and extend it by the edge <em>(x,y)</em>.
+The resulting path from <em>v</em> to <em>y</em> has length
+<em>d(x)</em> + 1; hence, the shortest path from <em>v</em> to <em>y</em>
+is of that length or less, which is to say that 
+<em>d(y)</em> &le; <em>d(x)</em> + 1.
+
+<p>
+<b>Lemma 2:</b> Let <em>d(y) = k</em>, where <em>k &gt; 0</em>.
+<br>(a) Then there exists a vertex <em>x</em> for which 
+<em>d(x) = k-1</em> and <em>(x,y)</em> is in <em>E</em>.
+<br>(b) There is no vertex <em>x'</em> for which 
+<em>d(x') &lt; k-1</em> and <em>(x',y)</em> is in <em>E</em>.
+
+<p>
+<b>Proof:</b>  Part (b) follows from Lemma 1.  As for Part (a), let
+<em>P = w<sub>0</sub>, w<sub>1</sub>, ..., w<sub>k-1</sub>, w<sub>k</sub></em>
+(with <em>w<sub>0</sub> = v</em> and 
+<em>w<sub>k</sub> = y</em>) be a shortest path in <em>G</em> from
+<em>v</em> to <em>y</em>.
+Letting <em>x = w<sub>k-1</sub></em>, we have that 
+<em>(x,y)</em> is in <em>E</em>.
+<!--(or else the given path is not really a path). -->
+It remains to show that <em>d(x) = k-1</em>.  
+The prefix of <em>P</em> of length <em>k-1</em> is a path from 
+<em>v</em> to <em>x</em>; hence <em>d(x) &le; k-1</em>. 
+It remains only to show that <em>d(x)</em> &gt; k-2.
+Suppose, to the contrary, that <em>d(x) = j</em>, where <em>j &le; k-2</em>.
+But then, by Lemma 1, we would have <em>d(y) &le; j+1 &le; k-1</em>,
+contradicting the assumption <em>d(y) = k</em>.
+
+<p>
+<b>Lemma 3:</b> Following initialization of every element of <tt>dist[]</tt>
+to -1, every assignment to an element of that array changes its value from
+-1 to some natural number.
+<p>
+<b>Proof:</b> The proof is by induction on the number of assignments made to
+elements in <tt>dist[]</tt> following initialization.  The first one clearly
+changes dist[v] from -1 to 0.  Every subsequent assignment to an element
+of <tt>dist[]</tt> occurs inside the loop. 
+By inspection of the code, it is clear that assignment to an element cannot
+occur unless its value is -1.  Also, as the value it is given is one more
+than that of another array element (whose value, the induction hypothesis
+tells us, must be either -1 or a natural number, depending upon whether it
+was ever changed), that value must be a natural number.
+
+<p>
+<b>Corollary 3.1:</b> 
+Following initialization, no element of <tt>dist[]</tt> is the target
+of more than one assignment.
+
+<p>
+<b>Corollary 3.2:</b> 
+No vertex in G is discovered (i.e., placed on the queue) more than once.
+
+<p>
+<b>Proof:</b>
+Inspection of the algorithm indicates that each discovery of a vertex
+is immediately followed by an assignment to the corresponding element of
+<tt>dist[]</tt>.
+If a vertex were discovered more than once, the corresponding array
+element would be the target of more than one assignment, contradicting
+Corollary 3.1.
+
+<p>
+<b>Theorem:</b> 
+Let <em>y</em> be a vertex reachable from <em>v</em>, and let 
+<em>d(y) = k</em>.  Then
+<ol>
+  <li><em>y</em> will be discovered (i.e., placed on the queue) before
+       any vertex at distance greater than <em>k</em> is discovered, and
+  </li> 
+  <li>Upon discovery of <em>y</em>, the value placed into <tt>dist[y]</tt>
+       is <em>d(y)</em> (i.e., <em>k</em>),
+       and, thereafter, <tt>dist[y]</tt> will never change.
+  </li>
+</ol>
+
+<p>
+<b>Proof:</b>  The proof is by mathematical induction on <em>k</em>.
+
+<p>
+<b>Basis:</b> <em>k = 0</em>.
+As the only vertex at distance zero from <em>v</em> is <em>v</em> itself, 
+<em>y</em> must be <em>v</em>.  As <em>v</em> is the first vertex placed
+on the queue, (1) clearly holds.  Also, zero is placed into <tt>dist[v]</tt>
+prior to the loop, which, applying Corollary 3.1, gives us (2). 
+
+<p>
+<b>Induction Step:</b> Let <em>k > 0</em> and assume, as an 
+induction hypothesis, that the theorem holds for all <em>k' < k</em>.
+According to Lemma 2, among the vertices possessing an edge directed to 
+<em>y</em>, none is at distance less than <em>k-1</em> from <em>v</em>,
+but there is at least one at distance <em>k-1</em> from <em>v</em>.
+Let <em>x</em> be the first such vertex to be discovered.  
+By (2), <em>k-1</em> will be placed in <tt>dist[x]</tt> when <em>x</em> is
+discovered and will remain there until termination of the program.
+As vertices are explored in the same order as they are discovered (because the
+algorithm employs a queue for "scheduling" these events), every vertex explored
+before <em>x</em> (according to (1) of the induction hypothesis) is either 
+at distance less than <em>k-1</em> from <em>v</em> or at distance 
+<em>k-1</em> but having no edge to <em>y</em>.  By Lemma 2, none of the
+vertices at distance less than <em>k-1</em> have edges to <em>y</em>.
+Hence, <em>y</em> will be discovered during exploration of <em>x</em>.
+Because (by (2) of the induction hypothesis) the value of <tt>dist[x]</tt>
+is <em>k-1</em> at the time that <em>x</em> is explored, from
+inspection of the program it follows that <em>k-1 + 1</em> 
+(i.e., <em>k</em>) is placed into <tt>dist[y]</tt>, 
+satisfying the first part of (2).  The second part of (2) follows
+from Corollary 3.1.
+
+<p>
+As for (1), suppose, to the contrary, that some vertex <em>z</em> 
+satisfying <em>d(z) &gt; k</em> were discovered before <em>y</em>.
+By Lemma 2, such a discovery could only happen during exploration 
+of a vertex <em>u</em> satisfying <em>d(u) &ge; k</em>.  
+For <em>z</em> to be discovered before <em>y</em> would require that 
+<em>u</em> be explored before <em>y</em>, which, by the use of the
+queue for scheduling explorations, means that <em>z</em> would have been
+discovered before <em>y</em>.
+But this contradicts (1) of the induction hypothesis.
+
+
+<hr>
+
+<A Name="implementation_ary">
+<H3>Implementation/Data Representation</H3>
+
+<A Name="implementation_ary">
+<H4>Array-based</H4>
+
+<p>
+<b>Naive Approach</b><br>
+Following an approach similar to that used in developing an array-based
+representation of a stack, let us propose the following array-based
+representation scheme for queues: for a queue containing <tt>k</tt> items,
+store (representations of) those items, in order from front to rear, 
+in locations <tt>0, 1, ..., k-1</tt> of an array, which we will call
+<tt>contents</tt>.  (The values of array elements at locations <tt>k</tt>
+and beyond are irrelevant.)  Rather than referring to the number of items
+as <tt>k</tt>, we shall use the variable <tt>numItems</tt> (just as in
+the <tt>Stack</tt> class).
+
+<p>
+For example, a queue containing the characters '$', 'd', 'z', '#', 'A', 
+and '9' (written from front to rear) would be represented as follows:
+<pre>
+           0   1   2   3   4   5   6   7               N-1
+         +---+---+---+---+---+---+---+---+------------+---+
+contents |'$'|'d'|'z'|'#'|'A'|'9'|   |   |   ...      |   |
+         +---+---+---+---+---+---+---+---+------------+---+
+         +---+
+numItems | 6 |
+         +---+
+</pre>
+<p>
+Having proposed a representation scheme, let's determine whether it admits
+easy and efficient implementations of the standard queue operations.
+To implement <tt>frontOf()</tt> is easy:  we simply return the value 
+<tt>contents[0]</tt>.  As for <tt>enqueue()</tt>, it, too, is simple:
+we simply store the value to be inserted into <tt>contents[numItems]</tt>
+and then increment <tt>numItems</tt>.
+(This assumes that <tt>numItems < N</tt>.  Otherwise, before inserting
+the new value into the queue, we would have to create a new, longer array,
+copy the contents of <tt>contents</tt> into it, and then, via assignment
+statement, make <tt>contents</tt> refer to the new array.)
+
+<p>
+The <tt>dequeue()</tt> operation, however, does not work out so nicely.
+In order to delete the item at the front of the queue, while at the same
+time remaining faithful to our proposed representation scheme, we must
+shift all the elements in <tt>contents[1..numItems-1]</tt> one location to
+the "left" and then decrement <tt>numItems</tt>.  Shifting the elements
+could be accomplished as follows:
+<pre>
+     for (int i = 0; i != numItems-1; i = i+1)
+        { contents[i] = contents[i+1]; }  </pre>
+Notice that execution of this requires time proportional to the number of
+items on the queue.  In other words, it has <em>linear</em> running time.
+Intuition tells us that we ought to be able to do better.
+
+<p>
+What would happen if we stored the queue items in the array in order from
+rear to front, rather than front to rear?  That is, suppose that we kept
+the rear item at location zero, the one preceding it (on the queue) at
+location one, etc., etc., and the front item at location <tt>numItems-1</tt>.
+Then to perform a <tt>dequeue()</tt> would be easy:  simply decrement
+<tt>numItems</tt>.  But now <tt>enqueue()</tt> would require that we
+shift <tt>contents[0..numItems-1]</tt> to the "right" one position so as to
+make room (at location zero) for the value being inserted.  This requires
+linear time, of course.  So this variation doesn't help.  For similar
+reasons, storing the items at the "end" of the array, rather than at the
+beginning, is no better.
+
+<p>
+<b>WrapAround Approach</b><BR>
+It appears that the decision to keep all the items in the queue stored
+in the "leftmost" (or "rightmost") segment of <tt>contents[]</tt> may
+need to be relaxed in order to allow us to achieve a sub-linear
+running time for both <tt>enqueue()</tt> <b>and</b> <tt>dequeue()</tt>.
+So we propose the following:
+Let the segment of <tt>contents[]</tt> holding the items on
+the queue "float" through the array, and use <tt>int</tt> variables
+<tt>frontLoc</tt> and <tt>rearLoc</tt> to indicate the boundaries of
+that segment.  Suppose that <tt>frontLoc</tt> points directly to the
+element holding the item at the front of the queue and that <tt>rearLoc</tt>
+points to the element following the one holding the item at the rear.
+Taking the example from above, one possible representation would be
+
+<pre>
+           0    ....  44  45  46  47  48  49  50  51    ....  N-1
+         +---+-------+---+---+---+---+---+---+---+---+-------+---+
+contents |   |  .... |   |'$'|'d'|'z'|'#'|'A'|'9'|   |  .... |   |
+         +---+-------+---+---+---+---+---+---+---+---+-------+---+
+         +---+
+frontLoc | 45|
+         +---+
+         +---+
+ rearLoc | 51|
+         +---+
+</pre>
+
+<p>
+With this representation, an <tt>enqueue()</tt> requires only that 
+the new item be placed into <tt>contents[rearLoc]</tt> and that then
+<tt>rearLoc</tt> be incremented.
+To perform <tt>dequeue()</tt> requires
+only that <tt>frontLoc</tt> be incremented.  Thus, we have achieved
+simple and <b>constant-time</b> solutions for both of them.
+How about the other operations?  Well, <tt>frontOf()</tt> is
+implemented simply by returning the value in <tt>contents[frontLoc]</tt>.
+As for <tt>isEmpty()</tt>, it should be clear that the condition of a queue
+being empty corresponds, in our new representation scheme, to
+<tt>frontLoc == rearLoc</tt>.
+
+<p>
+We are not quite finished, however, because an interesting question
+arises:  what happens when <tt>rearLoc</tt> is <tt>N</tt> and an
+<tt>enqueue()</tt> occurs?  (This will occur the <tt>(N+1)</tt>-st time
+that <tt>enqueue()</tt> is invoked.)  One possible answer would be to
+extend the length of <tt>contents[]</tt>.  But, except in the unlikely
+event that <tt>frontLoc == 0</tt>, this is rather wasteful, because
+the array segment <tt>contents[0..frontLoc-1]</tt> is, logically speaking,
+empty.  In order to make use of it, we may imagine that location 0 comes
+immediately <em>after</em> location <tt>N-1</tt>.  In other words,
+we may view the array as being circular in layout, rather than linear.
+Mathematically, it means that our index calculations should be carried
+out "modulo N" &mdash;meaning that, when incrementing <tt>frontLoc</tt> or 
+<tt>rearLoc</tt> (in performing a dequeue or enqueue, respectively),
+we should increment and then take the remainder of division by N.
+In other words, if incrementing <tt>frontLoc</tt> (or <tt>rearLoc</tt>)
+results in its having value <tt>N</tt>, its value should be set to zero!
+
+<p>
+To illustrate this "wrap-around" scheme, the following is another
+possible representation of the queue from above, under the assumption
+that <tt>N = 75</tt>.
+<pre>
+           0   1   2      ....    70  71  72  73  74
+         +---+---+---+-----------+---+---+---+---+---+
+contents |'A'|'9'|   |    ....   |   |'$'|'d'|'z'|'#'|
+         +---+---+---+-----------+---+---+---+---+---+
+         +---+
+frontLoc | 71|
+         +---+
+         +---+
+ rearLoc | 2 |
+         +---+
+</pre>
+
+<p>
+Under this scheme, what do we do upon an attempt to insert (i.e., enqueue)
+if the array <tt>contents</tt> is "full"?
+For that matter, how do we determine whether or not it is full?
+It would seem that the condition <tt>frontLoc == rearLoc</tt> corresponds
+to the array being full, because that would indicate that the array segment
+<tt>contents[frontLoc..N-1]</tt> contains the items on the initial part of
+the queue and that <tt>contents[0..frontLoc-1]</tt> contains the remaining
+items.  But earlier ---when we considered how to tell whether or not the
+queue was empty--- we claimed that the same condition indicated an empty
+queue!  So, which is it?!  Well, it could be either one!
+That is, the condition <tt>frontLoc == rearLoc</tt> indicates that either
+the queue is empty <b>or</b> that the array holding its items is full.
+In order to determine which it is, more information is needed! 
+
+<P>
+A good way to provide the extra information is to introduce another
+instance variable, say <tt>numItems</tt>, whose value indicates the
+number of items currently occupying the queue.  To maintain its value,
+we simply increment it each time an item is enqueued and decrement it
+each time an item is dequeued.  In order to determine whether the queue
+is empty, it suffices to compare <tt>numItems</tt> against zero.
+Similarly, to determine whether <tt>contents[]</tt> is full, it suffices
+to compare <tt>numItems</tt> against <tt>contents.length</tt>.
+Employing this approach, one never need test for the condition
+<tt>frontLoc == rearLoc</tt>, as it will hold if and only if either
+<tt>numItems = 0</tt> or <tt>numItems = contents.length</tt>.
+
+<P>
+<em>Note:</em>
+An alternative approach for storing the extra information is to have an
+instance variable whose purpose is "to remember" which of the two
+mutation operations was applied most recently.
+If <tt>frontLoc == rearLoc</tt> and <tt>enqueue</tt> (respectively,
+<tt>dequeue</tt>) was most recently applied, the array is full
+(respectively, the queue is empty).
+<em>End of note.</em>
+
+<p>
+Having introduced <tt>numItems</tt>, we consider the relationship
+that exists between it, <tt>frontLoc</tt>, and <tt>rearLoc</tt>.
+Clearly, the value of <tt>rearLoc</tt> should always
+be precisely <tt>numItems</tt> positions "to the right" (using
+wraparound when necessary) of <tt>frontLoc</tt>.  That is, an
+invariant of our representation scheme is
+<p>
+<center><tt>rearLoc = (frontLoc + numItems) % contents.length</tt></center>
+
+<p>
+In other words, the value of <tt>rearLoc</tt> is calculable from the
+values of the other two.
+It follows that we don't need the variable <tt>rearLoc</tt>!
+In its place, we may use the right-hand side of the above equation.
+
+<p>
+Here is the complete implementation:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public class QueueViaArray&lt;T&gt; implements Queue&lt;T&gt; {
+
+   /*  P R I V A T E  */
+
+   private int frontLoc;
+   private int numItems;
+   private T[] contents;
+   private static final int DEFAULT_INIT_LEN = 8;
+
+
+   /*  <<<<<  c o n s t r u t o r s  >>>>>  */
+
+   public QueueViaArray() {
+      numItems = 0;  frontLoc = 0;;
+      contents = (T[])(new Object[ DEFAULT_INIT_LEN ]);
+   }
+
+   /*  <<<<<  o b s e r v e r s  >>>>>  */
+   
+   /* pre:  none
+   ** post: returns true if the queue is empty, false otherwise
+   */
+   public boolean isEmpty() { return numItems == 0; }
+
+
+   /* pre:  !this.isEmpty()
+   ** post: returns item at front of the queue
+   */
+   public T frontOf() { return contents[frontLoc]; }
+
+
+
+   /*  <<<<<  m u t a t o r s  >>>>>  */
+
+   /* pre:  none
+   ** post: queue has been modified by placing item at its rear
+   */
+   public void enqueue( T item )  {
+
+      // if contents[] is full, double its length
+      if (numItems == contents.length)  {
+         int newLength = 2 * contents.length;
+         T[] temp = (T[])(new Object[newLength]);
+         for (int i=0; i != numItems; i = i+1;
+            { temp[i] = contents[(frontLoc + i) % contents.length]; }
+         contents = temp;
+         frontLoc = 0;
+      }
+
+      contents[(frontLoc + numItems) % contents.length] = item;
+      numItems = numItems + 1;
+   }
+
+
+   /* pre:  !this.isEmpty()
+   ** post: item at front of the queue has been removed 
+   */
+   public void dequeue() {
+
+      frontLoc = (frontLoc + 1) % contents.length;
+      numItems = numItems - 1;
+
+      if (contents.length >= 2 * DEFAULT_INIT_LEN)  {
+         if (numItems < contents.length / 4) {
+            // if contents[] is less than 1/4-th full, halve its length
+            int newLength = contents.length / 2;
+            T[] temp = (T[])(new Object[newLength]);
+            for (int i=0; i != numItems; i = i+1)
+               { temp[i] = contents[(frontLoc + i) % contents.length]; }
+            contents = temp;
+            frontLoc = 0;
+         }
+      }
+   }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+<A Name="implementation_ref">
+<H3>Reference-Based Implementation/Data Representation</H3>
+
+One of the less attractive features of using an array as the basis
+upon which to represent a queue is that, when the queue's size becomes
+"incompatible" with the size of the array (i.e., when either the
+queue has become too large to fit into the array or it has become
+so small that a significant portion of the array is unused), 
+it becomes necessary/wise to create a new, differently-sized array
+and to copy all the relevant data into it from the old array.
+In order to ensure that this "size-change" operation does not
+dominate the time required to process queue operations,
+the new array's size should be significantly different from the old one.
+(In our implementation, the new array is made to be either double
+or half the size of the old one.)
+<p>
+Hence, although the abstract queue structure is growing and shrinking
+in small increments, the underlying structure used to represent it is
+growing and shrinking (occasionally) in large increments.
+
+<p>
+A concrete representation that makes use of references, rather than an
+array, can conveniently grow and shrink incrementally, just like the
+abstract structure that it represents.
+
+<p>
+The idea is to make use of a (generic) class that provides one-directional
+linking capabilities.  We shall call this class <em>Link1&lt;T&gt;</em>.
+An object of this class can be depicted as
+
+<pre>
+                           +---+---+
+                           | x | x-+----> points to a Link1&lt;T&gt; object
+                           +-+-+---+
+                             |
+                             |
+                             v
+                         points to an object of type T</pre>
+
+That is, a <em>Link1&lt;T&gt;</em> object contains a reference to an
+object (of type <tt>T</tt>) and a reference to
+another object of type <em>Link1&lt;T&gt;</em>.  An implementation of
+this class is as follows:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public class Link1&lt;T&gt; {
+
+   protected T item;
+   protected Link1&lt;T&gt; next;
+
+   public Link1(T item, Link1&lt;T&gt; next)
+      { this.item = item;  this.next = next; }
+
+   public Link1(T item) { this(item, null); }
+
+   public Link1() { this(null, null); }
+
+   public T getItem() { return this.item; }
+   public Link1&lt;T&gt; getNext() { return this.next; }
+
+   public void setItem(T newItem) { this.item = newItem; }
+   public void setNext(T newNext) { this.next = newNext; }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Using <tt>Link1</tt> as a basis, we can represent the queue containing
+COW, CAT, DOG, BUG, and ANT objects as follows:
+<pre>
++-----+---+     +-----+---+     +-----+---+     +-----+---+     +-----+---+
+| COW | x-+---->| CAT | x-+---->| DOG | x-+---->| BUG | x-+---->| ANT | x-+--!
++-----+---+     +-----+---+     +-----+---+     +-----+---+     +-----+---+
+     ^                                                              ^
+     |                                                              |
+     |                                                              |
+   +-+-+                                                          +-+-+
+   | x |                                                          | x |
+   +---+                                                          +---+
+   front                                                          rear</pre>
+
+<p>
+For simplicity, we have simply written each <em>Link1</em> object's animal
+name inside (the box representing) its first field.
+In reality, each such field is a reference (i.e., pointer) to the
+corresponding animal object.
+
+<p>
+Following this approach, here is the queue class that we derive:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/*
+** Java class for queues; data representation is based upon use of the
+** Link1 class.  A queue is represented by references front and rear,
+** which point to the first and last, respectively, "nodes" in a chain
+** of Link1 objects.  
+*/
+
+import Link1;
+
+class QueueViaLink1&lt;T&gt; implements Queue&lt;T&gt; {
+ 
+   Link1&lt;T&gt; front;  // points to front of queue
+   Link1&lt;T&gt; rear;   // points to rear of queue
+
+
+   /*  c o n s t r u c t o r  */
+
+   /* pre:  none
+   ** post: isEmpty()
+   */
+   public QueueViaLink1() { 
+      front = null;
+      rear = null;
+   }
+
+
+   /*   o b s e r v e r s  */
+
+   /* pre: none
+   ** post: returns true iff the queue is empty
+   */
+   public boolean isEmpty() { return front == null; }
+
+
+   /* pre:  !isEmpty()
+   ** post: object returned is that at front of the queue
+   */
+   public T frontOf() { return front.getItem(); }
+
+
+   /*   m u t a t o r s  */
+
+
+   /* pre: !isEmpty()
+   ** post: queue has been modified so that item at front has been removed
+   */
+   public void dequeue()  { front = front.getNext(); }
+
+
+   /* pre:  none
+   ** post: item will have been placed at the rear of 'this'
+   */
+   public void enqueue(T item) { 
+
+      Link1&lt;T&gt; newRear = new Link1&lt;T&gt;(item, null);
+      if (isEmpty())
+         { front = newRear; }
+      else
+         { rear.setNext(newRear); }
+      rear = newRear;
+   }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+<p>
+A slightly different approach, which is more clever but not really any
+better, is to use a <em>circular</em> chain of <em>Link1</em> objects.
+Here, the class implementing queues needs only a single variable,
+which is a reference to the <em>Link1</em> object corresponding to 
+the rear of the queue.  As the chain is circular, this object includes
+a reference to the front of the queue, so there is no need for the
+queue class to include an instance variable pointing to the front of the
+queue.  Here is a picture depicting the situation:
+<pre>
+     +---------<--------------------------<---------------------<-------+
+     |                                                                  |
+     v                                                                  |
++-----+---+     +-----+---+     +-----+---+     +-----+---+     +-----+-+-+
+| COW | x-+---->| CAT | x-+---->| DOG | x-+---->| BUG | x-+---->| ANT | x |
++-----+---+     +-----+---+     +-----+---+     +-----+---+     +-----+---+
+                                                                    ^
+                                                                    |
+                                                                    |
+                                                                  +-+-+
+                                                                  | x |
+                                                                  +---+
+                                                                  rear</pre>
+
+Translating this approach to Java, we get
+
+</p><p>
+<center>
+<table border="1" cellpadding="8">
+<tr><td>
+<pre>/*
+** Java class for queues; data representation is based upon use of the
+** Link1 class.  A queue is represented by a circular chain of Link1
+** objects.  A single pointer to rear node is sufficient to do every
+** operation in constant time.
+*/
+
+import Link1;
+
+class QueueViaLink1Circ&lt;T&gt; implements Queue&lt;T&gt; {
+ 
+   Link1&lt;T&gt; rear;   // points to rear of queue
+
+
+   /*  c o n s t r u c t o r  */
+
+   /* pre:  none
+   ** post: isEmpty()
+   */
+   public QueueViaLink1Circ() { rear = null; }
+
+
+   /*   o b s e r v e r s  */
+
+   /* pre: none
+   ** post: returns true iff queue is empty
+   */
+   public boolean isEmpty() { return rear == null; }
+
+
+   /* pre:  !isEmpty()
+   ** post: object returned is that at front of the queue
+   */
+   public T frontOf() { return (rear.getNext()).getItem(); }
+
+
+   /*   m u t a t o r s  */
+
+
+   /* pre: !isEmpty()
+   ** post: queue has been modified so that item at front has been removed
+   */
+   public void dequeue()  {
+
+      Link1&lt;T&gt; front = rear.getNext();
+      if (rear == front)    // queue has only one item
+         { rear = null; }
+      else                  // queue has two or more items
+         { rear.setNext(front.getNext()); }
+   }
+
+
+   /* pre:  none
+   ** post: item will have been placed at the rear of the queue
+   */
+   public void enqueue(Object item) { 
+
+      Link1&lt;T&gt; newNode = new Link1&lt;T&gt;(item, null);
+      if ( isEmpty() )  {
+         newNode.setNext(newNode);
+      }
+      else  {
+         newNode.setNext( rear.getNext() ); 
+         rear.setNext(newNode);
+      }
+      rear = newNode;
+   }
+
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</body>
+</html>

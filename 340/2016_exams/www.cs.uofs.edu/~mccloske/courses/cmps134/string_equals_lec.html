@@ -1,0 +1,532 @@
+<html>
+<head><title>Java Programming Exercise: Comparing Strings for Equality</title>
+</head>
+<body>
+<h2>CMPS 134<br />
+    Java Programming Exercise: Comparing Strings for Equality
+</h2>
+
+
+</p><p>
+Here we consider the problem of determining whether or not two
+<tt>String</tt> objects are equal.
+
+</p><p>
+The <tt>java.lang.String</tt> class includes a method
+(namely, <tt>equals()</tt>) by which to test whether two instances of
+the <tt>String</tt> class are equal to each other, meaning that they 
+represent the same sequence of <b><tt>char</tt></b>acters.
+
+</p><p>
+As an academic exercise, let's develop our own method to do the same job.
+Here is the specification:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns true if the two specified Strings are equal, false otherwise
+*/
+public static boolean strEqual(String s1, String s2)</pre>
+</td></tr>
+</table>
+</center>
+<center><b>Version 1</b></center>
+
+</p><p>
+What, exactly, does it mean for two Strings to be equal?  
+Well, in the first place it requires that their lengths be equal.
+If that condition is not met, we can immediately conclude that
+the strings are not equal.  If, on the other hand, their lengths 
+are equal, more work is necessary to arrive at an answer.
+This suggests a solution of the following form:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns true if the two specified Strings are equal, false otherwise
+*/
+public static boolean strEqual(String s1, String s2)
+{
+   boolean result;
+   if (s1.length() != s2.length()) {
+      result = false;
+   }
+   else {
+      // s1 and s2 have same length, so do whatever is necessary to 
+      // determine if they are equal and assign appropriate value to 'result'
+   }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+<center><b>Version 2</b></center>
+
+</p><p>
+Notice that the code above conforms to a standard template that is often
+used in <em>functional</em> methods (i.e., methods that return a value),
+which is to have a local variable, often called <tt>result</tt>, the
+purpose of which is to have the method's return-value assigned to it 
+somewhere in the body of the method, and then, in the last line of the
+body of the method, to have its value <b><tt>return</tt></b>ed.
+Such a variable could reasonably be called the method's 
+<em>result-variable</em>.
+
+</p><p>
+Using <tt>result</tt> as the name of a method's result-variable is
+appropriate, given that that name is suggestive of the variable's 
+purpose, but often one can devise a name that is more descriptive
+of the variable's meaning, and hence is a better choice.
+
+</p><p>
+Now we focus on the case when the two Strings have the same length.
+As an example, consider the (unequal) Strings <b><tt>CATTLE</tt></b> 
+and <b><tt>CASTLE</tt></b>.  
+(Attach no significance to the fact that the examples used here make use
+of upper case letters; it is simply to make them stand out more.)
+
+</p><p>
+What makes them unequal?<br />
+<b>Answer:</b> They disagree in the 2nd position, where one has a 
+<b><tt>T</tt></b> and the other has an <b><tt>S</tt></b>.
+(Recall that we number the positions in a String beginning with zero,
+not one.)
+
+</p><p>
+The Strings <b><tt>GARBAGE</tt></b> and <b><tt>BABBLES</tt></b> are unequal
+as well, as they disagree in several positions (0th, 2nd, 4th, 5th, and 6th).
+
+</p><p>
+The point is that if two Strings of equal length disagree in 
+one or more positions, they are unequal.
+If they disagree nowhere, they are equal.
+
+</p><p>
+Based upon this analysis, we design our method to have a loop that 
+iterates through the positions of the two Strings, comparing the 
+pair of characters occurring at each position.
+If and when a disagreement is observed, we "remember" it by setting the
+method's return-variable to <b>false</b>.
+If no disagreement is found, the loop will terminate having found
+the two Strings to be in agreement at every position.
+
+</p><p>
+Given this approach, it would seem reasonable to call the method's 
+return-variable <tt>equalSoFar</tt>, suggesting that its value 
+corresponds to the truth-value of the statement "no disagreement
+(between the two Strings) has been observed so far".
+
+</p><p>
+If no disagreement is ever found, <b>false</b> will never be assigned
+to <tt>equalSoFAr</tt>, and so the value assigned to it originally 
+will be returned.  Ah, so that means that we need to initialize it to
+<b>true</b>.  Here is our completed solution: 
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns true if the two specified Strings are equal, false otherwise
+*/
+public static boolean strEqual(String s1, String s2)
+{
+   boolean equalSoFar = true; 
+
+   if (s1.length() != s2.length()) {
+      equalSoFar = false;
+   }
+   else {
+      for (int i=0; i != s1.length(); i = i+1) {
+         if (s1.charAt(i) != s2.charAt(i)) {
+            equalSoFar = false;
+         }
+      }
+   }
+   return equalSoFar;
+}</pre>
+</td></tr>
+</table>
+</center>
+<center><b>Version 3</b></center>
+
+</p><p>
+Notice that the <b>if</b> statement inside the <b>for-loop</b> has no
+<b>else</b> part.  A common mistake made by novice programmers
+when asked to develop this method is to include an <b>else</b> part 
+and to put in it the assignment <tt>equalSoFar = true</tt>.  
+Why is this a mistake?
+<b>Answer:</b> Because then, in the case that <tt>s1</tt> and <tt>s2</tt>
+have equal lengths, the final value of <tt>equalSoFar</tt> depends 
+exclusively upon the last iteration of the loop, during which it will be
+set to either <tt>true</tt> or <tt>false</tt> according to whether or not 
+the characters in the last position of <tt>s1</tt> and <tt>s2</tt> are 
+the same.  
+Hence, the result returned by the method will not answer the question of
+whether or not <tt>s1</tt> and <tt>s2</tt> are equal but rather whether
+or not their lengths are the same and their last characters are equal.
+(For example, the Strings <b><tt>LARK</tt></b> and <b><tt>BUNK</tt></b>
+would be reported to be equal, simply because they have the same length
+and end with the same character!)
+
+</p><p>
+Ahh, but this bit of reasoning should make it clear to the reader,
+if it wasn't clear already, that <tt>equalSoFar</tt> should <b>never</b>
+have its value changed from <b>false</b> to <b>true</b>.  Indeed, its
+value will become <b>false</b> only if some disagreement between
+<tt>s1</tt> and <tt>s2</tt> is observed, and changing its value back to
+<b>true</b> would be, in effect, "forgetting" that such an observation 
+had been made, possibly leading to reporting a "false positive", as in
+the <tt>LARK</tt> vs. <tt>BUNK</tt> example just mentioned.
+
+</p><p>
+So if the value of <tt>equalSoFar</tt> is to remain <b>false</b> if
+ever it assumes that value (leading eventually to the method returning
+that value), then the method ought to cease its work as soon as such an
+event occurs!  In other words, if a disagreement between <tt>s1</tt> and
+<tt>s2</tt> is observed in some particular position, there is no point
+in comparing the characters that occur in subsequent positions of the
+Strings and hence the loop should terminate without iterating again.
+
+</p><p>
+To effect this change, we augment the loop guard by adding
+<tt>equalSoFar</tt> as a new conjunct.  (Note that the value of the
+expression <tt>equalSoFar</tt> is necessarily equal to the value of
+the expression <tt>equalSoFar == true</tt>, so there is no point in
+using the latter, which is unnecessarily verbose.
+Many novice programmers cannot seem to absorb this fact, however.)  
+Here is the updated method, with the modification in 
+<font color="red">red</font>:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns true if the two specified Strings are equal, false otherwise
+*/
+public static boolean strEqual(String s1, String s2) {
+
+   boolean equalSoFar = true;
+
+   if (s1.length() != s2.length()) { 
+      equalSoFar = false;
+   }
+   else {
+      for (int i=0; i != s1.length() <font color="red">&amp;&amp; equalSoFar</font>; i = i+1)
+      {
+         if (s1.charAt(i) != s2.charAt(i)) { 
+            equalSoFar = false;
+         }
+      }
+   }
+   return equalSoFar;
+}</pre>
+</td></tr>
+</table>
+</center>
+<center><b>Version 4</b></center>
+
+</p><p>
+But what appears in Version 4 is an improper use of a <b>for-loop</b>,
+at least according to some "programming purists".
+Why?  Because, they would say, a <b>for-loop</b>'s guard should depend 
+entirely upon the loop control variable's value in relation to the 
+range of values over which it is intended to iterate.
+Here the guard depends not only upon that range but also upon the value of
+<tt>equalSoFar</tt>.
+The more appropriate loop construct to use in this case is the
+<b>while-loop</b>.  Making this change, we get
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns true if the two specified Strings are equal, false otherwise
+*/
+public static boolean strEqual(String s1, String s2) {
+
+   boolean equalSoFar = true;
+
+   if (s1.length() != s2.length()) { 
+      equalSoFar = false;
+   }
+   else {
+      <font color="red">int i = 0;
+      while</font> (i != s1.length() &amp;&amp; equalSoFar)
+      {
+         if (s1.charAt(i) != s2.charAt(i)) { 
+            equalSoFar = false;
+         }
+         <font color="red">i = i+1;</font>
+      }
+   }
+   return equalSoFar;
+}</pre>
+</td></tr>
+</table>
+</center>
+<center><b>Version 5</b></center>
+
+</p><p>
+Observe that in Version 5 the loop will terminate either because 
+<tt>equalSoFar</tt> has been set to <tt>false</tt> (because a 
+disagreement has been found) or <tt>i</tt>'s value has reached 
+<tt>s1.length()</tt>, or both.
+By introducing an <b>else-part</b> and placing the increment of <tt>i</tt>
+into it, we make it impossible for both of these conditions to hold:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns true if the two specified Strings are equal, false otherwise
+*/
+public static boolean strEqual(String s1, String s2) {
+
+   boolean equalSoFar = true;
+
+   if (s1.length() != s2.length()) { 
+      equalSoFar = false;
+   }
+   else {
+      int i = 0;
+      while (i != s1.length() &amp;&amp; equalSoFar)
+      {
+         if (s1.charAt(i) != s2.charAt(i)) 
+            { equalSoFar = false; }
+         <font color="red">else
+            { i = i+1; }</font>
+      }
+   }
+   return equalSoFar;
+}</pre>
+</td></tr>
+</table>
+</center>
+<center><b>Version 6</b></center>
+
+</p><p>
+The modification made to arrive at Version 6 is useful only in that it
+is going to help us transition more smoothly to a superior Version 7.
+Specifically, we observe that the loop in Version 6 will terminate with 
+<tt>i == s1.length()</tt> if, and only if, <tt>s1</tt> and <tt>s2</tt>
+are equal.  (After all, had a disagreement been found, the loop would have
+terminated with <tt>i</tt> indicating the position of that disagreement,
+somewhere in the range <tt>0..s1.length()-1</tt>.)
+
+</p><p>
+This observation leads us to realize that we don't need to make use
+of <tt>equalSoFar</tt> inside the loop, nor do we need the 
+<b>if</b>-statement there.  Rather, all the loop needs to
+do is to keep incrementing <tt>i</tt> until either <tt>i</tt> "falls off" 
+the ends of the Strings (by becoming equal to <tt>s1.length()</tt>)
+or a disagreement is found between the characters at position <tt>i</tt>
+of <tt>s1</tt> and <tt>s2</tt>.
+When the loop terminates, we can determine which of those two
+events occurred by comparing <tt>i</tt> with <tt>s1.length()</tt>
+and assigning the result to <tt>equalSoFar</tt>.
+Based upon these observations, we refine the method to obtain Version 7:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns true if the two specified Strings are equal, false otherwise
+*/
+public static boolean strEqual(String s1, String s2) {
+
+   boolean equalSoFar = true;
+
+   if (s1.length() != s2.length()) { 
+      equalSoFar = false;
+   }
+   else {
+      int i = 0;
+      <font color="red">while (i != s1.length()  &amp;&amp;  s1.charAt(i) == s2.charAt(i)) {
+         i = i+1;
+      }
+      //assertion: i == s1.length iff s1 and s2 are equal
+      equalSoFar = (i == s1.length());</font>
+   }
+   return equalSoFar;
+}</pre>
+</td></tr>
+</table>
+</center>
+<center><b>Version 7</b></center>
+
+</p><p>
+Novice programmers tend to be confused by an assignment such as
+<tt>equalSoFar = (i == s1.length())</tt>, but there is really nothing 
+complicated about it.  As with any assignment statement, the expression
+on the right-hand side is evaluated and the result is stored in the
+variable indicated on the left-hand side.  Here the expression and the
+variable are of type <tt>boolean</tt>, that's all.  Indeed, this 
+statement is equivalent to the following (verbose in comparison)
+<b>if-else</b> statement:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>if (i == s1.length())
+   { equalSoFar = true; }
+else
+   { equalSoFar = false; }</pre>
+</table>
+</center>
+
+</p><p>
+Another point of concern in the code of Version 7 is the loop guard.
+Won't its evaluation in the case that <tt>i == s1.length()</tt> result
+in a <tt>StringIndexOutOfBounds</tt> exception being thrown
+as a result of trying to access the character at (nonexistent)
+position <tt>s1.length()</tt> of <tt>s1</tt>?  
+<b>Answer: No</b>.  Why not?  Because in Java, conjunctions are evaluated
+in a "short circuit" fashion.  That is, when a conjunction <tt>P &amp;&amp; Q</tt>
+is evaluated, <tt>P</tt> is evaluated first and, if found to be <b>false</b>,
+<tt>Q</tt> is ignored.  In other words, <tt>Q</tt> will be evaluated only after
+&mdash;and if&mdash; <tt>P</tt> has been found to be <b>true</b>.
+
+</p><p>
+Now, the convention of making use of a result-variable is just that, a 
+convention and not a requirement.  Some programmers would argue that the
+next version of our method, which is like Version 7 but with
+<tt>equalSoFar</tt> (the result-variable) removed, is an improvement.
+
+<a name="Version8"></a>
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns true if the two specified Strings are equal, false otherwise
+*/
+public static boolean strEqual(String s1, String s2) {
+
+   if (s1.length() != s2.length()) { 
+      return false;
+   }
+   else {
+      int i = 0;
+      while (i != s1.length()  &amp;&amp;  s1.charAt(i) == s2.charAt(i)) {
+         i = i+1;
+      }
+      //assertion: i == s1.length iff s1 and s2 are equal
+      return i == s1.length();
+   }
+}</pre>
+</td></tr>
+</table>
+</center>
+<center><b>Version 8</b></center>
+
+</p><p>
+There are some purists, however, who would criticize Version 8 
+for failing to adhere to the <b>single entry &ndash; single exit</b>
+doctrine of <b>structured programming</b>, which says that every 
+"block" of code (which includes any loop-statement, if-statement,
+or method body) should have a single entry point (at the "top") 
+and a single exit point (at the "bottom"). 
+Version 8 of our method has two exit points corresponding 
+to the pair of <tt>return</tt> statements.
+
+</p><p>
+An even more egregious violation of this doctrine can be observed in
+Version 9:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Returns true if the two specified Strings are equal, false otherwise
+*/
+public static boolean strEqual(String s1, String s2) {
+
+   if (s1.length() != s2.length()) { return false; }
+
+   // If execution reaches here, the lengths of s1 and s2 are the same.
+   for (int i=0; i != s1.length(); i = i+1)
+   {
+      if (s1.charAt(i) != s2.charAt(i)) { return false; }
+   }
+   // If execution reaches here, no disagreements were found.
+   return true;
+}</pre>
+</td></tr>
+</table>
+</center>
+<center><b>Version 9</b></center>
+
+</p><p>
+In this author's opinion, Version 8 is acceptable, but Version 9
+goes too far in its failure to adhere to the Structured Programming
+doctrine.
+
+
+<hr>
+<h3>Appendix</h3>
+</p><p>
+Here we consider whether or not it is really necessary to treat the 
+case in which the lengths of <tt>s1</tt> and <tt>s2</tt> are
+different separately from the case in which their lengths are equal.
+How would our Version 8 method behave if, say, we got rid of the
+<b>if-statement</b>, keeping only the <b>while-loop</b> nested in its
+<b>else-branch</b>?  The method would be as follows:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<font color="red">WARNING: This solution is incorrect</font><br />
+<pre>/* Returns true if the two specified Strings are equal, false otherwise
+*/
+public static boolean strEqual(String s1, String s2) {
+
+   int i = 0;
+   while (i != s1.length()  &amp;&amp;  s1.charAt(i) == s2.charAt(i)) {
+      i = i+1;
+   }
+   //assertion: i == s1.length iff s1 and s2 are equal
+   return i == s1.length();
+}</pre>
+</td></tr>
+</table>
+</center>
+<center><b>Version 8'</b></center>
+
+</p><p>
+Consider what would happen if the caller passed the Strings 
+<b><tt>CAT</tt></b> and <b><tt>CATTLE</tt></b>, respectively,
+to the Version 8' method.
+After three loop iterations, the loop would terminate having found
+no disagreements, due to the fact that <b><tt>CAT</tt></b>
+(the value of <tt>s1</tt>) is a prefix of <b><tt>CATTLE</tt></b>
+(the value of <tt>s2</tt>).  Then the method would return
+the value <tt>true</tt>, incorrectly informing the caller that
+<b><tt>CAT</tt></b> and <b><tt>CATTLE</tt></b> are equal!  
+In effect, the method would yield a "false positive".
+
+</p><p>
+Now consider what would happen if the caller passed <b><tt>CATTLE</tt></b> 
+and <b><tt>CAT</tt></b> to the method, respectively.  
+On the 4th iteration of the loop (after the first three iterations 
+had found no disagreements in postions 0..2), an attempt would be made 
+to compare the characters at position 3 of the two Strings.
+<b>But there is no position 3</b> in <b><tt>CAT</tt></b>, and so an 
+exception will be thrown, causing the program to abort.
+The general rule is this: if <tt>s</tt> is of type <tt>String</tt>,
+the method call <tt>s.charAt(E)</tt> will result in an
+<tt>IndexOutOfBoundsException</tt> being thrown if <tt>E</tt>'s value
+is not in the range <tt>0..s.length()-1</tt>.  This makes perfect sense,
+as the only positions that exist within a String are the ones in that
+range.
+
+</p><p>
+Our conclusion is that yes, the case in which the lengths of 
+<tt>s1</tt> and <tt>s2</tt> are different needs to be handled
+separately from the other case.
+
+
+</body>
+</html>

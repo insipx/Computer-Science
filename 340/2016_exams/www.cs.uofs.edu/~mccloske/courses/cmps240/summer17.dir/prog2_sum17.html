@@ -1,0 +1,120 @@
+<html>
+<head>
+  <title>CMPS 240  Summer 2017  Programming Assignment #2</title>
+</head>
+<body>
+<h2>
+  CMPS 240  Summer 2017<br />
+  Programming Assignment #2: Freeing Java Arrays from the Index Range 
+   Straitjacket
+</h2>
+<p>
+For this assignment, you are to develop a Java class whose instances
+have the same functionality as arrays, except that their index ranges
+are specified, at construction time, by the client.
+(In Java, every array's index range begins at zero.)
+
+<p>
+For the purposes of this description, this class shall be called 
+<tt>Array0</tt>.  (Suggestions for a better name are welcomed!)
+Here is a skeleton:
+<hr>
+<pre>   public class Array0 {
+
+
+      //*************  C o n s t r u c t o r  *************
+
+      /** Establishes the lower bound of the array's index range and its
+      **  length.
+      **  pre: length >= 0
+      */
+      public Array0(int indexLow, int length) { ... }
+
+      
+      //*************  O b s e r v e r s  *************
+
+
+      /** Returns the lower bound of the array's index range.
+      */
+      public int indexLowerBound() { ... }
+
+      /** Returns the upper bound of the array's index range.
+      */
+      public int indexUpperBound() { ... }
+
+      /** Returns the array's length.
+      */
+      public int length() { ... }
+
+      /** Returns the item at the specified position of the array.
+      **  pre: indexLowerBound() <= k <= indexUpperBound()
+      */
+      public Object get(int k) { ... }
+
+
+      //*************  M u t a t o r  *************
+
+      /** Places the specified item at the specified position of the array.
+      **  pre: indexLowerBound() <= k <= indexUpperBound()
+      */
+      public void put(int k, Object obj) { ... }
+
+   }   </pre>
+<hr>
+
+</p><p>
+An <tt>IndexOutOfBoundsException</tt> (see the package <tt>java.lang</tt>)
+should be thrown in case a pre-condition is not met.
+
+</p><p>
+As an improvement, the class should be made to be generic so that the
+client can choose what type of values are to occupy any particular array
+that it (i.e., the client) creates.  Modifying the above skeleton to
+"generify" it, we get
+
+<hr>
+<pre>   public class Array0&lt;T&gt; {
+
+      //*************  C o n s t r u c t o r  *************
+
+      /** Establishes the lower bound of the array's index range and its
+      **  length.
+      **  pre: length >= 0
+      */
+      public Array0(int indexLow, int length) { ... }
+
+      
+      //*************  O b s e r v e r s  *************
+
+
+      /** Returns the lower bound of the array's index range.
+      */
+      public int indexLowerBound() { ... }
+
+      /** Returns the upper bound of the array's index range.
+      */
+      public int indexUpperBound() { ... }
+
+      /** Returns the array's length.
+      */
+      public int length() { ... }
+
+      /** Returns the item at the specified position of the array.
+      **  pre: indexLowerBound() <= k <= indexUpperBound()
+      */
+      public T get(int k) { ... }
+
+
+      //*************  M u t a t o r  *************
+
+      /** Places the specified item at the specified position of the array.
+      **  pre: indexLowerBound() <= k <= indexUpperBound()
+      */
+      public void put(int k, T obj) { ... }
+
+   }   </pre>
+<hr>
+
+
+</body>
+</html>

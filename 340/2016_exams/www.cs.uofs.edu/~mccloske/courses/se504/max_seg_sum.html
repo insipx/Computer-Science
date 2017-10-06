@@ -1,0 +1,345 @@
+<html>
+<head>
+  <title>Development of a program to solve the Maximum Segment Sum Problem
+  </title>
+</head>
+<body>
+<h2>
+  SE 504<br />
+  Development of a program to solve the Maximum Segment Sum Problem
+</h2>
+
+<p>
+Let A be an integer array.  Define, for p and q satisfying 0&le;p&le;q&le;#A,
+<p><center>
+                 S.p.q = (+i | p&le;i&lt;q : A.i)
+</center>
+<p>
+That is, S.p.q is the sum of the elements in the array segment A[p..q).
+<p>
+Among the elementary observations we can make regarding S are these:
+<p>
+(1) S.k.k = 0 for all k (0&le;k&le;#A) because A[k..k) is an empty segment,
+<br />
+(2) S.k.(k+1) = A.k for all k (0&le;k&lt;#A) because A[k,k+1) is a one-element
+                    segment containing only A.k
+<br />
+(3) S.k.n = S.k.m + S.m.n for all k,m,n satisfying 0&le;k&le;m&le;n&le;#A,
+   because
+<p><center>
+the sum of the elements in A[k..n) &nbsp; = &nbsp;
+   the sum of the elements in A[k..m) + 
+   the sum of the elements in A[m..n).
+</center>
+
+<p>
+As a special case of (3), take m=n-1:
+<p>
+(3') S.k.n = S.k.(n-1) + S.(n-1).n
+<p>
+which, by (2), gives us
+<p>
+(3'') S.k.n = S.k.(n-1) + A.(n-1)
+
+<p>
+In the Maximum Segment Sum problem, A is given as input and the output to be
+produced is the maximum among all the S.p.q's.  That is, the program's
+specification is
+<pre><code>    |[con A : array of int;
+      var z : int;
+      { true }
+      max_seg_sum
+      {Q : z = (MAX p,q | 0&le;p&le;q&le;#A : S.p.q) }
+    ]| </code></pre>
+
+<p>
+As an example, consider the integer array 
+<pre>
+          0   1   2   3   4   5   6   7   8   9  10  11  12
+        +---+---+---+---+---+---+---+---+---+---+---+---+---+
+      A | 2 |-1 |-2 | 3 | 2 |-2 | 3 |-1 | 1 |-6 | 4 |-1 | 3 | 
+        +---+---+---+---+---+---+---+---+---+---+---+---+---+ </pre>
+
+<p>
+The maximum among all segment sums is 6, which is achieved by each
+of the following segments: A[3..6], A[3..8], A[3..12], and A[10..12].
+
+<p>
+Let us attempt to derive a solution by employing the techniques from the
+course.  The first observation we can make is that we are unlikely to
+find a solution that doesn't involve a loop (or recursion, or some device
+for iteration).  Among our heuristics for developing loops, the one
+that seems to be applicable is <b>replace a constant (in the postcondition)
+by a variable</b>.  The two constants appearing in the postcondition are
+<tt>0</tt> and <tt>#A</tt>.  Suppose that we replace <tt>#A</tt> 
+by a "fresh" variable <tt>r</tt> in order
+to obtain as a candidate for a loop invariant the following:
+<p><center><tt>
+          I : z = (MAX p,q | 0&le;p&le;q&le;r : S.p.q)
+</tt></center>
+<p>
+As a loop guard, we would choose <tt>B : r &ne; #A</tt>,
+because then we obviously have
+<tt>[I &and; &not;B ==> Q]</tt>
+(as required by proof obligation (iii) with respect to loops).
+
+<p>
+Indeed, one could rewrite the postcondition as
+<p><center><tt>
+         z = (MAX p,q | 0&le;p&le;q&le;r : S.p.q) &nbsp; &and; &nbsp; r = #A
+</tt></center>
+<p>
+which strengthens the original postcondition insofar as it requires the fresh
+variable <tt>r</tt> to satisfy <tt>r = #A</tt>.
+Employing the <b>delete a conjunct</b> heuristic,
+we get I as the suggested loop invariant and &not;(r = #A) (i.e., r &ne; #A)
+as the suggested loop guard.
+
+<p>
+Our program skeleton is now
+
+<pre><code>    |[con A : array of int;
+      var z : int;
+      var r : int;
+      { true }
+      r, z := ?, ?;
+      { loop invariant I : z = (MAX p,q | 0&le;p&le;q&le;r : S.p.q) }
+      do r &ne; #A  ---> 
+         r, z := ?, ?
+      od
+      {Q : z = (MAX p,q | 0&le;p&le;q&le;#A : S.p.q) }
+    ]| </code></pre>
+
+<p>
+In order to satisfy proof obligation (i), <tt>r</tt> and <tt>z</tt>
+must be initialized so as to truthify <tt>I</tt>.
+The easiest way to do this is to set <tt>r</tt> to <tt>0</tt>, thereby making
+the range in the quantifier correspond to <tt>p=q=0</tt>.
+Applying the one-point rule (and using our above observation that
+S.k.k = 0 for all k), we obtain that <tt>z</tt> should be set to zero, too.
+
+<p>
+Now consider the loop body.  Given that we have decided to initialize
+<tt>r</tt> to zero and that the loop guard indicates termination when
+<tt>r</tt> becomes <tt>#A</tt>, the most obvious way to modify <tt>r</tt>
+inside the loop is by incrementing it.  Let's assume, for the moment
+at least, that this is what we shall do.
+
+<p>
+As the expression needed on the right-hand side of the assignment command
+for incrementing <tt>r</tt> does not involve any other variables, we make
+it the last command within the loop body and place the command(s) that
+update z before it.  (This allows us to focus upon z exclusively without
+requiring that <tt>r</tt> be updated simultaneously.)
+The refined (and annotated) program is as follows:
+<pre><code>    |[con A : array of int;
+      var z : int;
+      var r : int;
+      { true }
+      r, z := 0, 0;
+      { invariant I : z = (MAX p,q | 0&le;p&le;q&le;r : S.p.q) }
+      do r &ne; #A  --->
+         {I  &and;  r &ne; #A}
+         z := E;
+         { I(r:=r+1), i.e., wp.(r:=r+1).I }
+         r := r + 1;
+         {I}
+      od
+      {Q : z = (MAX p,q | 0&le;p&le;q&le;#A : S.p.q) }
+    ]| </code></pre>
+
+<p>
+The loop body has been annotated with pre- and post-conditions in accord with
+proof obligation (ii) on the "loop checklist".  The intermediate assertion
+<tt>I(r:=r+1)</tt> is motivated by the Hoare Triple Law of Catenation
+(which says that <tt>{P} S;T {Q}</tt> follows from 
+<tt>{P} S {R} &and; {R} T {Q})</tt> and the fact that this
+assertion corresponds to <tt>wp.(r:=r+1).I</tt>,
+making it the weakest predicate <tt>R</tt> satisfying <tt>{R} r:=r+1 {I}</tt>.
+
+<p>
+We have reduced our problem to that of finding E to truthify the Hoare triple
+<p><center><tt>
+                  {I &and; r&ne;#A} z := E { I(r:=r+1) }
+</tt></center>
+
+<p>
+Let's try to calculate <tt>E</tt> using proof obligation (ii):
+<pre>
+    Assume I &and; r&ne;#A.
+
+    wp.(z:=E).I(r:=r+1)
+
+ =    < wp assignment law >
+
+    (I(r:=r+1))(z:=E)
+
+ =    < defn of I >
+
+    ((z = (MAX p,q | 0&le;p&le;q&le;r : S.p.q))(r:=r+1))(z:=E)
+
+ =    < textual substitution >
+
+    (z = (MAX p,q | 0&le;p&le;q&le;r+1 : S.p.q))(z:=E)
+
+ =    < textual substitution >
+
+    E = (MAX p,q | 0&le;p&le;q&le;r+1 : S.p.q) 
+
+ =    < rewrite range so as to "split off" terms in which q=r+1 >
+
+    E = (MAX p,q | 0&le;p&le;q&le;r &or; 0&le;p&le;q=r+1 : S.p.q) 
+
+ =    < range split (8.16) or (8.18) >
+
+    E = (MAX p,q | 0&le;p&le;q&le;r : S.p.q)  max  (MAX p,q | 0&le;p&le;q=r+1 : S.p.q)
+
+ =    < (Gries 8.14) One-point rule (Technically, need to use 
+        (8.20) Nesting, then (8.14), and then (8.20) "in reverse".)  >
+
+    E = (MAX p,q | 0&le;p&le;q&le;r : S.p.q)  max  (MAX p | 0&le;p&le;r+1 : S.p.(r+1))
+
+ =    < assumption I : z = (MAX ... )  >
+
+    E = z  max  (MAX p | 0&le;p&le;r+1 : S.p.(r+1))
+</pre>
+<p>
+At this point, we employ the <b>strengthening the invariant</b> heuristic by
+introducing a fresh variable <tt>y</tt> and including as a new conjunct of the
+invariant the following:
+<p><center><tt>
+               y = (MAX p | 0&le;p&le;r+1 : S.p.(r+1))
+</tt></center>
+
+</p><p>
+However, there is a problem with doing this.  In order for this to hold
+upon completion of the final loop iteration (at which point <tt>r = #A</tt>),
+it would have to be the case that
+<tt>y = (MAX p | 0&le;p&le;#A+1 : S.p.(#A+1))</tt>.
+But <tt>S</tt> is not defined when its second argument exceeds <tt>#A</tt>,
+so it will not be possible for <tt>y</tt>'s value to satisfy this condition
+(unless we insert code to cause <tt>y</tt>'s value to become "undefined",
+which seems rather silly).  
+
+</p><p>
+Is there any way to circumvent this obstacle?  Well, suppose that we
+decide to augment the invariant with the new conjunct
+<p><center><tt>
+             I<sub>2</sub>:  y = (MAX p | 0&le;p&le;r : S.p.r)
+</tt></center>
+
+<p>
+instead.  (This is exactly what we suggested above as a new conjunct, except
+that we have replaced the two occurrences of <tt>r+1</tt> with <tt>r</tt>.)
+Then we arrange the code in the body of the loop so that the value of
+<tt>y</tt> is updated to satisfy <tt>I<sub>2</sub>(r:=r+1)</tt> 
+<em>before</em> the assignment to <tt>z</tt>.
+Note that our choice of <tt>z max y</tt> as the right-hand side of the
+assignment to <tt>z</tt> is correct as long as <tt>I<sub>2</sub>(r:=r+1)</tt>
+holds <em>at the time that that assignment is performed</em> 
+(regardless of whether it was true at the beginning of the
+current loop iteration).
+Our program now looks like this:
+<pre><code>    |[con A : array of int;
+      var z,y : int;
+      var r : int;
+      {#A &ge; 0}
+      r, z, y := 0, 0, ?;
+      { invariant I : I<sub>1</sub> &and; I<sub>2</sub>, where
+           I<sub>1</sub> : z = (MAX p,q | 0&le;p&le;q&le;r : S.p.q)
+           I<sub>2</sub> : y = (MAX p | 0&le;p&le;r : S.p.r)
+      }
+      do r &ne; #A  --->
+         { I &and; r&ne;#A }
+         y := F;
+         { I<sub>1</sub> &and; I<sub>2</sub>(r:=r+1) }
+         z := z max y;
+         { (I<sub>1</sub> &and; I<sub>2</sub>)(r:=r+1), i.e., I(r:=r+1) }
+         r := r + 1;
+         { I }
+      od
+      {Q : z = (MAX p,q | 0&le;p&le;q&le;#A : S.p.q) }
+    ]| </code></pre>
+
+<p> 
+It remains to figure out how to fill in the right-hand sides of the two
+assignments to <tt>y</tt>.  Given that <tt>r</tt> is initialized to zero,
+the initial value of <tt>y</tt> must satisfy <tt>I<sub>2</sub>(r:=0)</tt>,
+which requires that <tt>y = 0</tt>.
+Hence, we initialize <tt>y</tt> to zero.
+As for the assignment inside the loop, we calculate <tt>F</tt> in the
+context of trying to prove
+<tt>{I &and; r&ne;#A} y := F { I<sub>1</sub> &and; I<sub>2</sub>(r:=r+1) }</tt>:
+
+<pre>
+    wp.(y:=F).(I<sub>1</sub> &and; I<sub>2</sub>(r:=r+1))
+
+ =     < wp assignment law >
+
+    (I<sub>1</sub> &and; I<sub>2</sub>(r:=r+1))(y:=F)
+
+ =     < textual substitution distributes over operators >
+
+    I<sub>1</sub>(y:=F) &and; (I<sub>2</sub>(r:=r+1))(y:=F)
+
+ =     < defn of I<sub>1</sub>, I<sub>2</sub> and textual substitution >
+
+    z = (MAX p,q | 0&le;p&le;q&le;r : S.p.q)  &and;  F = (MAX p | 0&le;p&le;r+1 : S.p.(r+1))
+
+ =     < 1st conjunct is assumption I<sub>1</sub>; (3.39) >
+
+    F = (MAX p | 0&le;p&le;r+1 : S.p.(r+1))
+
+ =     < split off term (8.23); range is non-empty due to assumption 0&le;r >
+
+    F = (MAX p | 0&le;p&le;r : S.p.(r+1))  max  S.(r+1).(r+1)
+
+ =     < from observation (1), S.(r+1).(r+1) = 0 >
+
+    F = (MAX p | 0&le;p&le;r : S.p.(r+1))  max  0
+
+ =     < from observation (3''), S.p.(r+1) = S.p.r + A.r >
+
+    F = (MAX p | 0&le;p&le;r : S.p.r + A.r)  max  0
+
+ =     < provided R is non-empty and there are no free occurrences
+         of x in V, (MAX x | R : U + V) = (MAX x | R : U) + V      >
+
+    F = ((MAX p | 0&le;p&le;r : S.p.r) + A.r)  max  0
+
+ =     < assumption I<sub>2</sub> >
+
+    F = (y + A.r) max 0 </pre> 
+
+<p>
+Now we have a completed program.  In order to prove obligations (iv) and (v),
+we need to include 0&le;r&le;#A as another conjunct of our loop invariant.
+(Indeed, we cheated a little above in that we twice used 0&le;r as an
+assumption, as though it had already been included in the invariant.)
+<pre><code>    |[con A : array of int;
+      var z,y : int;
+      var r : int;
+      {#A &ge; 0}
+      r, z, y := 0, 0, 0;
+      { invariant I : I<sub>1</sub> &and; I<sub>2</sub> &and; I<sub>3</sub>, where
+           I<sub>1</sub> : z = (MAX p,q | 0&le;p&le;q&le;r : S.p.q)
+           I<sub>2</sub> : y = (MAX p | 0&le;p&le;r : S.p.r)
+           I<sub>3</sub> : 0&le;r&le;#A
+      }
+      { bound function t : #A - r }
+      do r &ne; #A  --->
+         { I<sub>1</sub> &and; I<sub>2</sub> &and; I<sub>3</sub> &and; r&ne;#A }
+         { I<sub>1</sub> &and; I<sub>2</sub> &and; I<sub>3</sub>(r:=r+1) }
+         y := (y + A.r) max 0;
+         { I<sub>1</sub> &and; I<sub>2</sub>(r:=r+1) &and; I<sub>3</sub>(r:=r+1) }
+         z := z max y;
+         { I(r:=r+1) }
+         r := r + 1;
+         { I }
+      od
+      {Q : z = (MAX p,q | 0&le;p&le;q&le;#A : S.p.q) }
+    ]|
+</code></pre>
+
+</body>
+</html>

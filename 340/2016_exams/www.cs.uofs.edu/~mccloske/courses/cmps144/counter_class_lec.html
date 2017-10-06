@@ -1,0 +1,562 @@
+<html>
+<head><title>CMPS 144/240 &nbsp; Development of Counter Class hierarchy</title>
+</head>
+
+<body>
+<H2>CMPS 144/240<br>
+Development of a <em>Counter</em> Class Hierarchy
+</H2>
+
+<p>
+Suppose that you want to develop a class to model the behavior of a
+<em>counter</em>, i.e., an object with an integer value that you can
+increment, decrement, or set to a desired value.
+You might produce something like the following:
+
+</p><p>
+<center>
+<table border="2" cellpadding="1">
+<tr><td>
+<pre><code>public class Counter {
+
+   /*   i n s t a n c e  v a r i a b l e s   */
+
+   private int cntrVal;  // current value of the counter
+
+
+   /*   c o n s t r u c t o r s   */
+
+   /** pre:  true
+   *   post: this.countVal() == init
+   */
+   public Counter(int init) { cntrVal = init; }
+
+   /** pre:  true
+   *   post: this.countVal() == 0
+   */
+   public Counter() { this(0); }
+
+
+   /*  o b s e r v e r s   */
+
+   public int countVal() { return cntrVal; }
+
+
+   /*   m u t a t o r s   */
+
+   /** pre:  let c == this.countVal()
+   *   post: this.countVal() == c + 1
+   */
+   public void increment() { cntrVal = cntrVal + 1; }
+
+
+   /** pre:  let c == this.countVal()
+   *   post: this.countVal() == c - 1
+   */
+   public void decrement() { cntrVal = cntrVal - 1; }
+
+
+   /* pre:  true
+   *  post: this.countVal() == newVal
+   */
+   public void setTo(int newVal) { cntrVal = newVal; }
+}</code></pre>
+</td></tr>
+</table>
+</center>
+
+<p>
+Suppose that, after the class <em>Counter</em> has "gone into production"
+(and hence, by your company's rules, may not be modified), a need arises
+for a "reset-able" counter, i.e., one having a <tt>reset</tt> operation
+by which it can be made to return to its original value.
+We could develop a new class for this, making use of <em>Counter</em>
+as follows:
+
+</p><p>
+<center>
+<table border="2" cellpadding="1">
+<tr><td>
+<pre><code>public class ResetableCounterViaComposition {
+
+   /*   i n s t a n c e  v a r i a b l e s   */
+
+   private Counter c;   
+   private int initVal;
+
+
+   /*   c o n s t r u c t o r s   */
+
+   public ResetableCounterViaComposition(int initCntrVal)) {
+      initVal = initCntrVal;
+      c = new Counter(initCntrVal);
+   }
+
+   public ResetableCounterViaComposition() { this(0); }
+
+
+   /*  o b s e r v e r s   */
+
+   public int countVal() { return c.countVal(); }
+
+
+   /*   m u t a t o r s   */
+
+   public void increment() { c.increment(); }
+   public void decrement() { c.decrement(); }
+   public void setTo(int newVal) { c.setTo(newVal); }
+   <b>public void reset() { c.setTo(initVal); }</b>
+}</code></pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Notice that each instance of <em>ResetableCounterViaComposition</em> contains,
+as one of its fields, a reference to an instance of <em>Counter</em>.
+When an instance of a class <em>A</em> has as fields (references to)
+instances of classes <em>A<sub>1</sub></em>, <em>A<sub>2</sub></em>, ...,
+<em>A<sub>k</sub></em>, we say that <em>A</em> is built via
+<b>composition</b> from <em>A<sub>1</sub></em>, <em>A<sub>2</sub></em>,
+..., <em>A<sub>k</sub></em>.  The use of composition indicates that
+there is a <b>has-a</b> relationship between, in this case, instances
+of <em>A</em> and instances of each of the <em>A<sub>i</sub></em>'s.
+
+<p>
+To illustrate what's going on, suppose that an instance of
+<em>ResetableCounterViaComposition</em> currently has value <em>7</em>
+(i.e., is in a state such that an invocation of <tt>countVal()</tt>
+yields <em>7</em>) and had <em>0</em> as its initial value.
+Then the situation is as depicted below, in which
+there is an instance of <em>ResetableCounterViaComposition</em> (on the left)
+whose <tt>initVal</tt> field contains zero and whose <tt>c</tt> field
+contains a reference to an instance of <em>Counter</em> (on the right)
+whose <tt>cntrVal</tt> field has value <em>7</em>:
+
+<center>
+<table border="2" cellpadding="4">
+<tr><td>
+<pre>
+     +-----------------+
+     |         +---+   |
+     | initVal | 0 |   |              +------------------+
+     |         +---+   |              |          +---+   |
+     |       c | *-|---+------------->|  cntrVal | 7 |   |
+     |         +---+   |              |          +---+   |
+     +-----------------+              +------------------+
+        instance of                        instance of
+ResetableCounterViaComposition               Counter
+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+With the exception of <tt>reset()</tt>, every method in
+<em>ResetableCounterViaComposition</em> is implemented by
+invoking the corresponding method on its instance variable <tt>c</tt>.
+Thus, even though each such method is "trivial" to implement, the
+fact remains that we have to supply the code for it.
+
+</p><p>
+If, instead of viewing a reset-able counter as an object that 
+contains a (plain) counter object as one of its components, 
+we view it as a <em>special kind</em> of counter object, we
+obtain a more elegant result.
+The idea of an object of a class <em>B</em> being a special kind of object
+of another class <em>A</em> is supported in Java (and other object-oriented
+languages) by the mechanism of <b>inheritance</b>, or <b>subclassing</b>,
+or <b>extension</b>.
+Here we would define <em>B</em> to <b>inherit from</b> (or be a
+<b>subclass of</b>, or <b>extend</b>) <em>A</em>.
+Using this mechanism, we extend <em>Counter</em> to arrive at a
+subclass modeling a reset-able counter:
+
+</p><p>
+<center>
+<table border="2" cellpadding="1">
+<tr><td>
+<pre><code>public class ResetableCounter extends Counter {
+
+   /*   i n s t a n c e  v a r i a b l e s   */
+
+   private int initVal;   // initial value
+
+
+   /*   c o n s t r u c t o r s   */
+
+   public ResetableCounter(int initCntrVal) {
+      super(initCntrVal);     // calls constructor of the superclass
+      initVal = initCntrVal;
+   }
+
+   public ResetableCounter() { this(0); }  // call to other constructor 
+
+
+   /*   n e w   m u t a t o r s   */
+
+   public void reset() { setTo(initVal); }
+}</code></pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+When a class <em>B</em> is built by extending a class <em>A</em>, we
+say that <em>B</em> is a <b>subclass</b> of <em>A</em> or, equivalently,
+that <em>A</em> is a <b>superclass</b> of <em>B</em>.
+(We also say that <em>B</em> is derived from <em>A</em> via
+extension.)
+More concretely, what this means is that each instance of <em>B</em> 
+has all the fields (and methods) that an instance of <em>A</em> has, 
+plus whatever fields (and methods) are declared in <em>B</em>.
+<!-- , and that the methods applicable
+    to instances of <em>B</em> include all those applicable to instances
+    of <em>A</em>, plus whatever (public) methods are declared in <em>A</em>.
+-->
+We say that instances of <em>B</em> <b>inherit</b> the attributes/features
+(i.e., fields and methods) of class <em>A</em>.  In particular, no mention
+needs to be made inside <em>B</em> of the attributes it inherits from
+<em>A</em>.
+
+</p><p>
+As an aside, we note that there are rules governing the accessibility of
+inherited attributes.  For example, an instance variable (or method)
+declared to be <tt><b>private</b></tt> in class <em>A</em> cannot be referred
+to inside its child class <em>B</em>.
+In case we want an attribute (e.g., instance variable or method) to be
+accessible within its subclasses, we would use the access modifier
+<tt><b>protected</b></tt> rather than <tt><b>private</b></tt>.
+(This also allows access by all the classes in the same package.)
+
+</p><p>
+In extending a class <em>A</em> to derive a subclass <em>B</em>,
+typically what we do is to introduce instance variables and
+methods that do not exist in <em>A</em>.  In our example, 
+<em>ResetableCounter</em> introduces an instance variable <tt>initVal</tt>
+and a method <tt>reset()</tt>.  (Also, as is typically the case, one or
+more constructors are included in a subclass, because among the actions
+taken to initialize a new instance of the subclass is to initialize the
+values of the newly-introduced instance variables.)
+
+</p><p>
+Although there was no need for it in <em>ResetableCounter</em>, a subclass
+may <b>override</b> one or more methods of its parent.  If <em>B</em>
+is a subclass of <em>A</em>, and <em>B</em> contains a method <tt>f()</tt>
+having the same name and signature (number and types of parameters)
+as some method in <em>A</em>, we say that
+the method <tt>f()</tt> in <em>B</em> overrides the like-named method in
+<em>A</em>.  What this means is that, if <tt>b</tt> is (a reference to)
+an instance of <em>B</em>, the invocation <tt>b.f()</tt> will be of 
+<em>B</em>'s method, not <em>A</em>'s.
+
+</p><p>
+Let us explore the issues of inheritance further by supposing that 
+a need arises for a counter having specified minimum and
+maximum values and the property that its value "rolls over" (like an
+old-fashioned mechanical automobile odometer) when it is incremented
+beyond its maximum value or decremented beyond its minimum value.
+
+</p><p>
+We could use either composition or inheritance to build this class.
+Using inheritance makes more sense, however, because the kind of counter
+we are describing is just a special case of the kinds of counters
+we considered above.
+
+</p><p>
+<center>
+<table border="2" cellpadding="4">
+<tr><td>
+<pre><code>public class RollOverCounter extends ResetableCounter {
+
+   /*   n e w   i n s t a n c e   v a r i a b l e s   */
+
+   private int minVal, maxVal; 
+
+
+   /*   c o n s t r u c t o r s   */
+
+   /** pre:  min <= init <= max
+   *   post: this.countVal() == init  &&
+   *         this.minimumVal() == min  &&  this.maximumVal() = max
+   */
+   public RollOverCounter(int init, int min, int max) {
+      super(init);     // explicit invocation of parent's constructor
+      minVal = min;
+      maxVal = max;
+   }
+
+   /** pre:  min <= max
+   *   post: this.countVal() == min  &&
+   *         this.minimumVal() == min  &&  this.maximumVal() = max
+   */
+   public RollOverCounter(int min, int max) { this(min, min, max); }
+
+
+   /*   n e w   o b s e r v e r s   */
+
+   public int minimumVal() { return minVal; }
+   public int maximumVal() { return maxVal; }
+
+
+   /*   o v e r r i d i n g   m u t a t o r s   */
+
+   /** pre:  let c = this.countVal()
+   *   post: this.countVal() == f(c), where
+   *         f(k): if k == this.maximumVal() then this.minimumVal() else k+1
+   */
+   public void increment() {
+      if (countVal() == maximumVal())
+         { setTo(minVal); }
+      else
+         { super.increment(); }  // invocation of superclass's overridden method
+   }
+
+
+   /** pre:  let c = this.countVal()
+   *   post: this.countVal() == g(c), where
+   *         g(k): if k == this.minimumVal() then this.maximumVal() else k-1
+   */
+   public void decrement() {
+      if (countVal() == minimumVal())
+         { setTo(maxVal); }
+      else
+         { super.decrement(); }  // invocation of superclass's overridden method
+   }   
+
+}</code></pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Notice that, within the class <em>RollOverCounter</em>, we have supplied
+new versions of the methods <tt>increment()</tt> and <tt>decrement()</tt>,
+rather than inheriting those methods from its parent,
+<em>ResetableCounter</em> (which itself inherited them from its parent,
+<em>Counter</em>).  That is, <em>RolloverCounter</em> overrides its
+parent's methods <tt>increment()</tt> and <tt>decrement()</tt>.
+Note, however, as this example illustrates, that an overriding
+method in a subclass may invoke the method it overrides
+by inserting "<tt>super.</tt>" before its name.
+It is common for an overridden method to be invoked within the
+method that overrides it; this makes sense, because often the overriding
+method carries out the same actions as the overridden method, plus 
+additional actions.
+
+</p><p>
+Now suppose we want a "stopping" counter that is similar to a "rollover"
+counter except that, where the latter would have rolled over, the former
+doesn't change.  Suppose that we also want a "warning" counter that throws
+an exception in the same situations where the other two kinds of counters 
+would have rolled over and stopped, respectively.
+
+</p><p>
+All three kinds of counters that were just mentioned ---rollover,
+stopping, and warning counters--- are similar; hence, rather than
+making the three corresponding classes be virtual copies of one another,
+we "factor out" their commonality and make an abstract class from which
+all three can be derived via extension.  Because what is common about
+these three kinds of counters is that their values are bounded from below
+and above, we call this new class <em>BoundedCounter</em>:
+
+</p><p>
+<center>
+<table border="2">
+<tr><td>
+<pre><code>public <b>abstract</b> class BoundedCounter extends ResetableCounter {
+
+   /*   n e w   i n s t a n c e   v a r i a b l e s   */
+   private int minVal, maxVal; 
+
+   /*   n e w   c l a s s - w i d e   c o n s t a n t s   */
+   protected static final int defaultMinVal = 0;
+   protected static final int defaultMaxVal = 999;
+
+
+   /*   c o n s t r u c t o r s   */
+
+   /** pre:  min <= init <= max
+   *   post: this.countVal() == init  &&
+   *         this.minimumVal() == min  &&  this.maximumVal() = max
+   */
+   public BoundedCounter(int init, int min, int max) {
+      super(init);
+      minVal = min;
+      maxVal = max;
+   }
+
+   /** pre:  min <= max
+   *  post: this.countVal() == min  &&
+   *        this.minimumVal() == min  &&  this.maximumVal() = max
+   */
+   public BoundedCounter(int min, int max) { this(min, min, max); }
+
+   /** pre:  true
+   *   post: this.countVal() == defaultMinVal  &&
+   *        this.minimumVal() == defaultMinVal  &&
+   *        this.maximumVal() == defaultMaxVal
+   */
+   public BoundedCounter() { this(defaultMinVal, defaultMaxVal); }
+
+
+   /*   n e w   o b s e r v e r s   */
+
+   public int minimumVal() { return minVal; }
+   public int maximumVal() { return maxVal; }
+
+
+   /*   o v e r r i d i n g    m u t a t o r s   */
+
+   /** pre:  let c = countVal()
+   *   post: if c != maximumVal(), then same as overridden counterpart;
+   *         if c == maximumVal(), then determined by subclass's
+   *                               method incrementFromMax()
+   */
+   public void increment() {
+      if (countVal() == maximumVal())
+         { <b>incrementFromMax();</b> }
+      else
+         { super.increment(); }
+   }
+
+
+   /** pre:  let c = countVal()
+   *   post: if c != minimumVal(), then same as overridden counterpart;
+   *         if c == minimumVal(), then determined by subclass's
+   *                               method decrementFromMin()
+   */
+   public void decrement() {
+      if (countVal() == minimumVal())
+         { <b>decrementFromMin();</b> }
+      else
+         { super.decrement(); }
+   }
+
+
+   // abstract methods that subclasses must define in order to
+   // fully describe how increment() and decrement() behave
+   
+   protected <b>abstract</b> void incrementFromMax();
+   protected <b>abstract</b> void decrementFromMin();
+}</code></pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Notice that <em>BoundedCounter</em> is declared to be <b>abstract</b>.
+This means that no object may be constructed directly from this class.
+Here, this makes sense, because even though the class provides its
+clients with a means of establishing boundaries upon a counter,
+it provides no specific means of enforcing them!  More precisely,
+it assumes that a counter whose value is not at its maximum 
+(respectively, minimum) allowed value should respond 
+"normally" (i.e., as specified in its superclass, <em>ResetableCounter</em>)
+when incremented (respectively, decremented), but it yields to its subclasses
+the responsibility to define, via the method <tt>incrementFromMax()</tt>
+(respectively, <tt>decrementFromMin()</tt>) how a counter should respond
+to being incremented (respectively, decremented) when its value
+is at the maximum bound (respectively, minimum bound).
+This explains the presence of these two abstract methods.
+
+</p><p>
+Having defined <em>BoundedCounter</em> as above, the class
+<em>RollOverCounter</em> can be simplified to the following:
+
+</p><p>
+<center>
+<table border="2">
+<tr><td>
+<pre><code>public class RollOverCounter extends BoundedCounter {
+
+   /*   c o n s t r u c t o r s   */
+
+   public RollOverCounter(int init, int min, int max) 
+      { super(init, min, max); }
+
+   public RollOverCounter(int min, int max) { super(min, max); }
+
+   public RollOverCounter() { super(); }
+
+
+   /* concrete definitions for abstract methods in superclass */
+
+   protected void incrementFromMax() { setTo(minimumVal()); }
+
+   protected void decrementFromMin() { setTo(maximumVal()); }
+
+}</code></pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+We leave as an exercise the problem of developing the classes
+<em>StoppingCounter</em> and <em>WarningCounter</em>.
+
+<hr>
+</p><p>
+To illustrate the concept of <b>polymorphism</b>, consider the following
+(rather contrived) method, which, given a String object and a Counter
+object, scans the characters in the former, invoking the latter's
+<tt>increment()</tt> method each time a space is encountered.
+
+</p><p>
+<center>
+<table border="2">
+<tr><td>
+<pre>public static void countSpaces(String str, Counter counter) {
+   for (int i=0; i!= str.length(); i++) {
+      if (str.charAt(i) == ' ') { 
+         counter.increment();
+      }
+   }
+} </pre> 
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Now consider executing the following code.  The embedded comments describe
+what the effects would be.
+
+</p><p>
+<center>
+<table border="2">
+<tr><td>
+<pre>
+   String s = "The cat in the hat ate a rat."; 
+
+   Counter cntr1 = new Counter(0);
+   countSpaces(s, cntr1);
+   System.out.println("cntr1 says " + cntr1.countVal());
+   // Result printed should be 7.
+
+   Counter cntr2 = new RollOverCounter(0,0,4);
+   countSpaces(s, cntr2);
+   System.out.println("cntr2 says " + cntr2.countVal());
+   // Result printed should be 2 (The 5th space takes the counter back to
+   // zero, because 4 is the counter's upper bound.  The remaining two
+   // spaces take the counter back up to two.)
+
+   Counter cntr3 = new StoppingCounter(0,0,4);
+   countSpaces(s, cntr3);
+   System.out.println("cntr3 says " + cntr3.countVal());
+   // Result printed should be 4, as incrementing the counter has no
+   // effect once it has reached its upper bound of 4.
+
+   Counter cntr4 = new WarningCounter(0,0,4);
+   countSpaces(s, cntr4);
+   // Above call would result in an exception being thrown, as on the
+   // fifth space an attempt would be made to increment the counter
+   // beyond its upper bound of 4.
+   System.out.println("cntr4 says " + cntr4.countVal());
+</pre>
+</td></tr>
+</table>
+</center>
+
+</body>
+</html>
+

@@ -1,0 +1,41 @@
+CMPS 340  File Processing
+Huffman's algorithm for assigning codewords to symbols
+
+
+INPUT:  an alphabet A of "symbols" (of which some "source text" is composed),
+  and a mapping f : A --> N  (N = set of all natural numbers), where,
+  for a in A, f(a) is the "frequency" with which a occurs in the source text.
+
+OUTPUT: a mapping g : A --> BS  (BS = set of all bit strings) associating 
+  a (binary) codeword to each member of A.
+
+
+BEGIN
+   Q := empty priority queue of weighted binary trees (lower weight equals
+                                                       higher priority     )
+   DO FOR each a in A
+      t :=  one-node tree with label a and weight f(a)
+      Insert(t,Q)   --insert t into Q
+   OD
+
+   DO |A| - 1  TIMES
+      t1 := Delete_Min(Q);     --extract from Q the two trees 
+      t2 := Delete_Min(Q);     --having lowest weights
+      construct t by creating an unlabeled root node and attaching to it as
+         children the roots of t1 and t2.  Make the weight of t be the sum
+         of the weights of t1 and t2
+      Insert(t,Q)               --insert t into Q
+   OD
+
+   --at this point, Q contains a single tree, the leaves of which are
+   --precisely the |A| nodes with which we began
+
+   t := lone tree in Q
+   perform depth first search in t so as to compute g(a) for each a in A.
+   --(Label each edge of t by either 0 or 1, according to whether it goes
+   --to a left child or a right child, respectively.  Then g(a) corresponds
+   --to the sequence of labels on the edges along the path from the root of
+   --t to the leaf node labeled a.)
+
+END
+

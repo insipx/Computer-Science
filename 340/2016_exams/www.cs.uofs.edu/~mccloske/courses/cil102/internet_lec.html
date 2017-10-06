@@ -1,0 +1,703 @@
+<html>
+<body>
+<H3>C/IL 102 <br>
+Notes on How the Internet Works
+</H3>
+
+<p>
+What is the <A HREF="http://en.wikipedia.org/wiki/Internet">Internet</A>?
+It is a huge collection of inter-connected computer networks
+spanning the Earth.
+One might say that it is a <em>network of computer networks</em>
+that serves as a communications medium.
+A brief history of the Internet, written by several of those 
+instrumental in developing it, can be found
+<A HREF="http://www.isoc.org/internet/history/brief.shtml">here</A>.
+Among the services available on the Internet are
+<ul>
+  <li><A HREF="http://en.wikipedia.org/wiki/E-mail">e-mail</A>:
+    a means for sending and receiving messages in an
+    asynchronous fashion (i.e., the receiver need not be "listening"
+    at the time the sender is "sending")
+  </li>
+  <li><b>chat rooms</b>, <b>instant messaging</b>: 
+      a means for sending and receiving messages in a 
+      synchronous (i.e., interactive) fashion.
+  </li>
+  <li><A HREF="http://en.wikipedia.org/wiki/World_Wide_Web">World Wide Web</A>:
+      a dynamic repository of "documents" containing
+      textual, graphical, audio, and video information, as well as
+      hyperlinks to related documents.
+  </li> 
+  <li><b>ftp</b> (file transfer protocol): 
+      a means for exchanging files between
+      a "local" machine and a "remote" machine.
+  </li> 
+  <li><b>telnet</b>: a means for logging into and carrying out a
+      "session" on a remote machine.
+  </li>
+  <li><b>VoIP</b> (Voice over IP): in effect, telephone service
+  </li>
+</ul>
+
+<H3>IP (Internet Protocol) Addresses</H3>
+<p>
+All the services provided by the Internet involve computers sending
+<em>messages</em> back and forth to one another.  When you send an
+e-mail to someone far away, the content of that e-mail somehow
+is transmitted from your machine to the one where your friend's
+emailbox is located.  When you click on a hyperlink on a web
+page (to fetch another web page for your viewing pleasure), the
+request for that web page is transmitted by your machine to the one
+where the web page is stored, and the web page itself is transmitted
+from that machine to yours.
+
+<p>
+In order for a message to get to its intended destination, it must be
+routed there, in a manner somewhat analogous to how letters and postcards
+are routed (in what has become known as "snail mail") by the 
+U.S. Postal Service.  In particular, associated to each
+message is a destination address, which is analogous to the
+intended recipient's mailing address on a postcard/letter.
+On the Internet, the addresses used are called 
+<A HREF="http://en.wikipedia.org/wiki/IP_address">IP addresses</A>,
+where IP abbreviates <b>Internet Protocol</b>.
+Each device connected to the Internet has at least one
+IP address, and no two devices connected (at any one time) are supposed
+to share an IP address.  Each message sent on the Internet includes a
+"wrapper" (analogous to the envelope in which you might place a letter) 
+on which appear the IP address of the sender 
+(analogous to the return address on a letter)
+and the IP address of the intended recipient.
+
+<p>
+An IP address (under IP version 4, anyway) is represented by a bit string
+of length 32, which is to say a sequence of four (8-bit) bytes.
+By convention, to express an IP address we translate each of its 
+four bytes into a decimal numeral (in the range 0 to 255, because that's
+the range of values representable by 8-bit binary numerals)
+and separate them by periods (or "full stops", to use the European term).
+The U of S "owns" (more accurately, "rents") all the IP addresses of the
+form 134.198.xxx.xxx, of which there are 65,536 !
+For example, 134.198.169.34 is the IP address of one machine at the
+U of S.
+To ascertain the IP address (plus other characteristics) of a machine
+running MS Windows XP, start up a "Command Prompt" window and
+enter the command 
+<p><center><tt>ipconfig /all</tt></center>
+
+<p>
+Due to the ongoing growth in the number of devices that connect to the
+Internet, there will come a time when 2<sup>32</sup> IP addresses will not be
+enough to go around.  Hence, since 1999 there has been a gradual deployment
+of IP version 6 (or IPv6), which will eventually replace the older
+IP version 4 (IPv4).
+In IPv6, IP addresses are 128 bits (i.e. sixteen bytes) in length.
+(Going from IPv4 (4-byte IP addresses) to IPv6 (16-byte IP addresses)
+will increase the number of possible IP addresses by a factor of
+2<sup>96</sup> (or approximately 10<sup>30</sup>!).
+
+<p>
+Who controls and allocates IP addresses? 
+Answer: The 
+<A HREF="http://en.wikipedia.org/wiki/Internet_Assigned_Numbers_Authority">
+Internet Assigned Numbers Authority (iana)</A>,
+which is operated by 
+<A HREF="http://en.wikipedia.org/wiki/Internet_Corporation_for_Assigned_Names_and_Numbers">ICANN</A>.
+
+<!-- <A HREF="http://www.iana.org">Internet Assigned Numbers Authority (iana)</A>.  -->
+A typical home user does not purchase an IP address from iana.
+Rather, he relies upon an <A HREF="http://en.wikipedia.org/wiki/ISP">ISP</A>
+(Internet Service Provider) (i.e., a company to whom one pays a monthly fee
+to get access to the Internet, typically either via 
+<A HREF="http://en.wikipedia.org/wiki/Cable_modem">cable modem</A>,
+<A HREF="http://en.wikipedia.org/wiki/DSL">DSL</A>, or 
+<A HREF="http://en.wikipedia.org/wiki/Dial-up">dial-up</A>)
+to provide an IP address.
+An ISP typically purchases hundreds or thousands of IP addresses so 
+that when a customer logs in, his machine can be assigned an IP address
+dynamically (i.e. at that moment) from the ISP's available pool of
+IP addresses.
+<!-- (Notion of <b>static</b> vs. <b>dynamic</b> IP address
+and <b>DHCP</b> (Dynamic Host Configuration Protocol).)
+-->
+
+
+<H3>Packets</H3>
+<p>
+For technical reasons, the unit of data that can be transmitted from one
+machine to another via the Internet is relatively small.  This unit is
+referred to as a 
+<A HREF="http://en.wikipedia.org/wiki/Packet_%28information_technology%29#Packets_vs._datagrams">packet</A>.
+<!-- , and a network that transmits data in
+   the form of packets is referred to as a <b>packet-switching network</b>.
+-->
+If computer <tt>A</tt> "wants" to send a message to computer <tt>B</tt>,
+and that message is larger than what can "fit" into a single packet,
+computer <tt>A</tt> must divide the message into multiple packets and
+send each one of them to <tt>B</tt> separately. 
+As <tt>B</tt> receives the individual packets, it reassembles them back 
+into a single message.
+(Examples of messages that <tt>A</tt> might want to send to <tt>B</tt>
+are an e-mail, a file (in response to a request via ftp, for example), 
+or a web page (which is itself nothing but a file).)
+
+
+<!-- (A packet has an allowable maximum length and is typically about
+1000 or 1500 bytes long.)
+Packets are on the order of 1000 or 2000 bytes.
+-->
+<!-- Computers "take turns" in sending/receiving messages. -->
+
+<p>
+Using <A HREF="http://en.wikipedia.org/wiki/Packet_switching">packet 
+switching</A> (as this approach is called)
+prevents one machine from "hogging" the transmission
+line when it is sending a large message.
+(This is in contrast to the 
+<A HREF="http://en.wikipedia.org/wiki/Circuit_switching">circuit switching</A>
+approach traditionally used by the telephone system, which at times of
+heavy use (such as Mother's Day) sometimes responds with the dreaded
+"We're sorry, but all circuits are busy.  Please try again later." message.)
+(Imagine a grocery store in which every checkout line is an "express lane"
+limiting the customer to, say, five items.  If you want to buy 100 items,
+you are forced to go through the line twenty times, which is disadvantageous
+to you but advantageous to customers buying only a few items, 
+who otherwise would have to wait a long time in line behind you.)
+<!-- (Analogy to Service Merchandise store: one customer's large order 
+    should not hold up other customers' smaller orders.)
+-->
+
+<p>
+Each packet consists of two kinds of data: <b>control information</b> and
+the <b>payload</b>.  (Using our postal analogy, the former is analogous to
+the information appearing on the envelope and the latter is analogous to
+the letter inside the envelope.)
+The control information includes a bunch of items that are useful in 
+helping the network to deliver the packet (and the larger message of 
+which it is a part), including 
+<ul>
+  <li>the IP address of the sender
+      (analogous to the return address on an envelope)
+  </li>
+  <li>the IP address of the intended recipient
+      (analogous to the mailing address on an envelope)
+  </li>
+  <li>error detection/correction bits that are used for determining
+      whether the contents of the packet have been corrupted during
+      its journey (and to correct it, if possible)
+  </li>
+  <li>sequencing information: Suppose that a message is composed of, say,
+       27 packets.  Then each one has placed in it a number between
+       1 and 27 to indicate whether it is the tenth packet of the
+       message, the twenty-third, or whatever.  As the recipient receives the
+       27 packets (not necessarily in the same order as they were sent,
+       mind you, because of the nondeterministic nature of the Internet),
+       it uses this information to reassemble the message properly.
+  </li>
+</ul>
+The payload refers to what, from the user's point of view, is the meaningful
+data (e.g., a (portion of a) web page, or e-mail message, or whatever).
+
+<p>
+Here is a hypothetical packet:
+<pre>
+                +------------------------------------------------+
+  Control       |    Sender IP Address: 134.198.14.5             |
+  Information   |    Destination IP Address: 64.124.21.14        |
+                |    ...                                         |
+                |    ...                                         |
+                +------------------------------------------------+
+                |    Hi Mom.  I miss you and Dad.  School has    |
+  Payload       |    been terrible so far.  I'm flunking all     |
+  (an e-mail)   |    courses (except for Computer Programming)   |
+                |    and I can't seem to make any friends.       |
+                |    I can hardly wait for Christmas vacation.   |
+                |                                                |
+                |                        Love,                   |
+                |                        Mortimer                |
+                +------------------------------------------------+
+</pre>
+
+<p>
+Packet switching nicely "scales up" as more computers are added to a
+network (and hence the volume of data being transmitted increases), 
+in the sense that performance degrades slowly (rather than rapidly).
+
+<H3>Routers</H3>
+<p>
+So far we've discussed the fact that data is transmitted on the Internet
+in the form of packets and that each packet has an intended recipient,
+which is identified by an IP address.  But what mechanisms are in place
+to ensure that a packet will get to its intended recipient?
+
+<p>
+The answer, in part, is the
+<A HREF="http://computer.howstuffworks.com/router.htm/printable">router</A>.
+A router is a device that links together two or more networks and
+routes messages between them.
+
+<!--
+<p>
+A good metaphor is to imagine that the Internet is like a large
+system of roads and highways on which packets travel, 
+where at each intersection a router acts as a "directions expert", 
+telling each packet that arrives there which road is best to follow 
+in order to get to its intended destination.
+-->
+
+<p>
+Consider, once again, our postal service analogy.
+As mail arrives at a post office, it is sorted into separate piles according
+to where each piece of mail should go next.  In the Scranton post office,
+there may be a pile of mail headed for Philadelphia (some of which will
+later be routed to smaller post offices near Philadelphia and some of which
+will be routed to Atlanta, perhaps, or Baltimore, or Chicago), another pile
+headed for New York, another pile headed for Pittsburgh, and probably several
+other piles headed for smaller post offices in surrounding towns such as
+Dunmore, Moosic, Lake Ariel, etc., etc.
+What determines into which pile a given piece of mail is placed?
+The zip code of the destination address!
+<p>
+In other words, for each post office <em>A</em>, there exists some set of other
+post offices
+(say <em>{ B<sub>1</sub>, B<sub>2</sub>, ..., B<sub>n</sub> }</em>)
+to which <em>A</em> directly delivers pieces of mail (typically via truck).
+For each piece of mail that arrives at <em>A</em>, the zip code in its
+destination address is used to determine to which of those other
+post offices (either <em>B<sub>1</sub></em> or <em>B<sub>2</sub></em>, etc.)
+it should be taken next.
+(Of course, if the zip code is within <em>A</em>'s local delivery area,
+that piece of mail is routed, according to its street address, to the 
+appropriate mail carrier who delivers mail within that local area. 
+
+<p>
+In a similar way, each router is connected directly to some set of other
+routers (and possibly to a local network). 
+As packets arrive at a router, it uses each packet's
+destination IP address to determine to which of those other
+routers to send it next (or whether the packet should be delivered to
+a machine among those in the attached local network).
+How does a router "know" to which router to send a given packet?
+It maintains a <b>configuration table</b>, which, for each IP address,
+indicates the proper router to which packets with that address should be sent.
+Depending upon the sophistication of the router, the configuration
+table could change as breakdowns or congestion occurs at various
+places in the network.  (Of course, information regarding such
+conditions would have to be gathered somehow by a router for it to
+"know" that its configuration table should be modified.)
+
+<p>
+There is a wide variety of sophistication among routers.
+Some simply have two lines, one corresponding to the local network
+and the other to the Internet.  (This is analogous to a small post office
+(e.g., one in Moosic) that sends all non-local mail to a larger one
+(e.g., the one in Scranton).
+Other routers have many lines and thus are more analogous to a 
+larger post office (e.g., the one in Scranton) that sends mail 
+directly to several other post offices.
+
+<p>
+The <A HREF="http://en.wikipedia.org/wiki/Tracert">tracert</A>
+(standing for "trace route") command (which can be
+invoked from a "Command Prompt" window under MS Windows XP) can be used
+to "trace the route" taken by a message sent from your computer to the
+computer at any specified IP address (or domain name, see below).
+For example, a machine at google has the IP address 64.233.161.147;
+if you were to enter the command
+<p><center>
+<tt>tracert 64.233.161.147</tt></center>
+
+<p>
+it would report the IP addresses of all the machines through which the
+message was routed as it "hopped" along the path to google's machine.
+(Technically, this isn't quite true, but it is close enough for our
+purposes.)
+<!-- Redundant:
+(In the <tt>tracert</tt> command, one can also put a domain name (see below)
+in place of the IP address.)
+-->
+
+<!--
+<p>
+Example on HowStuffWorks web pages: a company has a local area network
+(LAN) that, because of heavy traffic, they split into two sub-networks
+connected by a router.  (A typical LAN connects machines together using
+Ethernet connections, which is analogous to having a bunch of neighbors
+on a "party line".  As the number of households on the party line
+grows (or how much they talk increases), it becomes increasingly
+difficult to initiate a phone call.
+
+
+<p>
+Another function that some routers provide is in connecting
+incompatible networks with one another.
+-->
+
+<H3>Domain Names</H3>
+<p>
+Chances are good that you refer to your friends at the U of Scranton
+not by their Royal Numbers or SSN's, but rather by their names, which
+tend to be much easier to remember.
+Similarly, when referring to web sites on the Internet, we prefer to
+use <A HREF="http://en.wikipedia.org/wiki/Domain_name">domain names</A>
+rather than IP addresses.
+
+<p>
+Domain names have two or more parts, separated by periods.
+Examples are <tt>www.cs.scranton.edu</tt>, <tt>google.com</tt>,
+<tt>en.wikipedia.org</tt>, <tt>whitehouse.gov</tt>, and
+<tt>www.st-andrews.ac.uk</tt>.  
+
+<p>
+As we move from right to left through a domain name, each part
+provides more specific information.
+
+<p>
+The last (i.e., rightmost) part is called the
+<A HREF="http://en.wikipedia.org/wiki/Top-level_domain">top-level domain</A>,
+and it indicates one of a broad category of domains.
+Common ones include
+<ul>
+  <li><b>com</b>: indicating a commercial enterprise</li>
+  <li><b>org</b>: indicating a non-commercial organization</li>
+  <li><b>edu</b>: indicating an educational institution</li>
+  <li><b>net</b>: (at least sometimes) indicating an organization that
+                  provides Internet access to customers
+  </li>
+  <li><b>gov</b>: indicating a government entity</li>
+  <li><b>mil</b>: indicating a military entity</li>
+</ul>
+<!-- (For a more complete list, see Table 11.1, page 301, in Walker's book.)
+-->
+The names of many domains "located" outside the United States include a
+<A HREF="http://en.wikipedia.org/wiki/Country_code_top-level_domain">country
+code top-level domain (ccTLD)</A>, such as <b>uk</b> (for United Kingdom),
+<b>de</b> (for Germany (Deutschland)), or <b>cn</b> (for China).
+
+<p>
+Preceding (i.e., to the left of) the top-level domain is the
+<b>second-level domain</b>, which is typically the name of the
+company/organization/person to whom the domain name is registerd
+(e.g., <tt>google</tt>).
+
+<p>
+The <b>third-level domain</b> (which precedes the second-level domain,
+of course) either gives the name of a <b>subdomain</b> (such as <tt>cs</tt>
+in <tt>cs.scranton.edu</tt>, which refers to the Computing Sciences
+Department's local computer network within the larger U of Scranton
+computer network) or it gives the name of a <b>host server</b>
+(i.e., a computer that provides whatever services can be accessed there).
+The traditional name for a web server is <tt>www</tt>, which explains
+why so many domain names begin with that string.
+
+<p>
+The assignment of domain names to organizations, etc. (like that of
+IP addresses) is managed by
+<A HREF="http://en.wikipedia.org/wiki/Internet_Corporation_for_Assigned_Names_and_Numbers">ICANN</A>.
+The domain name <tt>scranton.edu</tt>, for example, is registered to the
+University of Scranton, which means that it pays an annual fee to use
+that name.  The name <tt>scranton.com</tt> (as of April 2008) is registered to
+Domains by Proxy, Inc., which has a Scottsdale, AZ address.
+
+
+<p>
+One way to get a domain name registered to you is to request it 
+from <A HREF="http://www.networksolutions.com">Network Solutions</A>
+<!-- (a <b>VeriSign</b> company) (at least indirectly).
+-->
+Some ISP's and web hosting companies offer this service, too.
+To find out to whom, if anyone, a particular domain name is registered, go to   
+<A HREF="http://www.networksolutions.com/whois/index.jsp">Network
+Solutions' WHOIS search page</A> and search for that name.
+
+<p>
+In specifying an e-mail address or a particular web page, we use domain names,
+together with other information.
+A typical e-mail address is a user ID followed by the
+<tt>@</tt> symbol, followed by a domain name, as in
+<p><center><tt>smithj@yahoo.com</tt></center>
+
+<p>
+A web page is identified by a 
+<A HREF="http://en.wikipedia.org/wiki/Uniform_Resource_Locator">
+Uniform Resource Locator</A> (URL), which consists of a
+<b>scheme</b> (usually <tt>http://</tt>), followed by a domain name that
+identifies the host computer where the page is found,
+followed by a so-called
+<A HREF="http://en.wikipedia.org/wiki/Pathname">path</A> 
+that identifies the specific file (directly accessible to that host computer)
+containing the desired web page. 
+For example, the URL
+<p><center>
+<tt>http://www.cs.scranton.edu/~mccloske/courses/cil102/index_s11.html</tt>
+</center>
+<P>
+refers to our course web page.
+The scheme is <tt>http://</tt> (which means that the HTTP protocol is
+to be used in the communication between the <b>client</b> (typically,
+a web browser, such as Microsoft Internet Explorer) and the
+<b>server</b>, which is the web server identified by the domain name,
+<tt>www.cs.scranton.edu</tt>.  The path is what's left, which indicates
+that the web page referred to is in the file <tt>index_s11.html</tt>
+within the folder <tt>cil102</tt>, which is within the folder
+<tt>courses</tt>, which is in the folder <tt>~mccloske</tt>.
+
+<p>
+If the path is incomplete, in the sense that the file name is not
+indicated, by default it is understood to be <tt>index.html</tt>.
+If the scheme is not indicated, by default it is understood to be
+<tt>http://</tt>.
+
+<H3>Domain Name Servers</H3>
+<p>
+Suppose that it's a Friday afternoon and you're dying to know how your
+favorite player is doing in this week's tournament on the PGA Tour.
+So you fire up your computer, start up a web browser
+(such as Microsoft Internet Explorer or Mozilla Firefox), type
+<tt>www.pgatour.com</tt> into its address bar, and then press the
+ENTER key.  Within a few seconds, the "home" (or "welcome") 
+web page at the PGA Tour's web site appears on your browser's window.
+How did it get there?
+
+<p>
+What happened is that, when you pressed the ENTER key, your browser
+(taking note of the URL you entered into its address bar)
+sent a request to the PGA Tour's web server for its home/welcome web page.
+And the PGA Tour's web server, upon receiving the request, complied.
+Your computer, upon receiving that web page, fed it to the browser program,
+which displayed that page.  A similar process occurs when you click on a
+<A HREF="http://www.wikipedia.org/wiki/Hyperlink">hyperlink</A> on a web page.
+For example, the hyperlink in the previous sentence is encoded in this
+web page using HTML's <b>A</b> tag (for "anchor"): 
+<p><center><tt>
+&lt;A HREF="http://www.wikipedia.org/wiki/Hyperlink"&gt;hyperlink&lt;/A&gt;
+</tt></center>
+<p>
+Notice that the code includes the URL of the web page that the browser
+will request (from the web server that has it) when the user clicks on
+the hyperlink.
+
+<p>
+But all this raises an important question:
+If all data transmitted on the Internet is in the form
+of packets, each of which includes a (numerical) IP address 
+specifying its intended destination, and a web browser is provided
+with only the URL of the web page requested by its user (either in
+the form of a URL typed into the address bar or one specified in
+the HTML code underlying a hyperlink), how does the browser
+"figure out" to which IP address to send the request for the web page?
+(Recall that a URL includes domain name information but nothing about
+an IP address.)
+Similarly, how does an e-mail program, given only the e-mail address
+of the intended recipient but not the IP address of the e-mail
+server that manages that recipient's e-mail, figure out to which
+IP address to send the e-mail?
+
+<p>
+The answer is the
+<A HREF="http://en.wikipedia.org/wiki/Domain_name_server">Domain Name System</A>
+(DNS) and the
+<A HREF="http://computer.howstuffworks.com/dns.htm/printable">Domain Name
+Servers</A> that implement it.
+The basic function of these machines is to act as 
+"directory assistance operators"
+for translating domain names into IP addresses.  
+(That is, the DNS system is analogous to a telephone directory, which,
+as you know, maps names to telephone numbers.  Such a directory is
+useful because it gives us the ability to obtain a person's 
+telephone number if we know her name.)
+<!--
+(It is analogous to wanting to make a phone call to someone whose
+name you know but whose phone number you do not know.  Before you
+can make the call, you first must look up the number in a directory
+that maps names to phone numbers.)
+-->
+
+<p>
+For example, when the user tells a web browser to fetch a particular
+web page (as described by a URL), either by entering the URL into
+the browser's address bar or by clicking on a hyperlink specifying
+that URL, the browser's first task is to obtain the IP address 
+of the web server that has that web page.  The web server in question
+is identified in the URL, of course, by the domain name (including 
+the host name) within it.
+Only after it obtains that IP address can it send a request 
+(for the specified web page) to the host at that address.
+To obtain that IP address, the browser sends a request to its
+<b>default name server</b> (every domain is required to have a 
+"local" name server such that it "knows" the IP addresses of all the 
+machines in its own domain and vice versa) to translate the given 
+domain name into an IP address.  If that name server lacks the
+required information, it asks a "higher-level" name server for it 
+(which may have to make a request to yet another name server,
+and so on).  (The system is designed so that, unless something is
+wrong, the required information will be found.) 
+
+<p>
+As an example of DNS, enter into a command prompt window
+<p><center><tt>nslookup www.google.com</tt></center>
+
+<p>
+(or substitute any domain name in place of google).
+The result is a list of IP addresses assigned to machines at that
+site.
+
+
+<!--
+<p>
+root name servers: if it doesn't know IP address, it knows the IP
+address of a (2nd-level) name server that does, and gives you
+that address.
+
+<p>
+Caching.
+
+-->
+
+<h3>Search Engines</h3>
+    When you submit a query to a search engine (e.g., google), you
+    typically get a response within a second or two.  How in the
+    world can a search engine (which, of course, is just a program)
+    not only search through the billions of pages on the WWW, but also
+    "figure out" which of them are relevant to your query, in less than
+    two seconds?
+    </p><p>
+    The answer is that a search engine does not search the entire WWW
+    every time it receives a query.  Rather, it searches a (large)
+    index that maps terms to the URLs of web pages in which the terms
+    appear, much like the index in the back of a textbook maps terms
+    to the page numbers of the pages in which they appear.  So if a
+    user's query is "golf club", the first thing that a search engine
+    will do is to use the index to find the URLs of every web page
+    containing either of those two words.  (Any page that mentions
+    neither term is unlikely to be relevant, after all.)
+    </p><p>
+    Of course, the contents of a (traditional) book doesn't change,
+    and so its index need not be changed.  The WWW, on the other hand,
+    is a dynamic repository, with new web pages appearing and old ones
+    either changing or disappearing every day.  Hence, the index that
+    a search engine uses must be kept up-to-date.  This is the job
+    of software called <b>spiders</b> or <b>bots</b>, which, on a
+    24/7 basis, do nothing but "crawl" the web, scanning every web
+    page that they can find (by following links from pages that have
+    been found already) and updating the index according to what they find.
+    </p><p>
+    Another important aspect of a search engine is its method of
+    calculating <b>relevance</b>, which is a measure of how closely
+    a web page "matches" a user's query (and thereby provides an
+    estimate of the likelihood that the user would find that web page
+    to contain useful information).
+    When a search engine reports a "list of hits" to the user, it lists
+    the pages in (what it "thinks" is) decreasing order of relevance.
+    </p><p>
+    How can a search engine make a "judgement" regarding the relevance
+    of a web page?  Different search engines use different criteria
+    (which are kept secret), but, first and foremost, it is based upon
+    which words appear on a page, and the frequency with which they appear.
+    So a page that mentions neither "golf" nor "club" is very unlikely to be
+    judged to be relevant with respect to the "golf club" query.
+    All other things being equal, a page containing both terms will be
+    judged as being more relevant than a page that mentions only one of
+    them, and a page that mentions "golf" fifty times will be ranked higher
+    than one that mentions it only once.
+    </p><p>
+    Other criteria are also used, including <b>PageRank</b>
+    (a trademark of Google), <b>click popularity</b>, <b>stickiness</b>,
+    and <b>sponsorship</b>.  (These are described in the web textbook.)
+
+</body>
+</html>
+
+<!--
+<p>
+<b>Computer Networks:</b> LAN's (local area) and WAN's (wide area).
+Purpose is to allow computers to communicate with one another and to
+share resources (e.g., printers, storage devices).
+In order to keep costs reasonable, computers on a network must share a
+common transmission "wire".  (Analogy to customers sharing a transport
+mechanism (i.e., conveyor belt) in Service Merchandise stores.)
+
+<p>
+<b>Packet Switching:</b> All data transferred across the Internet
+is in the form of <b>packets</b>.  The sending computer divides a
+message/document into packets and sends each one separately.
+The receiving computer reassambles the original message from 
+the packets that arrive.
+(A packet has an allowable maximum length.)
+Computers "take turns" in sending/receiving messages.
+
+<p>
+Using packet switching prevents one machine from "hogging" the transmission
+line when it wants to send/receive a large message.  (Analogy to Service
+Merchandise store: one customer's large order should not hold up
+everyone else's.)
+
+<p>
+Each packet is comprised of a <b>header</b>, which (in addition to other
+info) identifies the sending and receiving computers (by IP address),
+plus a body, which contains (a portion of) the message.
+
+<p>
+Packet switching nicely "scales up" as more computers are added to a
+network.
+
+<p>
+<b>Internet: A network of networks:</b>
+Thousands of LAN's and WAN's are "connected" to the Internet.
+How is this done? (Especially considering that different networks tend
+to be incompatible.)  The trick is to use <b>routers</b>, which are
+computers whose only job is to "interconnect" two (or more) different
+networks together.  A router's job is to rout packets to their intended
+destinations.  A router is analogous to a post office!
+
+<p>
+<b>IP (Internet Protocol) Software:</b> IP specifies, in great detail,
+the rules that computers must follow in order to communicate via the
+Internet.  In particular, it specifies the format of each IP <em>datagram</em>
+(i.e., packet).
+
+<p>
+IP gives the illusion that the Internet is one big network, rather
+than a bunch of incompatible networks hooked together.
+
+<p>
+Every computer (on Internet) has a unique address (IP address).
+The IP address is a 32-bit number.  By convention, we write it
+as a sequence of four 8-bit numbers separated by periods, such as
+134.198.14.5 .  Because each number is stored in 8 bits, the possible
+range of values is 0 .. 255 (2 to the 8th power different possibilities).
+ 
+
+<p>
+<b>TCP</b>: Transmission Control Protocol: Helps to solve problems
+that can occur in packet switching system.  E.g. a router receives
+more datagrams than it can handle.
+
+<p>
+<b>Domain Name System (DNS):</b>
+Consider what happens when you are viewing a Web page and you click
+on a link.  This tells the browser to fetch another web page, whose
+location (name of computer, plus file name, such as
+<br>
+<center>
+www.cs.uofs.edu/~mccloske/index.html 
+</center>
+which refers to the
+file named <em>index.html</em> within my home subdirectory on the
+web server named <em>www.cs.uofs.edu</em>) is specified within the HTML
+code that represents the current page.
+But, in order to fetch the sought web page, the browser has to know the
+IP address of the computer on which it is stored.  
+The purpose of the DNS is to act as a directory (analogous to the telephone
+directory) that allows the browser to "look up" a computer name and obtain
+its IP address.  Once it "knows" the IP address of the machine holding
+the sought web page, it can send a requrest to that machine asking for
+said web page.
+
+
+
+</body>
+</html>
+
+-->

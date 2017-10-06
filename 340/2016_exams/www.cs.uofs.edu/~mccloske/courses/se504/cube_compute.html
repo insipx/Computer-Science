@@ -1,0 +1,299 @@
+<html>
+<head>
+  <title>
+  SE 504: Computing N<sup>3</sup> without multiplication or exponentation
+  </title>
+</head>
+<body>
+<H2>
+SE 504 <br />
+Computing N<sup>3</sup>
+Without using Multiplication or Exponentiation<br />
+(An Example of Applying the Strengthening the Invariant Heuristic)
+</H2>
+
+</p><p>
+<b>Problem:</b> 
+Develop a solution to the following specification.  In order to make
+it interesting, assume that the programming language has no multiplication or
+exponentiation operations.
+</p><p>
+<code><pre>
+|[ con N : int;  { N&ge;0 } 
+   var r : int; 
+   compute_cube 
+   { Q: r = N<sup>3</sup> } 
+]|
+</pre></code>
+
+</p><p>
+Because we are not to use multiplication or exponentiation, it would seem that
+a solution will include at least one loop.  Applying the "replace a constant
+by a fresh variable" heuristic to arrive at a strengthened version of the
+postcondition, we get 
+
+</p><p><center>
+  <code>Q': r = n<sup>3</sup> &and; n = N</code>
+</center>
+
+</p><p>
+From Q' we take the first conjunct to be a possible loop invariant
+and the negation of the second to be the loop's guard.
+These choices immediately give us (iii) in the loop checklist.
+
+</p><p>
+What we have so far, then, is
+
+<code><pre>
+|[ con N : int;  { N&ge;0 }
+   var r : int;
+   var n : int;
+
+   n,r := ?,?;   <!-- E<sub>0</sub>, E<sub>1</sub>; -->
+   { I : r=n<sup>3</sup> }
+   do n &ne; N  ---&gt;
+      n,r := ?,?;  <!-- F<sub>0</sub>,F<sub>1</sub>; -->
+   od
+   { Q': r=n<sup>3</sup> &and; n=N }
+   { Q : r = N<sup>3</sup> }
+]|
+</pre></code>
+
+</p><p>
+What remains is to determine, for variables <code>n</code> and 
+<code>r</code>, to what values to initialize them and 
+how to update them during each iteration of the loop.
+
+</p><p>
+To truthify the loop invariant, we need to establish 
+<code>r=n<sup>3</sup></code>.
+The most obvious choice is to initialize <code>n</code> to 0,
+which would dictate that <code>r</code> be initialized to zero, too.
+This choice also suggests that <code>n</code> be incremented during
+each iteration of the loop, which would eventually result in its
+being equal to <code>N</code> so that the loop would terminate.
+
+</p><p>
+Alternatively, we could, for example, choose to initialize <code>n</code>
+to 7, which would dictate that <code>r</code> be initialized to
+343 (7<sup>3</sup>).
+But since we don't know ahead of time whether <code>N&gt;7</code> or
+<code>N&lt;7</code>, our loop body would have to accommodate not only
+the possibility of <code>n&lt;N</code> but also <code>n&gt;N</code>,
+which, we suspect, would complicate things considerably.
+
+</p><p>
+Therefore, the most obvious choice would seem to be best, too.
+<!--  This was stupid:
+(For any other value of <code>n</code>, it is not clear how we could 
+initialize <code>r</code> to <code>n<sup>3</sup></code> without using
+multiplication, exponentiation, or another loop.)  The fact that <code>n</code>
+will be initialized to a "small" value suggests that it be incremented each
+time around the loop.  The fact that <code>N</code> could be zero suggests
+that we initialize n to zero rather than one.
+-->
+Our refined program is
+
+<code><pre>
+|[ con N : int;  { N&ge;0 }
+   var r : int;
+   var n : int;
+
+   n,r := 0,0;
+   { I : r=n<sup>3</sup> }
+   do n &ne; N  ---&gt;
+      n,r := n+1,F;
+   od
+   { Q': r=n<sup>3</sup> &and; n=N }
+   { Q : r = N<sup>3</sup> }
+]|
+</pre></code>
+
+</p><p>
+It remains to calculate F.  We need F to be an expression that truthifies the
+following Hoare triple (in accord with item (ii) on loop checklist):
+
+</p><p><center><code>{I &and; B} n,r := n+1,F {I}</code></center>
+
+</p><p>
+Equivalently, this is <code>[I &and; B  &rArr;  wp.(n,r := n+1,F).I]</code>.
+So, we assume <code>I &and; B</code> and attempt to prove 
+<code>wp.(...).I</code>:
+
+<pre>
+     wp.(n,r := n+1,F).I
+
+  =    < wp assignment law >
+
+     I(n,r := n+1,F)
+
+  =    < defn of I, textual sub. >
+
+     F = (n+1)<sup>3</sup>
+
+  =    < algebra >
+
+     F = n<sup>3</sup> + 3n<sup>2</sup> + 3n + 1
+
+  =    < assumption: r = n<sup>3</sup> >
+
+     F = r + 3n<sup>2</sup> + 3n + 1
+</pre>
+
+</p><p>
+At this point, we use the <b>strengthen the invariant</b> heuristic, by which
+we augment the invariant to include <code>s = 3n<sup>2</sup> + 3n + 1</code>
+as a new conjunct, where <code>s</code> is a <em>fresh</em> variable.
+Continuing from above, we get
+
+<pre>
+  =    < assumption: s = 3n<sup>2</sup> + 3n + 1 >
+
+     F = r + s
+</pre>
+
+</p><p>
+But now we must insert code that correctly initializes <code>s</code> and
+that correctly updates <code>s</code> during each iteration of the loop.
+Our updated program is
+
+<code><pre>
+|[ con N : int;  { N&ge;0 }
+   var r : int;
+   var n,s : int;
+
+   n,r,s := 0,0,E;
+   { I : r=n<sup>3</sup>  &and;  s = 3n<sup>2</sup> + 3n + 1 }
+   do n &ne; N  --->
+      n,r,s := n+1,r+s,F;
+   od
+   { Q': r=n<sup>3</sup> &and; n=N }
+   { Q : r = N<sup>3</sup> }
+]|
+</pre></code>
+
+</p><p>
+Clearly, the correct choice for E is 1.  To calculate F, we attempt to find
+an expression F that truthifies the Hoare triple
+
+</p><p><center><code>{I &and; B} n,r,s := n+1,r+s,F {I}</code></center>
+
+</p><p>
+(where I is the updated version that includes
+<code>s = 3n<sup>2</sup> + 3n + 1</code> as a conjunct).
+
+
+<pre>    
+     wp.(n,r,s := n+1,r+s,F).I
+
+  =    < wp assignment law, defn of I, textual sub. >
+
+     r+s = (n+1)<sup>3</sup>  &and;  F = 3(n+1)<sup>2</sup> + 3(n+1) + 1
+
+  =    < 1st conjunct follows from earlier derivation, (3.39) >
+
+     F = 3(n+1)<sup>2</sup> + 3(n+1) + 1
+
+  =    < algebra >
+
+     F = 3n<sup>2</sup> + 9n + 7
+
+  =    < assumption: s = 3n<sup>2</sup> + 3n + 1 > 
+
+     F = s + 6n + 6
+
+  =    < 6n =  n + n + n + n + n + n >
+
+     F = s + n + n + n + n + n + n + 6
+</pre>
+
+<p>
+Thus, we could plug in for F the expression derived above in order to
+complete the program.  However, this expression is not very elegant.  So,
+instead, let's strengthen the invariant once again by introducing a
+fresh variable <code>w</code>:
+
+<pre>
+     F = s + 6n + 6
+
+  =    < assumption: w = 6n + 6 >
+
+     F = s + w
+</pre>
+
+<p>
+Of course, we must initialize <code>w</code> and update it on each
+loop iteration.  Our updated program is
+
+<code><pre>
+|[ con N : int;  { N&ge;0 }
+   var r : int;
+   var n,s,w : int;
+
+   n,r,s,w := 0,0,1,E;
+   { I : r=n<sup>3</sup>  &and;  s = 3n<sup>2</sup> + 3n + 1  &and;  w = 6n + 6 }
+   do n &ne; N  --->
+      n,r,s,w := n+1,r+s,s+w,F;
+   od
+   { r=n<sup>3</sup> &and; n=N }
+   { Q : r = N<sup>3</sup> }
+]|
+</pre></code>
+
+<p>
+Clearly, the correct choice for E is 6.  To calculate F, we attempt to find
+an expression F that truthifies the Hoare triple
+
+<p><center><code>{I &and; B} n,r,s,w := n+1,r+s,s+w,F {I}</code></center>
+
+<p>
+(where I is the updated version that includes <code>t = 6n + 6</code>
+as a conjunct).
+
+<pre>    
+     wp.(n,r,s,w := n+1,r+s,s+w,F).I
+
+  =    < wp assignment law, defn of I, textual sub. >
+
+     r+s = (n+1)<sup>3</sup>  &and;  s+w = 3(n+1)<sup>2</sup> + 3(n+1) + 1  &and;  F = 6(n+1) + 6 
+
+  =    < earlier derivations showed 1st two conjuncts, (3.39) >
+
+     F = 6(n+1) + 6
+
+  =    < algebra >
+
+     F = 6n + 12
+
+  =    < algebra >
+
+     F = 6n + 6 + 6
+
+  =    < assumption: w = 6n + 6 >
+
+     F = w + 6
+</pre>
+
+</p><p>
+Recognizing that we need a bound function and support in the loop invariant
+for showing items (iv) and (v) on the loop checklist, we offer the following
+as the final program. 
+
+<code><pre>
+|[ con N : int;  { N&ge;0 }
+   var r : int;
+   var n,s,w : int;
+
+   n,r,s,w := 0,0,1,7;
+   { bound t : N - n }
+   { I : r=n<sup>3</sup>  &and;  s = 3n<sup>2</sup> + 3n + 1  &and;  w = 6n + 6 &and; 0&le;n&le;N }
+   do n &ne; N  --->
+      n,r,s,w := n+1,r+s,s+w,w+6;
+   od
+   { Q': r=n<sup>3</sup> &and; n=N }
+   { Q : r = N<sup>3</sup> }
+]|
+</pre></code>
+
+</body>
+</html>

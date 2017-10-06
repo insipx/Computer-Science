@@ -1,0 +1,524 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+           "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<meta name="GENERATOR" content="TtH 2.78">
+                                                                                               
+       <b>
+<title>University of Scranton</title>
+
+University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+12th Annual High School Programming Contest (2002)</b><br />
+
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 1: Fibonacci Sequences</b>
+
+
+<p>
+A fibonacci sequence is an (infinite) sequence of numbers such that,
+beginning with the third element, each is the sum of the previous two.
+Hence, all the elements in a fibonacci sequence are determined by the
+first two.  The fibonacci sequence most often cited is the one whose
+first two elements are both one.  Its initial segment of length eleven
+(i.e., the sequence comprised of its first eleven elements) is as follows:
+<br />
+<p>
+
+<center>1 1 2 3 5 8 13 21 34 55 89<br /></center>
+
+<p>
+Develop a program that, given as input two integers i and j and a
+positive integer k, generates as output the initial segment of length k
+of the fibonacci sequence whose first two elements are i and j,
+respectively.
+
+<p>
+<b>Input</b> <br />
+The first line will contain a positive integer m indicating how many
+instances of the problem are to be solved.  On each of the subsequent
+m lines, a single instance will be described by means of three numbers:
+i, j, and k as described above.
+
+<p>
+<b>Output</b> <br />
+For each instance of the problem given as input (as described by i,
+j, and k), print the first k elements of the fibonacci sequence
+whose first two elements are i and j, respectively.
+
+<p>
+<b>Sample input</b> 
+
+<pre>3
+5 2 10
+-3 4 14
+0 -1 8 
+</pre>
+
+<p>
+<b>Corresponding output</b>
+
+<pre>5 2 7 9 16 25 41 66 107 173
+-3 4 1 5 6 11 17 28 45 73 118 191 309 500
+0 -1 -1 -2 -3 -5 -8 -13 
+</pre>
+
+<br>
+<p>
+<b>University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+12th Annual High School Programming Contest (2002)</b><br />
+
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 2: Durations in Normal Form</b>
+
+
+<p>
+An expression of the form <br />
+
+<center>W Days, X Hours, Y Minutes, Z Seconds <br /></center>
+
+<p>
+(where W, X, Y, and Z are nonnegative integers) describes a duration.
+Such an expression is said to be in <em>normal form</em>
+if W  &gt;  0, 0  &lt;  X  &lt;  24, 0  &lt;  Y  &lt;  60, and 0  &lt;  Z  &lt;  60.
+For example, each of the following is in normal form: <br />
+
+<center>
+<p>
+  5 Days, 16 Hours, 12 Minutes, 53 Seconds<br />
+  13 Days, 45 Minutes, 16 Seconds<br />
+  21 Hours, 8 Minutes<br />
+  36 Minutes<br />
+</center>
+
+<p>
+Notice how we omit mention of any unit of measure that is not needed
+(because the corresponding number of units is zero).  In the third expression
+above, for instance, we mention neither Days nor Seconds.
+
+<p>
+In contrast to the above, none of the following expressions is in normal form,
+the first because the number of Hours exceeds 23, the second because the
+number of seconds exceeds 59, and the third because Hours are mentioned
+when it need not be. <br />
+
+<center>
+<p>
+  5 Days, 49 Hours, 33 Minutes <br />
+  2 Days, 7 Hours, 5 Minutes, 93 Seconds <br />
+  1 Days, 0 Hours, 51 Minutes, 4 Seconds <br />
+</center>
+
+<p>
+You are to develop a program that, given as input a duration (in the form
+of a sequence of four nonnegative integers representing numbers of days,
+hours, minutes, and seconds, respectively), produces as output the same
+duration but expressed in normal form.
+
+<p>
+<b>Input</b> <br />
+The first line will contain a positive integer m indicating how many
+durations are to be processed.  Each of the next m lines will contain
+a description of a duration in the form of four nonnegative integers
+(separated by one or more spaces) representing numbers of 
+days, hours, minutes, and seconds, respectively.
+
+<p>
+<b>Output</b> <br />
+For each duration given as input, the program should produce three lines
+of output.  The first line echoes the duration given as input.  The second
+line expresses the same duration, but in normal form.  The third line is
+blank.
+
+<p>
+<b>Sample input</b>
+
+<pre>4
+5 49 33 0
+2 7 5 3573
+1 0 67 120
+5 2 43 15 
+</pre>
+
+<p>
+<b>Corresponding output</b>
+
+<pre>Duration 1:  5 Days, 49 Hours, 33 Minutes, 0 Seconds
+Normal Form: 7 Days, 1 Hours, 33 Minutes
+
+Duration 2:  2 Days, 7 Hours, 5 Minutes, 3573 Seconds
+Normal Form: 2 Days, 8 Hours, 4 Minutes, 33 Seconds
+
+Duration 3:  1 Days, 0 Hours, 67 Minutes, 120 Seconds
+Normal Form: 1 Days, 1 Hours, 9 Minutes
+
+Duration 4:  5 Days, 2 Hours, 43 Minutes, 15 Seconds
+Normal Form: 5 Days, 2 Hours, 43 Minutes, 15 Seconds
+
+</pre>
+
+<p>
+<b>University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+12th Annual High School Programming Contest (2002)</b><br />
+
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 3: Smallest Two-Distinct-Digits Multiple</b>
+
+
+<p>
+For every positive integer n, there exists a positive multiple of n
+whose decimal representation contains exactly two distinct digits.
+Develop a program that, given as input a positive integer n, outputs the
+smallest such multiple of n.
+
+<p>
+<b>Input</b> <br />
+The first line will contain a positive integer m indicating how many
+numbers are to be processed.  Each of the next m lines will contain a 
+positive integer.
+
+<p>
+<b>Output</b> <br />
+For each number given as input, three lines of output should be
+generated.  The first echoes the number, the second indicates the smallest
+positive multiple of that number containing exactly two distinct digits,
+and the third is blank.
+
+<p>
+<b>Sample input</b>
+
+<pre>4
+125
+22
+755
+103 
+</pre>
+
+<p>
+<b>Corresonding output</b>
+
+<pre>125
+500
+
+22
+110
+
+755
+755
+
+103
+515
+
+</pre>
+
+<p>
+<b>University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+12th Annual High School Programming Contest (2002)</b><br />
+
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 4: Occurrence-Counting Fixed Points</b>
+
+
+<p>
+Let us define the <em>occurrence-counting operation</em> as follows:
+when applied to a sequence S of integers, this operation yields the
+sequence T obtained by replacing each value in S by the number of
+occurrences of that value in S.
+
+<p>
+For example, suppose we have the sequence
+
+<!-- <p> -->
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table align="center"><tr><td nowrap="nowrap" align="center">
+S<sub>0</sub> = &lt; 2, 1, 2, -3, 5, 1, 5, 2, 9, 12 &gt;</td></tr></table>
+</td></tr></table>
+
+
+Applying the occurrence-counting operation to it, we get the sequence
+
+<!-- <p> -->
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table align="center"><tr><td nowrap="nowrap" align="center">
+S<sub>1</sub> = &lt; 3, 2, 3, 1, 2, 2, 2, 3, 1, 1 &gt;</td></tr></table>
+</td></tr></table>
+
+
+
+<p>
+Notice that wherever S<sub>0</sub> contains 2, S<sub>1</sub> contains 3,
+due to the fact that 2 occurs three times in S<sub>0</sub>.
+Similarly, wherever S<sub>0</sub> contains 1, S<sub>1</sub> contains 2,
+because 1 occurs twice in S<sub>0</sub>.
+
+<p>
+Applying the operation to S<sub>1</sub> yields
+
+<!-- <p> -->
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table align="center"><tr><td nowrap="nowrap" align="center">
+S<sub>2</sub> = &lt; 3, 4, 3, 3, 4, 4, 4, 3, 3, 3 &gt;
+</td></tr></table>
+</td></tr></table>
+
+<p>
+Applying the operation to S<sub>2</sub> yields
+
+<!-- <p> -->
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table align="center"><tr><td nowrap="nowrap" align="center">
+S<sub>3</sub> = &lt; 6, 4, 6, 6, 4, 4, 4, 6, 6, 6 &gt;
+</td></tr></table>
+</td></tr></table>
+
+
+
+<p>
+If we apply the operation to S<sub>3</sub>, the resulting sequence is S<sub>3</sub> 
+once again (because, in S<sub>3</sub>, 6 occurs six times and 4 occurs four times!).
+A sequence such as this (i.e., one that yields itself when the
+occurrence-counting operation is applied to it) is said to be a
+fixed point (of that operation).
+
+<p>
+It is a fact that, if, as illustrated above, we repeatedly apply the
+occurrence-counting operation (starting with some sequence S), we will
+eventually obtain a sequence that is a fixed point.
+
+<p>
+Develop a program that takes as input a sequence S of integers and
+produces as output the fixed point obtained by repeatedly applying
+the occurrence-counting operation, starting with S.
+The output should also report the number of applications of the
+operation needed to arrive at that fixed point (for the first time).
+
+<p>
+<b>Input</b> <br />
+The first line will be a positive integer m indicating the number of
+instances of the problem that are to be solved.  The following 2m lines
+contain the m instances, with each instance described on two lines.
+The first line of each instance gives the length n (0  &lt;  n  <font face="symbol">£</font
+> 40)
+of the sequence to be analyzed. The second line contains the sequence.
+
+<p>
+<b>Output</b> <br />
+For each instance, four lines of output should be generated.
+The first echoes the input sequence.
+The second gives the fixed point obtained from that sequence via
+repeated application of the occurrence-counting operation.
+The third reports how many applications of the operation were necessary
+in order to arrive at that fixed point.
+The fourth line is blank.
+
+<p>
+<b>Sample Input</b>
+<pre>3 
+8
+3 3 4 1 4 4 3 4 
+5 
+8 2 4 3 9 
+10
+4 5 -1 -1 4 5 12 3 5 4  
+</pre>
+
+<p>
+<b>Corresponding output</b> <br />
+
+<pre>Sequence 1:  3 3 4 1 4 4 3 4
+Fixed Point: 3 3 4 1 4 4 3 4
+Apps: 0
+
+Sequence 2:  8 2 4 3 9
+Fixed Point: 5 5 5 5 5
+Apps: 2 
+
+Sequence 3:  4 5 -1 -1 4 5 12 3 5 4
+Fixed Point: 6 6 4 4 6 6 4 4 6 6
+Apps: 3
+
+</pre>
+
+<p>
+<b>University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+12th Annual High School Programming Contest (2002)</b><br />
+
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 5: Area Covered by Overlapping Rectangles</b>
+
+
+<p>
+Develop a program that, given as input a set of rectangles lying on the
+cartesian plane, reports the total area covered by those rectangles.
+(This is not as simple as finding the sum of the areas of the given
+rectangles, because the area of any section of the plane covered by
+two or more rectangles should be counted only once.)
+
+<p>
+In order to make the problem less difficult, you may make three
+assumptions about the rectangles given as input:
+
+<ol type="1"><p>
+<li>       They all lie entirely on the finite sub-plane bounded by the
+      lines x = 0, x = 100, y = 0, and y = 100.</li>
+<p>
+<li>       All their sides are either parallel or perpendicular to the line
+      x = 0.</li>
+<p>
+<li>       All their corners correspond to points whose x- and y-coordinates
+      are integers.</li>
+</ol>
+
+<p>
+<b>Input:</b> <br />
+The first line will contain a positive integer m indicating how many
+instances of the problem are to be solved.  Subsequent lines encode
+the instances.  The first line of each instance contains a positive
+integer n indicating the number of rectangles to be processed.
+Each of the next n lines contains a description of one of those
+rectangles.  Such a description contains four integers (all
+between 0 and 100, inclusive) x<sub>1</sub>, y<sub>1</sub>, x<sub>2</sub>, and 
+y<sub>2</sub>, with x<sub>1</sub>  &lt;  x<sub>2</sub> and y<sub>1</sub>  &gt;  y<sub>2</sub>.
+That is, (x<sub>1</sub>,y<sub>1</sub>) is the point corresponding to the
+<em>upper left</em> corner of the rectangle and (x<sub>2</sub>,y<sub>2</sub>)
+is the <em>lower right</em> corner.
+
+<p>
+<b>Output:</b> <br />
+For each instance, report the area covered.
+
+<p>
+<b>Sample input</b> 
+
+<pre>2
+1
+5 9 8 2
+3
+0 4 2 2
+5 9 8 2
+1 5 6 3 
+</pre>
+
+<p>
+<b>Corresponding output</b>
+
+<pre>Instance 1: 21 square units
+Instance 2: 32 square units
+
+</pre>
+
+<p>
+<b>University of Scranton<br />
+ACM Student Chapter /  Computing Sciences Department<br />
+12th Annual High School Programming Contest (2002)</b><br />
+
+
+<tt>------------------------------------------------------------------------------</tt>
+
+<p>
+<b>Problem 6 Bridge Hand Evaluation</b>
+
+
+<p>
+In a standard deck of playing cards, there are 52 cards, each one
+uniquely identified by its suit (either Spades, Diamonds, Hearts,
+or Clubs) and its rank (any of 2, 3, 4, ..., 10, Jack, Queen, King,
+or Ace).
+
+<p>
+In many card games, each player is dealt a hand (a collection
+of cards from the deck) and plays it via a sequence of tricks,
+each one either a winning or losing trick.
+
+<p>
+In the card game Bridge, each player evaluates her hand of thirteen
+cards prior to bidding against the other.  The most popular method of
+hand evaluation is called the Milton-Work evaluation method.  In this
+method, each Ace found in the player's hand is worth four points,
+each King is worth three points, each Queen is worth two points, and
+each Jack is worth one point.
+
+<p>
+Another method is known as the Losing Trick Count method, which works
+by estimating the number of losing tricks, or losers, that the player
+will suffer in playing her hand.  For each of the four suits, we count
+the number of losers for that suit.  If a hand contains no cards from
+a suit, count no losers for that suit.  If a hand contains exactly one 
+card from a suit, count one loser if it is not the Ace and zero losers
+otherwise.  If a hand contains exactly two cards from a suit, the
+number of losers for that suit corresponds to how many of the two ranks
+Ace and King are not among the ranks of those two cards.  If a hand
+contains three or more cards from a suit, the number of losers for that
+suit corresponds to how many of the three ranks Ace, King, and Queen are
+not among the ranks of those (three or more) cards.
+
+<p>
+<b>Input:</b><br />
+The first line of input will be a positive integer m indicating the
+number of Bridge hands to evaluate.  Each of the subsequent m lines
+will contain a description of a Bridge hand.  In describing a Bridge
+hand, one character will be used for representing each card.
+Specifically, Ace is denoted by `A', King by `K', Queen by `Q',
+Jack by `J', and Ten by `T'.  Smaller ranks are denoted by the
+corresponding digits.  That is, Nine is denoted by `9', Eight by `8', etc.
+Each hand will be sorted into four suits; within each suit, the cards
+will be sorted by rank from the Ace downward to the two.  A space will
+separate the cards in one suit from those in the next.  If a suit does
+not contain any cards, the suit will be represented by a dash (-).
+
+<p>
+<b>Output:</b><br />
+The program will output the hand, followed by the Milton-Work point
+count and the Losing Trick Count losers.
+
+<p>
+<b>Sample input</b>
+
+<pre>2
+AK A54 T9432 KJ5
+KQ5432 J76 - K854
+
+</pre>
+
+<p>
+<b>Corresponding output</b>
+
+<pre>Hand 1: AK A54 T9432 KJ5
+Milton-Work Points: 15
+Losing Tricks: 7
+
+Hand 2: KQ5432 J76 - K854
+Milton-Work Points: 9
+Losing Tricks: 6 
+</pre>
+
+<p>
+
+<br /><br /><hr /><small>File translated from
+T<sub><font size="-1">E</font></sub>X
+by <a href="http://hutchinson.belmont.ma.us/tth/">
+T<sub><font size="-1">T</font></sub>H</a>,
+version 2.78.<br />On 26 Apr 2002, 15:01.</small>
+</html>

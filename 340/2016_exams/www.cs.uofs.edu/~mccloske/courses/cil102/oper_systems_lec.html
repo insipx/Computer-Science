@@ -1,0 +1,267 @@
+<html>
+<head>
+  <title>C/IL 102 Notes on Software</title>
+</head>
+<body>
+<H2>
+C/IL 102<br />
+Notes on Software, especially Operating Systems
+</H2>
+
+<!-- <H3>Still under construction</H3> -->
+
+<p>
+<em>Acknowledgement:</em> Much of the material on this page is based upon
+<A HREF="http://computer.howstuffworks.com/operating-system.htm/printable">
+How Operating Systems Work</A>
+
+
+<!--
+<p>
+An operating system is (system) software that runs on a computer for the
+purpose of "controlling the activities of the machine" and "managing the
+machine's available resources";  this makes it possible for users to run
+application programs.
+
+What does an OS do?  Several things:
+
+* shell: provides a user interface (e.g., GUI, command-line, etc.)
+* Command Processor: accepts commands (keyboard presses, mouse clicks, etc.)
+    and takes appropriate actions
+* Scheduler :  invoked by the command processor, it puts a new process
+    into the list of processes waiting to be executed.  But first it
+    needs to use file manager in order to find the code
+* File manager and resource allocator : controls retrieval/placement of data
+      on disks, etc., allocation of printers, tapes, etc.
+memory manager: where to put stuff in RAM
+dispatcher: access to CPU. Processes are either blocked, ready, or
+  executing.  Time slices.  Interrupts.
+
+
+Evolution of OS's:
+* Early days: Each programmer took over a machine for a period of time
+   and controlled it "manually".
+* Batch Processing: Computer operator was in control; programmers would
+   submit "jobs" (pile of punch-hole cards), and they would be executed
+   in possibly FIFO order.  (Input data had to be provided with program)
+* Interactive Processing: addressed need for program user to provide
+   input interactively. (dialog between user and computer)
+* time-sharing: multiple users supported at same time.
+     Gives appearance of being devoted to each user, but actually
+     they are sharing resources.
+* networks: multiple computers sharing resources.
+-->
+
+<p>
+Recall that a computer program is a set of instructions that can be
+interpreted and executed by a computer. 
+<em>Software</em> is a collective term for computer programs, although
+it is also sometimes used to refer to stored data.
+Software is commonly categorized as follows:
+<ul>
+  <li><a href="http://en.wikipedia.org/wiki/Application_software">Application
+    Software</a> is intended to help a user to perform
+    some task (or set of related tasks) of interest.
+    </p><p>
+    Examples of popular applications include document creation/editing
+    (MS Word), presentation creation/editing (MS Powerpoint), 
+    database management (MS Access, various Oracle products),
+    accounting/financial management (Quickbooks),
+    web browsing (Mozilla Firefox), (academic) course management (Angel),
+    media players (for listening to music or watching videorecordings),
+    and games.
+    </p><p>
+    Note that all of these tasks relate to activities (e.g., information
+    creation/management/retrieval and entertainment) in which humans
+    engaged long before computers existed, but for which computers have
+    been found to be useful tools.  (That is, computers have been found
+    to be <b>applicable</b> in carrying out these tasks.)
+  </li>
+  <li><a href="http://en.wikipedia.org/wiki/System_software">System
+    Software</a>:
+    <!-- is for the purpose of operating the computer hardware
+    in order to provide a platform for executing application software.
+    -->
+    This refers to programs that either make the computer usable at all
+    (e.g., the operating system) or provide utilities/tools by which to
+    make the computer's operation more efficient or pleasant.
+    One could distinguish between these sub-categories: 
+    <ul>
+      <li><a href="http://en.wikipedia.org/wiki/Operating_system">Operating
+        System</a>: The purpose of an OS is to organize/control/manage a
+         computer's hardware and software resources so as to make it possible
+         for application programs to run, hence making the machine usable and
+         useful.  
+         <!-- Implementing the functions that an OS provides via software
+          rather than "hardwiring" it into the electronic circuitry
+          makes a computer more flexible in that 
+         -->
+      </li>
+      </p><p>
+      <li><a href="http://en.wikipedia.org/wiki/Utility_software">Utility
+        software</a>: Examples include programs for managing files on secondary
+        storage (copying, moving (from one folder to another), deleting, and
+        compressing/decompressing files; disk defragmentation),
+        program installing/uninstalling;
+        installing printers (or other hardware);
+        setting time and date; setting up a local network;
+        system configuration, and anti-virus programs.
+        <p>
+        More generally, a utility program is one whose purpose is to
+        aid a user in making effective use of a computer (and/or
+        to make the experience more pleasant).
+      </li>
+      </p><p>
+      <li><a href="http://en.wikipedia.org/wiki/BIOS">BIOS</a>
+        (Basic Input/Output System): used when a computer is powered up;
+        checks that various components are working and initiates loading
+        into RAM of the operating system, to which control is then
+        relinquished.
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>
+In recent years, desktop and laptop PC's normally have come pre-loaded 
+with the most recent incarnation of the <em>Microsoft Windows</em> family
+of operating sytems, the latest of which is <em>Windows 7</em>.
+<!-- Vista</em>, which became available in 2007. -->
+However, many people still use one of its predecessors, either 
+<em>Vista</em> or <em>Windows XP</em>.
+Many corporate (and educational institution) computers
+run some flavor of <em>Unix</em> (possibly <em>Linux</em>), which is also 
+popular among serious computer enthusiasts, who tend to view Windows 
+(and Microsoft products in general) with some disdain.
+Apple Macintosh computers come pre-loaded with a flavor of Unix called
+<em>OS X</em>.
+
+<p>
+Special-purpose computers, such as those that control microwave ovens,
+have no need for an OS, because the set of functions they perform is narrow
+and unchanging, and hence these functions are typically "hardwired" into the
+electronic circuitry.  
+Computational devices that are designed to be more flexible, on the other
+hand, run under the direction of operating systems.  By "flexibile" we
+mean that their behavior can be changed, either by upgrading (or adding new)
+application programs or possibly even upgrading (or replacing) the OS itself.
+<em>Cell phones</em> and <em>personal digital assistants</em> (PDAs)
+utilize OS's (e.g., Android),
+although they tend to be somewhat more rudimentary than the
+OS's used on more powerful desktop/laptop computers.
+
+<p>
+<b>Question:</b> What does an operating system do?
+<p>
+<b>Answer:</b> At least two main things:
+<ol>
+  <li>It manages the hardware and software resources of the system, including
+      the processor, memory, and disk space. (On a cell phone, this list
+      would include the keypad, the screen, the address book,
+      the phone dialer, the battery, and the network connection.)
+  </li>
+  <li>It provides a stable, consistent way for application programs (and
+      users) to communicate with the hardware without having to know all
+      the details of the hardware (such as which brand/model of hard disk
+      or printer is attached).  
+  </li>
+</ol>
+
+<p>
+One can categorize OS's based upon the kinds of computers they control
+and the kinds of applications they support.  Indeed, we can identify
+four broad classes:
+<ul>
+  <li><b>real-time</b>: used for controlling machinery, scientific instruments,
+      and industrial systems (e.g., factories, nuclear reactors).
+      This kind of OS typcially provides very little user interface
+      support or end-user utilities; rather, its purpose is to ensure
+      that certain events happen (in whatever environment it controls)
+      in the right sequence and at the right times.
+  </li>
+  </p><p>
+  <li><b>single-user, single-task</b>: designed to manage a computer so that
+      one user can execute one program at a time.  The <em>Palm OS</em> 
+      for Palm hand-held computers is an example, as was
+      <em>MS-DOS</em> (Microsoft Disk Operating System), which ran on
+      "IBM-compatible" PC's in the early 1980's. 
+  </li>
+  </p><p>
+  <li><b>single-user, multi-tasking</b>: designed to allow a single user
+      to run multiple programs at the same time.  MS Windows is an example,
+      This is more complicated than single-tasking because the various
+      executing processes must not be allowed to interfere with each
+      other (for example, by overwriting each other's data in RAM) and each
+      process must be given sufficiently many "processor cycles" (with
+      sufficient frequency) to continue doing its job.  (If a media player
+      program is playing a music CD or a video on DVD, the processor
+      must devote some attention to it on a regular basis or else the
+      sound or image will become "choppy".)
+  </li>
+  </p><p>
+  <li><b>multi-user</b>: designed to allow multiple users to run
+      multiple programs at the same time.  This is more complicated
+      than single-user because care must be taken not to allow one
+      user's program to access another user's private data.
+      Examples include any in the <em>Unix</em> family of OS's,
+      including Linux.
+  </li>
+</ul>
+
+<p>
+Now we answer, in somewhat more detail, the question raised earlier:
+<em>What does an operating system do?</em>
+We can identify at least six categories of tasks:
+<ul>
+  <li><b>processor management</b>: schedules processes for execution.
+      Typically, many processes are "in execution" concurrently, but the
+      CPU can be devoted to running (i.e., executing the instructions of)
+      at most one process at any moment in time.
+      (Under Windows XP, press CNTRL-ALT-DEL (at the same time) in order
+      to get the Windows Task Manager, which lists all the processes
+      running, how much RAM they're occupying, and what percentage of
+      CPU time they are consuming.) 
+      Each process takes turns getting "time slices"
+      (on the order of thousandths of a second) during 
+      which the CPU executes some of its instructions before switching
+      its attention to another process.
+  </li>
+  </p><p>
+  <li><b>memory management</b>: decides where in RAM to store programs and
+      data currently in use (making sure not to allow one to overwrite
+      another).
+  </li>
+  </p><p>
+  <li><b>device management</b>: handles input from the keyboard and 
+     mouse, makes sure that print jobs are scheduled properly.
+  </li>
+  </p><p>
+  <li><b>storage management</b>: maintains records about the files resident
+      on secondary storage devices (e.g., hard disk, memory sticks),
+      keeping track of where each file is stored and where "empty" space
+      exists for storing new files.
+      (Such records are stored on the storage devices themselves,
+      of course.)
+  </li>
+  </p><p>
+  <li><b>application interface</b>: an operating system acts as a layer
+      between the hardware and application programs, allowing the latter
+      to issue commands and requests to the former without the latter
+      having to "know" all the details of how the former works.
+      A good analogy is the "interface" through which one drives an
+      automobile.  Over the past fifty years, many advances have been made
+      in the "hardware" at the core of an automobile: the engine,
+      transmission, braking system.  Yet the interface that a driver
+      utilizes has changed very little over those years: it consists mainly
+      of gas and brake pedals, a steering wheel, and a lever for changing
+      gears.  
+  </li>
+  </p><p>
+  <li><b>user interface</b>: similar to the item above, except this
+      allows a user (rather than an application program) to interact
+      with the hardware in a structured, consistent way.  
+  </li>
+</ul>
+     
+</body>
+</html>

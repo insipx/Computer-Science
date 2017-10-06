@@ -1,0 +1,145 @@
+<html>
+<head>
+<title>  </title>
+</head>
+<body>
+<!--
+<H2>1999 U of S Programming Contest II<br>
+    November 3, 1999<br>
+    Problem 0: All in the Family
+</H2>
+-->
+<H2>All in the Family</H2>
+
+<p>
+For the purposes of this problem, let us define a <b>tree</b> to be
+an acyclic directed graph in which every node 
+---except for a distinguished node called the <b>root</b>--- 
+has exactly one outgoing edge.  The root has no outgoing edges.
+Let <tt>u</tt> and <tt>v</tt> be nodes in a tree.
+If there is an edge from <tt>u</tt> to <tt>v</tt>, then
+<tt>v</tt> is said to be the <b>parent</b> of <tt>u</tt>.
+(Equivalently, <tt>u</tt> is said to be the <b>child</b> of <tt>v</tt>.)
+More generally, <tt>u</tt> is said to be a <em>descendant</em> of <tt>v</tt>
+(equivalently, <tt>v</tt> is said to be an <em>ancestor</em> of <tt>u</tt>)
+if there is a path from <tt>u</tt> to <tt>v</tt>.  In particular, because
+there is a (trivial) path from every node to itself, every node is considered
+to be an ancestor and a descendant of itself.  An ancestor (respectively,
+descendant) of a node that is distinct from the node is referred to as a
+<b>proper</b> ancestor (respectively, descendant) of the node.
+
+<p>
+A <b>forest</b> is a collection of trees.
+
+<p>
+Let <tt>u</tt> and <tt>v</tt> be nodes in a forest. 
+If <tt>u</tt> and <tt>v</tt> occur in distinct trees of the forest,
+we say that they are <em>unrelated</em> to each other.
+If, on the other hand, <tt>u</tt> and <tt>v</tt> occur in the same tree,
+there is a unique node, referred to as the <b>lowest common ancestor</b>
+of <tt>u</tt> and <tt>v</tt>, such that 
+<ol>
+  <li>it is an ancestor of both <tt>u</tt> and <tt>v</tt>, and</li>
+  <li>none of its proper descendants is an ancestor of both
+      <tt>u</tt> and <tt>v</tt>.</li>
+</ol>
+
+<p>
+Consider the forest (of two trees) illustrated below.
+(All edges are understood to be pointing upwards.)
+Using the notation <tt>LCA(u,v)</tt> to denote the lowest
+common ancesor of <tt>u</tt> and <tt>v</tt>,
+we have <tt>LCA(I,F) = B</tt>, <tt>LCA(H,L) = A</tt>, and
+<tt>LCA(J,B) = B</tt>.  <tt>LCA(G,R)</tt>, on the other hand, is
+undefined, because <tt>G</tt> and <tt>R</tt> occur in separate trees
+of the forest.
+<pre>
+                          A                         Q
+                        / | \                       |
+                      /   |   \                     |
+                    /     |     \                   |
+                   B      C      D                  R
+                 / |      |      |                 / \
+               /   |      |      |                /   \
+              E    F      G      H               S     T
+            / |    |     / \
+          /   |    |    /   \
+         I    J    K   L     M
+             /|\ 
+            / | \
+           N  O  P </pre>
+
+
+<p>
+Let <tt>m</tt> and <tt>n</tt> be the distances from
+<tt>u</tt> to <tt>LCA(u,v)</tt> and from <tt>v</tt> to <tt>LCA(u,v)</tt>,
+respectively, and let <tt>p = min(m,n)</tt> and <tt>q = |m - n|</tt>.
+Then we say that <tt>u</tt> and <tt>v</tt> are <tt>(p-1)</tt>-st cousins
+<tt>q</tt> times removed.  In the case that <tt>p=0</tt>, we have that
+either <tt>u</tt> or <tt>v</tt> is an ancestor of the other.  Rather than
+referring to them as <tt>(-1)</tt>-th cousins, we usually say that
+<tt>v</tt> is the <tt>q</tt>-th generation ancestor of <tt>u</tt>
+(equivalently, that <tt>u</tt> is the <tt>q</tt>-th generation descendant
+of <tt>v</tt>), or the other way around, whichever is appropriate.
+
+<p>
+Develop a program that, given as input a forest of trees, followed by
+a sequence of pairs of nodes, reports for each such pair of nodes the
+relationship that the two have to one another.  You are to assume
+that there are 26 nodes in the forest, the names of which are the
+upper case letters <b>A</b> through <b>Z</b>.
+
+<p>The first line of input will contain a single natural number <tt>N</tt>
+indicating the number of edges in the forest.  On each of the next 
+<tt>N</tt> lines will be a pair of upper case letters 
+<!-- (each referring to a node).  Each such pair of letters indicates -->
+indicating the existence of an
+edge from the node named by the first letter to the node named by the second.
+Following that will be more lines of input, each containing a pair of 
+upper case letters.  For each of these pairs, your program should produce
+as output a message that reports the relationship between the two nodes
+named.
+There are four classes of possible relationships: none, ancestor, descendant,
+or cousin.  See the sample output for the correct kind of message to provide
+in each of the four cases.  (A node's relationship to itself is 0-th
+generation descendant (or ancestor).)
+
+<p>
+<b>Sample Input</b>
+<pre>18
+DA
+EB
+NJ
+OJ
+PJ
+CA
+HD
+IE
+MG
+JE
+KF
+LG
+FB
+BA
+GC
+RQ
+SR
+TR
+IF
+HL
+JB
+BJ
+RR
+GR</pre>
+
+<p>
+<b>Sample Output</b>
+<pre>IF: 0-th cousins 1 times removed
+HL: 1-th cousins 1 times removed
+JB: 2-th generation descendant
+BJ: 2-th generation ancestor
+RR: 0-th generation descendant
+GR: no relation</pre>
+
+</body>
+</html>

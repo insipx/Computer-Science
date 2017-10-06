@@ -1,0 +1,82 @@
+<html>
+<head>
+  <title>Huffman's Algorithm for Constructing a Codeword Table
+  </title>
+</head>
+<body>
+<h2>
+CMPS 340  File Processing<br />
+Huffman's Algorithm for Constructing a Codeword Table
+</h2>
+
+<p>
+<b>Input:</b>  an alphabet <tt>A</tt> of "symbols"
+(of which some "source text" is composed),
+and a mapping <tt>f : A &rarr; N</tt> 
+(<tt>N</tt> = set of all natural numbers), where,
+for each <tt>a&isin;A</tt>, <tt>f(a)</tt> is the "frequency" with which 
+<tt>a</tt> occurs in the source text.
+
+</p><p>
+<b>Output:</b> a mapping <tt>g : A &rarr; BS</tt>  
+(<tt>BS</tt> = set of all bit strings) associating 
+a (binary) codeword to each member of <tt>A</tt>.
+
+<pre>
+<hr>
+begin
+   q := new PriorityQueue(); // of weighted binary trees, where
+                             // lower weight equals higher priority
+   do for each a&isin;A
+      // make t a one-node tree with label a and weight f(a)
+      t := new BinTreeLeaf(a, f(a));
+      q.insert(t);          // insert t into q
+   od
+
+   do |A| - 1  times
+      t1 := q.deleteMin();     // extract from q the two trees 
+      t2 := q.deleteMin();     // having lowest weights
+
+      // make t be the tree having t1 and t2 as its left and right subtrees
+      // and the sum of their weights as its weight
+      t := new BinTreeInteriorNode(t1, t2, t1.weight() + t2.weight());
+
+      q.insert(t);             // insert t into Q
+   od
+
+   //At this point, q contains a single tree, the leaves of which are
+   //precisely the |A| nodes with which we began
+
+   t := q.deleteMin();   // let that tree be t
+
+   // Now do a depth-first traversal of t in order to compute, for each
+   // a in A, its codeword g(a).  The codeword for symbol a is the sequence 
+   // of 0's and 1's formed by concatenating the labels of the edges on the
+   // path from the root of t to the leaf whose label is a, where edges into
+   // left children are labeled '0' and edges into right children are labeled
+   // '1'.
+   depthFirstSearch(t, "");
+end 
+
+
+   /** Performs a depth-first search of the subtree rooted at the given
+   **  node v, under the assumption that the labels on the edges forming
+   **  the path to v from the root spell out the given bit string
+   **  (pathToHere).  During the search, as each leaf node is visited,
+   **  we record (in g, which is a mapping from the source alphabet to
+   **  the corresponding codewords, as induced by the tree) the bit string
+   **  spelled out along the path to the leaf from the root.
+   */ 
+   depthFirstSearch(BinTreeNode v, BitString pathToHere):
+
+      if v.isLeafNode()
+         a := v.label();
+         g(a) := pathToHere;   // record in g the codeword of symbol a
+      else // v is an interior node with two children
+         depthFirstSearch(v.leftChild(), pathToHere + '0');
+         depthFirstSearch(v.rightChild(), pathToHere + '1');
+      fi
+</pre>
+
+</body>
+</html>

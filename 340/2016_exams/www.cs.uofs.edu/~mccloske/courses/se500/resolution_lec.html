@@ -1,0 +1,286 @@
+<html>
+<head>
+<title>Short Introduction to Resolution</title>
+</head>
+<body>
+<h2>SE 500  Mathematics for Software Engineering<br />
+Proof by Resolution (in the context of Propositional Logic)
+</h2>
+
+<p>
+The basis for the method of proof referred to as "resolution" is the tautology
+<p><center>
+       (p &or; q) &and; (&not;p &or; r) <tt>&rArr;</tt> (q &or; r) 
+</center>
+
+<p>
+It gives rise to the "resolution rule of inference":
+
+<pre>
+          p &or; Q, &not;p &or; R 
+        -----------------     (where p is a propositional variable)
+              Q &or; R 
+</pre>
+
+</p><p>
+In effect, in applying this rule you combine two disjunctions of literals
+to form a (typically larger) disjunction of the same kind, but from each
+disjunction one of its literals is "cancelled out" by its counterpart
+in the other disjunction.  (E.g., <tt>p</tt> and <tt>&not;p</tt> cancel
+each other out.)
+</p><p>
+Special cases of this rule include
+<pre>
+          p, &not;p &or; R         p &or; Q, &not;p            p, &not;p
+        ------------- ,    ------------- , and   -------
+              R                  Q                false
+</pre>
+
+The first case is obtained by taking <tt>Q:=false</tt> in the general rule;
+the second case is obtained by taking <tt>R:=false</tt>; the third is
+obtained by taking <tt>Q,R := false,false</tt>.
+
+     
+<p>
+<b>Definition:</b>
+ A <b>literal</b> is a propositional variable or a negated propositional
+ variable.
+<p>
+Example 1:  p<br />
+Example 2:  &not;p
+
+<p>
+<b>Definition:</b> A <b>clause</b> is a disjunction of zero or more literals. 
+<p>
+Example 1:  p &or; &not;q &or; r <br />
+Example 2:  &not;r <br />
+Example 3:  []    (this denotes an "empty clause", which equals <b>false</b>,
+  the identity element of disjunction)
+
+<p>    
+<b>Note:</b> 
+   If a particular literal occurs two or more times in the same clause,
+   you get an equivalent clause by removing all but one occurrence of
+   that literal.  (This is due to symmetry/commutativity and 
+   idempotency of disjunction.)
+<b>End of note.</b>
+
+<p>
+<b>Note:</b>
+   If a clause contains both the positive and negated forms of some
+   literal (e.g. both p and &not;p), it is equivalent to <b>true</b>.  Such a
+   clause is of no use in the context of proof by resolution.
+   (Reason: In a conjunction, a conjunct having value <b>true</b> can be
+   omitted, because <b>true</b> is the identity element of conjunction.)
+<b>End of note.</b>
+
+
+<p>
+<b>Definition:</b>
+   A boolean expression is said to be in <b>conjunctive normal form</b> (CNF)
+   if it is a conjunction of zero or more clauses.  (A conjunction of zero
+   clauses equals <b>true</b>, because <b>true</b> is the identity element
+   of conjunction.)
+<P>
+Example: (p &or; q &or; &not;r &or; &not;s)  &and;  q  &and;  (&not;p &or; &not;q)
+
+
+<p>
+<b>Theorem:</b> For any boolean expression E, there is an equivalent boolean 
+   expression E' that is in CNF.
+
+<p>
+<b>Proof:</b>
+   (sketch) Here is an algorithm for transforming an arbitrary boolean
+   expression E into an equivalent expression E' that is in CNF.
+   Repeat each step until it is no longer applicable.
+   (Implicitly, you may use symmetry of &and; or &or; anywhere it is
+   convenient.)
+
+</p><p>
+   Step 0: Find a subexpression P&ne;Q and rewrite it (by (3.14)) as
+            &not;P = Q 
+
+</p><p>
+   Step 1: Find a subexpression P=Q and rewrite it (by (3.80)) as
+
+                        (P <tt>&rArr;</tt> Q) &and; (Q <tt>&rArr;</tt> P).
+</p><p>
+   Step 2: Find a subexpression P <tt><==</tt> Q and rewrite it (by (3.58))
+    as 
+                               Q <tt>&rArr;</tt> P.
+</p><p>
+   Step 3: Find a subexpression P <tt>&rArr;</tt> Q and rewrite it (by (3.59))
+   as 
+                               &not;P &or; Q.
+<p>
+   Step 4: Find a subexpression &not;(P &and; Q) and rewrite it
+    (by (3.47a)) as
+                              &not;(P) &or; &not;(Q)
+           or else find a subexpression &not;(P &or; Q) and rewrite it
+           (by (3.47b)) as
+
+                              &not;(P) &and; &not;(Q).
+<p>
+   Step 5: Find a subexpression &not;&not;P and rewrite it (by (3.12))
+   as P.
+<p>
+   Step 6: Find a subexpression P &or; (Q &and; R) and rewrite it (by (3.45)) as
+
+                           (P &or; Q) &and; (P &or; R).
+
+
+<p>
+<b>Definition:</b> 
+  An argument consists of a set of premises and a conclusion.  An argument
+  is said to be valid if the premises entail the conclusion (i.e., if
+  the truth of all the premises guarantees the truth of the conclusion).
+  (To put it one more way, an argument is valid if there is no state in
+  which all its premises are true but its conclusion is false.)
+  Formally, an argument can be written as an implication
+<p><center>
+  P<sub>1</sub> &and; P<sub>2</sub> &and; ... &and; P<sub>k</sub> &nbsp;
+  <tt>&rArr;</tt> &nbsp; C &nbsp; &nbsp;   (*)
+</center>
+
+</p><p>
+  where the Pi's are boolean expressions corresponding to the premises
+  and C is a boolean expresson corresponding to the conclusion.  The
+  argument is valid if this implication is valid (i.e., a tautology).
+
+<hr>
+<h3>Using Resolution to Prove (by Contradiction) the validity of arguments
+</h3>
+<p>
+Our goal, then, is to prove the validity of (*) (where the P<sub>i</sub>'s
+and C have been suitably chosen).  Now,
+
+<pre>
+       P<sub>1</sub> &and; P<sub>2</sub> &and; ... &and; P<sub>k</sub> &rArr; C (*)
+
+   =      < (3.59) >
+
+       &not;(P<sub>1</sub> &and; P<sub>2</sub> &and; ... &and; P<sub>k</sub>) &or; C 
+
+   =      < DeMorgan (3.47b); (3.12) >
+
+       &not;((P<sub>1</sub> &and; P<sub>2</sub> &and; ... &and; P<sub>k</sub>) &and; &not;C)
+
+   =      < (3.15) >
+
+       P<sub>1</sub> &and; P<sub>2</sub> &and; ... &and; P<sub>k</sub> &and; &not;C  =  false
+
+   =      < (3.80) >
+
+       (P<sub>1</sub> &and; P<sub>2</sub> &and; ... &and; P<sub>k</sub> &and; &not;C  &rArr;  false) &and; (P<sub>1</sub> &and; P<sub>2</sub> &and; ... &and; P<sub>k</sub> &and; &not;C  <==  false)
+
+   =      < (3.75) >
+
+       (P<sub>1</sub> &and; P<sub>2</sub> &and; ... &and; P<sub>k</sub> &and; &not;C  &rArr;  false)  &and;  true
+
+   =      < (3.39) >
+
+       P<sub>1</sub> &and; P<sub>2</sub> &and; ... &and; P<sub>k</sub> &and; &not;C  &rArr;  false               (*')
+</pre>
+
+<p>
+This shows that, to prove (*), we may just as well prove (*').  In order to do
+so, we do the following:
+<ol>
+  <li> Find (by following the algorithm sketched above) a CNF formula F that is
+       equivalent to P<sub>1</sub> &and; P<sub>2</sub> &and; ... &and;
+       P<sub>k</sub> &and; &not;C.  (In practice, it's usually
+       easier to find a CNF formula for each of
+       P<sub>1</sub>, P<sub>2</sub>, ..., P<sub>k</sub>, and &not;C 
+       individually, and then take the conjunction of those.)  For some n,
+       we will have F = L<sub>1</sub> &and; L<sub>2</sub> &and; ... &and;
+       L<sub>n</sub>, where each L<sub>i</sub> is a clause.
+  </li>
+  <li> Construct a proof of the following form:
+    <ol type=a>
+        <li>Each line contains a single clause, which is either one of the
+            L<sub>i</sub> or else the result of applying the resolution rule of
+            inference to the clauses appearing on two previous lines of
+            the proof.  (For the sake of readability, we annotate the
+            proof by numbering the lines and by providing, after each clause,
+            a justification for writing it.)
+        </li> 
+        <li>The last line contains the empty clause [] (or <b>false</b>,
+            if you prefer).
+          <p>
+          By virtue of the tautology stated at the very beginning and the
+          transitive property of implication, every clause appearing in such
+          a proof is a consequence of F.  Hence, such a proof demonstrates
+          F <tt>&rArr;</tt> false, which equivales (*'), exactly what we
+          want to prove.
+       </li>
+    </ol>
+  </li>
+</ol>
+
+<p>
+<b>EXAMPLE:</b> 
+Suppose that the result of translating
+ P<sub>1</sub> &and; P<sub>2</sub> &and; ... &and; P<sub>k</sub> &and; &not;C
+into CNF is the formula
+L<sub>1</sub> &and; L<sub>2</sub> &and; L<sub>3</sub> &and; L<sub>4</sub>, where
+<pre>
+    L<sub>1</sub>: &not;p      L<sub>2</sub>: p &or; q &or; r       L<sub>3</sub>: &not;q &or; r      L<sub>4</sub>: p &or; &not;r
+</pre>
+<p>
+One proof is as follows:
+<pre>
+ 1. &not;p           (L<sub>1</sub>)
+ 2. p &or; q &or; r   (L<sub>2</sub>)
+ 3. q &or; r        (1,2)
+ 4. &not;q &or; r       (L<sub>3</sub>)
+ 5. r            (3,4)   (note: r &or; r = r)
+ 6. p &or; &not;r       (L<sub>4</sub>)
+ 7. p            (5,6)
+ 8. []           (1,7)   (note: the "empty clause" [] equivales false)
+</pre>
+
+Notice that we annotate each line by mentioning either that it corresponds
+to a premise (such as L<sub>1</sub>) or else by identifying the two lines
+containing the clauses from which the current line was derived, via an
+application of the resolution rule of inference.
+
+<hr>
+<h3>A Note of Caution</h3>
+In applying the resolution rule of inference, you may not "cancel out"
+two or more pairs of literals.  For example, suppose that you have
+clauses <tt>L: p&or;&not;q&or;r</tt> and <tt>M: &not;p&or;q&or;s</tt>.
+It would <b>not</b> be a valid application of the rule 
+to conclude <tt>r&or;s</tt> from <tt>L</tt> and <tt>M</tt>.
+In this case we have cancelled the <tt>p</tt> (respectively, <tt>&not;q</tt>)
+in <tt>L</tt> with the <tt>&not;p</tt> (respectively, <tt>q</tt>) in <tt>M</tt>.
+
+</p><p>
+A valid application of the rule would either cancel the <tt>p</tt> in
+<tt>L</tt> with the <tt>&not;p</tt> in <tt>M</tt> to conclude
+<tt>&not;q&or;r&or;q&or;s</tt> or else
+cancel the <tt>&not;q</tt> in <tt>L</tt> with the <tt>q</tt> in <tt>M</tt>
+to conclude <tt>p&or;r&or;&not;p&or;s</tt>.
+Either way, the conclusion simplifies to <tt><b>true</b></tt> and
+hence is useless to us.
+
+</p><p>
+What is the underlying reason for why cancelling two or more pairs of
+literals "won't work"?  It is because
+<p><center>
+(p &or; &not;q &or; r) &and; (&not;p &or; q &or; s) <tt>&rArr;</tt> (r &or; s) 
+</center>
+</p><p>
+is <b>not</b> a tautology.  (To demonstrate this, take <tt>p</tt> and
+<tt>q</tt> to be equivalent but both <tt>r</tt> and <tt>s</tt> to be
+<b>false</b>.  Moreover, if we swap <tt>p</tt> with <tt>&not;p</tt> and/or
+<tt>q</tt> with <tt>&not;q</tt>, we can still falsify the implication.)
+
+</p><p>
+Hence, if in a proof we write on a line a clause that is obtained by
+applying the rule in this invalid way to two clauses on previous lines,
+the clause we have written is not guaranteed to be a consequence of the
+premises.
+
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+           "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<meta name="GENERATOR" content="TtH 2.78">
+                                                                                               
+<head>         
+<title>CMPS 340  File Processing &nbsp;
+ B-Trees: Insertion/Deletion Algorithms</title>
+</head>
+<body>
+<H3>
+CMPS 340  File Processing<br />
+B-trees: Definition of and Algorithms for Insertion/Deletion<br />
+</H3>
+
+&nbsp; <br />
+
+<p>
+A <b>B-tree</b> is a rooted tree in which each node contains a 
+sequence of keys.  
+(With each key there may be a collection of associated information.)
+To say that a B-tree has order m means that
+
+<dl compact="compact">
+	<dd> <em>(a)</em> No node contains more than 
+        m<font face="symbol"> -</font> 1 keys.</dd>
+
+	<dd> <em>(b)</em> No node, except possibly the root, 
+        contains fewer than 
+        <font face="symbol">é</font>m/2<font face="symbol">ù</font>
+        <font face="symbol"> -</font> 1
+        keys.  The root may have as few as one key.</dd>
+
+	<dd> <em>(c)</em> Each non-leaf node has exactly one more children
+        than keys.</dd>
+
+	<dd> <em>(d)</em> All leaves are equidistant from the root.</dd>
+
+	<dd> <em>(e)</em> Letting the keys in a node be 
+     x<sub>1</sub>, x<sub>2</sub>, ..., x<sub>r</sub> 
+     (where x<sub>1</sub>  &lt;  x<sub>2</sub>  &lt; ... &lt;  x<sub>r</sub>) 
+     and letting the subtrees rooted at its children
+     be s<sub>0</sub>, s<sub>1</sub>, ...
+     s<sub>r</sub>, it is the case that, for all i satisfying 0  &lt;  i
+     &le; r, all the keys in 
+     s<sub>i<font face="symbol">-</font>1</sub> are less than 
+     x<sub>i</sub> and all the keys in s<sub>i</sub> are greater than
+     x<sub>i</sub>.
+     (If duplicate keys are allowed, we could change the latter condition
+     to say that all the keys in s<sub>i</sub> are greater than 
+     <em>or equal to</em> x<sub>i</sub>.)</dd>
+</dl>
+From <em>(b)</em> and <em>(c)</em>, it follows that every non-leaf node,
+except possibly the root, has at least
+[m/2] (floor of m/2) children but no more than m children.
+
+<p>
+Below we describe algorithms for the insertion and deletion of a key
+into/from a B-tree of order m.
+To simplify the description, we assume that each node is (temporarily)
+capable of holding up to m keys and m+1 pointers to children.
+A node containing m keys is said to be <em>overflowing</em>.  A non-root node
+containing fewer than 
+<font face="symbol">é</font>m/2<font face="symbol">ù</font>
+<font face="symbol"> -</font> 1 
+keys is said to be <em>underflowing</em>.
+During the insertion process, a node may be temporarily overflowing.
+During the deletion process, a node may be temporarily underflowing.
+A node is said to be <em>full</em> if it contains the maximum allowable 
+number of keys (m<font face="symbol"> -</font> 1).
+A node is said to be <em>on the verge of underflowing</em> if it
+contains the minimum allowable number of keys 
+(<font face="symbol">é</font>m/2<font face="symbol">ù</font>
+<font face="symbol"> -</font> 1).  The
+functions <tt>Left_Sibling_of()</tt>, <tt>Right_Sibling_of()</tt>, 
+and <tt>Parent_of()</tt> have the obvious meanings.
+
+<p>
+
+<pre>
+Insert(z):
+  BEGIN
+    find leaf node M where z "belongs";
+    place z into proper place within M;
+    Adjust(M);
+  END Insert; 
+</pre>
+
+<p>
+
+<pre>
+Delete(z):
+  BEGIN
+    find node M where z "belongs";
+    IF z is not in M THEN
+       do nothing (or report error, if appropriate);
+    ELSE
+       IF M is a leaf THEN
+          remove z from M;
+          Adjust(M);
+       ELSE
+          find N, the leftmost leaf in the right subtree of z;
+          let z' be the smallest key in N;
+          remove z' from N;
+          replace z in M by z';
+          Adjust(N);
+       ENDIF
+    ENDIF
+  END Delete; 
+</pre>
+
+<p>
+
+<pre>
+Adjust(M):
+  BEGIN
+    IF M is overflowing THEN
+      IF Right_Sibling_of(M) exists and is not full THEN
+        LR-Redistribute(M);
+      ELSIF Left_Sibling_of(M) exists and is not full THEN
+        RL-Redistribute(M);
+      ELSE --all of M's immediate siblings are full
+        Split(M);
+        Adjust(Parent_of(M));
+      ENDIF;
+
+    ELSIF M is underflowing THEN
+      IF Left_Sibling_of(M) exists and is not on verge of underflowing THEN
+        LR-Redistribute(Left_Sibling_of(M));
+      ELSIF Right_Sibling_of(M) exists and is not on verge of underflowing THEN
+        RL-Redistribute(Right_Sibling_of(M));
+      ELSIF M is the root THEN
+        IF M has only one child THEN
+          child of M becomes root;
+          dispose of M;
+        ENDIF;
+      ELSE 
+        --To have arrived here, M must be underflowing, M must have
+        --at least one sibling, and all of M's immediate siblings are on
+        --the verge of underflowing.  It follows that concatenation 
+        --(or "merging", if you prefer) is called for
+        IF Right_Sibling_of(M) exists THEN
+          Concatenate(M);
+        ELSE --left sibling must exist
+          Concatenate(Left_Sibling_of(M));
+        ENDIF;
+      ENDIF;
+
+    ELSE --M is neither overflowing nor underflowing
+      do nothing;
+    ENDIF;
+  END Adjust; 
+</pre>
+
+<p>
+<b>Note:</b> 
+In any of the places where either of the two <tt>Redistribute</tt> 
+procedures are called, it may be beneficial to move as many keys 
+as necessary out of the ``giving'' node and into the ``receiving'' node 
+so as to result in the two of them having (as close as possible to) 
+an equal number of keys.  To accomplish this, simply nest the call to 
+the appropriate <tt>Redistribute</tt>  procedure inside a loop that iterates
+an appropriate number of times. <b>End of note.</b>
+
+<p>
+The subprograms <tt>LR-Redistribute()</tt>, 
+<tt>RL-Redistribute()</tt>, <tt>Split()</tt>, and <tt>Concatenate()</tt>
+are described via the pictures appearing below.  Each one takes a node as its
+lone parameter.  In the cases of <tt>LR-Redistribute()</tt> and 
+<tt>RL-Redistribute()</tt>, the parameter corresponds to the node that 
+is giving away one of its keys.
+In the case of <tt>Split()</tt>, the parameter corresponds to the node that gets
+split into two nodes.
+As for <tt>Concatenate()</tt>, the parameter corresponds to the sibling 
+on the left among the two adjacent siblings that are combined into a 
+single node.
+In the pictures, capital letters (e.g., A, B, etc.) refer to nodes and 
+small letters (u,v, etc.) refer to keys.
+
+<p>
+
+<pre>LR-Redistribute(B):
+       +-----+-+-+-+-----+                        +-----+-+-+-+-----+
+     A | ... |u|x|z| ... |                      A | ... |u|w|z| ... |
+       +-----+-+-+-+-----+                        +-----+-+-+-+-----+
+              /   \                                      /   \
+             /     \                                    /     \
+            /       \                                  /       \
+  +------+-+-+       +-+------+    ======&#62;      +------+-+     +-+-+-----+
+B | .... |v|w|     C |y| .... |               B | .... |v|   C |x|y| ... |
+  +------+-+-+       +-+------+                 +------+-+     +-+-+-----+
+         | | |       | |                               | |     | | |
+         | | |       | |                               | |     | | |
+         | | |       | |                               | |     | | |
+         D E F       G H                               D E     F G H
+
+</pre>
+
+<p>
+<tt>RL-Redistribute(C):</tt> 
+  Reverse the direction of the arrow in the picture above.
+
+<p>
+
+<pre>Split(C):
+          +-----+-+-+-----+                    +-----+-+-+-+-----+
+        A | ... |u|y| ... |                  A | ... |u|w|y| ... |
+          +-----+-+-+-----+                    +-----+-+-+-+-----+
+                | | |                                | | | |
+                | | |                                | | | |
+                B | D                                B | | D
+                  |                                   /   \
+                  |           ======&#62;                /     \ 
+          +----+-+-+-+----+                 +-----+-+       +-+-----+
+        C | .. |v|w|x| .. |               C | ... |v|       |x| ... | C'
+          +----+-+-+-+----+                 +-----+-+       +-+-----+
+                 | |                                |       |
+                 | |                                |       |
+                 E F                                E       F
+
+</pre>
+
+<p>
+<tt>Concatenate(C):</tt>
+  Reverse the direction of the arrow in the picture above.
+
+<p>
+
+<br /><br /><hr /><small>File translated from
+T<sub><font size="-1">E</font></sub>X
+by <a href="http://hutchinson.belmont.ma.us/tth/">
+T<sub><font size="-1">T</font></sub>H</a>,
+version 2.78.<br />On  9 Oct 2002, 15:09.</small>
+</html>

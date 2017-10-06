@@ -1,0 +1,154 @@
+<html>
+<head>
+<title>McCloskey's Notes on COBOL: index</title>
+</head>
+<body>
+
+<H1>COBOL</H1>
+<ul>
+  <li><A HREF="cobol_overview.html">Overview</A></li>
+  <li><A HREF="../cobol_clr.html">
+      Compiling, Linking, Running under the VMS operating system
+      (e.g., tiger.uofs.edu, vaxsrv.cs.uofs.edu)</A></li>
+  <li><A HREF="../vms_tutorial.html">VMS Dec Control Language (DCL) Tutorial</A>
+  </li>
+  <li>The Four Divisions
+     <ul>
+       <li><A HREF="cobol_ident_div.html">IDENTIFICATION</A></li>
+       <li><A HREF="cobol_environ_div.html">ENVIRONMENT</A></li>
+       <li><A HREF="cobol_data_div.html">DATA</A></li>
+       <li><A HREF="cobol_proc_div.html">PROCEDURE</A></li>
+     </ul>
+  </li>
+  <li><A HREF="cobol_files.html">Using Files</A></li>
+  <li><A HREF="cobol_subprogs.html">Subprograms</A></li>
+  <li>Example COBOL Programs (and Subprograms)
+      <ul>
+        <li><A HREF="../template.cob">COBOL Program Template</A></li>
+        <li><A HREF="../gpa_handout.txt">GPA Calculation Program</A></li>
+        <li><A HREF="../move_handout.txt">Program illustrating MOVE 
+            verb behavior</A></li>
+        <li><A HREF="../rewrite_examp.cob">Program that modifies a
+            sequential file in place using REWRITE verb</A></li>
+        <li>Subprogram and a driver (program that calls it):
+          <ul>
+            <li><A HREF="../plus1_sub.cob">Example Subprogram: Plus-One</A></li>
+            <li><A HREF="../plus1_sub_driver.cob">Driver for Plus-One</A></li>
+          </ul>
+        <li>Indexed file creation program and input data<ul>
+              <li><A HREF="../indexed_file_creation.cob">Program that creates
+                  an indexed Course file from a textual course file</A></li>
+              <li><A HREF="../courses-old.dat">Textual course file</A></li>
+            </ul>
+        </li>
+      </ul>
+  </li>
+  <!--
+  <li>Some DO's and DON'T's</li>
+  -->
+</ul>
+
+</body>
+</html>
+
+<!--
+Overview
+-history, significance, purpose of language (pp 1-4)
+-structure of a (sub)program: the four divisions (pp 19)
+-syntactic oddities (COBOL coding form, Area A, etc.) (p 28)
+-sample program (GPA calculation?) (pp 24-25, 39-40)
+-template
+
+Compiling, Linking, Running on tiger.uofs.edu
+
+The Four Divisions
+-IDENTIFICATION  (purpose, example) (p 103-104
+-ENVIRONMENT     (", ", SELECT clauses in INPUT-OUTPUT section) (p 105)
+-DATA 
+-overview  (p 107)
+-sample (p 93-95)
+-purpose of division: to declare/describe structure of data used (p 64)
+-FILE vs. WORKING-STORAGE sections (p 64, 76-79) 
+-data representation and the USAGE clause: by default, all data items,
+including numeric data, are viewed as being character strings (DISPLAY
+vs. COMPUTATIONAL modes) (474-484)
+-group vs. elementary data items (69-73)
+-data-names 
+-syntactic form (pp 19-20)
+-FILLER: a nonspecific data-name (i.e., anonymous) (p 67-68)
+-constants (p 65-66)
+-numeric literal (e.g., 37, -4.76)
+-nonnumeric literal (e.g., "Hello, world.") (single vs. double quotes)
+-figurative constant (e.g., reserved words SPACE, ZERO, TRUE, FALSE)
+-PICTURE clauses (for describing elementary data items) (80-90)
+-alphabetic, alphanumeric, numeric data "types" (A, X, 9 picture chars)
+-VALUE clause (for initialization) (p 68)
+-other picture characters 
+-for numeric data fields used in calculations (V, S, P)
+-for numeric data fields used for output ($, ',', Z, *, +, -)
+-others (B, *, /)
+-BLANK WHEN ZERO clause (p. 91)
+-record descriptions for group level data (p 69-73)
+-level numbers (01 for top level, 77 is out of style) indicate 
+hierarchical structure, indentation is for reader's sake
+-REDEFINES clause (overlay, variant records) (p 468-469)
+-reference modification (471-474)
+-qualification (to disambiguate between names)
+-tables (i.e., arrays) (p 356-362) (see SEARCH verb)
+-conditional (i.e., boolean in Ada, Pascal) data (Chap 5, 8)
+-relation(al) operators: <, <=, >, >=, =
+-compound expressions (using NOT, OR, AND operators)
+-condition names (88-level data items) (pp 139-144)
+-declaration (using VALUE clause)
+-SET verb (can set to TRUE, but not to FALSE)
+-class conditions (NUMERIC, ALPHABETIC, ALPHABETIC-LOWER, -UPPER) (p 233)
+-sign condition (p. 237)
+
+-PROCEDURE
+-overview: composed of paragraphs, each of which is like a
+parameter-less procedure; execution begins at 1st paragraph,
+continues until STOP RUN (or EXIT PROGRAM) is encountered.
+-commands
+-syntax descriptions (p 102)
+-"assignment" (MOVE (112-114), SET, INITIALIZE)
+-arithmetic (ADD, SUBTRACT, MULTIPLY, DIVIDE, COMPUTE)  (p 184-192)
+-exception-handling: ON SIZE ERROR
+-rounding: ROUNDED clause
+-Input/Output
+-file-oriented (OPEN, CLOSE, READ, WRITE, REWRITE, DELETE, START)
+-keyboard/monitor-oriented (ACCEPT, DISPLAY)  (pp 198-200)
+-flow-of-control
+-STOP RUN, EXIT PROGRAM, EXIT (bad?), GO TO (DEPENDING ON) (bad)
+-"subprogram" invocation (CALL (ON EXCEPTION), PERFORM)
+-conditional
+  --IF (note: P&K book uses periods prior to Chap. 8)
+  --EVALUATE
+-iteration (various forms of PERFORM)
+-forming a statement block using PERFORM/END-PERFORM 
+-character-processing (STRING, UNSTRING (ON OVERFLOW), INSPECT, COPY)
+  (pp 205-215)
+-high-level utilities
+-array searching (SEARCH, SEARCH ALL, SET, USAGE IS INDEX) (p 578-592)
+-file sorting (four forms of SORT) (pp 330-345) (most of Chap 11)
+-file merging (pp 345-351)  (2nd part of Chap 11)
+-no ops
+-CONTINUE, NEXT SENTENCE (see p. 233 for distinction: latter
+    exits from the IF, thru any # of levels)
+    (used as a stub for a paragraph, or as null statement 
+    for a branch of IF or EVALUATE)
+
+-subprograms (Chapter 23)
+-separate compilation
+-CALL, CANCEL, EXIT PROGRAM verbs, ON EXCEPTION condition (716-719)
+-argument passing (710-715)
+-linkage section
+-modes (BY CONTENT, BY REFERENCE)
+  -oddity:  caller specifies modes!!
+-INITIAL option (to reset local variables to initialized values) (726)
+-nested programs (724-735)
+-like paragraph, but local data may be declared
+
+-Report Writer Feature (Chapter 24)
+
+
+-->

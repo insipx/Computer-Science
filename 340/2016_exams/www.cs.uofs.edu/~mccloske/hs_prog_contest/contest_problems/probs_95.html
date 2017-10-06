@@ -1,0 +1,383 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<title>U of S 1995 High School Programming Contest Problems</title>
+</HEAD>
+<BODY>
+<H2>University of Scranton 1995 High School Programming Contest Problems</H2>
+
+<p>
+<A HREF="#Pool_pH_Maintenance">Problem 1: Pool pH Maintenance</A><br />
+<A HREF="#Builder_Friend">Problem 2: Builder's Friend</A>
+   <!--      <b>Note: Illustration is missing</b> -->
+<br />
+<A HREF="#Sum_Lengths">Problem 3: Summing Up Lengths</A><br />
+<A HREF="#Reverse_Polish">Problem 4: Reverse Polish Notation</A><br />
+<A HREF="#Message_Decoder">Problem 5: Message Decoder</A><br />
+<A HREF="#Max_Segment_Sum">Problem 6: Maximum Segment Sum</A>
+
+
+
+<p>&nbsp;
+<p>
+<A NAME="Pool_pH_Maintenance">
+<hr>
+<b>Problem 1: Pool pH Maintenance</b></A>
+<p>
+In order to maintain a pool properly, it is necessary to keep the pH level
+as close to 7.4&nbsp;as possible.  Every morning, the pool owner should
+check the pH level, and he/she should add, as necessary, either "pH Plus"
+or "pH Minus" (which come in the form of measurable powders).  (If the
+level is already equal to 7.4 then no pH adjusters should be added.)
+One ounce of the "pH&nbsp;Minus" that we are using will decrease the pool's
+pH by .1 per 5,000&nbsp;gallons of water.  One ounce of our "pH Plus" will
+increase the pool's pH by .2 per 5,000 gallons of water.
+
+<P>
+Develop a program that will determine the amount and type of pH adjuster that
+should be added to a pool, based on the current pH level and the size of the
+pool.  It may be helpful to know that there are 
+7.48&nbsp;gallons per cubic&nbsp;foot.
+
+<P>The program should accept input and provide output in the format
+shown below, repeating until a "Pool length" value of 0 (zero) is given.
+You may assume that the value entered by the user for "Current PH level"
+will not be 7.4.
+
+<p><b>Sample Program Execution:</b>
+<p>
+<tt>
+Pool length (feet): <u>24.0</u><br />
+Pool width (feet):  <u>12.5</u><br />
+Average pool depth (feet): <u>5.25</u><br />
+Current pH level: <u>7.2</u><br />
+<br />
+Pool size is 11781.00 gallons.<br />
+Add 2.36 ounces of pH Plus.<br />
+<br />
+Pool length (feet): <u>12.5</u><br />
+Pool width (feet):  <u>24.0</u><br />
+Average pool depth (feet): <u>5.25</u><br />
+Current pH level: <u>7.5</u><br />
+<br />
+Pool size is 11781.00 gallons.<br />
+Add 2.36 ounces of pH Minus.<br />
+<br />
+Pool length (feet): <u>0.0</u>
+</tt>
+
+
+<p>&nbsp;
+<A NAME="Builder_Friend">
+<hr>
+<b>Problem 2: Builder's Friend</b></A>
+
+<p>
+A wall facing company needs a program to estimate how many bricks--and
+pallets of bricks--are needed to face a wall so that they can make more
+accurate bids and save money.  The company uses bricks of only one size:
+8&nbsp;inches long, 2&nbsp;inches high.  The bricks come on pallets 
+of&nbsp;384.  Workers place a half inch of grout between adjacent bricks.
+In order to add strength to the wall, it is required that <b>every other</b>
+row of bricks begins with a half brick (4 inches wide).
+(See illustration for an example.)</P>
+<pre>
+          +-------+-------+-------+-------+-------+
+          |       |       |       |       |       |
+          +---+---+---+---+---+---+---+---+---+---+
+          |   |       |       |       |       |   |
+          +---+---+---+---+---+---+---+---+---+---+
+          |       |       |       |       |       |
+          +---+---+---+---+---+---+---+---+---+---+
+          |   |       |       |       |       |   |
+          +---+---+---+---+---+---+---+---+---+---+
+</pre>
+<!--
+<IMG SRC="brick_wall.gif" WIDTH=-23749 HEIGHT=19390 ALIGN="LEFT" 
+     HSPACE=16 VSPACE=16>
+-->
+<P>
+Develop a program that takes as input the length and height of up to six wall
+sections and that produces as output the number of bricks and pallets of 
+bricks that are needed for the job.  For our purposes, each section of
+wall should be considered separate from the others.  Also, all cut scraps
+will be thrown out.  In some cases this may be wasteful, but it saves the
+builders time.
+
+<P>
+The program should accept input and provide output in the format shown
+below (repeating until a value of 0 (zero) is entered for the number of
+wall sections).
+
+<p>
+<b>Sample Program Exeuction:</b>
+
+<p>
+<tt>
+Number of wall sections: <u>2</u><br />
+<br />
+Length of section 1 (inches): <u>24</u><br />
+Height of section 1 (inches): <u>24</u><br />
+Length of section 2 (inches): <u>1200</u><br />
+Height of section 2 (inches): <u>24</u><br />
+<br />
+The number of bricks needed for this job is 1455.<br />
+The number of pallets needed for this job is 4.<br />
+<br />
+<br />
+Number of wall sections: <u>0</u>
+</tt>
+
+<p>&nbsp;
+<A NAME="Sum_Lengths">
+<hr>
+<b>Problem 3: Summing Up Lengths</b></A>
+<p>
+An expression of the form <I>P</I> <B>Yards</B>, <I>Q</I> <B>Feet</B>, 
+<I>R</I> <B>Inches</B> is said to be in <I>normal form</I> if 
+P&gt;0, 0&lt;Q&lt;3, and 0&lt;R&lt;12.
+For example, each of the following is in normal form:
+<P>
+<center>
+  7 Yards, 2 Feet, 11 Inches<br />
+  1 Feet, 8 Inches<br />
+  2 Yards, 9 Inches<br />
+  2 Feet<br />
+</center>
+
+<p>
+Notice how we omit mention of any unit of measure that is not needed 
+(because the corresponding number of units is zero).
+In the last expression above, for instance, we mention neither Yards nor
+Inches.
+
+<p>
+In contrast to the above, none of the following expressions is in normal
+form, the first because the number of Feet exceeds 3, the second because 
+the number of Inches exceeds 12, and the third because Yards is mentioned
+when it need not be.</P>
+<P>
+<center>
+  5 Yards, 4 Feet, 3 Inches<br />
+  2 Feet, 15 Inches<br />
+  0 Yards, 2 Feet, 7 Inches<br />
+</center>
+
+<P>
+You are to construct a program that takes as input a sequence of lengths and
+produces as output the sum of those lengths, expressed in normal form.
+Each input length is entered on a separate line in the form of three integers,
+representing a number of yards, feet, and inches, respectively.  (The only
+restriction on the inputs is that they be nonnegative.  In particular,
+this means that the lengths given as input <em>need not</em> be in 
+normal form.)  End of input is signaled by a length of zero.</P>
+
+<P>The program should accept input and provide output in the format shown
+below.</P>
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter Length: <u>7 0 4</u><br />
+Enter Length: <u>0 5 25</u><br />
+Enter Length: <u>2 2 5</u><br />
+Enter Length: <u>0 0 0</u><br />
+<br />
+The sum of the lengths is 12 Yards, 10 Inches
+</tt>
+
+
+<p>&nbsp;
+<A NAME="Reverse_Polish">
+<hr>
+<b>Problem 4: Reverse Polish Notation</b></A>
+
+<P>
+Early in this century, the Polish logician Jan Lucasiewicz introduced a
+notation for logical and mathematical expression that eliminated the need
+for parentheses and rules of operator precedence and operator associativity
+for evaluation of such expressions.  This so-called <em>Polish Notation</em>
+calls for the operators to precede their operands.
+<!--   Polish Notation is often called "Prefix Notation." -->
+A variation, called <em>Reverse Polish Notation</em>,
+<!-- or "Postfix Notation," -->
+calls for the operators to follow their operands.
+For example, to evaluate the (normal) arithmetic expression </P>
+
+<center>8 - 5 + 3</center>
+
+<P>the evaluator would need to know which rules of precedence and
+associativity were in force.</P>
+
+<P>In order to indicate explicitly an expression's structure (which
+determines how it may be evaluated),
+we place parentheses around its subexpressions.
+<!--  of an expression in order to indicate explicitly how it is to be
+     evaluated.  -->
+The expression given above has two possible structures, which are given
+below together with how they would be written in Reverse Polish Notation.
+
+<P>
+<center>
+  (8 - 5) + 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;85-3+<br />
+  8 - (5 + 3) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;853+-<br />
+</center>
+
+<P>Construct a program that will accept as input a properly formed 
+Reverse Polish expression, evaluate it, and report the result. 
+Only positive, single digit numbers will be used in the expression, 
+although the result may be negative and/or have more than one digit.
+Only the operators +, -, *, and / will be used.  
+(The "/" operator denotes integer division.)&nbsp;
+No spaces or other punctuation will be used, and all input can be assumed
+to be valid.</P>
+
+<P>
+The program should accept input and provide output in the format shown
+below, repeating until a value of 0 (zero) is entered for an expression.</p>
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Reverse Polish Expression: <u>85-3</u><br />
+Result: 6 <br />
+<br />
+Reverse Polish Expression: <u>853+-</u><br />
+Result: 0 <br />
+<br />
+Reverse Polish Expression: <u>72/38+*</u><br />
+Result: 33 <br />
+<br />
+Reverse Polish Expression: <u>2</u><br />
+Result: 2 <br />
+<br />
+Reverse Polish Expression: <u>0</u><br />
+</tt>
+
+<p>&nbsp;
+<A NAME="Message_Decoder">
+<hr>
+<b>Problem 5: Message Decoder</b></A>
+<p>
+Develop a program that accepts as input two strings, the first of which
+is ciphertext (i.e., an encoded message) and the second of which is a 
+<em>key</em> that can be used to decode it, and that produces as output 
+the <em>plaintext</em> (i.e., the original message).
+
+<p>
+The key is a string of four uppercase letters.
+To decode the first letter of ciphertext, "add" it (see explanation below) 
+to the first letter of the key.  
+Similarly, to decode the second, third, and fourth letters of ciphertext,
+"add" them to the second, third, and fourth, respectively, letters of the key.  
+Beginning with the fifth letter of ciphertext, use the four letters of the
+key once more, in the same way.  (Thus, the first letter of the key is used
+for decoding the 1st, 5th, 9th, etc., letters of ciphertext, the second
+letter of the key is used for decoding the 2nd, 6th, 10th, etc., letters
+of ciphertext, and similarly for the third and fourth letters of the key.)
+<p>
+To "add" two letters together, add their numeric values together
+(using A=1, B=2, C=3, ..., Z=26), subtract 26 if the result is greater
+than 26, and then find the letter having the corresponding numeric value.
+For example, E&nbsp;+&nbsp;C&nbsp;=&nbsp;H (corresponding to 
+5&nbsp;+&nbsp;3&nbsp;=&nbsp;8) and 
+E&nbsp;+&nbsp;X&nbsp;=&nbsp;C (corresponding to 
+5&nbsp;+&nbsp;24&nbsp;-&nbsp;26&nbsp;=&nbsp;3).
+
+<P>Ciphertext given as input will not include lower case letters.
+It may, however, include spaces and punctuation marks (e.g., periods,
+commas, etc.).
+Upper case letters are to be decoded as described above.  Any other
+characters are assumed to be their own codes.  (E.g., The result of
+decoding a comma is a comma.)  
+
+<P>The program should accept input and provide output in the format shown
+below, repeating until a null string is entered for a message.</P>
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter Ciphertext: <u>EN UC ENDVCQG!</u><br />
+Enter Key: <u>BALL</u><br />
+<br />
+Plaintext: GO GO GOPHERS!<br />
+<br /><br />
+Enter Ciphertext: <u></u>
+</tt>
+
+<p>&nbsp;
+<A NAME="Max_Segment_Sum">
+<hr>
+<b>Problem 6: Maximum Segment Sum</b></A>
+
+<p>
+Develop a program that accepts as input a sequence of integers 
+and that produces as output the maximum among the sums of 
+all the nonempty contiguous subsequences of that sequence.
+
+<P>Consider, for example, the sequence
+<p>
+<center>
+<b>S</b> = &lt;2, 5, -1, -7, 12, 5, 3, -10, 5, -5, 20, -5, 0, 3&gt;
+</center>
+<p>
+<b>S</b> has length 14.  Thus, for every <em>i</em> and <em>j</em> 
+satisfying 1 &lt;= <em>i</em> &lt;= <em>j</em> &lt;= 14, there is
+a nonempty contiguous subsequence <b>S<sub><em>i</em>.. <em>j</em></sub></b>
+beginning with the <em>i</em>-th element of <b>S</b> and ending with
+the <em>j</em>-th element of <b>S</b>.
+For example, <b>S<sub>3..9</sub></b>&nbsp;= 
+&lt;-1,&nbsp;-7,&nbsp;12,&nbsp;5,&nbsp;3,&nbsp;-10,&nbsp;5&gt;.
+The sum of the elements in <b>S<sub>3..9</sub></b> is 7.
+Some nonempty contiguous subsequences of <b>S</b> have smaller sums
+and others have larger sums.  Your program is to find the sum 
+that is largest.
+<!-- of the nonempty contiguous subsequence whose sum is largest. -->
+For <b>S</b>, the answer is 30, because the sum of the elements in 
+<b>S<sub>5..12</sub></b> is 30 (12 + 5 + 3 + -10 + 5 + -5 + 20)
+and no other nonempty contiguous subsequence of <b>S</b> has a larger sum.
+Thus, if your program were given <b>S</b> as input, its output
+should be 30. 
+
+<P>
+Your program should accept input and provide output in the format shown
+below, repeating until the user enters zero as the length of the sequence
+to be analyzed.  You may assume that no sequence of length more than 50
+will be given as input.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter length of sequence: <u>14</u><br />
+<br />
+Enter item 1: <u>2</u><br />
+Enter item 2: <u>5</u><br />
+Enter item 3: <u>-1</u><br />
+Enter item 4: <u>-7</u><br />
+Enter item 5: <u>12</u><br />
+Enter item 6: <u>5</u><br />
+Enter item 7: <u>3</u><br />
+Enter item 8: <u>-10</u><br />
+Enter item 9: <u>5</u><br />
+Enter item 10: <u>-5</u><br />
+Enter item 11: <u>20</u><br />
+Enter item 12: <u>-5</u><br />
+Enter item 13: <u>0</u><br />
+Enter item 14: <u>3</u><br />
+<br />
+Maximum Segment Sum is 30<br />
+<br /><br />
+Enter length of sequence: <u>0</u>
+</tt>
+
+</BODY>
+</HTML>

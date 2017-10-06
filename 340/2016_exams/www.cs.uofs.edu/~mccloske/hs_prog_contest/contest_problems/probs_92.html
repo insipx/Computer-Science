@@ -1,0 +1,418 @@
+<HTML>
+<HEAD>
+<TITLE>1992 U of S Programming Contest Problems</TITLE>
+</HEAD>
+<BODY>
+<H2>University of Scranton 1992 High School Programming Contest Problems</H2>
+
+<p>
+<A HREF="#Holey_Squares">Problem 1: Holey Squares</A><br />
+<A HREF="#Binary_to_Decimal">Problem 2: Binary to Decimal Translation</A><br />
+<A HREF="#Summing_Bin_Nums">Problem 3: Summing Binary Numbers</A><br />
+<A HREF="#Palindromic_Numbers">Problem 4: Palindromic Numbers</A><br />
+<A HREF="#Rational_Arithmetic">Problem 5: Rational Arithmetic</A><br/ >
+<A HREF="#Groceries">Problem 6: Groceries: To Tax or Not To Tax</A>
+
+<p>&nbsp;
+<p>
+<A NAME="Holey_Squares">
+<hr>
+<b>Problem 1: Holey Squares</b></A>
+
+<p>
+A <em>holey square</em> is a square matrix each element of which is
+either a decimal digit or a "hole" (i.e., unoccupied).
+The digit in the first column of the first row (upper lefthand corner)
+is called the <em>starting digit</em>.
+As you scan the rows from top to bottom, each row from left to right,
+you find that the digits occur in succession (0 is followed by 1, 
+which is followed by 2, ..., which is followed by 9, which is
+followed by 0).
+You also find that a hole appears immediately after each 
+occurrence of a particular digit, called the <em>holey digit</em>.
+To illustrate, here is the holey square of size 5 
+(i.e., having 5 rows and 5 columns)
+having 7 as its starting digit and 9 as its holey digit:
+
+</p><p>
+<center>
+<tt>
+<table border="0" cellpadding="1">
+<tr> <td>7</td> <td>8</td> <td>9</td> <td>&nbsp;</td> <td>0</td> </tr>
+<tr> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> </tr>
+<tr> <td>6</td> <td>7</td> <td>8</td> <td>9</td> <td>&nbsp;</td> </tr>
+<tr> <td>0</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> </tr>
+<tr> <td>5</td> <td>6</td> <td>7</td> <td>8</td> <td>9</td> </tr>
+</table>
+</tt>
+</center>
+
+<!--  original way, without table construct
+<p>
+<tt>
+<center>
+7&nbsp;8&nbsp;9&nbsp;&nbsp;&nbsp;0<br />
+1&nbsp;2&nbsp;3&nbsp;4&nbsp;5<br />
+6&nbsp;7&nbsp;8&nbsp;9&nbsp;&nbsp;<br />
+0&nbsp;1&nbsp;2&nbsp;3&nbsp;4<br />
+5&nbsp;6&nbsp;7&nbsp;8&nbsp;9<br />
+</center>
+</tt>
+-->
+
+<p>
+Develop a program that accepts as input the size, starting digit,
+and holey digit of a holey square, and that produces as output 
+the corresponding holey square.
+The program should terminate when the user enters zero as the size.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter size: <u>9</u><br />
+Enter starting digit: <u>5</u><br />
+Enter holey digit: <u>5</u><br />
+<br />
+5&nbsp;&nbsp;&nbsp;6&nbsp;7&nbsp;8&nbsp;9&nbsp;0&nbsp;1&nbsp;2<br />
+3&nbsp;4&nbsp;5&nbsp;&nbsp;&nbsp;6&nbsp;7&nbsp;8&nbsp;9&nbsp;0<br />
+1&nbsp;2&nbsp;3&nbsp;4&nbsp;5&nbsp;&nbsp;&nbsp;6&nbsp;7&nbsp;8<br />
+9&nbsp;0&nbsp;1&nbsp;2&nbsp;3&nbsp;4&nbsp;5&nbsp;&nbsp;&nbsp;6<br />
+7&nbsp;8&nbsp;9&nbsp;0&nbsp;1&nbsp;2&nbsp;3&nbsp;4&nbsp;5<br />
+&nbsp;&nbsp;6&nbsp;7&nbsp;8&nbsp;9&nbsp;0&nbsp;1&nbsp;2&nbsp;3<br />
+4&nbsp;5&nbsp;&nbsp;&nbsp;6&nbsp;7&nbsp;8&nbsp;9&nbsp;0&nbsp;1<br />
+2&nbsp;3&nbsp;4&nbsp;5&nbsp;&nbsp;&nbsp;6&nbsp;7&nbsp;8&nbsp;9<br />
+0&nbsp;1&nbsp;2&nbsp;3&nbsp;4&nbsp;5&nbsp;&nbsp;&nbsp;6&nbsp;7<br />
+<br />
+<br />
+Enter size: <u>6</u><br />
+Enter starting digit: <u>3</u><br />
+Enter holey digit: <u>8</u><br />
+<br />
+3&nbsp;4&nbsp;5&nbsp;6&nbsp;7&nbsp;8<br />
+&nbsp;&nbsp;9&nbsp;0&nbsp;1&nbsp;2&nbsp;3<br />
+4&nbsp;5&nbsp;6&nbsp;7&nbsp;8<br />
+9&nbsp;0&nbsp;1&nbsp;2&nbsp;3&nbsp;4<br />
+5&nbsp;6&nbsp;7&nbsp;8&nbsp;&nbsp;&nbsp;9<br />
+0&nbsp;1&nbsp;2&nbsp;3&nbsp;4&nbsp;5<br />
+<br />
+<br />
+Enter size: <u>0</u>
+</tt>
+
+<p> &nbsp;
+<p>
+<A NAME="Binary_to_Decimal">
+<hr>
+<b>Problem 2: Binary to Decimal Translation</b></A>
+
+<p>
+In an electronic computer, all data is represented in <em>binary</em> form,
+i.e., as a sequence of 0's and 1's.  In particular, integers are usually
+represented using the <em>binary number system</em>, as opposed to the 
+<em>decimal number system</em> to which you are accustomed.
+These two number systems are actually very much alike.
+Indeed, they are both <em>positional</em> number systems, which means 
+that the "contribution" made by each digit in a number depends not only
+upon its value but also upon its position within the number.
+
+<p>
+In the decimal (or base ten) system, we use the ten digits 0, 1, 2, ..., 9.
+Going from right to left, the positions in a number correspond to 
+units of 1, 10, 100, 1000, etc.
+(Notice that these are the powers of 10: 10<sup>0</sup>&nbsp;=&nbsp;1, 
+10<sup>1</sup>&nbsp;=&nbsp;10, 10<sup>2</sup>&nbsp;=&nbsp;100,
+10<sup>3</sup>&nbsp;=&nbsp;1000, etc.)&nbsp;
+The expression 45038 is to be understood to mean<br /><br />
+<center>
+8&#215;1 &nbsp;+&nbsp; 3&#215;10 &nbsp;+&nbsp; 0&#215;100 
+&nbsp;+&nbsp; 5&#215;1000 &nbsp;+&nbsp; 4&#215;10000
+</center>
+
+<p>
+The binary (or base two) number system is just the same, except that 
+we use only the two digits 0 and 1, and the positions in a number 
+correspond to units of 1, 2, 4, 8, 16, etc. (the powers of 2).
+Thus, for example, 1001101<sub>2</sub> (the subscript indicates that the
+number is to be interpreted as one written in binary notation) is to be
+understood to mean<br />
+<center>
+1&#215;1 &nbsp;+&nbsp; 0&#215;2 &nbsp;+&nbsp 1&#215;4 
+&nbsp;+&nbsp; 1&#215;8 &nbsp;+&nbsp; 0&#215;16 &nbsp;+&nbsp;
+0&#215;32 &nbsp;+&nbsp; 1&#215;64
+</center>
+
+<p>
+which, in decimal notation, is 77.
+
+<p>
+Develop a program that, given as input a number expressed in the
+binary number system, outputs the same number expressed in the decimal
+number system.  The input will have no more than 12 digits.
+The program should terminate when the user enters 00 as input.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter binary number: <u>101011</u><br />
+Decimal representation: 43<br />
+<br />
+Enter binary number: <u>0</u><br />
+Decimal representation: 0<br />
+<br />
+Enter binary number: <u>10000101</u><br />
+Decimal representation: 133<br />
+<br />
+Enter binary number: <u>00</u>
+</tt>
+
+
+
+<p> &nbsp;
+<p>
+<A NAME="Summing_Bin_Nums">
+<hr>
+<b>Problem 3: Summing Binary Numbers</b></A>
+
+<p>
+Develop a program that accepts as input two binary numbers and that
+calculates and outputs their sum (which is also to be expressed in
+binary form).  Each input will have no more than thirty digits.  
+The program should repeat until both inputs are zero.
+
+<!--  Is a description really necessary?
+<p>
+<b>Here we need a description of how to add two binary numbers.</b>
+-->
+<p>
+As described in the previous problem, the binary number system is
+completely analogous to the more familiar decimal number system,
+in terms of how numbers are represented.
+Hence, it should not be surprising that the procedure for adding
+two decimal numbers (which you learned in elementary school) applies
+to binary numbers as well.  
+
+<p>
+Indeed, just as with decimal numbers, we "line up" the two addends
+(so that digits in corresponding positions appear one above the other)
+and proceed from the rightmost (i.e., least significant) to the leftmost
+(i.e., most significant) position.  (If one number has more digits than
+the other, we pad the latter with leading zero's.)
+
+<p>
+For each position, we add the incoming carry to the sum of the two digits
+in that position (one for each addend), yielding one of the values
+zero (<em>00<sub>2</sub></em>), one (<em>01<sub>2</sub></em>), 
+two (<em>10<sub>2</sub></em>), or three (<em>11<sub>2</sub></em>).
+The digit of lesser significance goes into the corresponding position
+of the result; the digit of greater significance is carried into
+the next position.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+1st number: <u>101101011</u><br />
+2nd number: <u>101101</u><br />
+Sum: 110011000<br />
+<br />
+1st number: <u>1111</u><br />
+2nd number: <u>1010</u><br />
+Sum: 11001<br />
+<br />
+1st number: <u>0</u><br />
+2nd number: <u>0</u>
+</tt>
+
+<p> &nbsp;
+<p>
+<A NAME="Palindromic_Numbers">
+<hr>
+<b>Problem 4: Palindromic Numbers</b></A>
+
+<p>
+A <em>palindrome</em> is a string of characters
+<!-- an expression -->
+that reads the same forwards as backwards.
+For example, if we ignore spaces, the phrase 
+"may a moody baby doom a yam" is a palindrome.
+Here, we consider those palindromes consisting entirely of the
+digits 0 through 9 and not beginning with 0.
+Examples are 72427, 5, and 9009.  
+Any number corresponding to such a palindrome is said to be a
+palindromic number.
+
+<em>Note:</em>&nbsp; By this definition, numbers such as 3300, 
+which could also be written with leading zeros as 003300, do
+not qualify as being palindromic.
+
+<p>
+Develop a program that takes as input a positive integer
+and that reports whether or not that integer is palindromic.
+The program should repeat until the user enters zero as input.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter number: <u>81248</u><br />
+NOT PALINDROMIC<br />
+<br />
+Enter number: <u>4</u><br />
+PALINDROMIC<br />
+<br />
+Enter number: <u>30</u><br />
+NOT PALINDROMIC<br />
+<br />
+Enter number: <u>405504</u><br />
+PALINDROMIC<br />
+<br />
+Enter number: <u>0</u>
+</tt>
+
+
+<p> &nbsp;
+<p>
+<A NAME="Rational_Arithmetic">
+<hr>
+<b>Problem 5: Rational Arithmetic</b></A>
+
+<p>
+A <em>rational number</em> is the ratio of two integers, the second of 
+which is nonzero.
+We usually express such a number in the form <b><em>n/d</em></b>, 
+i.e., as a fraction.
+We refer to <em>n</em> as the <em>numerator</em> and 
+to <em>d</em> as the <em>denominator</em>.
+If <em>d</em>&gt;1 and the greatest common divisor of <em>n</em> and 
+<em>d</em> is one, we say that <b><em>n/d</em></b> is in simplest form.
+The simplest form of <b><em>n/1</em></b> is <em>n</em> (with no
+denominator).
+
+<p>
+Most programming languages have built-in facilities for representing
+and manipulating integers so that calculations performed upon them 
+yield <em>exact</em> results.  The same is not true of real numbers.
+Indeed, a "real" number stored in a computer is only an approximation to
+the number it is intended to represent.  This is due to the fact that,
+in general, to represent a real number exactly requires infinitely
+many digits, whereas a computer has only a finite memory capacity.
+
+<p>
+Few programming languages have built-in facilities for dealing with
+rational numbers.  
+This is not necessarily an oversight:
+due to the fact that all rational numbers are also real numbers, 
+a programmer may use a language's built-in facilities for real numbers
+in order to manipulate rationals.
+Results of calculations will be only approximations, however.  
+This problem challenges you to remedy this situation by developing
+a program that performs <em>exact</em> arithmetic upon rational
+numbers!
+
+<p>
+Write a program that accepts as input a sequence of four nonnegative
+integers <em>n<sub>1</sub></em>, <em>d<sub>1</sub></em>,
+<em>n<sub>2</sub></em>, <em>d<sub>2</sub></em>, 
+followed by a symbol <em>op</em>, which must be one of the four basic
+arithmetic operators (<b>+</b>, <b>-</b>, <b>*</b>, or <b>/</b>).
+The program should evaluate the expression 
+<p>
+<center>
+<em>
+  n<sub>1</sub>/d<sub>1</sub>&nbsp; op&nbsp; 
+  n<sub>2</sub>/d<sub>2</sub>
+</em>
+</center>
+<p>
+and display the result, which must be in simplest form.
+The required format for input and output is illustrated below.
+The program should terminate when the user enters 0 for either
+of the inputs <em>d<sub>1</sub></em> or <em>d<sub>2</sub></em>
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter Expression: <u>25 45 8 99 +</u><br />
+25/45 + 8/99 = 7/11<br />
+<br />
+Enter Expression: <u>7 9 18 28 *</u><br />
+7/9 * 18/28 = 1/2<br />
+<br />
+Enter Expression: <u>12 13 3 26 /</u><br />
+12/13 / 3/26 = 8<br />
+<br />
+Enter Expression: <u>5 0 2 1 -</u><br />
+</tt>
+
+
+<p> &nbsp;
+<p>
+<A NAME="Groceries">
+<hr>
+<b>Problem 6: Groceries: To Tax or Not To Tax</b></A>
+
+<p>
+Among the items sold at grocery stores, some are taxable and some are not.
+Thus, when you make a purchase, the final bill is the sum of the
+prices of the non-taxable items plus the sum of the prices of the taxable
+items, plus the tax on the taxable items.
+
+<p>
+Develop a program that calculates a grocery store bill.  As input, the
+user supplies the number of items purchased and, for each item, its price
+(in dollars) and either <b>Y</b> or <b>N</b> to indicate whether or not,
+respectively, it is taxable.
+A tax rate of 6% is to be applied to the sum of the prices of the taxable
+items.  Tax should be rounded to the nearest hundredth of a dollar
+(i.e., cent).  Notice that in the two examples below, 6% of the cost of
+the taxable items is $0.4506 and $0.4572, respectively, which round to 
+$0.45 and $0.46, respectively.
+
+The program should repeat until the user enters zero for the number of
+items purchased.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Number of items purchased: <u>4</u><br />
+Price of item 1: <u>2.39</u><br />
+Taxable? : <u>N</u><br />
+Price of item 2: <u>3.12</u><br />
+Taxable? : <u>Y</u><br />
+Price of item 3: <u>4.39</u><br />
+Taxable? : <u>Y</u><br />
+Price of item 4: <u>2.09</u><br />
+Taxable? : <u>N</u><br />
+<br />
+Subtotal is 11.99<br />
+Tax is 0.45<br />
+Grand total is 12.44<br />
+<br />
+Number of items purchased: <u>3</u><br />
+Price of item 1: <u>5.61</u><br />
+Taxable? : <u>Y</u><br />
+Price of item 2: <u>2.01</u><br />
+Taxable? : <u>Y</u><br />
+Price of item 3: <u>3.28</u><br />
+Taxable? : <u>N</u><br />
+<br />
+Subtotal is 10.90<br />
+Tax is 0.46<br />
+Grand total is 11.36<br />
+<br />
+Number of items purchased: <u>0</u><br />
+</tt>
+
+
+</BODY>
+</HTML>
