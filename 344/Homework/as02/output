@@ -1,0 +1,3 @@
+It took 0.000886 to statically allocate an array of 10240 ints 200 thousand times.
+It took 2.460224 to allocate an array of 10240 ints 200 thousand times on the heap
+It took 0.199408 to allocate an array of 10240 ints 200 thousand times on the stack
