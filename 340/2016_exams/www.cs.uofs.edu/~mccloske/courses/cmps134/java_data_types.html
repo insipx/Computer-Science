@@ -1,0 +1,86 @@
+<html>
+<head><title>Data Types in Java</title></head>
+<body>
+<h2>CMPS 134: Primitive Data Types in Java</h2>
+
+</p><p>
+Computer programs manipulate data.  That is the nature of computation.
+Thus, programming languages are designed to allow the programmer to
+conveniently describe such manipulations.  Some types of data are so 
+frequently used in programming that they are supported directly in most 
+programming languages. 
+Among these are numbers, characters (and sometimes sequences of characters,
+called strings), and logical truth-values (<b>true</b> and <b>false</b>,
+referred to as <b>boolean</b> values in honor of George Boole, who
+developed an algebra based upon them).
+For those types of data that are not directly supported, the programming
+language has structuring mechanisms via which a programmer is able to
+create new data types (using data of simpler types as components).
+In Java, the <b>class</b> is the structuring mechanism by which new
+data types are created.
+
+</p><p>
+In Java, there are two broad categories of <b>data types</b>:
+<b>primitive</b> types and <b>object</b> (or <b>reference</b>) types.
+The former are the types of data directly supported in the language
+and are the subject of this document.
+Object types are created using Java's <b>class</b> construct, as 
+mentioned above and as we will see later in this course.
+
+</p><p>
+Here is a classification of Java's primitive data types;
+
+<ul>
+  <li>Numeric
+    <ul>
+      <li>Integers
+        <ol>
+          <li><tt>byte</tt>: (one byte) Range: -128..127 
+              (i.e., -2<sup>7</sup>..2<sup>7</sup>-1)
+          </li>
+          <li><tt>short</tt>: (two bytes) Range: -32768..32767
+              (i.e., -2<sup>15</sup>..2<sup>15</sup>-1)
+          </li>
+          <li><tt>int</tt>: (four bytes) Range: 
+                -2,147,483,648..2,147,483,647 
+                (-2 billion .. +2 billion)
+                (i.e., -2<sup>31</sup>..2<sup>31</sup>-1)
+          </li>
+          <li><tt>long</tt>: (eight bytes) Range:
+              -9,223,372,036,854,775,808..9,223,372,036,854,775,807
+              (-9 quintillion? .. +9 quintillion?)
+              (i.e., -2<sup>63</sup>..2<sup>63</sup>-1)
+          </li>
+        </ol>
+      </li>
+      <li>Real Numbers
+        <ol>
+          <li><tt>float</tt>: (four bytes) Range: approximately 
+              -3.4&times;10<sup>38</sup> .. +3.4&times;10<sup>38</sup>
+              <!-- -3.4E+38 .. +3.4E+38 -->
+              (with big gaps and only six or seven decimal digits of precision)
+          </li>
+          <li><tt>double</tt> (eight bytes) Range: approximately 
+              -1.8&times;10<sup>308</sup> .. +1.8&times;10<sup>308</sup>
+              <!-- -1.8E+308 .. +1.8E+308 --> 
+              (with big gaps and about fifteen decimal digits of precision)
+          </li>
+        </ol>
+      </li>
+    </ul>
+  </li>
+  <li>Character
+    <ol>
+      <li><tt>char</tt>: (two bytes) Based upon the Unicode standard.
+    </ol>
+  </li>
+  <li>Logical/Boolean
+    <ol>
+      <li><tt>boolean</tt>: universe of two values is { <tt>true, false</tt> }
+      </li>
+    </ol>
+  </li>
+</ul>
+
+</body>
+</html>

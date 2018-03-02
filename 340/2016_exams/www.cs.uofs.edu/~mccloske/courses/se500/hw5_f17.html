@@ -1,0 +1,161 @@
+<html>
+<head><title>SE 500 Fall 2017 HW #5</title>
+</head>
+<body>
+<h2>
+SE 500  Mathematics for Software Engineering<br />
+Fall 2017<br />
+HW #5: Logical Arguments<br />
+Due: 5pm, Friday, October 13
+</h2>
+
+</p><p>
+Consider these three premises/facts
+(adapted from Exercise 5.9 of Gries &amp; Schneider):
+
+</p><p>
+<ul>
+  <!--
+  <li>F<sub>0</sub>: If Bill takes the bus, then if the bus is late he
+      misses his appointment.
+  </li>
+  <li>F<sub>1</sub>: If Bill misses his appointment and feels downcast,
+      he doesn't go home.
+  </li>
+  <li>F<sub>2</sub>: If Bill does not get the job, he feels downcast
+      and does not go home.
+  </li>
+  -->
+  <li>F<sub>0</sub>: If Bill goes to class, then if the professor is 
+      late Bill learns nothing.
+  </li>
+  <li>F<sub>1</sub>: If Bill learns nothing and feels good,
+      he does not go to the store.
+  </li>
+  <li>F<sub>2</sub>: If Bill does not eat, he feels good 
+      and does not go to the store.
+  </li>
+</ul>
+
+</p><p>
+There are six primitive propositions here:
+<ul>
+  <li>GC: Bill goes to class.</li> <!-- <li>TB: Bill take the bus.</li> -->
+  <li>LN: Bill learns nothing.</li> <!-- <li>MA: Bill misses his appointment.</li> -->
+  <li>PL: The professor is late.</li> <!-- <li>BL: The bus is late.</li> -->
+  <li>GS: Bill goes to the store.</li> <!-- <li>GH: Bill goes home.</li> -->
+  <li>FG: Bill feels good.</li> <!-- <li>FD: Bill feels downcast.</li> -->
+  <li>BE: Bill eats.</li> <!-- <li>GJ: Bill gets the job.</li> -->
+</ul>
+
+<b>1.</b> 
+Use the methods from the Gries &amp; Schneider text to show that 
+each of the following conclusions follows from the above premises:
+
+</p><p>
+<b>(a)</b> If Bill learns nothing and goes to the store, then he eats.
+  <!-- If Bill misses his appointment and goes home, then he gets the job.-->
+<br />
+<b>(b)</b> If the professor is late and Bill feels good and goes to the store,
+    then Bill does not go to class.
+  <!-- If the bus is late and Bill feels downcast and goes home,
+       then Bill doesn't take the bus. -->
+
+</p><p>
+Keep in mind that any premise (and the conclusion, for that matter) 
+can be rewritten as any boolean expression to which it is equivalent.
+(In particular, you might find it helpful to make use of the 
+contrapositive of an implication.)
+
+</p><p>
+<b>2.</b> 
+Do Problem 1 again, but this time using <b>resolution</b>
+(in the proof by contradiction mode, as illustrated in class and on 
+the relevant web page).
+
+<hr>
+</p><p>
+<b>3.</b>
+Using the methods of Gries &amp; Schneider, prove the validity of the
+following argument.
+  <!-- Argument taken from "Logic, Language, Formalism, Informalism",
+     by Daniel Richardson, pp. 75-76 (Problem 5.12)
+  -->
+<blockquote>
+  Louise is lying.  If kangaroos are numerous and Louise is lying,
+  then Harriet is lying.  If kangaroos are numerous and the dog got
+  outside last night and Harriet is lying, then I am an idiot.
+  If the dog got outside last night, then kangaroos are numerous.
+  If Louise is lying, then the dog got outside last night.
+  Therefore, I am an idiot.
+</blockquote>
+
+</p><p>
+Don't forget that any boolean expression can be rewritten as any
+expression to which it is equivalent.  Also recall that implications
+have contrapositives.
+
+</p><p>
+<b>4.</b> Do Problem 3 again, but this time using resolution.
+
+</p><p>
+<hr>
+<hr>
+<p>
+The remaining problems are with respect to the Island of Knights and Knaves,
+each of whose inhabitants is either a knight (who always tells the truth)
+or a knave (who always lies).  Among those inhabitants are Bill and Carol.
+Use <tt>b</tt> and <tt>c</tt>, respectively, to stand for
+the propositions <em>Bill is a knight</em> and <em>Carol is a knight</em>.
+For each problem, determine the strongest statement you can make
+with respect to which inhabitants mentioned are knights and which
+are knaves.  If the problem involves the question of whether or not there
+is gold on the island, determine the strongest statement you can make
+about the answer to that question.
+</p><p>
+<!-- If the premises of a problem are inconsistent (which is to say that their
+     conjunction implies false), indicate that fact.
+-->
+If the premise of a problem is equivalent to false, indicate that fact.
+
+</p><p>
+In all cases, provide a proof in the Gries &amp; Schneider style and
+heed their advice: If Bill utters a proposition that is formalized by
+the expression <tt>X</tt>, this gives rise to the premise
+<tt>b &equiv; X</tt>, and similarly for Carol.
+
+</p><p>
+Theorems that might be useful to you in two of the problems are
+</p><p>
+<b>(HW5.1)</b> <tt>p &equiv; p&and;q &equiv; &not;p&or;q</tt><br />
+<b>(HW5.2)</b> <tt>((p &equiv; q) &rArr; p) &equiv; p&or;q</tt> 
+
+</p><p>
+(HW5.1) can be proved in two steps using (3.59) and (3.60).
+If you make use of (HW5.2), provide a proof.  In such a proof,
+(HW5.1) could be useful.
+
+</p><p>
+<b>5.</b> Bill said, "If Carol is a knave, I am a knight."
+
+</p><p>
+<b>6.</b> Bill said, "If there is gold on the island, I'm a knave."
+
+</p><p>
+<b>7.</b> Bill said, "If I am a knave, there is gold on the island."
+
+</p><p>
+<b>8.</b> Bill said, "Among Carol and me, exactly one is a knight."
+
+</p><p>
+<b>9.</b> 
+Carol said something that we could not hear.  In reply, Bill said, 
+"If Carol said that I am a knave, she is a knight."
+
+</p><p>
+<b>10.</b> 
+Carol said something that we could not hear.  In reply, Bill said, 
+"If Carol said that there is gold on the island, I am a knave."
+
+</body>
+</html>

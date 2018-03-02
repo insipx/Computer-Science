@@ -1,0 +1,175 @@
+<html>
+<head><title>CMPS 034L  Lab #2</title>
+</head>
+<body>
+<h2>CMPS 034L &nbsp; Spring 2017<br />
+Lab #3: Expressions, Variables, Assignment</h2>
+
+</p><p>
+You are to work in groups of two, with one group of three in the
+case that an odd number of students are attending.
+
+</p><p>
+Go to the
+<a href="http://practiceit.cs.washington.edu" target="_blank">Practice-It 
+website</a>, log in, and click on the <b>Start Practicing</b> button.
+Then click on the link labeled <b>Building Java Programs, 4th Edition</b>
+and then on the link indicating <b>BJP Chapter 2</b>.
+
+<hr>
+<h3>Activity #1: Practice-It Self-Checks</h3>
+</p><p>
+Do the following Self-Checks and, when finished, show your GTA
+(graduate teaching assistant) that you've completed all of them correctly. 
+(Go back to the web page that lists all the Chapter 2 Self-Checks and refresh
+it.  Any that were answered correctly will be indicated on the page.)
+
+</p><p>
+Several of the self-checks involve evaluating one or more arithmetic
+expressions.  Keep in mind the rules that govern the order in which
+operators are applied, which are explained in the Reges &amp; Stepp
+textbook on pages 70-73.  Unary operators (as in <tt>-13</tt> or <tt>+9</tt>)
+have highest precedence, followed by the (binary) multiplicative operators
+(<tt>*</tt>, <tt>/</tt>, and <tt>%</tt>), followed by the (binary)
+additive operators (<tt>+</tt> and <tt>-</tt>).  Consecutive operators 
+of the same precedence are applied from left to right.
+</p><p>
+Also keep in mind that if both operands of a division operator (<tt>/</tt>)
+are of type <tt>int</tt>, the result is also of type <tt>int</tt>.
+
+<ol>
+  <li><b>BJP4 Self-Check 2.1 (legalIntLiterals)</b>:
+      Identify which of the given expressions is a well-formed 
+      literal of type <tt>int</tt>.
+  </li>
+  </p><p>
+  <li><b>BJP Self-Check 2.2 (evaluatingExpressions)</b>:
+      Evaluate the given expression.
+  </li>
+  </p><p>
+  <li><b>BJP Self-Check 2.3 (expressions1)</b>:
+      Evaluate at least half of the given expressions.  There are a bunch!
+  </li>
+  </p><p>
+  <li><b>BJP Self-Check 2.4 (expressions2)</b>:
+      Evaluate at least half of the given expressions.  There are a bunch!
+  </li>
+  </p><p>
+  <li><b>BJP Self-Check 2.5 (expressions3)</b>:
+      Evaluate at least half of the given expressions.  There are a bunch!
+      <br />
+      Keep in mind that the plus operator (<tt>+</tt>) refers to
+      String concatenation, rather than addition, if either of its
+      operands is of type <tt>String</tt>.  In that case, the
+      non-String operand is "converted" to a value of type
+      <tt>String</tt> before the operation is carried out.
+  </li>
+  </p><p>
+  <li><b>BJP Self-Check 2.6 (declareRealNumberSyntax)</b>:
+      Identify the line of code that declares and initializes 
+      a variable as specified.
+  </li>
+  <!--
+  </p><p>
+  <li><b>BJP Self-Check 2.7 (fitnessVariables)</b>:
+     The given instructions need a little clarification:
+     The intent is that <b>age</b> and <b>weight</b> will be measured in
+     whole years and pounds, respectively, while <b>gender</b> will be a
+     character (e.g., <tt>F</tt> or <tt>M</tt>) and <b>height</b> will be
+     a real number.
+  </li>
+  -->
+  </p><p>
+  <li><b>BJP Self-Check 2.9 (lastDigitExpression)</b>:
+      It's odd that the instructions say to use "division and modulus"
+      when only the latter is needed.
+  </li>
+  </p><p>
+  <li><b>BJP Self-Check 2.10 (Oops2-errors)</b>:
+      Correct the (mostly) syntax errors in the given Java program.
+  </li>
+  </p><p>
+  <li><b>BJP Self-Check 2.11 (digitExpressions)</b>:
+      This is similar to Self-Check 2.9, but here you <b>do</b> need
+      to use <b>both</b> division (<tt>/</tt>) and modulus (<tt>%</tt>).
+  </li>
+  </p><p>
+  <li><b>BJP Self-Check 2.12 (valueOfX)</b>:
+     Given a sequence of assignments to variable <tt>x</tt>, what is
+     its value immediately thereafter?
+  </li>
+  </p><p>
+  <li><b>BJP Self-Check 2.13 (valuesOfABC)</b>:
+     Given a sequence of assignments to variables <tt>a</tt>,
+     <tt>b</tt>, and <tt>c</tt>, what are their values immediately 
+     thereafter?
+  </li>
+  </p><p>
+  <li><b>BJP Self-Check 2.14 (firstSecond)</b>:
+     Given a sequence of assignments to variables <tt>first</tt> and
+     <tt>second</tt>, what are their values immediately thereafter?
+  </li>
+</ol>
+
+<hr>
+<h3>Activity #2: Displacement</h3>
+
+</p><p>
+This exercise is to give you practice in declaring variables,
+assigning values to them, and developing arithmetic expressions.
+
+</p><p>
+Do BJP4 Exercise 2.1 (displacement).  Take the code that you provided as a
+solution and, using jGrasp, paste it into the <tt>main()</tt> method of the
+Java application <a href="DisplacementZZ.java">Displacment</a>.  
+Also insert a comment to identify all members of your lab group.
+
+</p><p>
+Compile and run the program to make sure that it works. 
+Then use the following link to submit it (and later review it):
+<a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab3_dir">Submit/Review</a>.
+
+<hr>
+<h3>Activity #3: Lengths</h3>
+
+</p><p>
+This exercise is to give you practice in formulating 
+arithmetic expressions and in using methods.
+It is similar in nature to the <tt>BMICalculator3</tt> application
+discussed in lecture.  Note that the program's use of "global" variables 
+(which is generally frowned upon) is something that you will be able to
+avoid in the near future, after you learn how to send arguments/parameters
+to a method and how to make a method return a value to its caller.
+
+</p><p>
+Given is an incomplete version of the Java application
+<a href="LengthsZZ.java">Lengths</a>.  Comments that say
+"<tt>CODE MISSING HERE!</tt>" indicate where code should be 
+inserted in order to get the program working as intended.
+The program is intended to prompt the user to enter a
+positive integer representing a length, measured in inches.
+After reading the user's response, the program displays two alternative
+ways of expressing the same length.
+
+</p><p>
+For example, here's what the user-computer dialog should look like
+(with user input in boldface) if the user were to enter 147 in response
+to the prompt:
+
+</p><p>
+<center>
+<table border="2" cellpadding="4">
+<tr><td><pre>Enter length in inches:><b>147</b>
+12.25 feet
+12 full feet and 3 residual inches</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Complete the program and, when it is working as intended, 
+use the following link to submit it (and later review it):
+<a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab3_dir">Submit/Review</a>.
+
+</body>
+</html>

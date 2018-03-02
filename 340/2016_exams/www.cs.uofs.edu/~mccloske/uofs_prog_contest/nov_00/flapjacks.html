@@ -1,0 +1,82 @@
+<html>
+<head>
+<TITLE>Stacks of Flapjacks</TITLE>
+</HEAD>
+<body>
+<!--
+<H2>1999 U of S Programming Contest<br>
+Problem 0: Stacks of Flapjacks</H2>
+-->
+<H2>Stacks of Flapjacks</H2>
+
+<P>
+Write a program that, given as input a (description of a) stack of 
+pancakes (sometimes referred to as <em>flapjacks</em>) of different sizes,
+outputs a description of how to sort the pancakes so that, going from the
+top of the stack to the bottom, the pancakes get larger in size.
+
+<p>
+The only operation that may be used in sorting the pancakes is the 
+<b>flip</b>.  A flip is carried out by inserting a spatula beneath
+one of the pancakes on the stack and then flipping (i.e., reversing
+the order of) all the pancakes above it.  A flip is described by
+indicating the position of the pancake immediately above the spatula.
+Assuming that there are <tt>n</tt> pancakes on the stack, the
+positions on the stack are numbered from <tt>0</tt> to <tt>n-1</tt>, 
+with <tt>0</tt> being the position of the pancake at the bottom.
+The sizes of the pancakes are given by the natural numbers <tt>0</tt>
+through <tt>n-1</tt>, as well.  (In effect, the sizes are really ranks, 
+with <tt>0</tt> denoting the smallest size and <tt>n-1</tt> the largest.)
+You may assume that no two pancakes have the same size.
+
+<p>
+To illustrate the <b>flip</b> operation, consider the three stacks of 
+pancakes below.  (Each pancake is represented by its size.)
+<pre>         2           4           3
+         1           0           5
+         0           1           2 
+         4           2           1
+         5           5           0 
+         3           3           4</pre>
+The stack on the left is transformed into the stack in the middle 
+via <em>flip(2)</em>.  The middle stack is transformed into the 
+stack on the right via <em>flip(0)</em>.
+
+<p>
+The input consists of a sequence of stacks of pancakes.
+Each stack will have at least one pancake, but no more than 30.
+The input is terminated by end-of-file.
+Each stack is given by two lines of input, the first containing a
+natural number corresponding to the number of pancakes on the stack
+and the second containing the sizes of the pancakes on the stack,
+written <b>top to bottom</b>.
+
+<p>
+For each stack of pancakes, your program should produce three lines of
+output: the first line should echo the original stack, the second should
+give some sequence of flips that results in the stack becoming sorted,
+and the third should be blank.
+<P>
+<H3>Sample Input</H3>
+<pre>
+5
+0 1 2 3 4
+5
+4 3 2 1 0
+4
+1 2 0 3</pre>
+
+<H3>Sample Output</H3>
+<P>
+<PRE>
+0 1 2 3 4
+
+
+4 3 2 1 0
+0
+
+1 2 0 3
+2 1</PRE>
+
+</body>
+</html>

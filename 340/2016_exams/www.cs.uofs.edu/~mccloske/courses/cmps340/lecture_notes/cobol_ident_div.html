@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>McCloskey's notes on COBOL: IDENTIFICATION DIVISION</title>
+<body>
+<H1>COBOL</H1>
+
+<H2>IDENTIFICATION DIVISION</H2>
+
+<p>
+The first part of a COBOL (sub)program is its <b>IDENTIFICATION DIVISION</b>.
+This division contains information that helps to identify the (sub)program,
+such as program name (the only required piece of info), author, date written,
+etc.
+
+<p>
+It typically looks something like
+<tt><pre>
+      IDENTIFICATION DIVISION.
+      PROGRAM-ID. Payroll-Processing.
+      AUTHOR.  Joe Programmer.
+      DATE-WRITTEN. June 15, 1973.
+      **********************************************
+      *  Program Abstract: blah blah blah
+      *    
+      *  Input:  blah blah
+      *    
+      *  Output: blah blah
+      ********************************************** </pre></tt>
+
+<p>
+The only required paragraph is the one named <tt>PROGRAM-ID</tt>.
+In it, the programmer supplies a data-name (in this case, 
+<tt>Payroll-Processing</tt>) that identifies the program.
+There are a number of other paragraphs (each having a pre-defined name) 
+that may be included.  Here we have shown paragraphs named <tt>AUTHOR</tt>
+and <tt>DATE-WRITTEN</tt>.
+
+<p>
+By convention, we also include several lines of comments (each of which
+is signaled by an asterisk in the first position) in which is given the
+Program Abstract and in which the Inputs and Outputs (and the intended
+relationship between the two) of the program are described.
+
+<p>
+For more about the IDENTIFICATION DIVISION, see pages 103-104
+of <em>Comprehensive COBOL</em>.
+</body>
+</html>

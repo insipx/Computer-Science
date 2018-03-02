@@ -1,0 +1,562 @@
+<html>
+<head>
+<title>CMPS 340  File Processing B-tree Insertion/Deletion Examples</title>
+</head>
+<body>
+<H2>
+CMPS340 &nbsp;  File Processing<br>
+B-tree Insertion/Deletion Examples, with Solutions<br>
+</H2>
+
+<!--
+<p>
+&nbsp; <br>
+-->
+
+</p><p>
+Consider the B-tree <tt>T</tt> of order 4 illustrated below.
+(In order to keep the page from getting too wide, the nodes at
+the leaf level appear to be on two different levels.)
+
+</p><p>
+For each operation in the list <b>(a)</b> through <b>(f)</b>,
+we show the B-tree that results from performing that operation on T.
+(Each operation is applied to the tree T illustrated below, 
+<em>not</em> to the tree resulting from applying all the previous
+operations to T.
+
+</p><p>
+We will perform each operation twice, once under the assumption that
+<em>redistribution</em> is used only "when necessary" and then
+under the assumption that it is used "whenever possible".
+
+</p><p>
+Redistribution never needs to occur as the result of an insertion,
+as an overflowing node can always be split.  On the other hand, an
+underflowing node cannot be merged with an adjacent sibling unless that
+sibling is itself on the verge of underflowing (or almost so).
+Hence, in order to maintain the property that every (non-root) node
+is at least (roughly) half-full, redistribution sometimes must occur
+as the result of a deletion.
+<!-- False:   (Because of the small nature of our example, we will not
+encounter such a situation.)
+-->
+
+</p><p>
+In real-life, it may be practical for redistribution to involve
+three or more contiguous siblings and their (common) parent.
+Here, however, redistribution will be limited to involving only
+<b>two</b> adjacent siblings and their parent.
+
+</p><p>
+Empirical and theoretical analysis indicates that you can expect a
+B-tree in which redistribution occurs whenever possible to have
+a <b>packing density</b> of about 85%, while one in which redistribution
+occurs only when necessary will have a packing density of about 69%.
+
+
+</p><p>
+<table border="0" cellpadding="3">
+<tr>
+  <td><b>(a)</b> insert 23</td>
+  <td><b>(b)</b> delete 12</td>
+  <td><b>(c)</b> insert 14</td>
+</tr>
+<tr>
+  <td><b>(d)</b> delete 63</td>
+  <td><b>(e)</b> insert 41</td>
+  <td><b>(f)</b> delete 96</td>
+</tr>
+</table>
+
+</p><p>
+<center>
+<table border="0">
+<tr><td>
+<pre>
+                            +----+----+----+
+                            | 24 | 63 | 95 |
+                            +----+----+----+
+                           /    /      \    \ 
+              +-----------+    /        \    +---------------------+
+             /                /          +------+                   \ 
+            /                /                   \                   \
+  +---+----+        +----+----+----+              +----+----+       +----+
+  | 6 | 19 |        | 34 | 50 | 58 |              | 70 | 85 |       | 98 |
+  +---+----+        +----+----+----+              +----+----+       +----+
+  |   |    |        |    |     \    \             |    |    |       |    |
+  |   |    |        |    |      \    +---+        |    |    |       |    |
+  |   |    |        |    |       +----+   \       |    |    |       |    |
++---+ | +----+----+ |+----+----+----+ | +----+  +----+ | +----+  +----+ +----+
+| 2 | | | 20 | 21 | || 39 | 44 | 48 | | | 61 |  | 67 | | | 88 |  | 96 | | 99 |
++---+ | +----+----+ |+----+----+----+ | +----+  +----+ | +----+  +----+ +----+
+      |             |                 |                |
++---+----+----+  +----+----+----+  +----+----+----+  +----+----+
+| 9 | 12 | 16 |  | 27 | 30 | 32 |  | 52 | 55 | 57 |  | 75 | 80 |
++---+----+----+  +----+----+----+  +----+----+----+  +----+----+
+</pre>
+</td>
+</tr>
+</table>
+</center>
+
+
+<br />
+<h3>When redistribution occurs only when necessary:</h3>
+
+<pre>
+    +--+--+--+
+<b>(a)</b> |20|21|23|     (simple insertion of 23 into leaf node; no overflow)
+    +--+--+--+
+</pre>
+
+<hr>
+<pre>
+    +--+--+
+<b>(b)</b> | 9|16|        (simple deletion of 12 from leaf node; no underflow)
+    +--+--+
+</pre>
+
+<hr>
+<b>(c)</b>  Insertion of 14 causes overflow; leaf is split and a key is 
+promoted to the parent.
+
+</p><p>
+<center>
+<table border="0" cellpadding="10">
+<tr>
+<td>
+<pre>
+       +--+--+--+ 
+       | 6|14|19|
+       +--+--+--+
+      /   |   \  \
+     /    |    \  \
+    /     |     \  \
++--+  +--+--+ +--+ +--+--+
+| 2|  | 9|12| |16| |20|21|
++--+  +--+--+ +--+ +--+--+ </pre>
+</td>
+<td><b>or</b>
+</td>
+<td>
+<pre>
+       +--+--+--+
+       | 6|12|19|
+       +--+--+--+
+      /  /   |   \
+     /  /    |    \
+    /  /     |     \
++--+  +--+  +--+--+ +--+--+
+| 2|  | 9|  |14|16| |20|21|
++--+  +--+  +--+--+ +--+--+ </pre>
+</td>
+</tr>
+</table>
+</center>
+
+<!-- Original answer, without using HTML table tag
+
+            +--+--+--+               |          +--+--+--+
+            | 6|14|19|               |          | 6|12|19|
+            +--+--+--+               |          +--+--+--+
+           /   |   \  \             or         /  /   |   \
+          /    |    \  \             |        /  /    |    \
+         /     |     \  \            |       /  /     |     \
+     +--+  +--+--+ +--+ +--+--+      |   +--+  +--+  +--+--+ +--+--+
+     | 2|  | 9|12| |16| |20|21|      |   | 2|  | 9|  |14|16| |20|21|
+     +--+  +--+--+ +--+ +--+--+      |   +--+  +--+  +--+--+ +--+--+
+</pre>
+End of original answer without HTML table tag
+-->
+
+<hr>
+<b>(d)</b> To delete a key (here, 63) at an internal node,
+first replace it with <em>x</em>, which can be either the largest key
+in its left subtree (first case) (here, 61) 
+or the smallest key in its right subtree (second case) (here 67).
+Then delete <em>x</em> from the leaf at which we found it,
+which we know how to do.  In either case, underflow results,
+leading in the first case to redistribution (as a merge
+is not possible) and in the second case to a merge.
+
+</p><p>
+<center>
+<table border="0" cellpadding="10">
+<tr>
+<td>
+<pre>
+      +--+--+--+
+      |24|61|95|
+      +--+--+--+
+     /   |   \  \
+    .    |    \  .
+         |     \
+  +--+--+--+   +--+--+
+  |34|50|57|   |70|85|
+  +--+--+--+   +--+--+
+ /   |  |   \  |   \  \
+.    .  |    \ .    .  .
+        |     \
+     +--+--+  +--+
+     |52|55|  |58|
+     +--+--+  +--+
+
+    (first case) </pre>
+</td>
+<td><b>or</b>
+</td>
+<td>
+<pre>
+       +--+--+--+
+       |24|67|95|
+       +--+--+--+
+      /   |   \  \
+     .    |    \  .
+          |     \
+   +--+--+--+   +--+
+   |34|50|58|   |85|
+   +--+--+--+   +--+
+  /   |  |  |  /   \
+ .    .  .  . /     \
+             /       \
+        +--+--+--+  +--+
+        |70|75|80|  |88|
+        +--+--+--+  +--+
+
+       (second case)
+</pre>
+</td>
+</tr>
+</table>
+</center>
+
+
+<!-- Original answer without HTML table tag
+<pre>
+
+       +--+--+--+            *          +--+--+--+
+       |24|61|95|            *          |24|67|95|
+       +--+--+--+            *          +--+--+--+
+      /   |   \  \           *         /   |   \  \
+     .    |    \  .          *        .    |    \  .
+          |     \            *             |     \
+   +--+--+--+   +--+--+      *        +--+--+--+  +--+
+   |34|50|57|   |70|85|     or        |34|50|58|  |85|
+   +--+--+--+   +--+--+      *        +--+--+--+  +--+
+  /   |  |   \  |   \  \     *       /   |  |  |  /   \
+ .    .  |    \ .    .  .    *      .    .  .  . /     \
+         |     \             *                  /       \
+      +--+--+  +--+          *             +--+--+--+  +--+
+      |52|55|  |58|          *             |70|75|80|  |88|
+      +--+--+  +--+          *             +--+--+--+  +--+
+
+     (first case)                         (second case)
+</pre>
+End of original answer without HTML table tag
+-->
+
+<hr>
+<b>(e)</b> 
+Insertion of 41 into the leaf containing 39, 44, and 48 results in
+overflow.  Thus, the node is split, with 44 being promoted into the 
+parent node containing 34, 50, and 58, which overflows as a consequence.
+Hence, it splits as well, leading to the promotion of 50 to its parent
+(the root), which overflows, resulting in it splitting, too!
+In all cases, we promoted the third (of four) keys in an overflowing
+node.  We could just as well have promoted the second key.
+
+</p><p>
+<center>
+<table border="0">
+<tr><td>
+<pre>
+                             +--+
+                             |63|
+                             +--+
+                            /    \  
+                           /      \  
+                          /        \  
+                         /          \
+                        /            \
+                       /              \
+               +--+--+                 +--+
+               |24|50|                 |95|
+               +--+--+                 +--+
+              /   |   \                |   \
+             /    |    \               |    \
+            /     |     \              |     \
+           /      |      \             |      \
+   +--+--+     +--+--+    +--+      +--+--+    +--+
+   | 6|19|     |34|44|    |58|      |70|85|    |98|
+   +--+--+     +--+--+    +--+      +--+--+    +--+
+  /   |   \    |  |   \   |  |      |  |  |    |  |
+ .    .    .   .  |    \  .  .      .  .  .    .  .
+                  |     \
+                +--+--+ +--+
+                |39|41| |48|
+                +--+--+ +--+
+</pre>
+</td>
+</tr>
+</table>
+</center>
+
+
+<hr>
+<b>(f)</b>
+Deleting 96 causes underflow in the node from which it was deleted.
+Because merging with its sibling is possible
+(i.e., redistribution is not necessary), we do so,
+resulting in the leaf node containing 98 99.
+But this puts the node that had contained 98 in an underflowing
+condition, and, because it can be merged with its sibling, we do so.
+
+</p><p>
+<center>
+<table border="0">
+<tr><td>
+<pre>
+  +--+--+
+  |24|63|
+  +--+--+
+ /   |   \
+.    .    \
+           \
+          +--+--+--+
+          |70|85|95|
+          +--+--+--+
+         /   |  |   \
+        /    |  |    \
+       /     |  |     \
+   +--+ +--+--+ +--+  +--+--+
+   |67| |75|80| |88|  |98|99|
+   +--+ +--+--+ +--+  +--+--+
+</td>
+</tr>
+</table>
+</center>
+</pre>
+</p><p>
+<hr><hr>
+<h3>When redistribution occurs whenever possible:</h3>
+
+
+<pre>
+    +--+--+--+
+<b>(a)</b> |20|21|23|     (simple insertion of 23 into leaf node; no overflow)
+    +--+--+--+
+</pre>
+
+<hr>
+<pre>
+    +--+--+
+<b>(b)</b> | 9|16|        (simple deletion of 12 from leaf node; no underflow)
+    +--+--+
+</pre>
+
+<hr>
+<b>(c)</b>
+Insertion of key 14 causes overflow; 
+redistribution in either of two directions is possible.
+
+</p><p>
+<center>
+<table border="0" cellpadding="10">
+<tr><td>
+<pre>
+          +--+--+
+          | 9|19|
+          +--+--+
+         /   |   \
+        /    |    \
+       /     |     \
++--+--+ +--+--+--+  +--+--+
+| 2| 6| |12|14|16|  |20|21|
++--+--+ +--+--+--+  +--+--+
+</pre>
+<td>&nbsp;<b>or</b>&nbsp;</td>
+<td>
+<pre>
+       +--+--+
+       | 6|16|
+       +--+--+
+      /   |   \
+     /    |    \                
+    /     |     \              
++--+ +--+--+--+  +--+--+--+
+| 2| | 9|12|14|  |19|20|21|
++--+ +--+--+--+  +--+--+--+  
+</pre>
+</td>
+</tr>
+</table>
+</center>
+
+<hr>
+<b>(d)</b> 
+To delete a key (here, 63) at an internal node, 
+first replace it with <em>x</em>, which can be either the largest key
+in its left subtree (first case) (here, 61) or the smallest key in its
+right subtree (second case) (here 67).  Then delete <em>x</em> from
+the leaf at which we found it, which we know how to do.
+In either case, underflow results, forcing redistribution.
+
+</p><p>
+<center>
+<table border="0" cellpadding="10">
+<tr>
+<td>
+<pre>
+       +--+--+--+
+       |24|61|95|
+       +--+--+--+
+      /   |   \  \
+     .    |    \  .
+          |     \
+   +--+--+--+    +--+--+
+   |34|50|57|    |70|85|
+   +--+--+--+    +--+--+
+  /  /   |   \   |  |  |
+ .  .    |    \  .  .  .
+         |     \
+      +--+--+  +--+
+      |52|55|  |58|
+      +--+--+  +--+
+</pre>
+</td>
+<td>&nbsp;<b>or</b>&nbsp;</td>
+<td>
+<pre>
+
+     +--+--+--+
+     |24|67|95|
+     +--+--+--+
+    /   |   \  \
+   .    |    \  .
+        |     \
+ +--+--+--+    +--+--+
+ |34|50|58|    |75|85|
+ +--+--+--+    +--+--+
+ |  |  |  |   /   |   \
+ .  .  .  .  /    |    \
+            /     |     \
+          +--+  +--+  +--+
+          |70|  |80|  |88|
+          +--+  +--+  +--+
+</pre>
+</td>
+</tr>
+</table>
+</center>
+
+
+
+
+<hr>
+<b>(e)</b> 
+Insertion of 41 into the leaf containing 39, 44, and 48 results in
+overflow.  Because no adjacent sibling is less than full, the node is
+split, with 44 being promoted into the node containing 34, 50, and 58,
+which overflows as a consequence.  Redistribution at this level is
+possible, because there is a non-full adjacent sibling (two, in fact).
+
+</p><p>
+<center>
+<table border="0" cellpadding="10">
+<tr>
+<td>
+<pre>
+                  +--+--+--+
+                  |34|63|95|
+                  +--+--+--+
+                 /   |  |   \
+               /     |  .    .
+             /       |
+           /         |
+ +--+--+--+         +--+--+--+
+ | 6|19|24|         |44|50|58|
+ +--+--+--+         +--+--+--+
+ |  |  |  |         |  |  |   \
+ .  .  |  |         |  |  |    +----+
+       |  |         |  |  |         |
+       |  |         |  |  |         |
+       |  |         |  |  |         |
+  +--+--+ |    +--+--+ | +--+--+--+ |
+  |20|21| |    |39|41| | |52|55|57| |
+  +--+--+ |    +--+--+ | +--+--+--+ |
+          |            |            |
+        +--+--+--+    +--+       +--+
+        |27|30|32|    |48|       |61|
+        +--+--+--+    +--+       +--+
+</pre>
+</td>
+<td>&nbsp;<b>or</b>&nbsp;</td>
+<td>
+<pre>
+          +--+--+--+
+          |24|58|95|
+          +--+--+--+
+         /   |   \  \
+        .    |     \ .
+             |       \
+             |         \
+          +--+--+--+    +--+--+--+
+          |34|44|50|    |63|70|85|
+          +--+--+--+    +--+--+--+
+         /   |  |   \   |  |   \  \
+        /    |  |   |   |  |    )  \
+       /     |  |   |   |  |    |   \
+      /      |  |   |   |  |    |    \
+     /       |  |   |   |  |    |     \
++--+--+--+   | +--+ | +--+ |  +--+--+  )
+|27|30|32|   | |48| | |61| |  |75|80|  |
++--+--+--+   | +--+ | +--+ |  +--+--+  |
+             |      |      |           |
+       +--+--+  +--+--+--+ +--+      +--+
+       |39|41|  |52|55|57| |67|      |88|
+       +--+--+  +--+--+--+ +--+      +--+
+</pre>
+</td>
+</tr>
+</table>
+</center>
+
+
+
+<hr>
+<b>(f)</b> 
+Deleting 96 causes underflow in the node from which it was deleted.
+Because there are no adjacent siblings that are not on the verge of
+underflowing, merging is performed, resulting in the leaf node
+containing 98 99.  But this leaves the node that had contained 98 in
+an underflowing condition, and so redistribution with its only sibling
+is performed.
+
+</p><p>
+<center>
+<table border="0" cellpadding="10">
+<tr><td>
+<pre>
+   +--+--+--+
+   |24|63|85|
+   +--+--+--+
+  /  /   |   \
+ .  .    |    \
+         |     \
+       +--+     +--+
+       |70|     |95|
+       +--+     +--+
+      /   |     |   \
+     /    |     |    \
+    /     |     |     \
++--+  +--+--+  +--+   +--+--+
+|67|  |75|80|  |88|   |98|99|
++--+  +--+--+  +--+   +--+--+
+</pre>
+</td></tr>
+</table>
+</center>
+
+</body>
+</html>

@@ -1,0 +1,210 @@
+<html>
+<head>
+  <title>COBOL Subprograms</title>
+</head>
+
+<body>
+<H2>COBOL Subprograms</H2>
+
+<H3>Comparison with Paragraphs</H3>
+<p>
+It is assumed that the reader is already familiar with fact that,
+within the <tt>PROCEDURE DIVISION</tt> of a COBOL (sub)program,
+each paragraph is a unit of executable code that is "callable"
+---via the <tt>PERFORM</tt> verb--- from within that (sub)program.
+In effect, all the paragraphs in (the <tt>PROCEDURE DIVISION</tt> of)
+a COBOL (sub)program are parameter-less "routines" having access to
+the same data, namely, all those data items declared in the 
+<tt>DATA DIVISION</tt> of that (sub)program.
+
+<p>
+In contrast, a COBOL subprogram is a separate compilation unit; 
+that is, it belongs in a file by itself and is compiled independently
+of its clients (i.e., other COBOL (sub)programs that call it).
+In order to produce an executable file, the object code files produced
+by the separate compilations of a main program and any subprograms 
+it calls (directly or indirectly) must be <b>link</b>ed.  (You may wish
+to read <A HREF="cobol_clr.html">instructions</A> on how to compile, link,
+and execute COBOL programs in a VMS environment.)
+
+<p>
+Because the data declared in one compilation unit is not visible in any
+other (and hence, subprograms cannot communicate with their callers through
+the mechanism of shared data, as do the paragraphs within a compilation unit),
+subprograms communicate with their callers through the mechanism of
+argument-passing.  (What are called "parameters" in some languages are
+referred to as "arguments" in others, including COBOL and FORTRAN.)
+
+<H3>Comparision with Programs</H3>
+<p>
+The syntactic form of a COBOL subprogram is nearly identical to that
+of a COBOL program; in particular, it has the same four divisions:
+<tt>IDENTIFICATION</tt>, <tt>ENVIRONMENT</tt>, <tt>DATA</tt>, and
+<tt>PROCEDURE</tt>.
+
+<p>
+In a subprogram, however, the <tt>DATA DIVISION</tt> 
+includes ---in addition to the <tt>FILE</tt> and 
+<tt>WORKING-STORAGE</tt> sections--- a <tt>LINKAGE</tt> section,
+where the subprogram's <b>formal arguments</b> are
+described (via <tt>PICTURE</tt> clauses, etc.)
+
+<p>
+Another syntactic difference is that, in a subprogram, the 
+<tt>PROCEDURE DIVISION</tt> header includes a <tt>USING</tt> clause that
+lists the names of the formal arguments and, in so doing, 
+indicates the order in which the corresponding <b>actual arguments</b>
+must be listed by the caller in making a call to the subprogram.
+
+<p>
+Finally, to terminate execution of a
+subprogram (and return control to its caller), 
+the statement <tt>EXIT PROGRAM</tt> is used, rather than
+<tt>STOP RUN</tt>.  The latter statement will, as usual, have the effect
+of terminating execution of the whole program; in other words, if it
+is executed within a subprogram, control will not return to its caller.
+ 
+<H3>Calling and Passing Arguments to a Subprogram</H3>
+<p>
+A statement used for calling a subprogram has the syntax
+<center>
+<tt>CALL &lt;subprogram-name&gt; USING &lt;argument-list&gt;</tt>
+</center><br>
+
+A subprogram's name is that which is specified in its <tt>PROGRAM-ID</tt>
+paragraph.  The argument list is a sequence of data-names (or literals),
+each (optionally) preceded by one of the two phrases
+<tt>BY CONTENT</tt> or <tt>BY REFERENCE</tt>, which specifies the
+mode under which the argument is passed.  The former is analogous to
+a non-VAR parameter in Pascal, or to an <b>in</b> parameter in Ada,
+or to all parameters in C and Java (which give you no choice but to
+"pass by value").
+The latter is analogous to a VAR parameter in Pascal or to an <b>in out</b>
+parameter in Ada.  The default is <tt>BY REFERENCE</tt>.
+
+<p>
+For example, the following invokes the subprogram <tt>Junk</tt> and
+passes to it four arguments, the first and last <tt>BY REFERENCE</tt>
+and the middle two <tt>BY CONTENT</tt>:
+<pre>
+              CALL 'Junk' USING
+                 BY REFERENCE Garbage
+                 BY CONTENT   Refuse, 37
+                 BY REFERENCE Rubbish </pre>
+
+<p>
+For another example, note that the <tt>PROGRAM-ID</tt> of 
+<A HREF="../plus1_sub.cob">this subprogram</A>
+is <tt>Plus-One</tt>; then note that, to call it, another
+(sub)program would (most likely) use a statement of the form
+<center><br>
+<tt>CALL 'Plus-One' USING &lt;argument-list&gt;</tt>
+</center><br>
+as is illustrated by <A HREF="../plus1_sub_driver.cob">this calling program</A>.
+(The need for quotes surrounding the name brings up a rather
+interesting issue, which is discussed below.)
+
+<H3>Miscellaneous Facts</H3>
+
+<ul>
+  <li>
+    <b>Local variables are static:</b>
+    Variables declared inside a subprogram are <b>static</b>,
+    meaning that their values persist from one invocation to the next.
+    In other words, whatever value a variable has when one invocation
+    of a subprogram ends, it will have that same value as execution 
+    of the next invocation begins.
+    In particular, <tt>VALUE</tt> clauses used in the declaration of
+    data items in a subprogram have the effect of initializing those
+    data items <b>only once</b>, as opposed to initializing them each
+    time the subprogram is called.
+
+    <p>
+    <b>Note:</b> This concept is not unique to COBOL.  FORTRAN works
+    like this too.  In Algol-60, a language of great historical
+    importance, you can specify in a variable's declaration that its value
+    is to persist from one invocation to the next by using the keyword 
+    <b>own</b>.  In C you can get this effect using 
+    <!-- "internal -->
+    "static"
+    variables.  In Ada, variables declared inside a package (but not
+    local to any of its subprograms) behave similarly. <b>End of note.</b>
+
+    <p>
+    By using a <tt>CANCEL</tt> statement, the syntax of which is
+    <tt><center><br>CANCEL &lt;subprogram-name&gt;</center></tt><br>
+    a calling program forces the local variables of the indicated
+    subprogram to be "refreshed".  Thus, if a calling (sub)program
+    requires that the data items in a subprogram be in a refreshed state
+    each time it invokes that subprogram, it should precede each 
+    <tt>CALL</tt> to that subprogram with a <tt>CANCEL</tt> statement.
+
+    <p>
+    Another way to ensure that all data items local to a subprogram
+    are refreshed each time it is called is to insert the phrase
+    <tt>IS INITIAL PROGRAM</tt> (both <tt>IS</tt> and <tt>PROGRAM</tt>
+    are optional) immediately after the subprogram's
+    name in its <tt>PROGRAM-ID</tt> paragraph.  For example,<br /><br>
+    <tt> <center> 
+         PROGRAM-ID. Stupid-Subprogram IS INITIAL PROGRAM.
+    </center> </tt> 
+  <p>
+  </li>
+  <li>
+    <b>Calling a subprogram:</b>
+    To invoke a subprogram, a calling program uses the <tt>CALL</tt> verb,
+    the syntax of which is as follows:
+    <tt><center><br>CALL &lt;subprogram-name&gt; USING &lt;arg-list&gt;
+    </center><br>
+    </tt>
+    Two points are of interest.  The first is that the subprogram name
+    <em>is evaluated</em>!  That is, to call the subprogram Junk, you would 
+    (usually) write
+
+    <tt><center><br>CALL 'Junk' USING ....</center></tt><br>
+
+    Notice the single quotes surrounding the subprogram name.
+    If you were instead to write
+
+    <tt><center><br>CALL Junk USING ....</center></tt><br>
+
+    the subprogram called would be the one whose name is the current
+    value of the data item <tt>Junk</tt>!!!
+    For example, if <tt>Junk</tt> had been declared using the
+    picture clause <tt>PIC X(7)</tt> and had the value <tt>"Destroy"</tt>
+    at the time the above call were made, then the call would be to the
+    subprogram <tt>Destroy</tt>!
+    If, later in execution, the value of <tt>Junk</tt> had
+    been modified to, say, <tt>"MrSpock"</tt>, then execution of the same
+    <tt>CALL</tt> statement would result in the invocation of the 
+    subprogram having that name!
+
+    <p>
+    This is an extremely powerful and dangerous feature, and one that you
+    would expect to find in a language such as LISP that readily supports
+    AI applications, but not in a data processing language!
+
+    <p>
+    The second interesting point is that it is the caller, rather than
+    the subprogram, which determines the mode under which each argument
+    is passed.  (Did you notice this during the discussion of the
+    <tt>CALL</tt> verb above?)
+    In Pascal and Ada, for example, the mode of each formal
+    parameter is specified in the definition of the subprogram.  That
+    is, the subprogram determines the mode of parameter passing for
+    each parameter.  By giving control of this to the caller, it makes
+    it impossible to describe a subprogram's effects in terms of a single
+    pre- and post-condition pair.  Instead, (in the worst case) you'd
+    need a distinct pair of conditions for each of the possible 2<sup>k</sup>
+    choices of passing the arguments, where k is the # of arguments.
+
+  </li>
+</ul>
+
+<H3>Reference</H3>
+<p>
+For a much more complete description of subprograms (and nested programs)
+in COBOL, see Chapter 23 of <em>Comprehensive COBOL</em>.
+
+</body>
+</html>

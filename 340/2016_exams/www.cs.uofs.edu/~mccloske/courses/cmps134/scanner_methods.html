@@ -1,0 +1,73 @@
+<html>
+<head><title>Some Java Scanner methods</title>
+</head>
+<body>
+<h2>CMPS 134 : Some Java Scanner methods</h2>
+
+</p><p>
+Letting <tt>input</tt> be of type <tt>Scanner</tt>,
+here are examples of invocations of methods in the 
+<tt>java.util.Scanner</tt> class:
+
+</p><p>
+<table border="1" cellpadding="4">
+<tr><th>method<br />Invocation</th>
+    <th>Return Type</th>
+    <th>Value Returned</th>
+</tr>
+<tr>
+  <td><tt>input.next()<tt></td>
+  <td><tt>String</tt></td>
+  <td>the next input token</td>
+</tr>
+<tr>
+<tr>
+  <td><tt>input.hasNext()<tt></td>
+  <td><tt>boolean</tt></td>
+  <td>true if there is a next input token, false otherwise</td>
+</tr>
+  <td><tt>input.nextInt()<tt></td>
+  <td><tt>int</tt></td>
+  <td>the next input token, translated into a value of type <tt>int</tt>
+    Throws <tt>NumberFormatException</tt> if the next token is not of a
+    form that can be translated into an integer.
+  </td>
+</tr>
+<tr>
+  <td><tt>input.hasNextInt()<tt></td>
+  <td><tt>boolean</tt></td>
+  <td>true if there is a next input token and it is of a form that
+      can be translated into an integer, false otherwise
+  </td>
+</tr>
+<tr>
+  <td><tt>input.nextDouble()<tt></td>
+  <td><tt>int</tt></td>
+  <td>the next input token, translated into a value of type <tt>double</tt>.
+    Throws <tt>NumberFormatException</tt> if the next token is not of a
+    form that can be translated into a real number.
+  </td>
+</tr>
+<tr>
+  <td><tt>input.hasNextDouble()<tt></td>
+  <td><tt>boolean</tt></td>
+  <td>true if there is a next input token and it is of a form that
+      can be translated into a real number, false otherwise
+  </td>
+</tr>
+<tr>
+  <td><tt>input.nextLine()<tt></td>
+  <td><tt>String</tt></td>
+  <td>the rest of the current line of input (up to a newline character)</td>
+</tr>
+<tr>
+  <td><tt>input.hasNextLine()<tt></td>
+  <td><tt>boolean</tt></td>
+  <td>true if there is more input data (even if it is all whitespace and
+       therefore no tokens remain)
+  </td>
+</tr>
+</table>
+
+</body>
+</html>

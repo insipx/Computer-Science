@@ -1,0 +1,277 @@
+<html>
+<head>
+   <title>&nbsp Notes on Chapter 2 of Elmasri &amp; Navathe (5th ed.)</title>
+</head>
+<body>
+<h2>Notes on Chapter 2 of Elmasri &amp; Navathe (5th ed.) </h2>
+
+<b>Still Under Construction</b>
+
+<h3>2.1 Data Models, Schemas, and Instances</h3>
+
+<!-- NOTE: these notes are, for the most part, based upon the 4th edition.
+Some changes were made in the 5th edition that haven't been incorporated
+here.  Example is client/server stuff.
+-->
+</p><p>
+One fundamental characteristic of the database approach is that it
+provides some level of <em>data abstraction</em> by hiding details
+of data storage that are irrelevant to database users.
+
+</p><p>
+A <b>data model</b> &mdash;a collection of concepts that can be used to
+describe the conceptual/logical structure of a database&mdash;
+provides the necessary means to achieve this abstraction.
+
+</p><p>
+By <em>structure</em> is meant the data types, relationships, and
+constraints that should hold for the data.
+
+</p><p>
+Most data models also include a set of <b>basic operations</b>
+for specifying retrievals/updates.
+
+</p><p>
+Object-oriented data models include the idea of objects having behavior
+(i.e., applicable methods) being stored in the database (as opposed to
+purely "passive" data).
+
+</p><p>
+According to C.J. Date (one of the leading database experts), a 
+<b>data model</b> is an abstract, self-contained, logical definition
+of the objects, operators, and so forth, that together constitute the
+<em>abstract machine</em> with which users interact.
+The objects allow us to model the <em>structure</em> of data;
+the operators allow us to model its <em>behavior</em>.
+
+</p><p>
+In the <em>relational</em> data model, data is viewed as being organized
+in two-dimensional tables comprised of tuples of attribute values.
+This model has operations such as <tt>Project</tt>, <tt>Select</tt>,
+and <tt>Join</tt>.
+
+</p><p>
+A data model is not to be confused with its <b>implementation</b>,
+which is a physical realization on a real machine of the components
+of the <em>abstract machine</em> that together constitute that model.
+
+</p><p>
+Logical vs. physical!!
+
+</p><p>
+There are other well-known data models that have been the basis for
+database systems.  The best-known models pre-dating the relational
+model are the <b>hierarchical</b> (in which the entity types form a
+tree) and the <b>network</b> (in which the entity types and relationships
+between them form a graph).
+<!-- Show example using course grades.  (See Figure 2.8, p. 44) -->
+
+</p><p>
+<b>Categories of Data Models</b> (based on degree of abstractness):
+<ul>
+  <li><b>high-level/conceptual</b>: (e.g., ER model of Chapter 7
+     (Chapter 3 in older editions of the text))
+     provides a view close to the way users would perceive data;
+     it uses concepts such as 
+     <ul>
+       <li><b>entity</b>: real-world object or concept (e.g., student,
+           employee, course, department, event)
+       </li>
+       <li><b>attribute</b>: some property of interest describing an
+           entity (e.g., height, age, color)
+       </li>
+       <li><b>relationship</b>: an interaction among entities 
+           (e.g., a works-on relationship between an employee and a project;
+           an enrolled-in relationship between a student and a course section)
+       </li>
+     </ul>
+  </li>
+  <li><b>representational/implementational</b>: intermediate level of
+      abstractness; example is relational data model (or the network model
+      alluded to earlier).
+      Also called <b>record-based</b> model.
+  </li>
+  <li><b>low-level/physical</b>: gives details as to how data is stored
+      in computer system, such as record formats, orderings of records,
+      access paths (indexes).  (See Chapters 17-18.)
+  </li>
+</ul>
+
+</p><p>
+<b>2.1.2: Schemas, Instances, and Database State</b>
+</p><p>
+One must distinguish between the <em>description</em> of a database and the
+database itself.  The former is called the <b>database schema</b>,
+which is specified during design and is not expected to change often.
+(See Figure 2.1, p. 32, for schema diagram for relational UNIVERSITY
+database.)
+
+</p><p>
+In a typical database, frequently changes are made to data items stored
+therein.
+The data in the database at a particular time is called the <b>state</b>
+of the database, or a <b>snapshot</b>.
+
+</p><p>
+Application requirements change occasionally, which is one of the reasons
+why software maintenance is important.
+On such occasions, a change to a database's schema may be called for.
+An example would be to add a <tt>Date_of_Birth</tt> field/attribute to
+the <tt>STUDENT</tt> table.
+Making changes to a database schema is known as <b>schema evolution</b>.
+Most modern DBMS's support schema evolution operations that can be 
+applied while a database is operational.
+
+<hr>
+<h3>2.2 DBMS Architecture and Data Independence</h3>
+
+</p><p>
+<b>2.2.1: Three-Schema Architecture</b>: (See Figure 2.2, page 34.)
+  This idea was first described by the ANSI/SPARC committee in late 1970's.
+  The goal is to separate (i.e., insert layers of "insulation" between)
+  user applications and the physical database.
+  C.J. Date points out that it is an ideal that few, if any, real-life 
+  DBMS's achieve fully.
+
+<ul>
+  <li><b>internal level</b>: has an internal/physical schema that describes
+     the physical storage structure of the database using a low-level 
+     data model)
+  </li>
+  </p>
+  <li><b>conceptual level</b>: has a conceptual schema describing the 
+    (logical) structure of the whole database for a community of users.
+    It hides physical storage details, concentrating upon describing
+    entities, data types, relationships, user operations, and constraints.
+    Can be described using either high-level or implementational data model.
+  </li>
+  </p>
+  <li><b>external/view level</b>:
+    includes a number of external schemas (or user views), each of which
+    describes part of the database that a particular category of users is
+    interested in, hiding rest of database.
+    Can be described using either high-level or implementational data model.
+    (In practice, usually described using same model as is the conceptual
+    schema.)
+  </li>
+</ul>
+
+</p><p>
+Users (including application programs) submit queries that are
+expressed with respect to the external level.
+It is the responsibility of the DBMS to <b>transform</b> such a query
+into one that is expressed with respect to the internal level (and
+to transform the result, which is at the internal level, into
+its equivalent at the external level).
+
+</p><p>
+Example: Select students with GPA &gt; 3.5.
+
+</p><p>
+Q: How is this accomplished?<br>
+A: By virtue of <b>mappings</b> between the levels:
+<ul>
+  <li><b>external/conceptual</b> mapping
+       (providing <b>logical</b> data independence)
+  </li>
+  <li><b>conceptual/internal</b> mapping
+       (providing <b>physical</b> data independence)
+  </li>
+</ul>
+
+</p><p>
+<b>Data independence</b> is the capacity to change the schema at
+one level of the architecture without having to change the schema at
+the next higher level.  We distinguish between <b>logical</b> 
+and <b>physical</b> data independence according to which two
+adjacent levels are involved.  The former refers to the ability to
+change the conceptual schema without changing the external schema.
+The latter refers to the ability to change the internal schema without
+having to change the conceptual.
+
+</p><p>
+For an <b>example of physical data independence</b>, suppose that the
+internal schema is modified (because we decide to add a new index, or 
+change the encoding scheme used in representing some field's value, or
+stipulate that some previously unordered file must be ordered by a
+particular field).  Then we can change the mapping between the conceptual
+and internal schemas in order to avoid changing the conceptual schema itself.
+
+</p><p>
+Not surprisingly, the process of transforming data via mappings can
+be costly (performance-wise), which is probably one reason that
+real-life DBMS's don't fully implement this 3-schema architecture.
+
+<hr>
+<h3>2.3 Database Languages and Interfaces</h3>
+
+A DBMS supports a variety of users and must provide appropriate languages
+and interfaces for each category of users.
+
+</p><p>
+<b>DBMS Languages</b>
+<ul>
+  <li>DDL (Data Definition Language): used (by the DBA and/or 
+      database designers) to specify the conceptual schema.  
+  </li>
+  <li>SDL (Storage Definition Language): used for specifying the 
+      internal schema
+  </li>
+  <li>VDL (View Definition Language): used for specifying the external schemas
+      (i.e., user views)
+  </li>
+  <li>DML (Data Manipulation Language): used for performing operations such
+      as retrieval and update upon the populated database
+  </li>
+</ul>
+
+</p><p>
+The above description represents some kind of ideal.
+In real-life, at least so far, the de facto standard DBMS language is
+SQL (Standard Query Language), which has constructs to support the
+functions needed by DDL, VDL, and DML languages.  (Early versions of
+SQL had features in support of SDL functions, but no more.)
+
+</p><p>
+<b>2.3.1 DBMS Languages</b>
+<p>
+menu-based, forms-based, gui-based, natural language,
+special purpose for parametric users, for DBA.
+
+</p><p>
+<b>2.3.2 DBMS Interfaces</b>
+<ul>
+  <li>Menu-based interfaces for web clients or browsing</li>
+  <li>Forms-based interfaces </li>
+  <li>GUI's</li>
+  <li>Natural Language Interfaces</li>
+  <li>Speech Input and Output</li>
+  <li>Interfaces for parametric users</li>
+  <li>Interfaces for the DBA</li>
+</ul>
+
+<hr>
+<b>2.4 Database System Environment</b>
+<p>
+See Figure 2.3, page 41.
+
+<hr>
+<b>2.5 Centralized and Client/Server Architectures for DBMS's</b>
+
+<hr>
+<b>2.6 Classification of DBMS's</b>
+<p>
+Based upon
+<ul>
+  <li>underlying data model (e.g., relational, object, object-relational,
+      network)
+  </li>
+  <li>multi-user vs. single-user</li>
+  <li>centralized vs. distributed</li>
+  <li>cost</li>
+  <li>general-purpose vs. special-purpose</li>
+  <li>types of <b>access path</b> options</li>
+</ul>
+
+</body>
+</html>

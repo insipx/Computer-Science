@@ -1,0 +1,655 @@
+<html>
+<head><title>Encoding a Codeword Table Induced by a Huffman Tree</title> 
+</head>
+<body>
+<h2>
+CMPS 340  File Processing<br />
+Encoding the Symbol-to-Codeword Mapping Induced by a Huffman Tree
+</h2>
+
+<h3>Under construction</h3>
+
+<h3>Background: Unary and Elias-Gamma Coding of Positive Integers</h3>
+
+</p><p>
+<table align="right" border="1" cellpadding="4">
+<caption align="bottom"><b>Elias-Gamma Coding</b></caption>
+<tr><th>n</th> <th>U(<tt>&lfloor;</tt>lg n<tt>&rfloor;</tt>+1)</th> <th>B(n)</th> <th>EG(n)</th>
+</tr>
+<tr><td>1</td> <td>1</td> <td>1</td> <td>1</td></tr>
+<tr><td>2</td> <td>01</td> <td>10</td> <td>010</td></tr>
+<tr><td>3</td> <td>01</td> <td>11</td> <td>011</td></tr>
+<tr><td>4</td> <td>001</td> <td>100</td> <td>00100</td></tr>
+<tr><td>5</td> <td>001</td> <td>101</td> <td>00101</td></tr>
+<tr><td>6</td> <td>001</td> <td>110</td> <td>00110</td></tr>
+<tr><td>7</td> <td>001</td> <td>111</td> <td>00111</td></tr>
+<tr><td>8</td> <td>0001</td> <td>1000</td> <td>0001000</td></tr>
+<tr><td>9</td> <td>0001</td> <td>1001</td> <td>0001001</td></tr>
+<tr><td>10</td> <td>0001</td> <td>1010</td> <td>0001010</td></tr>
+<tr><td>11</td> <td>0001</td> <td>1011</td> <td>0001011</td></tr>
+<tr><td>...</td> <td>...</td> <td>...</td> <td>...</td></tr>
+<tr><td>15</td> <td>0001</td> <td>1111</td> <td>0001111</td></tr>
+<tr><td>16</td> <td>00001</td> <td>10000</td> <td>000010000</td></tr>
+<tr><td>...</td> <td>...</td> <td>...</td> <td>...</td></tr>
+<tr><td>31</td> <td>00001</td> <td>11111</td> <td>000011111</td></tr>
+<tr><td>32</td> <td>000001</td> <td>100000</td> <td>00000100000</td></tr>
+</table>
+
+</p><p>
+The <b>unary</b> code for a positive integer <em>n</em> is
+<em>n-1</em> <tt>0</tt>s followed by a <tt>1</tt>.  For example, <tt>5</tt>
+is encoded by <tt>00001</tt>.  (Of course, we could reverse the roles played
+by <tt>0</tt> and <tt>1</tt>, in which case <tt>5</tt> would be encoded by
+<tt>11110</tt> instead.  Also, if we wanted to be able to encode zero,
+we could change the scheme to using <em>n</em> (rather than <em>n-1</em>)
+<tt>0</tt>s followed by a <tt>1</tt>.)  (Because both <tt>0</tt> and <tt>1</tt>
+are used in this scheme, it seems to be a misnomer to call it <em>unary</em>,
+but so it is.)  Let U(n) denote the unary code for positive integer <em>n</em>.
+
+</p><p>
+Notice that the set of codewords in this coding scheme is 
+<tt>{ 1, 01, 001, 0001, ... }</tt> 
+(or <em>0<sup>*</sup>1</em> as a regular expression), 
+which is prefix-free and therefore uniquely decipherable.
+This is significant, because it means that if we can determine
+where, within a larger bit string, a unary codeword begins,
+we can also determine where that codeword ends (namely, at the
+first occurrence of a <tt>1</tt>).
+When a small positive integer is to be encoded, using its unary code
+can be an efficient way of doing so.
+
+</p><p>
+When a somewhat larger-valued positive integer is to be
+encoded, a more efficient coding scheme is <b>Elias-Gamma</b>.
+(For numbers less than five, the unary codewords are slightly shorter than
+the corresponding Elias-Gamma codewords, but for numbers six and above, 
+Elias-Gamma's advantage grows larger as the numbers increase.)
+Here, a positive integer <em>n</em> is encoded by U(&lfloor;lg n&rfloor;+1)
+(i.e., the unary representation of one more than the log to the base two of n)
+followed by B(n), i.e., the standard binary encoding of <em>n</em>,
+with the trailing <tt>1</tt> in the former and leading
+<tt>1</tt> in the latter "merged" into one symbol.
+To view it another way, EG(n) is B(n) preceded
+by a number of <tt>0</tt>s one less than the length of B(n).
+Thus, the length of EG(n) is 2&lfloor;lg n&rfloor; + 1.
+To the right is a table showing the Elias-Gamma codewords for several
+numbers up to 32.
+
+</p><p>
+<hr>
+<h3>Decompressing a Huffman-compressed File</h3>
+
+</p><p>
+Suppose that a file has been compressed using Huffman coding.
+When, at some later time, the file is to be decompressed, the
+decompressor (i.e., the "agent" that carries out the decompression)
+must somehow ascertain the symbol-to-codeword mapping
+<!-- induced by the Huffman Tree -->
+that was used by the compressor.
+How?
+
+</p><p>
+The obvious answer is that an encoding of this mapping should appear
+at the beginning of the compressed version of the file.  
+(This is an example of <em>metadata</em>.)
+That way, the decompressor can begin its work by reading the encoding 
+of the mapping, allowing it to construct a data structure (possibly the
+same Huffman tree that the compressor used) that enables the efficient 
+translation of codewords into (the native representations of) their 
+corresponding symbols.
+Once the decompressor has that data structure in place, it continues by 
+reading the compressed data (which is just a sequence of codewords),
+translating each codeword encountered back to its original (uncompressed)
+form.
+
+</p><p>
+But how should the symbol-to-codeword mapping be encoded?
+
+</p><p>
+We start with the most straightforward case, which is when the
+source alphabet is the set of byte values (i.e., the set of bit strings
+of length eight).  Of course, these byte values naturally map into
+the integers in the range 0..255 in accord with the standard binary 
+representation of natural numbers.  Thus, we identify each symbol in
+the alphabet with the number that it represents and refer to them
+as S<sub>0</sub>, S<sub>1</sub>, ..., S<sub>255</sub>.
+(For example, S<sub>57</sub> is <tt>00111001</tt>.)
+Similarly, we refer to the codeword associated to S<sub>k</sub>
+as C<sub>k</sub>.  
+
+<h3>Listing the Codewords</h3>
+
+One way to encode the symbol-to-codeword mapping is with the list
+
+</p><p>
+<center>
+C<sub>0</sub>, C<sub>1</sub>, C<sub>2</sub>, ..., C<sub>255</sub>
+</center>
+
+</p><p>
+Of course, 
+<!-- except in a very unusual circumstance,  -->
+we must allow for the possibility 
+&mdash;indeed, the near certainty&mdash; that 
+not all codewords will be of the same length.  
+Thus, the encoding must provide some way for the decompressor to find
+the boundaries between adjacent codewords.
+That can be accomplished by preceding each C<sub>k</sub> by an encoding
+of its length, L<sub>k</sub>.  
+Since the vast majority of codewords will be of length six or greater 
+&mdash;can you explain why?&mdash;
+for which Elias-Gamma coding is better than unary,
+we choose to use the former.
+
+</p><p>
+Thus, we can encode the symbol-to-codeword mapping by the bit string
+
+</p><p>
+<center>
+EG(L<sub>0</sub>) &nbsp; C<sub>0</sub> &nbsp; 
+EG(L<sub>1</sub>) &nbsp; C<sub>1</sub> &nbsp;
+EG(L<sub>2</sub>) &nbsp; C<sub>2</sub> &nbsp; ...  &nbsp;
+EG(L<sub>255</sub>) &nbsp; C<sub>255</sub>
+</center>
+
+</p><p>
+As an example, suppose that 
+C<sub>0</sub> = <tt>0110</tt>,
+C<sub>1</sub> = <tt>101110110</tt>, and
+C<sub>255</sub> = <tt>1100010110</tt>.
+Then the encoding of the symbol-to-codeword mapping will look like this:
+
+</p><p>
+<center>
+<tt>00100 0110 0001001 10111010 ... 0001010 1100010110
+</tt>
+</center>
+
+</p><p>
+Spaces were inserted at the boundaries between length encodings 
+and codewords so that the reader could make sense of this more easily.
+
+</p><p>
+How many bits will this encoding require?
+Of course, that depends upon the distribution of codeword lengths,
+but, for reasons outside the scope of this document, it is safe to
+say that a lower bound is 2872 (which is 256&times;12, describing
+the impossibly good case in which each of the 256 codewords is of 
+length seven, and thus the encoding of its length is of length five).
+
+</p><p>
+Your instructor believes that it can be proved that the best possible 
+case would occur when 85 codewords were of length seven, 170 were of 
+length nine, and the remaining one of length eight.  
+Encoding each codeword of length seven requires 12 bits (seven bits for
+the codeword itself, preceded by the five bits of EG(7) to encode the 
+codeword's length).  Encoding each codeword of length nine requires 16 bits
+(nine for the codeword itself, preceded by seven bits for EG(9)).
+Finally, encoding the codeword of length eight requires 15 bits.
+This adds up to (85)(12) + (170)(16) + 15 = 3755 bits.
+
+<h3>Improvement: Encode the Huffman Tree Rather than the Codewords</h3>
+
+</p><p>
+<table align="right" border="1" cellpadding="4"> 
+<caption align="bottom">Tree encoded by <tt>000110001101111</tt></caption>
+<tr><td>
+<pre>               1
+              / \
+             /   \
+            /     \
+           2       15
+          / \     
+         /   \ 
+        /     \
+       /       \
+      /         \
+     3           6 
+    / \         / \
+   /   \       /   \
+  /     \     /     \
+ 4       5   7       14
+            / \ 
+           /   \
+          /     \
+         /       \
+        /         \
+       8           11 
+      / \         / \
+     /   \       /   \
+    /     \     /     \
+   9       10  12      13</pre>
+</td></tr>
+</table>
+</p><p>
+Listing all the codewords results in needless redundancy.
+For example, suppose that 103 of the codewords begin with <tt>0</tt>
+and the remaining 153 begin with <tt>1</tt>.  
+In effect, a <tt>0</tt> (respectively, <tt>1</tt>) at the beginning of a
+codeword encodes the left (respectively, right) child of the root of
+the Huffman Tree from which the codewords were induced.
+So in a list of all codewords, those two nodes are being encoded 103 
+and 153 times, respectively. 
+<!-- 
+  Meanwhile, in every codeword that begins <tt>01</tt>, the <tt>1</tt> 
+  encodes the right child of the left child of the root.
+  And there will be a bunch of such codewords in the list.
+  Indeed, taken over all codewords, each node will be encoded a number 
+  of times equal to the number of leaves in the subtree rooted at that node!
+-->
+More generally, in a list of all codewords, each node in the tree will be
+encoded a number of times equal to the number of leaves in the subtree
+of which it is the root.
+
+</p><p>
+Can we do better?  
+
+
+
+In exploring this question, we can make the observation that every
+Huffman tree is a <em>full</em> binary tree, meaning one in which every
+node has either two children or no children. 
+It turns out that we can exploit this regularity to devise a way of 
+encoding the structure of any full binary tree by a bit string 
+whose length equals the number of nodes in the tree.
+
+</p><p>
+One such encoding function <em>f</em> is elegantly expressed 
+re<b>cur</b>sively: 
+
+</p><p>
+<ul>
+  <li>If T is a one-node tree (i.e., its root is also a leaf), 
+      f(T) = <tt>1</tt>.
+  </li>
+  <li>Otherwise, 
+      f(T) = <tt>0</tt> &middot; f(T<sub>L</sub>) &middot; f(T<sub>R</sub>),
+      where T<sub>L</sub> and T<sub>R</sub> are the subtrees of T
+      rooted at the left and right children, respectively, of T's root.
+  </li>
+</ul>
+
+</p><p>
+In words, a one-node tree is encoded by <tt>1</tt> and a multi-node
+tree is encoded by <tt>0</tt><b>xy</b>, where <b>x</b> and <b>y</b> 
+are the encodings of its left and right subtrees, respectively.
+
+</p><p>
+To put it yet another way, to produce the encoding of a tree, 
+perform a preorder traversal upon it.  Each time an interior node
+(i.e., a non-leaf) is visited, emit <tt>0</tt>.  Each time a leaf
+is visited, emit <tt>1</tt>.
+
+</p><p>
+As an example, consider the full binary tree pictured to the right, 
+where the nodes are numbered corresponding to the order in which they 
+would be visited in a preorder traversal.
+The tree is encoded by <tt>000110001101111</tt>.
+
+</p><p>
+So suppose that T is the Huffman Tree that gives rise to the
+symbol-to-codeword mapping that the compressor will be using
+when applied to some particular file (based upon the frequencies
+with which the various byte values occur in that file, of course).
+If the compressor writes f(T) at the beginning of the compressed version
+of the file, the decompressor will be able to reconstruct T.
+(Algorithmic details will be shown later.)
+<!--
+   A vital point is that any two full binary trees having non-isomorphic
+   structures have distinct bit strings that encode them.  A proof
+   of this is beyond the scope of this document.)
+-->
+
+</p><p>
+Well, not quite, because f(T) encodes the structure of T, but it 
+fails to capture the mapping between symbols (byte values)
+and leaves.  That is, from f(T) we can obtain the set of codewords
+but we cannot tell, for any codeword, to which symbol it is associated.
+Obviously, the decompressor needs this information, and so the 
+compressor must somehow encode it and include it, together with f(T),
+within the metadata.
+
+</p><p>
+This turns out not to be difficult.
+What the compressor can do, immediately after (or before, for
+that matter) writing f(T), is to write all of the S<sub>i</sub>'s
+in the order that corresponds to the left-to-right order of the
+leaves to which they are associated.
+Or, even more convenient for the decompressor, the compressor
+can embed the S<sub>i</sub>'s within f(T) by placing each one
+immediately after the <tt>1</tt> (within f(T)) that encodes the 
+corresponding leaf.
+
+</p><p>
+All this can be encoded using 511 bits for f(T) plus 2048 bits
+(256&middot;8) to list all 256 byte values, for a total of 2559 bits,
+which is almost 1200 bits fewer than the minimum possible arising
+from listing all the codewords (as seen in the previous secton).
+
+
+
+</p><p>
+<table align="right" border="1" cellpadding="4"> <tr><td>
+<pre>
+               *
+              / \
+             /   \
+            /     \
+           *      110
+          / \     
+         /   \ 
+        /     \
+       /       \
+      /         \
+     *           *
+    / \         / \
+   /   \       /   \
+  /     \     /     \
+000    111   *     011 
+            / \ 
+           /   \
+          /     \
+         /       \
+        /         \
+       *           *
+      / \         / \
+     /   \       /   \
+    /     \     /     \
+  100    010   101   001</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+In order to illustrate this (using a tree of reasonable size, rather than
+one containing 511 nodes), to the right is shown the 15-node tree 
+shown earlier, but this time its leaves are labeled by the bit strings
+of length three, which we imagine to be the source alphabet of a message
+to be compressed.
+
+</p><p>
+The symbol-to-codeword mapping induced by this tree is
+
+</p><p>
+<center>
+<tt>{ 000&rarr;000, 001&rarr;01011, 010&rarr;01001, 011&rarr;011,
+100&rarr;01000, 101&rarr;01010, 110&rarr;1, 111&rarr;001 }</tt>
+</center>
+
+</p><p>
+By chance, two of the symbols (<tt>000</tt> and <tt>011</tt>)
+have codewords that are identical to their "native representations".
+
+</p><p>
+As described above, we can encode both the structure of the tree T and 
+the mapping from symbols to leaves using the string f(T) followed by
+the list of symbols in left-to-right order by their corresponding leaves.
+This yields the bit string
+
+</p><p>
+<center>
+<tt>000110001101111 <font color="blue">000 111 100 010 101 001 011 110</font>
+</tt>
+</center>
+
+</p><p>
+where the black bits encode the tree structure and the blue bits 
+enumerate the (native representations of) the symbols.
+Spaces are used simply to help the reader separate one logical
+value from another.
+
+</p><p>
+If we choose to embed the symbols within the encoding f(T) of the tree 
+(by placing each symbol's native representation immediately after the
+<tt>1</tt> in f(T) representing its leaf node), we get the bit string
+
+</p><p>
+<center>
+<tt>
+0001 <font color="blue">000</font> 1 <font color="blue">111</font>
+0001 <font color="blue">100</font> 1 <font color="blue">010</font>
+01 <font color="blue">101</font> 1 <font color="blue">001</font>
+1 <font color="blue">011</font> 1 <font color="blue">110</font>
+</tt>
+</center>
+
+</p><p>
+Again, the black bits are f(T) and the blue bits enumerate the symbols.
+
+
+</p><p>
+<b>When Not Every Symbol Appears</b> 
+</p><p>
+Another advantage enjoyed by the approach of encoding the Huffman Tree
+rather than that of listing the codewords is that the former can more
+easily take advantage of the (very frequent) case in which the 
+source alphabet is a proper subset of the set of all byte values.  
+Indeed, for a typical ASCII text file, only 60-90 distinct byte values 
+appear at all.  (The "non-extended" ASCII character set includes 
+no symbols encoded with a byte value greater than 127, which eliminates
+half of the 256 byte values right from the start.)
+
+</p><p>
+Suppose that n distinct byte values appear in a file to be compressed.
+Then the corresponding Huffman Tree need only contain n leaves, 
+and thus a total of 2n-1 nodes.  Which means that its structure
+can be encoded using 2n-1 bits and the list of (native representations of)
+symbols need only be 8n bits long.  Thus, a total of 10n-1 bits suffices
+to describe the symbol-to-codeword mapping.  If, say, n = 100, that's
+999 bits, as compared to 2559 bits (as computed above) when the tree has
+a leaf for every one of the 256 byte values.
+
+</p><p>
+Except that we forgot one thing: If we are going to allow the number of 
+bits encoding the symbol-to-codeword mapping to vary according
+to how many distinct byte values occur in the file to be compressed,
+won't the decompressor need to be informed of that?  Otherwise,
+it would seem, the decompressor will not be capable of correctly 
+interpreting the metadata, as it won't "know" the metadata's length
+(and thus won't be able to find the boundary between it and
+the sequence of codewords following it).
+
+</p><p>
+We can fix this by having the compressor write, at the very beginning
+of the compressed file, (an encoding of) the value of n.  
+(Since n must be in the range 1..256, a single byte can be devoted to 
+storing this piece of meta-metadata.)
+
+</p><p>
+But wait!!  It turns out that the value of n <b>need not</b> be
+written explicitly into the compressed file!
+Why not?  <b>Answer:</b> Because the decompressor can determine
+where the bit string f(T) ends without knowing in advance how 
+long it is!
+How is that possible?
+<b>Answer:</b> Because the set of strings { f(T) | T is full binary tree }
+is prefix-free.  That is, none of its members is a proper prefix of any
+other.  Moreover, it consists of precisely those bit strings satisfying
+these two properties:
+<ol>
+  <li>the number of occurrences of <tt>1</tt> exceeds the number of 
+      occurrences of <tt>0</tt> by exactly one, and
+  </li>
+  <li>in every proper prefix, the number of occurrences of <tt>1</tt> 
+      is at most the number of occurrences of <tt>0</tt>.
+  </li>
+</ol>
+
+</p><p>
+Thus, in any bit string z having a proper prefix that is f(T), for some
+full binary tree T, f(T) must be the shortest prefix of z in which the
+number of occurrences of <tt>1</tt> exceeds the number of occurrences
+of <tt>0</tt>!
+
+</p><p>
+Although one could literally count <tt>0</tt>'s and <tt>1</tt>'s
+in order to find where f(T) ends, it need not be done that way in
+practice.  The Java method shown below, <tt>bitStringToFBT()</tt>,
+scans the bits of f(T) while constructing T without doing any 
+explicit counting.  When the last bit of f(T) has been processed,
+the method's execution will have ended with T having been fully
+constructed.
+
+<h3>Source Alphabets other than {0,1}<sup>8</sup></h3>
+</p><p>
+To keep things simple, the above discussion had as its premise 
+that the source alphabet (i.e., the set of symbols occurring in the
+file to be compressed) was the set of byte values (i.e., bit strings
+of length eight), or some subset thereof.  
+This is a convenient choice, since it corresponds to the compressor
+interpreting each successive byte in the file to be an occurrence of 
+a symbol.  Alternatively, each byte could be interpreted as being a 
+sequence of two symbols, so that the source alphabet is (some subset of)
+the set of bit strings of length four (i.e., the "half-bytes", or 
+the hexadecimal digits).  
+
+</p><p>
+A somewhat more problematic choice would be to chop up the 
+file into bit strings of length k, where either k&gt;8 or
+k is not a divisor of 8.  If the file's length n (in bits) were 
+not divisible by k, then we would have to deal with the n mod k bits
+at the end of the file as a special case.  One possibility would be
+to identify that "leftover" bit string within the metadata.  Then,
+after the decompressor had mapped the last codeword into its corresponding
+symbol, it would append the leftover bit string onto the end of its output.
+Or one could choose to consider the leftover bit string to be one more
+symbol in the source alphabet and assign a codeword to it.
+
+</p><p>
+<em>More to follow here, including a source alphabet containing
+symbols with native representations of wildly different lengths.
+</em>
+
+<!--
+</p><p>
+In theory, a Huffman Code compressor can "chop up" the source data into
+pieces however it likes, and take each piece (some bit string) to be an
+occurrence of a symbol (having that bit string as its native representation).
+As a somewhat absurd example, one can imagine the source alphabet as being
+the set of all bit strings containing exactly two occurrences of <tt>1</tt>,
+including one at the end, plus whatever (nonconforming) bit string occurs
+at the end of the file.  Then the 
+-->
+
+<hr>
+<h3>Java Code</h3>
+</p><p>
+What follows is Java code that shows how to translate between a
+full binary tree and its encoding, going in both directions.
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public abstract class FullBinaryTree {
+
+   // Forms a single-node tree.
+   public abstract FullBinaryTree();
+
+   // Forms a tree having a root with the specified left and right subtrees.
+   public abstract FullBinaryTree(FullBinaryTree left, FullBinaryTree right); 
+
+   // Reports whether or not the tree has only one node.
+   public abstract boolean isLeaf();
+
+   // Returns the tree's left subtree (assumes !isLeaf()).
+   public abstract FullBinaryTree leftSubtree(); 
+
+   // Returns the tree's right subtree (assumes !isLeaf()).
+   public abstract FullBinaryTree rightSubtree();
+}
+
+public abstract class BitString {
+
+   // Forms a bit string of length zero.
+   public abstract BitString();
+
+   // Forms a bit string as described by s, each character in which
+   // is assumed to be either '0' or '1'.
+   public abstract BitString(String s);
+
+   // Appends the given bit string to this one and returns a self-reference.
+   public abstract BitString append(BitString bitStr);  
+
+   // Appends the given bit (which is assumed to have value 0 or 1) to this
+   // bit string, and returns a self-reference.
+   public abstract BitString append(int bit);  
+
+   // Returns an iterator that can iterate through the bits of this bit string.
+   public abstract BitIterator iterator();
+}
+
+public interface BitIterator {
+
+   // Forms an object that can iterate over the specified bit string.
+   public abstract BitIterator(BitString bitStr);
+
+   // Returns the next bit of the bit string.
+   public abstract int nextBit();
+
+   // Reports whether or not there is a next bit.
+   public absract boolean hasNextBit();
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Assume that <tt>BitStringX</tt> and <tt>FullBinaryTreeX</tt>
+are concrete classes that are descendants of the abstract classes
+shown above.
+To encode a full binary tree as a bit string, we can use this
+re<b>cur</b>sive method:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public BitString fullBinTreeToBitString(FullBinaryTree t) {
+
+   BitString result = new BitStringX();     // empty bit string
+   if (t.isLeaf()) { result.append(1); }   
+   else {
+      BitString left = fullBinTreeToBitString(t.leftSubtree());
+      BitString right = fullBinTreeToBitString(t.rightSubtree());
+      result = result.append(0).append(left).append(right);
+   }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Here we show how to construct a full binary tree from its encoding,
+assuming that <tt>BitIteratorX</tt> is a class that implements the 
+<tt>BitIterator</tt> interface shown above:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public FullBinaryTree bitStringToFullBinTree(BitString bitString) {
+
+   return bitStringToFBT(new BitIteratorX(bitString));
+}
+
+private FullBinaryTree bitStringToFBT(BitIterator bitIter) {
+
+   FullBinaryTree result;
+   int bit = bitIter.nextBit();
+   if (bit == 1)
+      { result = new FullBinaryTreeX(); }    // one-node tree
+   else {
+      FullBinaryTree left = bitStringToFBT(bitIter);
+      FullBinaryTree right = bitStringToFBT(bitIter);
+      result = new FullBinaryTreeX(left, right);
+   }
+   return result;
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</body>
+</html>

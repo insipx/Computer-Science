@@ -1,0 +1,66 @@
+<html>
+<head>
+</head>
+<body>
+<h2>CMPS 240 &nbsp; Summer 2017<br />
+Programming Assignment #1: Unbounded Natural Numbers
+</h2>
+
+</p><p>
+For this assignment, you are to complete the Java class
+<a href="NaturalNumber1ZZ.java">NaturalNumber1</a>, which is a subclass
+of the abstract class <a href="NaturalNumberZZ.java">NaturalNumber</a>.
+Notice that some of the methods in the latter are complete.
+Incomplete public methods in the former are indicated by the comment 
+<tt>STUB!!</tt>.
+
+</p><p>
+You may wish to add private methods to <tt>NaturalNumber1</tt>
+and you will certainly have to add declarations of instance variables
+there.
+
+</p><p>
+Perhaps the most "natural" way to represent a natural number is using
+an array <tt>digits[]</tt> of <tt>byte</tt> values, where each element 
+in the array stores one digit of the number.  For example, an object
+representing the natural number <tt>8403426</tt> could have a state
+that "looks" like this:
+
+</p><p>
+<center>
+<table border="0" cellpadding="3">
+<tr><td>
+<pre>         0   1   2   3   4   5   6
+       +---+---+---+---+---+---+---+
+digits | 6 | 2 | 4 | 3 | 0 | 4 | 8 |
+       +---+---+---+---+---+---+---+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+The digit values are stored in the array from least to most significant
+because it simplifies the implementation of the relevant algorithms.
+(Using elements of type <tt>byte</tt> was suggested because each one
+occupies only a single byte of memory rather than four, as do values
+of type <tt>int</tt>.)
+
+</p><p>
+Now, this example assumes a representation based upon the 
+decimal (i.e., base 10) numeral system.  More efficient would be
+to use base 256, as each element of the array (assuming elements of
+type <tt>byte</tt>) can store any value in the range 0..255 and
+thus a large number N could be stored using only 
+&lfloor;log<sub>256</sub> N&rfloor; + 1 elements rather than
+&lfloor;log<sub>10</sub> N&rfloor; + 1 elements, the latter of 
+which is a little more than twice as many. 
+
+</p><p>
+For testing purposes, you may wish to make use of the 
+<a href="NaturalNumCalculator.java">NaturalNumCalculator</a>
+and
+<a href="NaturalNumber1Tester.java">NaturalNumber1Tester</a>
+classes:
+
+</body>
+</html>

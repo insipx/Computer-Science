@@ -1,0 +1,238 @@
+<html>
+<head>
+  <title>Adaptive/Dynamic Huffman Coding Algorithms</title>
+</head>
+<body>
+
+<h2>CMPS 340: Adaptive/Dynamic Huffman Coding Algorithms</h2>
+
+<h3>Compression Algorithm</h3>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>Parser input := object that determines how to split the uncompressed data
+                into a sequence of "native codes" (of symbols) and provides
+                them sequentially via its getNextNativeCode() method;
+
+BitWriter output := object by which to write compressed form of data
+
+// create the zero-node (and give it weight zero)
+HuffmanLeafNode zeroNode := new HuffmanLeafNode(0);
+
+// create a Huffman tree and make its root be the zero-node
+HuffmanTree t := new HuffmanTree(zeroNode);
+
+// mapping from BitString objects (native codes) to leaves in t
+Map<BitString, HuffmanLeafNode> map := new Map<...>();
+
+do while input.hasNextNativeCode()
+   BitString nativeCode := input.getNextNativeCode();
+   HuffmanLeafNode v := map.get(nativeCode);
+   if v = null then
+      // This is the first occurrence of this symbol.
+      // Write the bit string spelled out by the path from the root to the
+      // zero-node
+      output.write(zeroNode.codeWord()); 
+
+      // Now write the new symbol's native code, but precede it by a
+      // length indicator (in unary or perhaps Elias Gamma form) if we
+      // are not assuming that native codes are uniform in length.
+      BitString z = encoding of nativeCode.length();
+      output.write(z);
+      output.write(nativeCode);
+
+      // Replace the zero-node by a subtree of three nodes, all of whose
+      // weights are zero; the expand() method returns a reference to the
+      // root of that new subtree
+      HuffmanInteriorNode u := zeroNode.expand();
+
+      // The right leaf in the new subtree becomes the new zero-node
+      zeroNode := u.getRightChild();
+
+      // The left leaf in the new subtree becomes the leaf associated to
+      // the new symbol
+      v := u.getLeftChild();
+      map.put(nativeCode, v); 
+   else
+      // write the bit string spelled out by the path from the root to v
+      output.write(v.codeWord());  
+   fi
+
+   // Now increment the weight of v and adjust the tree accordingly
+   v.incrementWeight();   
+od
+</pre></td></tr>
+</table>
+
+<!-- Purpose is so that printed version will not split at wrong places
+<pre>
+
+
+</pre>
+-->
+
+<hr>
+<h3>Decompression Algorithm</h3>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>BitReader input := object by which to read bits of compressed form of data;
+BitWriter output := object by which to write bits of decompressed form of data;
+
+// create the zero-node (and give it weight zero)
+HuffmanLeafNode zeroNode := new HuffmanLeafNode(0);
+
+// create a Huffman tree and make its root be the zero-node
+HuffmanTree t := new HuffmanTree(zeroNode);
+
+do while input.hasNextBit()
+   HuffTreeNode v := t.rootOf();
+   do while !v.isLeaf()
+      bit := input.getNextBit();
+      if bit = 0 then
+         v := v.leftChild();
+      else
+         v := v.rightChild();
+      fi
+   od
+   if v = zeroNode  then
+      // first occurrence of some symbol; its native code appears next
+      // in the compressed data.
+      // Exactly how it is encoded depends upon details such as whether
+      // or not all native codes are assumed to be of the same length
+      BitString bs := readNativeCode(input);
+
+      // Replace the zero-node by a subtree of three nodes, all of whose
+      // weights are zero; the expand() method returns a reference to the
+      // root of that new subtree
+      HuffmanInteriorNode u := zeroNode.expand();
+
+      // The right leaf in the new subtree becomes the new zero-node
+      zeroNode := u.getRightChild();
+
+      // The left leaf in the new subtree becomes the leaf associated to
+      // the new symbol.  Associate with that node that symbol's native code.
+      v := u.getLeftChild();
+      v.setNativeCode(bs);
+   fi
+   output.write(v.nativeCode());
+
+   // Now increment the weight of v and adjust the tree accordingly
+   v.incrementWeight();
+od</pre>
+</td></tr>
+</table>
+
+<!--
+  <pre>
+
+
+
+
+
+
+
+
+
+
+
+
+  </pre>
+-->
+
+<hr>
+<h3>Subroutines for incrementing the weight of a node</h3>
+
+</p><p>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/** Increments the weight of the target node (i.e. this) and 
+**  effects necessary structural changes in the Huffman tree.
+**  This can be applied to any node except for the zero-node,
+**  and except for the zero-node's parent in the situation
+**  in which that parent's weight is zero.
+*/
+private incrementWeight():
+{
+   weight = this.getWeight();
+   if weight = 0 then        // this node must be left sibling of zero-node in
+      this.setWeight(1);     // newly-created subtree of three nodes, all with
+      y := this.getParent(); // zero weight.  So set its weight and its parent's
+      y.setWeight(1);        // weight to 1, and call the other procedure on
+      z := y.getParent();    // y's parent
+      if z != null then
+         z.incrementWeightNonZero();
+      fi
+   else                               // this node has non-zero weight, so
+      this.incrementWeightNonZero();  // just apply the other procedure to it
+   fi
+}</pre>
+</td></tr>
+</table>
+
+
+</p><p>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/** Increments the weight of the target node (i.e. this) and 
+**  effects necessary structural changes in the Huffman tree.
+**  This is applicable only to nodes of non-zero weight.
+**  This is a reCURsive version.
+**  pre: this.getWeight() != 0
+*/
+private incrementWeightNonZero()    // reCURsive version
+{
+   weight = this.getWeight();
+   y := this.getParent();
+
+   if y != null then     // this node is not the root
+      if weight = y.getWeight() then   // this node is left sibling of zero-node
+         x := smallest-numbered leaf node with same weight as this node
+      else
+         x := smallest-numbered node with same weight as this node
+      fi
+      if this != x then
+         this.swapParentsWith(x); // exchange subtrees rooted at this node and x
+      fi
+      this.getParent().incrementWeightNonZero(); // recursively increment parent
+   fi
+   this.setWeight(weight+1); // increment this node's weight
+}</pre>
+</td></tr>
+</table>
+
+</p><p>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/** Increments the weight of the target node (i.e. this) and 
+**  effects necessary structural changes in the Huffman tree.
+**  This is applicable only to nodes of non-zero weight.
+**  This is an iterative version.
+**  pre: this.getWeight() != 0
+*/
+private incrementWeightNonZero()     // iterative version
+{
+   z := this;
+   zWeight = z.getWeight();
+   y := z.getParent();
+
+   do while y != null
+      yWeight = y.getWeight();
+      if zWeight = yWeight then  // this node is left sibling of zero-node
+         x := smallest-numbered leaf node with same weight as z
+      else
+         x := smallest-numbered node with same weight as z
+      fi
+      if z != x then
+         z.swapParentsWith(x); // exchange subtrees rooted at z and x
+      fi
+      z.setWeight(zWeight + 1); // increment z's weight
+      z := z.getParent();       // set z to its parent
+      zWeight = z.getWeight();
+      y := z.getParent();       // set y to z's parent
+   od
+   z.setWeight(zWeight+1); 
+}</pre>
+</td></tr>
+</table>
+
+</body>
+</html>

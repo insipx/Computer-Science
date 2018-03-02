@@ -1,0 +1,305 @@
+<html>
+<head>
+  <title>CMPS 134  Spring 2017  Programming Assignment #4</title>
+</head>
+<body>
+<h2>CMPS 134 Spring 2017<br />
+    Programming Assignment #4: Calendar Date Parser<br />
+    Due: 11:59pm, Wednesday, April 5
+</h2>
+
+<h3>Background: Parsing (i.e., Syntactic Analysis)</h3>
+</p><p>
+You will recall from the previous programming assignment that
+<em>lexical analysis</em> refers to the process of identifying, 
+within a string of characters, its smallest meaningful component 
+parts, called <em>lexemes</em>.  In that assignment, you developed
+Java methods that identify, within a string representing a
+calendar date, those substrings (i.e., component parts) 
+that describe the year, month, and day. 
+
+</p><p>
+What usually follows lexical analysis is called <em>parsing</em> 
+(or <em>syntactic analysis</em>), which refers to the process
+of determining whether the sequence of lexemes produced during
+lexical analysis makes any sense.  If not, the parser typically
+produces messages that identify one or more errors.  
+If so, the parser will, depending upon the application, 
+translate the sequence of lexemes into a different, more useful,
+form.<sup><a href="#fn1">1</a></sup>
+
+
+
+
+<h3>Background: Calendar Dates</h3>
+</p><p>
+As you know from the previous programming assignment,
+calendar dates are expressed in several different formats,
+but they all convey the same three pieces of information: month,
+day, and year.  Several formats in common use are listed in
+<a href="https://en.wikipedia.org/wiki/Calendar_date">Wikipedia's
+Calendar_date entry</a>.
+
+</p><p>
+This programming assignment extends what we did in the previous one, 
+so we will be interested in the same four calendar date formats, 
+which we illustrate here using examples:
+
+</p><p>
+<center>
+<table border="2" cellpadding="4">
+<tr>
+  <th>Format Name</th><th>Example 1</th><th>Example 2</th><th>Example 3</th>
+</tr>
+<tr>
+  <td>M/D/Y</td>
+  <td><tt>11/29/2019</tt></td>
+  <td><tt>2/5/1915</tt></td>
+  <td><tt>7/4/576</tt></td>
+</tr>
+<tr>
+  <td>Y_MONTH_D</td>
+  <td><tt>2013 SEPTEMBER 5</tt></td>
+  <td><tt>55 March 15</tt></td><td><tt>1964 april 10</tt></td>
+</tr>
+<tr>
+  <td>Y-M-D</td>
+  <td><tt>1974-04-08</tt></td>
+  <td><tt>0002-05-23</tt></td>
+  <td><tt>1678-12-19</tt></td>
+</tr>
+<tr>
+  <td>DMonY</td>
+  <td><tt>7DEC1954</tt></td>
+  <td><tt>26Apr674</tt></td>
+  <td><tt>12mAy1825</tt></td>
+</tr>
+</table>
+</center>
+
+</p><p>
+Notice that, among the four formats of interest to us, only
+Y-M-D requires all three components (year, month, and day) to
+be expressed using fixed-length fields, including leading zeros
+for padding if necessary.  (We will assume that only years in
+the range 0..9999 are of interest to us, so that four digits
+are always sufficient.)  The only other field of fixed length
+is the month within the DMonY format, which has length three.
+Also notice that, unlike in the previous assignment, we are 
+considering month names and abbreviations to be 
+<b>case insensitive</b>.  (In other words, the case of each
+letter &mdash;upper or lower&mdash; doesn't matter.)
+
+<hr>
+<h3>Requirements</h3>
+
+</p><p>
+In the previous programming assignment, you were to have completed
+the development of a Java class, 
+<a href="CalendarDateLexer.java">CalendarDateLexer</a>,
+that included methods to "extract" the substrings representing
+year, month, and day from calendar dates in each of the four formats.
+
+</p><p>
+For this assignment, you are to finish the development of a Java class,
+called <a href="CalendarDateParserZZ.java">CalendarDateParser</a>.
+(Where code is missing or needs changing should be clear from embedded
+comments.)
+As its name suggests, its purpose is to act as a parser of calendar dates.
+Specifically, it includes, for each of the four calendar date formats
+of interest to us, a method that translates dates in that format into
+<b>canonical</b> M/D/Y format.  (Here, "canonical" simply means that no
+component has leading zeros.  For example, "5/8/2015" is in canonical M/D/Y
+form but "05/08/2015" is not.)
+Calendar dates that are syntactically or semantically 
+invalid<sup><a href="#invalid">2</a></sup> are to be
+translated into a special <tt>INVALID_DATE</tt> String (<tt>0/0/0</tt>), 
+which is defined in the class.
+
+</p><p>
+The <tt>CalendarDateParser</tt> class makes use of the methods in the
+<tt>CalendarDateLexer</tt> class, so you should use the link above to
+download a correct version of the latter and place it into the same
+folder as the former.
+
+</p><p>
+The four public methods in <tt>CalendarDateParser</tt> are named
+<tt>translateFrom</tt><b>X</b><tt>()</tt>, where <b>X</b>
+identifies one of the four calendar date formats of interest to us.
+The <tt>translateFromMDY()</tt> method has been completed for you,
+and you should use it as a model in completing the other three.
+
+</p><p>
+In addition to the four public methods are several private methods
+that you should find very useful in implementing the public methods.
+(By that we mean that each private method should be reached by some
+chain of method calls originating at a public method.)
+Some of the private methods are left for you to complete.  
+It should come as no surprise to you that Java's if-else statement will
+be useful in implementing several of the methods.
+
+<table border="2" cellpadding="4" align="right">
+<tr><th>Input</th></tr>
+<tr><td>
+<pre>Y_MONTH_D 1975 JULY 14
+Y_MONTH_D 2049 December4
+Y_MONTH_D 1960 maRch 15
+Y_MONTH_D 930 may 1
+Y_MONTH_D 1987 October 42
+Y_MONTH_D 1987 Glork 12
+Y_MONTH_D -1987 April 12
+Y_MONTH_D 2005 November $#
+M/D/Y 12/04/2049
+M/D/Y 7/14/1975
+M/D/Y 10/5/560
+M/D/Y 5/1/1984
+M/D/Y Grisgrop/45/abc
+M/D/Y 5/7-12
+Y-M-D 1975-07-14
+Y-M-D 2049-12-04
+Y-M-D 0060-03-15
+Y-M-D 0987-05-01
+Y-M-D 1900-02-29
+Y-M-D 60-03-15
+Y-M-D 4567
+DMonY 14Jul1975
+DMonY 4dec2049
+DMonY 15maR1960
+DMonY 09May987
+DMonY 23Ugh1865</pre>
+</td></tr>
+<tr><th>Output</th></tr>
+<tr><td>
+<pre>Y_MONTH_D: |1975 JULY 14| translates to |7/14/1975|
+Y_MONTH_D: |2049 December4| translates to |0/0/0|
+Y_MONTH_D: |1960 maRch 15| translates to |3/15/1960|
+Y_MONTH_D: |930 may 1| translates to |5/1/930|
+Y_MONTH_D: |1987 October 42| translates to |0/0/0|
+Y_MONTH_D: |1987 Glork 12| translates to |0/0/0|
+Y_MONTH_D: |-1987 April 12| translates to |0/0/0|
+Y_MONTH_D: |2005 November $#| translates to |0/0/0|
+M/D/Y: |12/04/2049| translates to |12/4/2049|
+M/D/Y: |7/14/1975| translates to |7/14/1975|
+M/D/Y: |10/5/560| translates to |10/5/560|
+M/D/Y: |5/1/1984| translates to |5/1/1984|
+M/D/Y: |Grisgrop/45/abc| translates to |0/0/0|
+M/D/Y: |5/7-12| translates to |0/0/0|
+Y-M-D: |1975-07-14| translates to |7/14/1975|
+Y-M-D: |2049-12-04| translates to |12/4/2049|
+Y-M-D: |0060-03-15| translates to |3/15/60|
+Y-M-D: |0987-05-01| translates to |5/1/987|
+Y-M-D: |1900-02-29| translates to |0/0/0|
+Y-M-D: |60-03-15| translates to |0/0/0|
+Y-M-D: |4567| translates to |0/0/0|
+DMonY: |14Jul1975| translates to |7/14/1975|
+DMonY: |4dec2049| translates to |12/4/2049|
+DMonY: |15maR1960| translates to |3/15/1960|
+DMonY: |09May987| translates to |5/9/987|
+DMonY: |23Ugh1865| translates to |0/0/0|</pre>
+</td></tr>
+</table>
+
+<h3>Testing Your Work</h3>
+</p><p>
+In order to make it convenient to test your work, provided is a
+Java application program
+<a href="CalendarDateParserTester.java">CalendarDateParserTester</a>
+and an <a href="cal_dates.txt">accompanying data file</a>.
+The program reads data from a file, under the assumption that 
+each line of data contains a calendar date format identifier followed 
+by (possibly) a calendar date in that format.
+For each line of input data, the program echos the indicated
+format and date, followed by its translation into canonical M/D/Y form.
+(If the date is not valid, it translates to the invalid date string,
+<tt>0/0/0</tt>.)
+Of course, to carry out each translation, the appropriate method from 
+the student's <tt>CalendarDateParser</tt> class is called.
+
+</p><p>
+To the right appears sample input data (as could appear in the
+data file) and the output that the program should produce if
+fed that input data.
+
+</p><p>
+Like the "tester" application provided for the previous programming assignment,
+this one reads from the file whose name is provided via a command line argument
+(or what jGrasp refers to as a "run argument").  If no argument is
+provided, the program asks the user for the name of the input file.
+<a href="../../jGrasp_run_arg.html">Here</a> are instructions for how to
+pass run arguments to an application program in the jGrasp environment.
+
+</p><p>
+A sample input data file is provided, as indicated above.
+But you are encouraged to make up your own input data, or to modify
+that which was given.  A good choice of a text editor for this
+purpose is the one provided by jGrasp.  To make a new file, 
+click on <b>File</b>, then follow the path through <b>New</b>, 
+</b>Other</b>, and <b>Plain Text</b>.
+
+<hr>
+<h3>Program Submission</h3>
+Submit your source code file (<tt>CalendarDateParser.java</tt>) from
+the course web page using the <b>Submit/Review</b> link that is adjacent
+to the link that brought you to this page.  (Again, submit <b>only</b>
+the <tt>CalendarDateParser.java</tt> file, 
+<b>not</b> the corresponding <tt>.class</tt> file and <b>not</b>
+any other <tt>.java</tt> file.)
+Make sure to augment the comments in the given program so that you
+identify yourself, acknowledge any persons who aided you in developing
+your solution, and point out any flaws that you know about.
+
+</p><p>
+Be aware that you can submit more than one time.  Hence, if, after
+submitting, you improve your program (e.g., by fixing logic errors),
+you should submit the newer version.
+
+<hr>
+<h3>Footnotes</h3>
+<a name="fn1">
+[1] For example, a Java compiler's lexical analyzer produces a sequence
+of lexemes corresponding to the key words, identifiers, literals,
+curly braces, semicolons, etc., appearing in a Java class.
+The compiler's parser then determines whether that sequence of lexemes
+corresponds to a valid Java class.  If not, it produces error messages.
+If so, it translates the sequence of lexemes into a form that is then 
+further translated by the compiler's <em>code generator</em> into 
+so-called <em>bytecode</em>, which is what is in a <tt>.class</tt> file.
+
+</p><p>
+<a name="invalid">
+[2] The distinction between syntax errors and semantic errors is
+somewhat fuzzy.  Rules of syntax impose restrictions upon the <b>form</b>
+that an expression is allowed to take.  If an expression does not conform to
+those rules, it is syntactically invalid.
+Semantic rules, on the other hand, dictate the <b>meanings</b> of
+(syntactically valid) expressions.  
+An expression can be syntactically valid but yet meaningless (or ambiguous),
+in which case we say that it is semantically invalid.
+</p><p>
+To give you a sense of what is meant by these terms in the context of 
+calendar dates, consider the (purported) M/D/Y date <tt>9/37/2013</tt>.
+If our rules of syntax say that any string composed of three positive
+numerals separated by slashes is an M/D/Y date, then this string is 
+syntactically valid.  However, it is semantically invalid,
+because there is no such thing as September 37.
+
+</p><p>
+In contrast, the string <tt>937/2013</tt> is not a syntactically
+valid M/D/Y date because it has only a single slash rather than two.
+Likewise, <tt>abc//1978</tt> is syntactically invalid, because
+even though it has exactly two slashes, <tt>abc</tt> is not a numeral,
+nor is the empty string between the two slashes.
+
+</p><p>
+What about <tt>234/5/1978</tt>?  It is clearly invalid, but is the
+error syntactic or semantic?  According to our earlier definition,
+the error is not syntactic, because this string is composed of three
+numerals separated by slashes.
+But if we restrict our rules of syntax to say that an M/D/Y date
+must be composed of a one- or two-digit numeral, followed by a slash,
+followed by another one- or two-digit numeral, followed by a slash, 
+followed by a one- to four-digit numeral, then the error is syntactic,
+because <tt>234</tt> is not a one- or two-digit numeral.
+</body>
+</html>
+

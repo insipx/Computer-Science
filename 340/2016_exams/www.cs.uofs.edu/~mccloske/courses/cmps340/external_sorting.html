@@ -1,0 +1,446 @@
+<html>
+<head>
+  <title> </title>
+</head>
+<body>
+<H2>
+CMPS 340  File Processing<br />
+External Sorting
+</H2>
+
+<H3>Still under construction</H3>
+
+<p>
+Suppose that we wish to access the records of file F in order with respect
+to one of its fields, A.  That is, we wish to read first the record having
+the smallest value in A, then the one having the second smallest value in A,
+etc., etc.  (Ties can be broken arbitrarily.)
+
+<p>
+<b>Case 1:</b> F has A as its ordering field.
+Then to access the records in the desired order, we simply read the file
+sequentially from beginning to end!
+
+<p>
+<b>Case 2:</b> F is not ordered on A but it has an "index on A".
+In that case, we can do the following:
+
+<pre>
+     do for each index entry (v,r)      // v is an A-value; r is a reference
+        read into RAM the bucket to which r refers;
+        do for each record s in the bucket
+           if s.A = v 
+              process s;
+           fi
+        od
+     od
+</pre>
+
+<p>
+Of course, the above is intended to mean that the index entries are
+accessed in order from first to last.
+
+<p>
+This is a simple solution, but is it a good one, from a 
+performance/efficiency standpoint?  Probably not, as the 
+number of disk accesses will be, in the worst case at least,
+equal to the number of index entries, 
+which is equal to the number of records in the data file.
+
+<p>
+To obtain a ballpark figure as to how much time this might take when
+applied to a large file, suppose that the file has a million (10<sup>6</sup>)
+records.  If each disk access takes, say, 7ms (7 x 10<sup>-3</sup> sec),
+that comes out to 7000 seconds, which is approaching two hours.
+
+<p>
+This suggests that we should explore other alternatives.  One is to sort
+F so as to create a new file, F', containing the same records as F but
+ordered on field A.  Then (as described in Case 1) we can access the
+records of F', from first to last, in order to achieve our goal.
+(Afterwards, we can abandon F'.  Or we could replace F by F'.  The
+latter makes sense only if F need not be ordered by some field other
+than A.)  We shall come back to this.
+
+<p>
+<b>Case 3:</b> F is neither ordered on A nor has an index on A.  One possible
+approach is to create an index for F on A, as follows:
+         
+<pre>
+         indexSet := emptySet;
+         do for each bucket b in F
+            do for each record t in b
+               insert into indexSet the ordered pair (t.v, b.address)
+            od
+         od
+         sort the elements in indexSet by 1st component 
+         write them to a file
+</pre>
+<p>
+Of course, if indexSet grows too large to fit into RAM, we are faced with
+the problem of sorting a file containing indexSet's elements!  And, in any
+case, we are left with what we had assumed that we started with in
+Case 2, namely an index for F on field A.  And we were skeptical as to
+whether the solution we arrived at there was a good one. 
+
+<p>
+So let's put aside the idea of forming an index (or using a pre-existing one)
+to access the records of F in the desired order, and instead focus upon how we
+might sort the file F to obtain a new file F' having the same records as F
+but ordered on field A.
+
+<p>
+The naive approach is to read the records of F into (an array in) RAM, sort
+them there (using Quick Sort, Merge Sort, or some other fast internal sorting
+algorithm), and then write them back out to disk.  But that works only if F is
+small enough to fit into RAM, in which case this entire discussion is close
+to pointless.
+
+<p>
+Rather, we should consider the (much more interesting) case in which
+F is too large to fit into RAM.
+
+<p>
+With respect to magnetic disk storage, the following is the standard
+high-level two-step algorithm for sorting a file, sometimes referred to
+as <b>Polyphase Merge Sort</b>.
+
+<p>
+<b>1.</b> Create initial sorted runs (or "segments").<br />
+<b>2.</b> Merge the sorted runs.
+
+<p>
+The term <em>polyphase</em> comes from the fact that step 2 could employ
+multiple merging passes.
+
+<p>
+Step 2 is the more interesting of the two, but 
+we will focus first upon step 1.
+<!-- let us focus for a while upon step 1. -->
+
+<H3>Creating initial sorted runs</H3>
+Here is the basic algorithm:
+<pre>
+    do while not at end of file
+      (a) read as many records into RAM as will fit (or until eof)
+      (b) sort records in RAM (using some internal sorting algorithm)
+      (c) write sorted records into a file, forming an initial sorted run
+    od
+</pre>
+<p>
+In terms of performance, the best we can hope to achieve in this step is
+for the running time of each iteration to be essentially that required to
+read a RAM-sized segment of F and then to write it back out again,
+<!--  (in the form of a sorted run),  -->
+without incurring any extra cost for the internal sorting 
+that happens in between.
+To achieve this would require "parallelizing" either (a) and (b) or (b)
+and (c) (or both).
+
+<p>
+<hr>
+<b>Note:</b> 
+It would seem that any overlap between (a) (reading records) and (c)
+(writing records) would be impossible, because one can't determine the
+"smallest" record in the segment (i.e., the one that will be written first
+into the resulting sorted run) until the last record in the segment has been
+read in.  (After all, that last record in the segment might be the "smallest".)
+
+<p>
+Perhaps surprisingly, if we are a little less rigid in how we think about
+producing sorted runs, there <b>is</b> a way of parallelizing reading and
+writing.
+(To be useful in practice, this requires that (at least) two separate
+disk units be utilized.)  Not only can parallelization be achieved,
+but the sorted runs resulting from <b>Replacement Selection</b>,
+as the technique is called, tend to be about <em>twice</em> the size of
+available RAM, which is advantageous because the merging phase of the
+algorithm becomes more efficient when there are fewer initial sorted runs.
+<b>End of note.</b>
+<hr>
+
+
+<!--
+<p>
+In order to make this as efficient as possible, we should not only choose
+a "good" internal sorting algorithm (in the sense of having an asymptotic
+running time of O(n lg n), which is, for general-purpose sorting, the best
+you can hope to do) but also one that admits as much parallelism as possible
+between steps (a) and (b) as well as between (b) and (c).  That is, we would
+prefer that a substantial portion of (b) can be completed before completion
+of (a) and, similarly, that a substantial portion of (c) can be completed
+before (b) is done.
+Is this even possible?  Among the "naive" sorting algorithms,
+Insertion Sort allows for the most overlap between (a) and (b):
+-->
+
+<p>
+Among the "naive" sorting algorithms, <b>Insertion Sort</b> allows for
+the most overlap between (a) and (b).  Assuming that <tt>N</tt> records
+can fit into available RAM:
+
+<pre>
+(a,b) i := 0;
+      do while i != N
+         b[i] := F.readRecord();
+         insert b[i] into its proper place in b[0..i];
+         i := i+1;
+      od
+(c)   i := 0;
+      do while i != N
+         F'.writeRecord(b[i]);
+         i := i+1;
+      od
+</pre>
+<p>
+On the other hand, <b>Selection Sort</b> allows for the most overlap between
+(b) and (c):
+
+<pre>
+(a)   i := 0;
+      do while i != N
+         b[i] := F.readRecord();
+         i := i+1;
+      od
+(b,c) i := 0;
+      do while i != N
+         k := location of minimum value in b[i..N-1]
+         swap(b,i,k);
+         F'.writeRecord(b[i]);
+         i := i+1;
+      od
+</pre>
+
+<p>
+Depending upon the relative speeds of processing and I/O,
+either or both of these solutions may work nicely.
+But an even better solution employs <b>Heap Sort</b>, which is
+asymptotically faster than Insertion Sort and Selection Sort
+(<em>O(n lg n)</em> vs. <em>O(n<sup>2</sup>)</em>).
+This pure speed advantage, together with the fact that using
+Heap Sort admits parallelism not only between (a) and (b)
+but also between (b) and (c) makes it more likely to ensure that 
+the actions involved in performing internal sorting will keep up with
+the I/O.
+
+<p>
+Incorporating Heap Sort, our algorithm for producing an initial sorted run
+becomes
+
+<pre>
+(a,b) h := empty heap with capacity N;
+      do while !h.isFull()
+         h.insert(F.readRecord());
+      od
+(b,c) do while !h.isEmpty()
+         F'.writeRecord(h.getMin());  // write smallest record in h
+         h.deleteMin();               // remove that record from h
+      od
+</pre>
+
+At a lower level of abstraction (in which we explicitly rely upon an array
+to represent the heap), we get
+<pre>
+(a,b) i := 0;
+      do while i != N
+         b[i] := F.readRecord();
+         siftUp(b,i);
+         i := i+1;
+      od
+(b,c) i := N;
+      do while i != 0
+         F'.writeRecord(b[0]);
+         i := i-1;
+         b[0] := b[i];
+         siftDown(b,0,i);
+      od
+</pre>
+
+<H3>Replacement Selection</H3>
+When we study the second step of Polyphase Merge Sort, in which 
+are merged the sorted runs produced in the first step, we will
+find that the fewer sorted runs there are, the better, in terms
+of finishing the job quickly.
+(This should be no surprise, as when exactly one sorted run
+remains, the job is done!)
+
+<p>
+Replacement Selection is a technique that produces initial sorted
+runs that are larger (twice as large, on average, assuming that
+the records are in "random" order) than RAM.  For it to work well,
+we need separate disk units for input and output.
+
+<p>
+To illustrate the technique (with a toy example), suppose that RAM has
+the capacity to hold at most four records, and let the first several
+records in a file to be sorted (by first name) have as first name fields
+
+<p>
+<tt>Jim, Bart, Karen, Dave, Ernie, Carol, Ted, Bill, Mary, Al, Beth, ..</tt>
+
+<p>
+We begin by loading RAM with as many records as will fit, which in this
+case means that the <tt>Jim</tt>, <tt>Bart</tt>, <tt>Karen</tt>, and
+<tt>Dave</tt> records are loaded into RAM.
+We have
+<p>
+<b>Waiting to be read from file:</b>
+   <tt>Ernie, Carol, Ted, Bill, Mary, Al, Beth, ..</tt> <br />
+<b>In RAM:</b> <tt>Jim, Bart, Karen, Dave</tt> <br />
+<b>Already written to sorted run:</b> <tt>-</tt>
+
+<p>
+Since <tt>Bart</tt> is the "smallest", we output his record to the
+sorted run being formed.  Then we replace that record in RAM by
+reading the next record from the file, which in this case is the
+<tt>Ernie</tt> record.  We get
+
+<p>
+<b>Waiting to be read from file:</b>
+   <tt>Carol, Ted, Bill, Mary, Al, Beth, ..</tt> <br />
+<b>In RAM:</b> <tt>Jim, Ernie, Karen, Dave</tt> <br />
+<b>Already written to sorted run:</b> <tt>Bart</tt>
+
+<p>
+Because <tt>Dave</tt> is smallest among records in RAM, his is next to
+be written.  Then it is replaced by reading a record from the file,
+yielding
+
+<p>
+<b>Waiting to be read from file:</b>
+   <tt>Ted, Bill, Mary, Al, Beth, ..</tt> <br />
+<b>In RAM:</b> <tt>Jim, Ernie, Karen, Carol</tt> <br />
+<b>Already written to sorted run:</b> <tt>Bart, Dave</tt>
+
+<p>
+At this point, it appears that we should write the <tt>Carol</tt> record,
+it being the "smallest" one in RAM, but that would be wrong, because
+then our sorted run would have <tt>Dave</tt> preceding <tt>Carol</tt>,
+making it an un-sorted run!  The correct approach is to "mark" the
+Carol record as one that must wait to be written until the next sorted run
+is being formed.  More generally, each time a new record is read into RAM,
+we must compare its sort key to that of the record most recently written
+in order to classify the new record according to whether it will be
+written into the sorted run currently being formed, or the next one.
+In our example, our description of the current situation can be refined to
+
+<p>
+<b>Waiting to be read from file:</b>
+   <tt>Ted, Bill, Mary, Al, Beth, ..</tt> <br />
+<b>In RAM, waiting to be written to current sorted run:</b>
+   <tt>Jim, Ernie, Karen</tt> <br />
+<b>In RAM, waiting to be written to next sorted run:</b> <tt>Carol</tt> <br />
+<b>Already written to current sorted run:</b> <tt>Bart</tt>, <tt>Dave</tt>
+
+<p>
+When we choose a record to write, it must be the "smallest" one among
+those waiting to be written into the current sorted run, of course.
+Continuing for several steps, we will get
+
+<p>
+<b>Waiting to be read from file:</b> <tt>Bill, Mary, Al, Beth, ..</tt> <br />
+<b>In RAM, waiting to be written to current sorted run:</b>
+   <tt>Jim</tt>, <tt>Ted, Karen</tt> <br />
+<b>In RAM, waiting to be written to next sorted run:</b>
+   <tt>Carol</tt> <br />
+<b>Already written to current sorted run:</b> 
+   <tt>Bart, Dave, Ernie</tt>
+
+<p>
+<b>Waiting to be read from file:</b> <tt>Mary, Al, Beth, ..</tt> <br />
+<b>In RAM, waiting to be written to current sorted run:</b>
+   <tt>Ted, Karen</tt> <br />
+<b>In RAM, waiting to be written to next sorted run:</b>
+    <tt>Carol, Bill</tt> <br />
+<b>Already written to current sorted run:</b>
+    <tt>Bart, Dave, Ernie, Jim</tt>
+
+<p>
+<b>Waiting to be read from file:</b> <tt>Al, Beth, ..</tt> <br />
+<b>In RAM, waiting to be written to current sorted run:</b>
+   <tt>Ted, Mary</tt> <br />
+<b>In RAM, waiting to be written to next sorted run:</b>
+    <tt>Carol, Bill</tt> <br />
+<b>Already written to current sorted run:</b>
+    <tt>Bart, Dave, Ernie, Jim, Karen</tt>
+
+<p>
+<b>Waiting to be read from file:</b> <tt>Beth, ..</tt> <br />
+<b>In RAM, waiting to be written to current sorted run:</b>
+   <tt>Ted</tt> <br />
+<b>In RAM, waiting to be written to next sorted run:</b>
+    <tt>Carol, Bill, Al</tt> <br />
+<b>Already written to current sorted run:</b>
+    <tt>Bart, Dave, Ernie, Jim, Karen, Mary</tt>
+
+<p>
+<b>Waiting to be read from file:</b> records following <tt>Beth</tt> <br />
+<b>In RAM, waiting to be written to current sorted run:</b> <tt>-</tt> <br />
+<b>In RAM, waiting to be written to next sorted run:</b>
+    <tt>Carol, Bill, Al, Beth</tt> <br />
+<b>Already written to current sorted run:</b>
+    <tt>Bart, Dave, Ernie, Jim, Karen, Mary, Ted</tt>
+
+<p>
+At this point, there being no records in RAM waiting to be written to the 
+current sorted run, that run has come to an end and it is time to
+start forming the second sorted run, which we can do simply by
+continuing as before.
+
+<p>
+Note that the first sorted run ended up with seven records in it,
+despite the fact that RAM's capacity was only four records.
+In general, one can expect the sorted runs produced by this approach
+to be, on average, twice the size of available RAM, assuming that the
+records are such that the values of the sort keys are in "random" order.
+
+<p>
+Here's a pseudocode program describing Replacement Selection.
+It assumes that, if the end of the file has been reached, an
+invocation of readRecord() returns a record whose sortKey() value
+is +&infin;.
+
+<pre>
+F.open(input);
+N := # of records that fit into RAM;
+i := 0;
+csr := emptySet;  // set of records waiting to be written to current sorted run
+nsr := emptySet;  // set of records waiting to be written to next sorted run
+do while (i != N) {
+   csr.insert(F.readRecord());
+   i := i+1;
+}
+
+lastKeyWritten := -&infin;
+r := record in csr having minimum sortKey() value;
+
+do while (r.sortKey() != +&infin;) {
+
+   csr.delete(r);
+   write r to current sorted run;
+   lastKeyWritten := r.sortKey();
+   r2 := F.readRecord();
+
+   if (r2.sortKey() >= lastKeyWritten) then
+      csr.insert(r2);
+   else 
+      nsr.insert(r2); 
+      if (csr.isEmpty()) 
+         close file into which current sorted run has been written;
+         open new file into which next sorted run will be written;
+         csr := nsr;
+         nsr := emptySet;
+      fi
+   fi 
+   r := record in csr having minimum sortKey() value;
+od
+</pre>
+
+
+<H3>Merging the Sorted Runs</H3>
+
+Content to appear in future...
+
+</body>
+</html>
+

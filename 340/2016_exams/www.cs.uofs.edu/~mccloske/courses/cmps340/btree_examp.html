@@ -1,0 +1,67 @@
+<html>
+<head>
+<title>CMPS340  File Processing</title>
+</head>
+<body>
+<H2>
+CMPS340 &nbsp;  File Processing<br>
+B-tree insertion/deletion examples<br>
+</H2>
+
+<p>
+&nbsp; <br>
+
+<p>
+Consider the B-tree <tt>T</tt> of order 4 illustrated below.
+(Due to typesetting restrictions, the nodes at
+the leaf level appear to be on two different levels.)
+<p>
+For each operation in the list <b>(a)</b> through <b>(f)</b>,
+show the B-tree that results from performing that operation on T.
+(Each operation is to be applied to the tree T illustrated below, 
+<em>not</em> to the tree resulting from applying all the previous
+operations to T.
+
+<p>
+Assume, in carrying out the operations, that <em>redistribution</em>
+is used whenever possible.  That is, split an overflowing node
+only if all its adjacent siblings are full.
+Similarly, concatenate two nodes only if all adjacent siblings of 
+the underflowing node are on the verge of underflowing.
+
+<p>
+<b>(a)</b> insert 23 <br>
+<b>(b)</b> delete 12 <br>
+<b>(c)</b> insert 14 <br>
+<b>(d)</b> delete 63 <br>
+<b>(e)</b> insert 41 <br>
+<b>(f)</b> delete 96 <br>
+
+<p>
+
+<pre>
+                            +----+----+----+
+                            | 24 | 63 | 95 |
+                            +----+----+----+
+                           /    /      \    \ 
+              +-----------+    /        \    +---------------------+
+             /                /          +------+                   \ 
+            /                /                   \                   \
+  +---+----+        +----+----+----+              +----+----+       +----+
+  | 6 | 19 |        | 34 | 50 | 58 |              | 70 | 85 |       | 98 |
+  +---+----+        +----+----+----+              +----+----+       +----+
+  |   |    |        |    |     \    \             |    |    |       |    |
+  |   |    |        |    |      \    +---+        |    |    |       |    |
+  |   |    |        |    |       +----+   \       |    |    |       |    |
++---+ | +----+----+ |+----+----+----+ | +----+  +----+ | +----+  +----+ +----+
+| 2 | | | 20 | 21 | || 39 | 44 | 48 | | | 61 |  | 67 | | | 88 |  | 96 | | 99 |
++---+ | +----+----+ |+----+----+----+ | +----+  +----+ | +----+  +----+ +----+
+      |             |                 |                |
++---+----+----+  +----+----+----+  +----+----+----+  +----+----+
+| 9 | 12 | 16 |  | 27 | 30 | 32 |  | 52 | 55 | 57 |  | 75 | 80 |
++---+----+----+  +----+----+----+  +----+----+----+  +----+----+
+</pre>
+
+
+</body>
+</HTML>

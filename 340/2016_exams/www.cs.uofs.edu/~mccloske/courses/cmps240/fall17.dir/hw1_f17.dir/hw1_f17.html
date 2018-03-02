@@ -1,0 +1,209 @@
+<html>
+<head>
+  <title>CMPS 240 &nbsp; HW #1: Loop Invariants and the 3-Color Partition Problem</title>
+</head>
+<body>
+<h2>
+CMPS 240 &nbsp; Data Structures and Algorithms<br />
+Fall 2017<br />
+HW # 1: Loop Invariants and the 3-Color Partition Problem<br />
+Due: 9am, Tuesday, September 19
+</h2>
+
+</p><p>
+Please provide answers to the two problems here by completing 
+<a href="hw1_f17_answer_form.txt">this answer form</a> and submitting 
+it electronically via the relevant Submit/Review link on the course
+web page.  It's recommended that you use either jGrasp or Wordpad
+to edit the form.  In any case, leave the form in "plain text" format
+(with a ".txt" filename extension).  Do <b>not</b> submit a .docx file, 
+or .pdf, or anything of the kind!
+
+<hr>
+</p><p>
+<b>1.</b> Develop a solution for the Three-Color Partition problem.
+<!-- Dutch National Flag --> 
+Given is an array <tt>A[]</tt> each element of which is classified as 
+being exactly one among RED, WHITE, or BLUE.  
+Using <tt>N</tt> as a shorthand for <tt>a.length</tt>, 
+the postcondition is as follows:
+
+</p><p>
+<center>
+<table>
+<tr><td>
+<pre>
+   0             r               w              N
+  +-------------+---------------+--------------+
+A |   all RED   |   all WHITE   |   all BLUE   |
+  +-------------+---------------+--------------+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+In words, this says that <tt>0&le;r&le;w&le;N</tt> and that
+every element in A[0..r-1] is RED,
+every element in A[r..w-1] is WHITE, and
+every element in A[w..N-1] is BLUE.
+
+</p><p>
+Clearly a loop is needed to solve this problem.
+Employing the <em>replace a constant by a fresh variable</em>
+heuristic, we can restate the postcondition by replacing
+both occurrences of <tt>N</tt> by fresh variable <tt>b</tt> 
+and inserting <tt>b==N</tt> as a new conjunct.  
+The negation of the new conjunct will become the loop's guard.
+The original postcondition, with <tt>b</tt> replacing <tt>N</tt>,
+will be the loop's invariant.  As a diagram, the loop invariant
+looks like this:
+
+</p><p>
+<center>
+<table>
+<tr><td>
+<pre>
+   0           r             w            b            N
+  +-----------+-------------+------------+------------+
+A |  all RED  |  all WHITE  |  all BLUE  |     ?      |  &and;  0&le;r&le;w&le;b&le;N
+  +-----------+-------------+------------+------------+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+In words, this says that <tt>0&le;r&le;w&le;b&le;N</tt> and that
+every element in <tt>A[0..r-1]</tt> is RED,
+every element in <tt>A[r..w-1]</tt> is WHITE, and
+every element in <tt>A[w..b-1]</tt> is BLUE.
+(It says nothing about the values of elements in <tt>A[b..N-1]</tt>.)
+
+</p><p>
+Arrive at your solution by correctly replacing each question mark in
+the program below with either an expression or a sequence of statements,
+whichever is appropriate.  You are to assume the existence of a method
+<tt>swap()</tt> such that the call <tt>swap(i,j)</tt> has the effect
+of swapping the values at locations <tt>i</tt> and <tt>j</tt> of
+<tt>A[]</tt>.  (If <tt>i==j</tt>, it has no effect.)
+
+</p><p>
+To make matters explicit: In order for a solution to be correct,
+<ol>
+  <li>the initialization of <tt>r</tt>, <tt>w</tt>, and <tt>b</tt> must
+      result in the loop invariant necessarily being true, regardless of
+      the contents of <tt>A[]</tt> (which means that each of 
+      <tt>A[0..r-1]</tt>, <tt>A[r..w-1]</tt>, and <tt>A[w..b-1]</tt>
+      must be segments of length zero),
+  </li>
+  <li>execution of the loop body, beginning in a state in which the
+      loop invariant is true, must not only result in a state in which the 
+      loop invariant is true but also decrease the length of the
+      ?-region of <tt>A[]</tt> (namely, <tt>A[b..N-1]</tt>).
+  </li>
+</ol>
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+/* precondition: every element in A[0..N-1] is either RED, WHITE, or BLUE */
+
+r = ?;  w = ?;  b = ?;
+
+/* loop invariant:
+**   0&le;r&le;w&le;b&le;N  &and;
+**   every element in A[0..r-1] is RED &and; 
+**   every element in A[r..w-1] is WHITE &and; 
+**   every element in A[w..b-1] is BLUE 
+*/
+while ( ? )  {
+
+   if (A[?] is RED) { 
+      ? 
+   }
+   else if (A[?] is WHITE) { 
+      ? 
+   }
+   else {   // A[?] is BLUE
+      ? 
+   }
+}
+/* post: 0&le;r&le;w&le;b&le;N  &and; 
+**       every element in A[0..r-1] is RED &and; 
+**       every element in A[r..w-1] is WHITE &and; 
+**       every element in A[w..b-1] is BLUE &and;
+**       b == N
+*/</pre>
+</td></tr>
+</table>
+</center>
+
+
+</p><p>
+<hr>
+<b>2.</b> Develop an alternative solution to the 3-color Partition Problem.
+This time, we employ the <em>replace an occurrence of a variable with a fresh
+variable</em> heuristic.  Specifically, we replace <tt>w</tt> by <tt>m</tt>
+in the condition stating that every element in <tt>A[r..w-1]</tt> is WHITE.
+
+</p><p>
+This leads us to adopting the following as a loop invariant:
+
+</p><p>
+<center>
+<table>
+<tr><td>
+<pre>
+   0           r           m             w            N
+  +-----------+-----------+-------------+------------+
+A |  all RED  |     ?     |  all WHITE  |  all BLUE  |    &and;  0&le;r&le;m&le;w&le;N
+  +-----------+-----------+-------------+------------+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Complete the code below in a manner that respects this loop invariant.
+The loop body should be an <b>if-else</b> statement with at least
+three branches.  It's possible to guarantee that two distinct elements
+of the same color are never swapped.  This is not a requirement, but
+it is preferred.  In order to ensure that the loop invariant is true
+after initializing <tt>r</tt>, <tt>m</tt>, and <tt>w</tt>, it must
+be that each of <tt>A[0..r-1]</tt>, <tt>A[m..w-1]</tt>, and
+<tt>A[w..N-1]</tt> has length zero.
+
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>
+/* precondition: every element in A[0..N-1] is either RED, WHITE, or BLUE */
+
+r = ?;  m = ?;  w = ?;
+
+/* loop invariant:
+**   0&le;r&le;m&le;w&le;N  &and;
+**   every element in A[0..r-1] is RED &and; 
+**   every element in A[m..w-1] is WHITE &and; 
+**   every element in A[w..N-1] is BLUE 
+*/
+while ( ? )  {
+
+
+   ?
+
+}
+/* post: 0&le;r&le;m&le;w&le;N  &and; 
+**       every element in A[0..r-1] is RED &and; 
+**       every element in A[m..w-1] is WHITE &and; 
+**       every element in A[w..N-1] is BLUE &and;
+**       r==m
+*/</pre>
+</td></tr>
+</table>
+</center>
+
+</body>
+</html>

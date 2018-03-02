@@ -1,0 +1,187 @@
+<html>
+<head>
+  <title>CMPS 134 Spring 2017 Prog. Assg. #6: Multiple Choice Test Scorer
+  </title>
+<body>
+<h2>
+  CMPS 134  Spring 2017<br />
+  Programming Assignment #6: Multiple Choice Test Scorer<br />
+  Due: 11:59pm, Wednesday, May 10
+</h2>
+
+<h3>Background</h3>
+
+</p><p>
+For this assignment, you are to complete the development of the Java class
+<a href="MultipleChoiceTestScorerZZ.java">MultipleChoiceTestScorer</a>.
+An object/instance of this class is for the purpose of scoring a
+multiple choice test taken by a group of students.
+
+</p><p>
+In creating a <tt>MultipleChoiceTestScorer</tt> object, the client must 
+provide to the <em>constructor</em>, via a <tt>String</tt> parameter, 
+the answer key of the test.
+
+</p><p>
+<em>Observer</em> methods in the class answer such questions as
+<ul>
+  <li>How many students' tests have been scored so far?</li>
+  <li>What raw score (number of questions answered correctly)
+      was achieved by a particular student?</li>
+  <li>What is the average of the students' raw scores?</li>
+  <li>What is the standard deviation of the students' raw scores?</li>
+  <li>How many students answered a particular question correctly?</li>
+</ul>
+
+</p><p>
+The lone <em>mutator</em> method is <tt>scoreTest()</tt>, and it
+is the key to making objects of this class work correctly.
+This method is responsible for scoring a test (the answers to which
+are provided via a parameter) and for updating the 
+<em>instance variables</em> appropriately.
+(Note that all four instance variables are subject to change
+each time <tt>scoreTest()</tt> is called.)
+
+
+<hr>
+<h3>An Example</h3>
+</p><p>
+To illustrate, suppose that the test being scored has as its answer 
+key <tt>"bacad"</tt> and that the test papers of students named 
+"Emily", "Jim", and "Diane" have been scored so far, on which their 
+answers were <tt>"bbcad"</tt>, <tt>"adcbd"</tt>, and <tt>"bacad"</tt>,
+respectively.  Then the object's instance constant/variables should be 
+as follows:
+
+</p><p>
+<center>
+<table border="0" cellpadding="2">
+<tr><td>
+<pre>
+    <b>stuIDs[]</b>      <b>rawScores[]</b>   <b>correctCount[]</b>    <b>ANSWER_KEY</b>
+   +-------+         +---+          +---+         +-------+
+ 0 |"Emily"|       0 | 4 |        0 | 2 |         |"bacad"|
+   +-------+         +---+          +---+         +-------+
+ 1 | "Jim" |       1 | 2 |        1 | 1 |
+   +-------+         +---+          +---+      
+ 2 |"Diane"|       2 | 5 |        2 | 3 |      <b>numTestsScored</b>
+   +-------+         +---+          +---+          +---+
+ 3 |   -   |       3 | - |        3 | 2 |          | 3 |
+   +-------+         +---+          +---+          +---+
+   |   .   |         | . |        4 | 3 |
+   .   .   .         . . .          +---+
+   .   .   .         . . . 
+   .   .   .         . . . 
+   |   .   |         | . |
+   +-------+         +---+
+19 |   -   |      19 | - |
+   +-------+         +---+</pre>
+</td></tr>
+</table>
+</center>
+
+
+</p><p>
+As the instance variables indicate, three tests have been scored so far,
+submitted by students named Emily, Jim, and Diane, who achieved
+raw scores 4, 2, and 5, respectively.
+Also, the five questions on the test were answered correctly 
+twice, once, thrice, twice, and thrice, respectively. 
+Because only three tests have been scored, the values in array segment
+<tt>rawScores[0..2]</tt> are of significance, but those in the rest
+of the array <!-- (<tt>rawScores[3..rawScores.length-1]</tt>) -->
+are irrelevant, as indicated by the dashes.  The same applies to the
+<tt>stuIDs[]</tt> array.
+
+</p><p>
+Notice that elements of <tt>stuIDs[]</tt> and <tt>rawScores[]</tt> 
+in corresponding locations are related to each other.
+Specifically, for each relevant value of <tt>k</tt>, 
+<tt>stuIDs[k]</tt> and <tt>rawScores[k]</tt> contain
+values pertaining to the <tt>k</tt>-th test to be scored,
+namely the ID of the student who took it and the raw score 
+earned by that student, respectively.
+For this reason, these arrays are informally said to be "parallel".
+On the other hand, the <tt>correctCount[]</tt> array is parallel
+to neither of the others, as the value stored in its location <tt>k</tt>
+pertains not to the <tt>k</tt>-th test to be scored but rather to
+question <tt>k</tt> on the test.
+
+
+
+<hr>
+<h3>Average and Standard Deviation</h3>
+
+</p><p>
+Two of the observers in the class are to return, respectively, the 
+average (more precisely, the <em>arithmetic mean</em>) and the
+<em>standard deviation</em> of the raw scores of the already-scored
+tests.
+
+</p><p>
+Suppose that we have a collection of n numbers 
+x<sub>0</sub>, x<sub>1</sub>, ..., x<sub>n-1</sub>.
+Then their average <tt>Avg</tt> (i.e., arithmetic mean)
+is their sum divided by their number.  That is,
+
+</p><p>
+<center>
+&nbsp;&nbsp;&nbsp;x<sub>0</sub> + x<sub>1</sub> + ... + x<sub>n-1</sub><br />
+Avg =  ------------------------------------<br />
+&nbsp;&nbsp;&nbsp;n<br />
+</center>
+
+</p><p>
+The same collection's <em>standard deviation</em> is the square root of
+
+</p><p>
+<center>
+(x<sub>0</sub>&dash;Avg)<sup>2</sup> + 
+(x<sub>1</sub>&dash;Avg)<sup>2</sup> + ... +
+(x<sub>n-1</sub>&dash;Avg)<sup>2</sup><br />
+----------------------------------------------<br />
+n<br />
+</center>
+
+</p><p>
+With respect to the example shown in the previous section (in which
+three tests have been scored, with raw scores 4, 2, and 5), the 
+values returned by the <tt>averageRawScore()</tt> and 
+<tt>stdDevOfRawScores()</tt> methods should be something close 
+to <tt>3.6667</tt> and <tt>1.247</tt>, respectively.
+
+<hr>
+<h3>Testing</h3>
+
+</p><p>
+For your convenience, the Java application <a href="MCTS_Tester.java">
+<tt>MCTS_Tester</tt></a> is provided to you. 
+It should serve well as a vehicle for testing your 
+<tt>MultipleChoiceTestScorer</tt> class.
+The output that it should produce is 
+<a href="output.txt">here</a>.
+Another good approach to testing would be to make use of jGrasp's
+Workbench feature, as has been demonstrated in class several times.
+
+<hr>
+<h3>Program Submission</h3>
+</p><p>
+Submit your source code file (which <b>must be named</b>
+<tt>MultipleChoiceTestScorer.java</tt>) from the course web page using the
+<b>Submit/Review</b> link that is adjacent to the link that
+brought you to this page.
+(Again, submit the <tt>.java</tt> file, <b>not</b> the
+<tt>.class</tt> file.)
+Make sure to include comments identifying yourself,
+indicating that it is a solution to CMPS 134 Prog. Assg. #6,
+acknowledging any persons who aided you in developing your solution,
+and pointing out any flaws of which you are aware.
+
+</p><p>
+You may submit a program more than one time.  Hence, if, after
+submitting, you improve your program (e.g., by fixing logic errors),
+you should submit the newer version.  However, all files submitted
+should have the same name!
+
+</body>
+</html>

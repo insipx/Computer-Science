@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>
+</title>
+
+<body>
+<!--
+<H2>1999 U of S Programming Contest<br>
+Problem 2: Binary Tree Traversals</H2>
+-->
+<H2>Binary Tree Traversals</H2>
+
+<p>
+Suppose that each node of a binary tree T has a label (i.e., name).
+We define the <b>In-Order</b> listing of T to be that produced by
+the following recursive procedure:
+<pre>procedure In-Order( T : Binary_Tree ) is
+begin
+   if T is empty then
+      do nothing;
+   else
+      In-Order( left subtree of T );
+      print the label of the root of T;
+      In-Order( right subtree of T );
+   end if;
+end In-Order;</pre>
+
+<p>
+By "left subtree of T" we mean the subtree of T rooted at the left
+child of the root of T.  (If the root of T has no left child, then
+this subtree is empty.)  Of course, "right subtree of T" is similar.
+
+We define the <b>Post-Order</b> listing of T to be that produced by
+the following recursive procedure:
+<pre>procedure Post-Order( T : Binary_Tree ) is
+begin
+   if T is empty then
+      do nothing;
+   else
+      Post-Order( left subtree of T );
+      Post-Order( right subtree of T );
+      print the label of the root of T;
+   end if;
+end Post-Order;</pre>
+
+<p>
+Finally, we define the <b>Pre-Order</b> listing of T to be that produced
+by the following recursive procedure:
+<pre>procedure Pre-Order( T : Binary_Tree ) is
+begin
+   if T is empty then
+      do nothing;
+   else
+      print the label of the root of T;
+      Pre-Order( left subtree of T );
+      Pre-Order( right subtree of T );
+   end if;
+end Pre-Order;</pre>
+
+<p>
+The three kinds of listings are produced by nearly identical algorithms.
+The only difference among them is the choice of when to print the label
+of the root relative to when the labels in the left and right subtrees
+are printed.
+
+<p>
+Interestingly, if you know two of the three listings of some binary tree,
+then you can determine the third one.  You are to develop a program that,
+given the In-Order and Post-Order listings of a binary tree, is able
+to determine its Pre-Order listing.  
+
+<p>
+The input will be a sequence of binary trees each of whose nodes is
+labeled by an upper case letter.
+Each tree will be described on three lines.
+The first line will be a positive integer indicating the number of nodes
+in the tree.  This number will be no more than 26.
+The second line will contain the tree's In-Order listing.
+The third will contain its Post-Order listing.
+
+<p>
+For each binary tree given as input, the program should produce a single
+line of output containing that tree's Pre-Order listing.
+<p>
+<b>Sample Input</b><br>
+<pre>2
+AB
+BA
+7
+BEADCGF
+EABCFGD</pre>
+
+<p>
+<b>Sample Output</b><br>
+<pre>AB
+DBAEGCF</pre>
+
+</body>
+</html>

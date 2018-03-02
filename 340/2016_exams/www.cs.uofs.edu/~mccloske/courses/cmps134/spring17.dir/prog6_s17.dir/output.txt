@@ -1,0 +1,36 @@
+Marie scored 7
+Average so far: 7.0
+Standard Deviation so far: 0.0
+Joan scored 6
+Average so far: 6.5
+Standard Deviation so far: 0.5
+Bill scored 7
+Average so far: 6.666666666666667
+Standard Deviation so far: 0.4714045207910317
+Mortimer scored 2
+Average so far: 5.5
+Standard Deviation so far: 2.0615528128088303
+Carol scored 10
+Average so far: 6.4
+Standard Deviation so far: 2.5768197453450252
+
+4 correct answers on Question 0
+2 correct answers on Question 1
+3 correct answers on Question 2
+4 correct answers on Question 3
+3 correct answers on Question 4
+4 correct answers on Question 5
+4 correct answers on Question 6
+3 correct answers on Question 7
+3 correct answers on Question 8
+2 correct answers on Question 9
+
+Retrieved score of Marie is 7
+Retrieved score of Joan is 6
+Retrieved score of Bill is 7
+Retrieved score of Mortimer is 2
+Retrieved score of Carol is 10
+
+Score of Ralph:-1
+
+Goodbye

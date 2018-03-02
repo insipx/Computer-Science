@@ -1,0 +1,80 @@
+<html>
+<head>
+  <title>CMPS 340  Fall 2016  HW #3</title>
+</head>
+<body>
+<h2>CMPS 340 Fall 2016<br />
+HW#3: Relational Algebra Query Development<br />
+Due: 1pm, Friday, September 23
+</h2>
+
+<p>
+Using the COMPANY relational database from the Elmasri &amp; Navathe 
+textbook,
+<!-- (the schema diagram of which is in Figure 3.5
+(5.5 in earlier editions) and a possible state of which
+is illustrated in Figure 3.6 (5.6 in earlier editions)),
+-->
+devise queries, expressed in Relational Algebra
+(preferably the sugary version that we've been using in class),
+corresponding to the following queries expressed in English.
+
+
+</p><p>
+<b>1.</b> 
+Report the first name and salary of each employee whose last name is
+"Gorn" and who works for either Department 1 or Department 5.
+
+</p><p>
+<b>2.</b> 
+Report the last name and birthdate of each female employee whose
+salary is at least $60,000 and who works for a department named
+"Bureaucracy".
+
+</p><p>
+<b>3.</b>
+<b>(a)</b> 
+Report the first and last names of each employee who 
+has both male and female dependents.
+<br />
+<b>(b)</b>
+Report the first and last names of each employee who 
+has male dependents but no female dependents.
+
+</p><p>
+<b>4.</b>
+Report the name of each project on which works an employee having 
+last name "Rumplestiltskin".
+
+</p><p>
+<b>5.</b>
+Report the first and last names of each employee who works on a project
+that is controlled by a department other than the one for which the
+employee works.
+
+</p><p>
+<b>6.</b>
+Report, for each department, its name, the number of employees who work 
+for it, and the sum of their salaries.
+(The department for which an employee works is indicated by the 
+<tt>Dno</tt> attribute in the <tt>Employee</tt> table.)
+Try to formulate your query so that the result explicitly 
+includes departments for which no employees work.
+Assume that the aggregate <tt>SUM</tt> function treats NULL as
+though it were zero.
+<!--
+  Report, for each of the two sexes ('M' and 'F'), the number of
+  employees of that sex who manage some department and the average of
+  their salaries.
+-->
+
+</p><p>
+<b>7.</b>
+Report, for each project and each of the two sexes, 
+the number of the project, how many employees of that sex work
+on that project, and the total number of hours that those employees
+work on that project.  (The resulting table should have attributes
+for project number, sex, # of employees, and total hours.)
+
+</body>
+</head>

@@ -1,0 +1,935 @@
+<html>
+<head>
+<title>SE 507 Introduction to Requirements</title>
+</head>
+<body>
+<H2>SE 507<br />
+Introduction to Requirements Management/Engineering
+</H2>
+
+<em>Acknowledgement:</em> Much of the material in this document is based
+upon the writings of <b>Alan M. Davis</b> (and particularly the articles in 
+Section III of <em>Great Software Debates</em> (GSD), published in 2004 by
+Wiley), who is a leading expert in the field of software requirements.
+
+<H3>Background</H3>
+<p>
+Before one can develop software, one must have a fairly good idea as to
+its intended behavior.  The activities associated with <b>requirements
+management/analysis/engineering</b> are for the purpose of coming to an
+understanding of, and describing, the desired behavior of a software system
+that one is proposing to build, either from scratch or by modifying an
+existing system.
+
+<p>
+Naturally, every <em>software process model</em> (including, of course, the
+classic <b>Waterfall</b> model) puts activities pertaining to software
+requirements (e.g., elicitation, prioritization, validation, specification)
+first on the list of things to do when developing software.
+In the case of models that describe an iterative approach to software
+development (e.g., Boehm's Spiral model),
+each iteration begins with a requirements-based phase whose purpose is to
+determine in what state the software should be (i.e., what features it
+supports, etc.) at the end of that iteration.
+After all, you can't build software (or just about anything else)
+without first knowing what you're trying to build.
+
+<p>
+Fred Brooks famously wrote in his classic 1987 essay, <em>No Silver Bullet:
+Essence and Accidents of Software Engineering</em>
+<blockquote>
+<b>The hardest single part of building a software system is deciding precisely
+what to build.  No other part of the conceptual work is as difficult as
+establishing the detailed technical requirements, including all the
+interfaces to people, to machines, and to other software systems.
+No other part of the work so cripples the resulting system if done wrong.
+No other part is more difficult to rectify later.</b>
+</blockquote>
+
+<p>
+Davis notes [intro to Section III] that 
+<blockquote><b>Requirements activities span the range of activities
+from trying to understand/analyze the world of the customers and users
+to the detailed documentation of individual descriptions of external
+desired behavior of a system ...</b>
+</blockquote>
+
+
+<p>
+Davis recounts [GSD Essay 20] that he spent many years "trapped in the belief" 
+that <em>requirements X</em> (where <em>X</em> is any of
+<em>specification</em>, <em>management</em>, <em>analysis</em>, or
+<em>engineering</em>) is all about <b>documentation</b> 
+(i.e., about describing a desired system's external behavior).
+Eventually, he came to realize that requirements X has more to do with
+<b>understanding</b> than with documentation.  That is, the essential 
+(and most difficult) part of requirements management is coming to an 
+understanding of the customer's needs; documenting those needs is the
+<em>easy</em> (or <em>less difficult</em>, anyway) part.
+
+<p>
+Work in the area of requirements involves not only technical (left-brained)
+skills (as may be involved in applying various analysis techniques/notations)
+but also touchy-feely (right-brained) skills in dealing with other people
+(e.g., communication, empathy, feeling, listening).
+This is one aspect of requirements that fascinates Davis.
+
+
+<H3>What is a Requirement?</H3>
+<p>
+It seems that every author on the subject has a different definition.
+Among them are the following:
+
+<p>Davis, in Encyclopedia of Software Engineering (and GSD Essay 21),
+says<br />
+<blockquote><b>A requirement is an <em>externally observable</em> 
+<!-- and <em>desired</em> -->
+characteristic of a <em>desired</em> system.</b>
+</blockquote>
+<p>
+<b>Note:</b> The above definition says that a requirement is a characteristic
+of a system, as opposed to being a description of a characteristic. 
+This distinction is often ignored, even by Davis himself.
+<!--
+such it is common to conflate the desired characteristics 
+with the descriptions thereof, as the next definition does.)
+-->
+</p><p>
+Davis makes this comparison (GSD Essay 21): <em>phenotype</em> is to
+requirement as <em>genotype</em> is to architecture/design/code.
+
+</p><p>
+Stokes, in Software Engineer's Reference Book, says<br />
+<blockquote><b>Requirements are a collection of statements that should 
+  describe in a clear, concise, consistent, and unambiguous manner all
+  significant aspects of a proposed system.</b>
+</blockquote>
+<p>
+Harwell, et. al., in "What is a Requirement?" ... (1993), say<br />
+<blockquote>
+<b>If it mandates that something must be accomplished, transformed,
+produced, or provided, it is a requirement --- period.</b>
+</blockquote>
+
+<p>
+Dorfman and Thayer (1990) say that a requirement is
+<blockquote>
+<b>1. a software capability needed by the user to solve a
+problem (in order) to achieve an objective.</b><br />
+<b>2. a software capability that must be met or possessed by a
+system or system component to satisfy a contract, standard, specification,
+or other formally imposed documentation.</b>
+</blockquote>
+
+<p>
+The <em>IEEE Standard Glossary of Software Engineering Terminology</em>
+(1990) defines a requirement as either
+<blockquote>
+<b>1. A condition or capability needed by a user to solve a problem
+   or achieve an objective.</b> <br />
+<b>2. A condition or capability that must be met or possessed by a
+   system (or system component) to satisfy a contract, standard, specification,
+   or other formally imposed document.</b><br />
+<b>3. A documented representation of a condition or capability as in
+   1 or 2.</b>
+</blockquote>
+(Note that the third item acknowledges the distinction between a
+condition/capability and a description thereof!)
+<p>
+Sommerville and Sawyer say
+<blockquote>
+<b>Requirements are ... a specification of what should be implemented.
+They are descriptions of how the system should behave, or of a system
+property or attribute.  They may be a constraint on the development
+process of the system.</b>
+</blockquote>
+(Note that the last sentence describes what is often referred to as a
+<b>non-functional</b> requirement, as distinguished from a <b>functional</b>
+requirement, which relates to behavior.)
+
+</p><p>
+In Wikipedia's <b>Requirement</b> entry, it says 
+<blockquote>
+   <b>... a requirement is a singular documented need of what a particular
+   product or service should be or perform. ...
+   It is a statement that identifies a necessary attribute, capability,
+   characteristic, or quality of a system in order for it to have value and
+   utility to a user.</b>
+</blockquote>
+
+</p><p>
+Ben Kovitz says
+<blockquote>
+  <b>Requirements are the effects that the computer is to exert in the
+  problem domain, by virtue of the computer's programming.</b>
+</blockquote>
+
+</p><p>
+The Robertsons' say
+<blockquote>
+  <b>a requirement is something the product must do to support its
+  owner's business or a quality it must have to make it acceptable
+  and attractive to the owner.</b>
+</blockquote>
+(Note that the first part describes a <em>functional</em> requirement
+and the second part describes a <em>non-functional</em> requirement.)
+
+
+<p><br />
+Let's consider one unique aspect of Davis's definition, which is repeated
+from above:
+<blockquote><b>A requirement is an <em>externally observable</em> 
+<!-- and <em>desired</em> -->
+characteristic of a <em>desired</em> system.</b>
+</blockquote>
+<p>
+By <em>externally observable</em> he means that there exist some means
+by which an observer (whether it be human or machine) can sense
+&mdash;from a perspective external to the system&mdash;
+whether or not the system possesses the characteristic.
+<p>
+By <em>desired</em> he means that some <em>stakeholder</em> "wants to
+have that characteristic present in the system".
+<p>
+<b>Note:</b> At least in the articles in <em>Great Software Debates</em>,
+Davis leaves the impression that the stakeholders are of one mind, or
+at least that their desires are consistent with one another, which is
+typically not the case, at least when the stakeholders are numerous or
+come from widely differing points of view. <b>End of note.</b>
+
+<p>
+<b>The Confusion over What vs. How</b>
+<p>
+Some people have defined a requirement to be something that 
+"describes <em>what</em> a system is to do without specifying
+<em>how</em> it is to do it".
+Davis criticizes this by pointing out that it is often difficult to
+distinguish <em>what</em> from <em>how</em>.  Indeed, the same thing
+could be a <em>what</em> from one perspective and a <em>how</em> from
+another.  To change a <em>what</em> to a <em>how</em>, all you need
+to do is to ask <em>Why?</em>!
+
+</p><p>
+As an example, he refers to a hypothetical hotel owner who says
+<em>I want a telephone system.</em>  From one point of view, a
+telephone system is a <em>what</em>.  But suppose that the owner is
+pressed to give a reason for desiring a telephone system
+(i.e., he is asked <em>Why?</em>), and his response is that he wants to
+provide his customers with a means of communicating with people outside
+the hotel.  So from another perspective, the means of communication is the
+<em>what</em> and the telephone system is the <em>how</em>, in that it
+answers the question, "How (i.e., by what mechanism) will you provide
+a means of communication?"
+
+</p><p>
+If now the owner is asked <em>why</em> he wants guests to have a means
+of communication, he may say that it is to keep them happy.
+So then we can view this wish as the <em>what</em> and the
+means of communication as the <em>how</em>.
+Now ask <em>why</em> he wants to keep his customers happy, 
+and so on and on.
+
+
+<br />
+<H3>Requirements Management/Engineering</H3>
+<p>
+<b>Definitions:</b>
+<ul>
+  <li>Leffingwell and Widrig say
+    <blockquote><b>Requirements Management is a systematic approach to
+    eliciting, organizing, and documenting the requirements of a system,
+    and a process that establishes and maintains agreement between the
+    customer and the project team on the changing requirements of the system.
+    </b>
+    </blockquote>
+  </li>
+  <li>Davis says 
+    <blockquote><b>Requirements management is the discipline of elicitation,
+    triage [Davis's term for what most others call <em>prioritization</em>], 
+    and specification of the initial and evolving requirements for
+    a system.</b></blockquote>
+  </li>
+  <li>van Lamsweerde says
+    <blockquote><b>... requirements engineering [is] a coordinated set of
+    activities for exploring, evaluating, documenting, consolidating,
+    revising, and adapting the objectives, capabilities, qualities,
+    constraints, and assumptions that the system-to-be should meet
+    based on the problems raised by the system-as-is and opportunities
+    provided by new technologies.</b>
+    </blockquote>
+  </li>
+</ul>
+
+<p>
+<b>Activities in Requirements Management/Engineering</b>
+<ul>
+  <li><b>Elicitation</b>: This is the art of arriving at
+      (or the set of activities by which one arrives at)
+      an understanding of the wants/needs/demands of the
+      <b>stakeholders</b> and collecting them in a
+      repository for future analysis [GSD Essay 25].
+      Stakeholders can include people from a number of different groups,
+      including customers (both existing and potential), users, the
+      marketing dept., and management.
+      </p><p>Or as noted in [GSD Essay 21], 
+      <blockquote><b>elicitation is the activity of determining the problems
+      being experienced [by] or the opportunities afforded the customers and
+      users, as well as ascertaining what external system behaviors could
+      address these problems or [take advantage of] the opportunities.</b>
+      </blockquote>
+      
+      <p>
+      Here is where right-brained skills are needed, as one must be able
+      to interact with people effectively.
+
+      <p>
+      <b>Who are the stakeholders?</b>  They include anyone (even organizations
+      or "systems" could be included) who will be affected by the 
+      presence/installation of the proposed new/enhanced system.
+
+      <p>Here is a classification of typical stakeholder groups:
+      <ul>
+        <li><b>Customers</b>: people/organizations who are buying (paying for)
+            the system.  For a commercial product, this would include not only
+            consumers but also distributors/wholesalers and retailers.
+            For a custom project, it would include the entire management
+            hierarchy of the department/division for which the product was
+            built.
+        </li>
+        <li><b>Users</b>: people/organizations who are going to use the system
+            or the outputs it produces.
+        </li>
+        <li><b>Marketing Personnel</b>:  these are the people in a software
+            development company who are experts in market trends, so they
+            make predictions (e.g., about what kind of products/features
+            consumers are likely to want/need, and be willing to pay for,
+            and when) aimed at helping the company to identify products
+            (or enhancements to products) that, if implemented, are likely
+            sell well enough to make a profit.
+        </li>
+        <li><b>Development Personnel</b>: these are the people who implement the
+            proposed system.  Their technical expertise often allows them to
+            <ul>
+              <li>estimate the difficulty of implementing candidate requirements
+                  (e.g., which helps to distinguish the realistic from the
+                  unrealistic),
+              </li>
+              <li>advocate requirements that, if implemented, would help to
+                  make future requirements easier to implement, and
+              </li>
+              <li>suggest requirements made possible by new technology
+              </li>
+            </ul>
+            <p>
+            Note that <b>marketing and development personnel tend to dislike
+            each other</b>.  Marketing mistrusts development because product
+            delivery is consistently late and the latter tend to be negative
+            towards any new/changing requirements.  Development dislikes
+            marketing because the latter is always putting pressure on them
+            to do more work in less time.
+        </li>
+        <li><b>System Testers</b>: They are responsible for verifying that the
+            system meets the specified requirements.  They are good at
+            determining whether a requirement is testable, and hence they are
+            useful in alerting others to the untestability of candidate
+            requirements (perhaps leading to their refinement).
+        </li>
+        <li><b>Loser Users</b> (a more accurate, if less clever-sounding, term
+            would be "loser stakeholder"):
+            Those who will lose power as a result of the introduction of the
+            new/enhanced system.  (E.g., A factory worker whose job is being
+            taken over by an automated robot, or a clerk whose job is
+            threatened by an automated filing system.)  It is possible that,
+            knowing their relationship to the proposed software, 
+            they will be uncooperative with elicitators.
+            <!-- they will provide bad information to elicitators. -->
+        </li>
+        <li><b>Support Personnel</b>: This includes anyone who provides support
+            to the user community (e.g., technical writers, trainers, customer
+            support).  Because they are "in touch" with the users (especially
+            with users' problems), they often can provide insight into the needs
+            of users.
+        </li>
+      </ul>
+
+
+      <p>
+      <b>Elicitation techniques:</b>
+      A good elicitator also should know a variety of elicitation techniques
+      and know in what circumstances/environments each one tends to work
+      well.  Among the techniques are the following (see GSD Essays 24 and 26):
+      <ol>
+        <li><b>Interviews</b>: (one-on-one) asking relevant questions to a
+            stakeholder in order to gain domain knowledge or information
+            regarding his wants/needs.
+            <br />
+            This is a technique of choice when it is possible to learn a
+            lot about the subject from a small number of people.
+        </li>
+        </p><p>
+        <li><b>Questionairres</b>: a set of questions is distributed to a
+            large number of stakeholders and their answers are used to draw
+            conclusions as to what are the relevant requirements.
+            This technique is dangerous, as the answers you get could depend
+            greatly upon idiosyncrasies in how questions are worded or what
+            set of answers (in a multiple-choice type question) is offered.
+            <p>
+            It is a technique of choice when answers are needed to a set of
+            very specific questions.  A good time to use them is after a
+            group meeting or interviews, in order to validate that the
+            requirements identified by a relatively small set of stakeholders
+            (i.e., those participating in the group meeting or in interviews)
+            is consistent with what the larger population of stakeholders wants.
+        </li>
+        </p><p>
+        <li><b>Ethnomethodological Studies</b>: This is the passive
+            study/observation of stakeholders while they perform their duties.
+            This technique sometimes reveals requirements (often having to do
+            with <b>tacit knowledge</b>) that the stakeholders would be unlikely
+            to verbalize (possibly because they're not even aware of why or
+            how they do something) in an interview or group meeting.
+            <p>
+            This technique is called for especially when failing to uncover a
+            requirement could have life-or-death consequences or when the
+            goal is to automate a process currently carried out by
+            highly-skilled professionals.
+        </li>
+        </p><p>
+        <li><b>Brainstorming</b> (Facilitated Group Meetings):
+            Assembling a group of stakeholders in one location and
+            establishing an environment that encourages participation.
+            </p><p>
+            This is a technique of choice when <b>there are something like
+            five to twenty-five people each of whom knows a little</b> about
+            what you are trying to learn (but their knowledge does not overlap
+            too much).  The idea is that having such a group session will
+            allow them to fill in the holes in each other's understanding, to
+            the point that all of them will end up understanding even more than
+            the sum of what they understood before!
+            </p><p>
+            It can be a bad idea to invite to such a session someone who knows
+            a lot about the subject, because she is likely to dominate the
+            session.
+        </li>
+        </p><p>
+        <li><b>Problem Domain Storyboarding</b> 
+            (Scenarios, Use Cases, Stories)
+            A scenario is a sample interaction between an <b>actor</b> (which is
+            typically a user, but could be any external system) and the proposed
+            software system.  These became popular in the 1970's for describing
+            requirements of real-time systems. 
+            <!--See Figure 2-3 (page 56 in JERM) for an
+            example involving a fighter pilot launching a missile. -->
+            <p>
+            In the early 1990's, Ivar Jacobsen introduced the related
+            <b>use case</b> concept into the realm of OO development. 
+            And <b>story</b> is the term often used in connection with
+            <b>agile methods</b>.
+            <p>
+            Davis says that the <b>sequence diagram</b> of a <b>use case</b>
+            documents a scenario.
+            <!--  (in Davis's JERM book, Figure 2-4, page 57, for example,
+                  applies to the fighter pilot scenario.)
+            -->
+            <p>
+            Karl Wiegers, a very well known writer about requirements, says that
+            what distinguishes use case, scenario, and story is the level of
+            abstraction/generality:
+            <ul>
+              <li>use case is most abstract/general:
+                  e.g., "Prepare a mailing label."
+              </li>
+              <li>scenario is less abstract: "Prepare a mailing label to send a
+                  package by second-day air using FedEx."
+              </li>
+              <li>story is most concrete: "Chris wants to send a 2.5 pount package
+                  (marked "fragile") by second-day air via FedEx from Scranton to
+                  Augusta, wants the package to be insured for $75, and wants a
+                  return receipt."
+              </li>
+            </ul>
+            <p>
+            Use cases/scenarios are not so much methods of elicitation as
+            <b>modeling notations</b>.  They can be very effective in
+            group meetings and interviews.  For example, each answer to the
+            question "What features do you want?" could serve as the basis for
+            a use case.
+            <p>
+            In an (elicitation) interview, the answer to a question such as
+            "What steps do you follow when X occurs?" is likely to describe a
+            scenario.
+            <p>
+            <b>Scenarios/use cases are applicable</b> for any system that has
+            a lot of <b>interactive features</b>.
+            Wiegers points out that they are <b>not particularly good</b> for
+            systems involving data warehouses, batch processes,
+            embedded control software, or computationally intensive
+            applications.  (For some kinds of apps (such as traffic/pedestrian
+            lights at a highway intersection), event-response tables are much
+            better.)
+            <!-- (Use cases wouldn't help much in describing
+            Naur's text formatting problem!)
+            -->
+        </li>
+        </p><p>
+        <li><b>Prototyping</b>: This refers to building a partial implementation
+            of a software system (often mostly the user interface) and
+            presenting it to stakeholders (and perhaps allowing stakeholders
+            to "play with it").
+            This can help stakeholders come to a better understanding of what
+            they really want (and don't want) and often helps them to identify
+            new requirements. 
+            </p><p>
+            It is a good approach when the stakeholders' understanding of the 
+            requirements is only fuzzy.  Thus, it reduces
+            the risk of inadvertently building the wrong system.
+            </p><p>
+            Davis emphasizes that it is important to build a prototype quickly
+            but that it is rarely a good idea to allow the prototype to "evolve"
+            into the final software system (even after several iterations).
+            (After all, "build it quickly" and "build it to be a quality
+            product" are not usually compatible.)
+        </li>
+        <li><b>Reading</b>
+        </li>
+        </p><p>
+        <li><b>Research</b>
+        </li>
+        </p><p>
+        <li><b>Evolutionary Development</b>:
+            Constructing a system that satisfies only the best-understood
+            requirements, with the expectation that, after using it,
+            the customers will think of many new requirements.
+        </li>
+        </p><p>
+        <li><b>Modelling Notations</b>:
+            Any notation that expresses system functionality/behavior can be
+            used in the elicitation process.  For example, the elicitator
+            interviews a stakeholder, uses the information he gathered as
+            the basis for constructing some <b>use cases</b> or
+            <b>UML diagrams</b> (e.g., <b>statechart</b>),
+            or any of a myriad of other modeling notations, 
+            and then goes back to the stakeholder for verification or 
+            clarification.
+            </p><p>
+            Davis warns, though, that the stakeholder will be "turned off" if
+            the notation used (or the language used in discussing it) is not
+            easy to understand.
+        </li>
+      </ol>
+  </li>
+  <p>
+  <li><b>Feature Specification</b>:
+      During the elicitation process, aspects of the stakeholders'
+      problems and wants/needs will become clearer.  Typically, these
+      wants/needs, which Davis refers to as <b>features</b> (referred
+      to as <b>goals</b> by some), will be relatively general or vague,
+      and hence they are appropriately expressed at a relatively high level
+      of abstraction. 
+      Eventually, some of these features (namely, those that are
+      deemed worthy of being included in the system during the process
+      that Davis calls <b>triage</b> (and most others refer to as
+      <b>prioritization</b>)) will be expressed in more detail
+      (at a lower level of abstraction), giving rise to requirements.
+      It is necessary to express desired system behavior in a detailed and
+      precise way, prior to the design phase, in order to ensure that
+      the designers, implementors, and testers envision the same system.
+      <p>
+      As an example, the requirement elicitators may learn that "hotel guests
+      need to communicate with people in the local community, without leaving
+      their rooms" is a desired feature.  This may lead to the following
+      requirements (which look suspiciously like a <b>use case</b>!):
+      <p>
+      <tt>TO PROVIDE LOCAL PHONE CALL SERVICE:
+      <ul>
+        <li>Guest lifts an idle telephone.</li>
+        <li>Within two seconds, system shall generate dial tone.</li>
+        <li>Within one second of guest dialing "9", system shall generate
+            distinctive dial tone.</li>
+        <li>etc., etc. (see GSD Essay 24, page 147)</li>
+      </ul>
+      </tt>
+      <p>
+      See Figure 24.2 (GSD Essay 24, page 148) for an example list of
+      features.
+      <p>
+      A critical aspect of feature specification is to assess each feature
+      with respect to various qualities/attributes (see below) and to
+      record all this information (e.g., in a database or table)
+      (see Figure 24.3, page 149).
+      <ul>
+        <li><b>importance</b>: how vital is this feature to the stakeholders
+        </li>
+        <li><b>volatility</b>: how likely is it that changing circumstances
+            will call for this feature to be modified
+        </li>
+        <li><b>cost of implementing</b>: could be measured in terms of
+            person-hours, money, or function points
+        </li>
+        <li><b>use-dependency relationship with other features</b>:
+            identify any other features having the property that, if this
+            one is not implemented, it makes no sense to implement the
+            others (or vice versa).
+            <p>
+            Example: it makes no sense to provide a "billing for feature X"
+            capability if X itself is not provided.
+        </li>
+        <li><b>development-dependency relationship with other features</b>:
+            identify any other features having the property that, if this
+            one is not implemented, the other ones cannot be (because to
+            implement them requires the use of this feature) (or vice versa).
+        </li>
+        <li><b>risk</b>: how likely is it that this feature will fail to be
+            satisfied even if we try?
+        </li>
+        <li><b>inclusion flag</b>: after triage, record the decision as to
+            whether to include or exclude this feature from the product.
+            (Do not delete excluded features from the repository, as you
+            might want to reconsider them for a future release of the product.)
+      </ul>
+  </li>
+  <p>
+  <li><b>Triage</b> (or what is usually called <b>prioritization</b>):
+      This is the process of deciding which features (among
+      those recorded during feature specification) to include in the (next
+      release of the) product.
+      Rarely is it possible to implement every requested feature from every
+      stakeholder.  Reasons include limited resources, time-to-market demands,
+      and risk intolerance.
+      (In GSD 24, Davis says triage should be done with respect to
+      features, not detailed requirements.)
+      <p>
+      Triage cannot be done algorithmically; that is, it requires human
+      judgement.  To do it properly requires mature knowledge of
+      technology, finance, project management, sales, and marketing.
+      Hence, it calls for a group effort, as no one person is likely to
+      have enough expertise in all these areas.
+      <p>
+      Some of the factors that should be considered are listed on page 150
+      in GSD Essay 24.
+      <p>
+      The goal is to arrive at an optimal set of product features that is
+      compatible with 
+      <ol>
+        <li>development schedule/cost </li>
+        <li>tolerable level of development risk</li>
+        <li>the market window, entry date, and expected sales</li>
+        <li>acceptable levels of quality</li>
+        <li>desired margins</li>
+      </ol>
+  </li>
+  <p>
+  <li><b>Requirements Specification</b>:
+      (GSD Essay 24) is the activity of documenting the desired
+      external behaviors of the system to be constructed.
+      This should be done after <b>feature description</b>
+      but before <b>software design</b>.
+      To do it right, you must have team members who have profound knowledge
+      of users and their needs (requirements specialists/writers) and others
+      (software designers) who have profound knowledge of technology
+      capabilities.  Hence, it is a good idea to use an interdisciplinary
+      team including both categories of people.
+      </p><p>
+      A <b>requirements specification</b> is a document that records all
+      externally observable behaviors of a system to be built, including
+      <ol>
+        <li>all inputs from environment</li>
+        <li>all outputs to environment</li>
+        <li>all features and functions of system</li>
+        <li>performance constraints (e.g., response time, etc.)</li>
+        <li>characteristics of the system's intended environment that
+            might impact the system
+        </li>
+      </ol>
+
+      <p>
+      <b>Desirable Characteristics of (the description of) a (single) 
+         Requirement</b>
+      <p>
+      According to Davis, in addition to being externally observable and
+      desired, each requirement (or description thereof) should be
+      <ol>
+        <li><b>unambiguous</b>: having only one possible interpretation.<br />
+            Because natural languages (e.g., English) are ambiguous,
+            this characteristic is often difficult to achieve.
+            Davis makes an analogy to the legal profession, whose
+            practitioners interpret laws written in natural language.
+            Perhaps somewhat surprisingly, Davis claims that the legal system
+            works fine this way, relying upon those interpreting the laws to
+            be "reasonable" and "prudent".
+            <p>
+            In order to avoid the pitfalls of ambiguity in natural language,
+            one can employ <em>formal notations</em> for describing
+            requirements.  Drawbacks to this approach include the fact that
+            relatively few software professionals are properly trained/educated
+            to employ them, let alone the stakeholders with whom the
+            requirements analysts must work to establish the requirements.
+            <p>
+            Advantages to using a formal notation include the possbility of
+            automatic testing for, e.g., consistency.
+            <p>
+            <b>Bertrand Meyer</b>, in his article
+            <em>On Formalism in Specifications</em> (from Jan-Feb 1985 issue
+            of IEEE Software), argues that natural language is so inherently
+            ambiguous that some degree of formalism in specification is 
+            necessary.
+            <p>
+            <b>David Parnas</b> makes a similar point in a one-page abstract,
+            <em>Requirements Documentation: Why a Formal Basis is
+            Essential</em>, citing the impossibility of testing "a set of
+            English language statements for completeness and consistency".
+            <p>
+            Davis defends the use of English (or, more generally, natural
+            language) by pointing out that requirements should be
+            understandable by stakeholders.
+        </li>
+        <li><b>verifiable</b>: there must exist some (cost-effective) process
+            by which an observer (e.g., machine, person) can determine
+            (to a degree sufficient to convince the relevant stakeholders)
+            whether or not the product possesses the characteristic in question
+            (i.e., conforms to the requirement).
+        </li>
+        <!--
+           <li><b>validatable</b>: stakeholder can understand and indicate the
+               degree to which it reflects her desires.
+           </li>
+        -->
+        <li><b>understandable</b>: stakeholder can understand it
+        </li>
+        <li><b>concise</b>
+        </li>
+        <li><b>correct/validatable</b>:
+            it must help to satisfy some stakeholder need.
+            <!-- (Is this just a variation of the previous item?) -->
+        </li>
+        <li><b>annotated</b>: to aid in requirements management, with each
+            requirement should be recorded an assessment of it with regard to
+           <ul>
+             <li>importance (cf. <em>triage</em>)</li> 
+             <li>development effort/cost </li>
+             <li>risk level (likelihood of failing to achieve it even after
+                 making effort)
+             </li>
+             <li>volatility (likelihood it will be changed)</li>
+           </ul>
+        </li>
+        <li><b>cross-referenced</b>: with other requirements, to indicate its
+            relationships with other requirements.
+            (Note relatively new sub-discipline RIM: Requirements Interaction
+            Management, which studies how to manage issues arising from these
+            relationships, such as what happens if a particular requirement
+            is changed.)
+        </li>
+        <li><b>design independent</b>: it should not imply a specific design or
+           implementation (which, after all, are not externally visible!).
+           (This pertains to the <em>what</em> vs. <em>how</em> issue!)
+        </li>
+        <li><b>at right level of detail/strength/specificity</b>:
+            a requirement is too strong if a weaker requirement would be
+            satisfactory.  (E.g., requiring response time between 2.1 and 2.2
+            seconds is too strong if stakeholders would be satisfied by 2
+            second average and 3 second upper bound.)
+            <p>
+            In <b>Karl Wiegers'</b> book, 
+            <em>Software Requirements</em> (2nd ed.),
+            he distinguishes between three levels of requirements:
+            <ol>
+              <li><b>Business requirements</b> represent high-level objectives
+                of the organization or customer who is requesting the system.
+                A document expressing these is variously called a 
+                <em>vision and scope document</em>, a
+                <em>project charter</em>, or a
+                <em>market requirements document</em>.
+                Among its functions is to define the project's scope, which
+                is the first step in controlling the <b>scope creep</b>
+                problem. 
+                <p>
+                Example: "The product will allow users to correct spelling
+                errors efficiently".
+              </li>
+              <li><b>User requirements</b> describe tasks that the user
+                 must be able to perform with the product.  Among the
+                 notations for describing these are <b>use cases</b>,
+                 <b>scenario descriptions</b>, and <b>event-response tables</b>.
+                 An example of a use case is "make a hotel reservation".
+                 <p>
+                 Following the word processing example of correcting
+                 spelling errors, at this level we might include use cases
+                 corresponding to "find and highlight spelling errors" and 
+                 "add word to dictionary".
+              </li>
+              <li><b>Functional</b> (or <b>behavioral) requirements</b>
+                specify the functionality that the developers are to build
+                into the product and are often described by statements of
+                the form "The system shall ..." as in "The system shall
+                send an e-mail to confirm the user's hotel room reservation".
+                The corresponding document (although it could be in another
+                form, such as a database or spreadsheet, or otherwise
+                stored using a requirements management tool) is usually 
+                called a <b>software requirements specification</b>, or SRS.
+              </li>
+            </ol>
+        </li>
+        <li><b>precise</b></li>
+        <li><b>traced</b>: we should be able to link a requirement backward
+            to its origin (in any higher level of requirements) and forward
+            to the design elements and source code that implement it and to
+            the test cases that "verify" that it is satisfied.
+            <!-- for each requirement, we should be able to identify
+            which components/modules in the design (and implementation) are
+            used to satisfy it; conversely, for each component/module, we
+            should be able to identify all the requirements that it supports.
+            -->
+        </li>
+      </ol>
+      <p>
+      <b>Desirable Characteristics of a Requirements Specification</b>
+      <ul>
+        <li><b>consistency</b>: All requirements can be (simultaneously)
+            satisfied. (This relates to RIM.)
+        </li>
+        <li><b>completeness</b>: Collectively, all stakeholder needs are
+            satisfied.  All relevant facets of the desired system have
+            been described, i.e., there are no "gaps".
+        </li>
+        <li><b>understandability</b>: This relates to the issue of 
+            formal vs. informal language.  The former is likely to be much
+            more understandable to non-technical stakeholders.
+        </li>
+        <li><b>modifiable</b>: This relates to how the specification is
+            organized/structured.  In particular, modifiability is enhanced
+            if relationships between requirements are recorded (as suggested
+            by Davis).
+        </li>
+        <li><b>traceable</b>: This has to do with "the ability to describe
+            and follow the life of a requirement, in both the forward and
+            backward direction (for example, from its origins,
+            through its development and specification, to its subsequent
+            deployment and use, and through all periods of ongoing refinement
+            and iteration in any of these phases)"
+            [Gotel and Finkelstein, 1994].
+            For example, it should be possible to trace back from a component
+            in a design to those requirements that led to its creation and
+            forward from a requirement to the components in a design that are
+            responsible for satisfying it.
+        </li>
+      </ul>
+  </li>
+</ul>
+
+
+<H3>Purpose/Importance of (Describing) Requirements</H3>
+</p><p>
+Stokes: "The overriding objective of requirements analysis is to
+provide necessary and sufficient information for subsequent
+design and implementation to be successful."
+
+</p><p>
+Leffingwell, citing some studies that have been done over the years
+(probably including one by Boehm, Daly, and Fagin),
+argues that (in general) a significant portion of the total cost of
+software development can be attributed to requirements-related errors
+or deficiencies of some kind.
+This is due not only to the fact that many such errors tend to be made,
+but also to the fact that some of them are not detected until late in
+the software development lifecycle (e.g., coding, or even maintenance),
+by which time they are <b>very</b> expensive to fix.  (Consider that
+to fix a faulty requirement during the coding phase may necessitate that
+the design be reworked, which could necessitate that a significant amount
+of code be reworked.)
+
+<p>
+Hence, he argues that it makes sense to invest a lot of effort in
+requirements management (including elicitation, specification, etc.),
+which, if done well, will minimize requirements-related errors.
+
+</p><p>
+Davis identifies three categories of requirements errors:
+<ol>
+  <li><b>knowledge errors</b>: Such an error occurs when a requirement
+      is not known by developers.  In the case that the requirement
+      <em>is</em> known by customers, the error stems from
+      <b>poor elicitation</b>.
+      <p>
+      Some requirements are not known by anybody, however!
+      <b>Prototyping</b>, or delivering the product <b>incrementally</b>,
+      are two ways to help to reveal such requirements, because the more
+      functionality that a customer experiences, the more new functionality
+      he will tend to want (and be able to identify).
+      <p>
+      Some developers find it upsetting when customers continually
+      identify more functions that they want, but Davis sees this
+      as healthy, as it provides evidence that the current software
+      is satisfying real needs.
+  </li>
+  <li><b>triage errors</b>: Such an error occurs when a requirement
+      is selected for inclusion in a release, but the available resources
+      are insufficient for satisfying it.
+      Chronic late delivery of products is a symptom of a process that
+      disregards triage errors.
+      <p>
+  </li>
+  <li><b>specification errors</b>: Such an error occurs when a requirement
+      is documented in a manner that fails to ensure that it is
+      understood in a common way by all parties.  In other words,
+      the requirement, as stated in the requirements document,
+      is <b>ambiguous</b>.  This could lead to the software behaving
+      in a way contrary to the customers' expectations, or even in
+      an unreliable or unpredictable manner.
+      It could also result in developers spending lots of time resolving
+      the conflict (between alternative interpretations of the requirement).
+  </li>
+</ol>
+
+<H3>Why are Requirements Difficult?</H3>
+
+<!--
+Following Fred Brooks's approach, Stokes classifies the difficulties
+into <b>essence</b> and <b>accident</b>:
+<ul>
+  <li><b>essential reasons</b>:  (have a philosophical basis)
+     <ul>
+       <li><b>language</b>
+       </li>
+       <li><b>completeness</b>
+       </li>
+       <li><b>validation</b>
+       </li>
+       <li><b>size and complexity (and maintainability)</b>
+       </li>
+     </ul>
+  </li>
+  <li><b>accidental reasons</b>: 
+     <ul>
+       <li><b>expressing requirements (language issue)</b>
+       </li>
+       <li><b>verification</b>
+       </li>
+       <li><b>consistency</b>
+       </li>
+       <li><b>modifiability</b>
+       </li>
+     </ul>
+  </li>
+</ul>
+-->
+<p>
+<!-- Others have observed that stakeholders --> 
+Stakeholders tend to be a varied lot and,
+collectively, are unlikely to have a coherent and consistent vision
+of the product.
+In addition, they frequently have little idea of what they want, or,
+at the least, lack the ability to articulate it.  
+(In cases such as this, it helps to use a rapid-prototyping approach,
+which gives the stakeholders the opportunity to "experience" the
+product's interface (and react to it) before lots of resources have
+been poured into building the product.)
+Adding to this is
+the fact that, typically, stakeholders speak a language that is foreign
+to developers!  (This is why it is important for there to be people who
+can bridge the gap between the two groups and act as 
+mediators.)  <!-- go-betweens.) -->
+
+
+</body>
+</html>

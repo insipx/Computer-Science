@@ -1,0 +1,453 @@
+<html>
+<head>
+  <title>1997 U of S High School Programming Contest Problems</title>
+</head>
+
+<H2>University of Scranton 1997 High School Programming Contest
+    Problems</H2>
+<body>
+
+<p>
+<A HREF="#Lines_in_Plane">Problem 1: Lines in a Plane</A><br>
+<A HREF="#Union_Intersect_Sets">Problem 2: 
+         Union and Intersection of Sets</A><br>
+<A HREF="#Bakery_Scheduling">Problem 3: Bakery Scheduling</A><br>
+<A HREF="#Permutation_Representation">Problem 4: 
+         Permutation Representation</A><br>
+<A HREF="#Polynomial_Multiplication">Problem 5: 
+         Polynomial Multiplication</A><br>
+<A HREF="#Word_Find">Problem 6: Word Find</A>
+
+
+<p>&nbsp;
+<p>
+<A NAME="Lines_in_Plane">
+<hr>
+<b>Problem 1: Lines in a Plane</b></A>
+
+<p>
+In euclidean geometry, two lines on a plane are related in exactly one 
+of three ways: The two lines either
+<ul>
+  <li>have no points in common, in which case they are said to be 
+      <b>parallel</b>, or</li>
+  <li>have a single point in common, in which case they are said to be
+      <b>intersecting</b>, or</li>
+  <li>have all their points in common, in which case they are said to 
+      <b>coincide</b>.</li>
+</ul>
+
+<p>
+You are to develop a program that takes as input two lines (each described
+by a pair of points on the cartesian coordinate plane) and that reports 
+which of the three possible relationships holds between the two lines.
+The user supplies as input the eight real numbers
+x<sub>1</sub>, y<sub>1</sub>,
+x<sub>2</sub>, y<sub>2</sub>,
+x<sub>3</sub>, y<sub>3</sub>,
+x<sub>4</sub>, and y<sub>4</sub>.
+The eight numbers represent two lines: the line through the points
+(x<sub>1</sub>, y<sub>1</sub>) and (x<sub>2</sub>, y<sub>2</sub>) and
+the line through the points
+(x<sub>3</sub>, y<sub>3</sub>) and (x<sub>4</sub>, y<sub>4</sub>).
+
+<p>
+After providing its output, the program should ask whether the user
+wishes to submit another instance of the problem.  The user is to
+reply either "yes" or "no"; in response, the program should take 
+the appropriate action.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter x1: <u>0.0</u><br>
+Enter y1: <u>0.0</u><br>
+Enter x2: <u>1.0</u><br>
+Enter y2: <u>3.0</u><br>
+Enter x3: <u>-1.0</u><br>
+Enter y3: <u>-1.0</u><br>
+Enter x4: <u>10.0</u><br>
+Enter y4: <u>2.0</u><br>
+The lines are intersecting.<br>
+<br>
+Another instance? <u>yes</u><br>
+<br>
+Enter x1: <u>0.0</u><br>
+Enter y1: <u>0.0</u><br>
+Enter x2: <u>1.1</u><br>
+Enter y2: <u>1.1</u><br>
+Enter x3: <u>3.95</u><br>
+Enter y3: <u>3.95</u><br>
+Enter x4: <u>4.0</u><br>
+Enter y4: <u>4.0</u><br>
+The lines coincide.<br>
+<br>
+Another instance? <u>yes</u><br>
+<br>
+Enter x1: <u>1.0</u><br>
+Enter y1: <u>-1.5</u><br>
+Enter x2: <u>1.0</u><br>
+Enter y2: <u>10.01</u><br>
+Enter x3: <u>-5.0</u><br>
+Enter y3: <u>-5.0</u><br>
+Enter x4: <u>-5.0</u><br>
+Enter y4: <u>4.77</u><br>
+The lines are parallel.<br>
+<br>
+Another instance? <u>no</u>
+</tt>
+
+<p>&nbsp;
+<A NAME="Union_Intersect_Sets">
+<hr>
+<b>Problem 2: Union and Intersection of Sets</b></A>
+
+<p>
+In mathematics, a set is any collection of objects in which no object appears
+more than once.  One could speak about the set of whole numbers, or the set of
+students in a class, or the set of molecules in a drop of water.
+A common way of describing a small set is to list its members, enclosing
+them within curly braces.  For example, { a, e, i, o, u } is the set of vowels
+in our alphabet.  The order in which the members are listed is irrelevant,
+so we also could express this set as { i, u, a, o, e }.
+
+<p>
+The <b>intersection</b> of two sets is defined to be the set consisting of
+all objects that appear in both sets.  For example, the intersection of
+{ 1, 2, 4, 5, 12 } and { 3, 4, 9, 12, 17, 22 } is { 4, 12 }.
+
+<p>
+The <b>union</b> of two sets is defined to be the set consisting of all 
+objects that appear in either of the two sets.  For example, the union of
+{ Fred, Alice, Joe } and { Emily, Mary, Fred } is 
+{ Mary, Fred, Alice, Emily, Joe }.  
+
+<p>
+You are to develop a program that asks the user to input two sets;
+the program then displays the two sets, followed by their intersection
+and their union.  To input a set, the user enters the size of the
+set (i.e., the number of distinct members), followed by each member of the
+set, as in the example below.  The user is not to enter the same
+member twice.  The program should repeat until the user enters -1 as
+the size of the first set.
+
+<p>
+You may assume that no set given as input by the user contains more
+than twenty (20) members.  You may also assume that no item entered
+by the user has length more than eight characters.  In outputting a
+set, your program may list its members in any order.  In place of
+curly braces, you may use parentheses.  Commas between members are
+optional.
+Finally, be sure that your program handles the empty set (i.e., the 
+set with no members) correctly.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+Enter size of first set: <u>3</u><br>
+Enter item 1 of first set: <u>Charles</u><br>
+Enter item 2 of first set: <u>garage</u><br>
+Enter item 3 of first set: <u>55</u><br>
+Enter size of second set: <u>0</u><br>
+The first set is { Charles, garage, 55 }<br>
+The second set is {  }<br>
+Their intersection is {  }<br>
+Their union is { Charles, garage, 55 }<br>
+<br>
+Enter size of first set: <u>3</u><br>
+Enter item 1 of first set: <u>A</u><br>
+Enter item 2 of first set: <u>BB</u><br>
+Enter item 3 of first set: <u>CCC</u><br>
+Enter size of second set: <u>4</u><br>
+Enter item 1 of second set: <u>A</u><br>
+Enter item 2 of second set: <u>E</u><br>
+Enter item 3 of second set: <u>BB</u><br>
+Enter item 4 of second set: <u>RR</u><br>
+The first set is { A, BB, CCC }<br>
+The second set is { A, E, BB, RR }<br>
+Their intersection is { A, BB }<br>
+Their union is { A, BB, CCC, E, RR }<br>
+<br>
+Enter size of first set: <u>-1</u>
+
+<p>&nbsp;
+<A NAME="Bakery_Scheduling">
+<hr>
+<b>Problem 3: Bakery Scheduling</b></A>
+
+<p>
+A baker wishes to arise in the morning and enter into her computer
+the list of  <!-- orders she is to fulfill -->
+baking tasks that she must complete
+that day, how long each will take,
+and at what time of day each is "due" to be finished, so that 
+the computer can produce an effective schedule of her day.
+You are to develop a scheduling program for the baker to use.
+It must produce a schedule according to a few simple rules:
+<ul>
+  <li>The baker works from 8:00am until noon, at which time she
+      takes a lunch break.  She cannot go to lunch with a 
+      baking task "in progress", for then the baked good would burn.</li>
+  <li>The baker returns from lunch at 1:00pm and works until 5:00pm,
+      at which time she stops working.</li>
+  <li>Each baking task must be completed no later than its due time
+      (which is when the customer can be expected to arrive to
+      pick it up).</li>
+  <li>At most one baking task can be in progress at any one time, and
+      once such a task has been started, it must continue, uninterrupted,
+      to completion.</li>
+</ul>
+The baker will input the number of baking tasks she has for the day,
+which you may assume is no more than eight.  Then she will input, for each 
+task, its "name" (a description of no longer than forty characters), 
+its due time, and its duration (how long it will take).
+Times of day will be given in the standard format,
+&lt;hours&gt;:&lt;minutes&gt; (e.g., 8:00, 11:30).
+Durations will be given in units of hours, to the nearest half hour.
+<!--  No task may have a duration greater than four hours. -->
+You may assume that the baking tasks entered as input by the user 
+are such that it is possible to complete all of them (in one day) in 
+accord with the rules given above.
+The schedule produced as output by your program should list, for each 
+baking task, its name together with its starting and ending times,
+in chronological order.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter number of orders: <u>4</u><br>
+Enter name of order 1: <u>Jones wedding cake</u><br>
+Enter due time of order 1: <u>12:00</u><br>
+Enter duration of order 1: <u>2.0</u><br>
+Enter name of order 2: <u>Fortucci Restaurant bread</u><br>
+Enter due time of order 2: <u>11:00</u><br>
+Enter duration of order 2: <u>1.0</u><br>
+Enter name of order 3: <u>Cookie Monster cookies</u><br>
+Enter due time of order 3: <u>3:30</u><br>
+Enter duration of order 3: <u>2.5</u><br>
+Enter name of order 4: <u>Smith family doughnuts</u><br>
+Enter due time of order 4: <u>4:00</u><br>
+Enter duration of order 4: <u>1.0</u><br>
+<br>
+Work on Fortucci Restaurant bread from 8:00 to 9:00<br>
+Work on Jones wedding cake from 9:00 to 11:00<br>
+Work on Smith family doughnuts from 11:00 to 12:00<br>
+Work on Cookie Monster cookies from 1:00 to 3:30
+</tt>
+
+<p>&nbsp;
+<A NAME="Permutation_Representation">
+<hr>
+<b>Problem 4: Permutation Representation</b></A>
+
+<p>
+A <b>permutation</b> is a sequence of <em>n</em> integers
+(<em>a<sub>1</sub></em>, <em>a<sub>2</sub></em>, 
+<em>a<sub>3</sub></em>, ..., <em>a<sub>n</sub></em>)
+in which each of the integers between 1 and <em>n</em> appears exactly once.
+(The number <em>n</em> can be any positive integer.)
+One can view a permutation 
+as a function <em>f </em> such that, for each <em>i</em> between
+1 and <em>n</em>, <em>f(i)</em> = <em>a<sub>i</sub></em>.
+(That is, <em>f </em> maps each position into the value at that position.)
+For example, the function <em>f </em> corresponding to the permutation 
+(3, 6, 5, 4, 1, 2) is such that 
+<em>f</em>(1)&nbsp;=&nbsp;3, <em>f</em>(2)&nbsp;=&nbsp;6,
+<em>f</em>(3)&nbsp;=&nbsp;5, ..., and <em>f</em>(6)&nbsp;=&nbsp;2.
+
+<p>
+It turns out that every permutation is simply a collection of <b>cycles</b>.
+A cycle is a sequence of numbers such that if <em>f</em> is applied to any
+except the last of them, it yields the next one, and if <em>f</em> is 
+applied to the last one, it yields the first.
+<!-- &lt; <em>i<sub>1</sub>, i<sub>2</sub>, ...
+     i<sub>k</sub></em>&gt; such that
+     <em>f(i<sub>1</sub>) = i<sub>2</sub></em>,
+     <em>f(i<sub>2</sub>) = i<sub>3</sub></em>, ...,
+     <em>f(i<sub>k</sub>) = i<sub>1</sub></em>.   -->
+Thus, the permutation given above has as one of its cycles
+&lt;1, 3, 5&gt;, because <em>f</em>(1)&nbsp;=&nbsp;3,
+<em>f</em>(3)&nbsp;=&nbsp;5, and <em>f</em>(5)&nbsp;=&nbsp;1.
+Its other two cycles are &lt;2, 6&gt; and &lt;4&gt;.
+
+<p>
+Develop a program that takes as input a permutation of length no more
+than 16 (in the manner illustrated below) and that outputs the 
+<b>cyclic representation</b> of that permutation.
+The cyclic representation of a permutation is simply a list of the 
+cycles of which it is composed.  Your output should list each cycle,
+one per line, with its smallest element first.  Cycles should be listed
+in increasing order with respect to their smallest elements.
+
+<p>
+The program should repeat until the user specifies that the next
+permutation to be processed has length zero.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter length of permutation: <u>8</u><br>
+Enter f(1): <u>7</u><br>
+Enter f(2): <u>8</u><br>
+Enter f(3): <u>5</u><br>
+Enter f(4): <u>3</u><br>
+Enter f(5): <u>4</u><br>
+Enter f(6): <u>6</u><br>
+Enter f(7): <u>2</u><br>
+Enter f(8): <u>1</u><br>
+Cyclic representation is:<br>
+&lt;1 7 2 8&gt;<br>
+&lt;3 5 4&gt;<br>
+&lt;6&gt;<br>
+<br>
+Enter length of permutation: <u>0</u>
+</tt>
+
+<p>&nbsp;
+<A NAME="Polynomial_Multiplication">
+<hr>
+<b>Problem 5: Polynomial Multiplication</b></A>
+
+<p>
+A <b>polynomial</b> is a sum of terms, where each term is a coefficient
+multiplied by the variable <em>x</em> raised to some nonnegative integer
+power.  The largest such power is referred to as the <b>degree of</b>
+the polynomial.  The product of the polynomials
+<center>
+<em>a<sub>0</sub></em> + <em>a<sub>1</sub>x</em> +
+<em>a<sub>2</sub>x<sup>2</sup></em> + ... +
+<em>a<sub>m</sub>x<sup>m</sup></em>  &nbsp; and &nbsp;
+<em>b<sub>0</sub></em> + <em>b<sub>1</sub>x</em> +
+<em>b<sub>2</sub>x<sup>2</sup></em> + ... +
+<em>b<sub>n</sub>x<sup>n</sup></em> 
+</center>
+is the polynomial
+<center>
+<em>c<sub>0</sub></em> + <em>c<sub>1</sub>x</em> +
+<em>c<sub>2</sub>x<sup>2</sup></em> + ... +
+<em>c<sub>m+n</sub>x<sup>m+n</sup></em>
+</center>
+where, for each <em>k</em> from 0 to <em>m+n</em>,
+<center>
+<em>c<sub>k</sub> = a<sub>0</sub>b<sub>k</sub> +
+                    a<sub>1</sub>b<sub>k-1</sub> +
+                    a<sub>2</sub>b<sub>k-2</sub> + ... +
+                    a<sub>k</sub>b<sub>0</sub> </em>
+</center>
+<p>
+For this to make sense you must assume that <em>a<sub>k</sub> = 0</em>
+for <em>k &gt; m</em> and that <em>b<sub>k</sub> = 0</em>
+for <em>k &gt; n</em>.
+Notice that the sum of the degrees of two polynomials equals the
+degree of their product.
+
+<p>
+Develop a program that, in the manner illustrated below, takes as input 
+the coefficients of two polynomials, each of degree no more than ten,
+and outputs their product.  All coefficients will be integers.
+Terms in the product having coefficients of zero should not be shown.
+As illustrated, use the circumflex character ("^") to indicate exponentiation.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter degree of first polynomial: <u>2</u><br>
+Enter coefficient of 0-power term: <u>5</u><br>
+Enter coefficient of 1-power term: <u>2</u><br>
+Enter coefficient of 2-power term: <u>-1</u><br>
+Enter degree of second polynomial: <u>3</u><br>
+Enter coefficient of 0-power term: <u>0</u><br>
+Enter coefficient of 1-power term: <u>0</u><br>
+Enter coefficient of 2-power term: <u>1</u><br>
+Enter coefficient of 3-power term: <u>-2</u><br>
+<br>
+Product is 5 x^2 - 8 x^3 - 5 x^4 + 2 x^5
+</tt>
+
+<p>&nbsp;
+<A NAME="Word_Find">
+<hr>
+<b>Problem 6: Word Find</b></A>
+
+<p>
+In the newspaper, one often runs across a word-find puzzle, which is a grid
+of letters through which you search in order to find each word appearing
+in a given list.  Each word in the list is "hidden" in the grid so that
+it extends either straight to the right, left, up, or down, or along any
+of the four diagonal directions.  A word-find is illustrated below, with
+the word "computer" hidden in it, shown in boldface.
+<p>
+<tt>
+<b>R</b> T W W I L N B Z C<br>
+I <b>E</b> K K L M J E W Q<br>
+P Q <b>T</b> S R S F E Q Z<br>
+L K E <b>U</b> F I M C V C<br>
+X T I L <b>P</b> Q E R D S<br>
+Y M B F E <b>M</b> X S J H<br>
+H G E W B Q <b>O</b> S U S<br>
+M C V E U I C <b>C</b> P I
+</tt>
+
+<p>
+Develop a program that takes as input a grid, as illustrated below.
+You may assume that the grid will have no more than ten rows and no more
+than ten columns.
+Once the grid has been input by the user, the program should
+ask the user to enter a word.  If the word occurs at least one time in 
+the grid, the program should report the beginning and ending locations of 
+one such occurrence.  If the word fails to occur in the grid, the program
+should report that fact.  The program should continue searching for
+words until the user enters the empty string.
+
+<p>
+In the sample execution below, the input grid is
+<p>
+<tt>
+H E L P<br>
+R I I F<br>
+E Q L D
+</tt>
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter width of grid: <u>4</u><br>
+Enter height of grid: <u>3</u><br>
+Enter grid location 1, 1: <u>H</u><br>
+Enter grid location 1, 2: <u>E</u><br>
+Enter grid location 1, 3: <u>L</u><br>
+Enter grid location 1, 4: <u>P</u><br>
+Enter grid location 2, 1: <u>R</u><br>
+Enter grid location 2, 2: <u>I</u><br>
+Enter grid location 2, 3: <u>I</u><br>
+Enter grid location 2, 4: <u>F</u><br>
+Enter grid location 3, 1: <u>E</u><br>
+Enter grid location 3, 2: <u>Q</u><br>
+Enter grid location 3, 3: <u>L</u><br>
+Enter grid location 3, 4: <u>D</u><br>
+<br>
+Enter word to search for: <u>HELP</u><br>
+Word begins at location 1, 1 and ends at location 1, 4<br>
+<br>
+Enter word to search for: <u>DIE</u><br>
+Word begins at location 3, 4 and ends at location 1, 2<br>
+<br>
+Enter word to search for: <u>PINKY</u><br>
+Word does not occur in the grid<br>
+<br>
+Enter word to search for: <u></u>
+</tt>
+
+</body>
+</html>

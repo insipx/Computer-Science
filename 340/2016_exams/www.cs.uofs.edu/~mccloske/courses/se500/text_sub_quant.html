@@ -1,0 +1,55 @@
+<html>
+<head><title>Textual Substitution in Quantification</title>
+</head>
+<body>
+<h2>SE 500<br />
+Textual Substitution in Quantification
+</h2>
+
+</p><p>
+Gries's and Schneider's definition of textual substitution as applied to 
+a quantification, (8.11), is incomplete.  Here is a complete definition:
+
+</p><p>
+<center>
+<table border="0" cellpadding="4">
+<tr>
+  <td>&nbsp;</td>
+  <td><b>{</b> &nbsp; <tt>(*x | R : Q)</tt></td>
+  <td>if <tt>'x'='y'</tt><br /></td>
+  <td><b>(1)</b></td>
+</tr>
+<tr>
+  <td><tt>(*x | R : Q)[y:=E]</tt> &nbsp;=&nbsp;</td>
+  <td><b>{</b> &nbsp; <tt>(*x | R[y:=E] : Q[y:=E])</tt></td>
+  <td>if <tt>'x'&ne;'y' &and; &not;occurs.'x'.'E'</tt></td>
+  <td><b>(2)</b></td>
+</tr>
+<tr>
+  <td>&nbsp;</td>
+  <td><b>{</b> &nbsp; <tt>(*z | R[x:=z] : Q[x:=z])[y:=E]</tt></td>
+  <td>otherwise</td>
+  <td><b>(3)</b></td>
+</tr>
+</table>
+</center>
+
+</p><p>
+In the case of (3), <tt>z</tt> is is chosen to be a fresh variable 
+satisfying <tt>'z'&ne;'x' &and; &not;occurs.'z'.'E'</tt>.
+To be explicit, the <b>otherwise</b> condition of (3) is
+<tt>'x'&ne;'y' &and; occurs.'x'.'E'</tt>.
+
+<hr>
+</p><p>
+<b>Notes:</b><br />
+</p><p>
+By <tt>'x'='y'</tt> is meant that <tt>x</tt> and <tt>y</tt>
+are the same variable, whereas <tt>'x'&ne;'y'</tt> means that they
+are distinct variables.
+
+</p><p>
+By <tt>occurs.'x'.'E'</tt> is meant that there is at least one free
+occurrence of <tt>x</tt> in <tt>E</tt>.
+</body>
+</html>

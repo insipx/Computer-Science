@@ -1,0 +1,153 @@
+<html>
+<head>
+  <title>CMPS 240  Fall 2017  Programming Assignment #2</title>
+</head>
+<body>
+<h2>
+  CMPS 240  Fall 2017<br />
+  Programming Assignment #2: Same Difference<br />
+  Due: Noon, Thursday September 7
+</h2>
+
+<h3>Requirements</h3>
+
+</p><p>
+For this assignment, you are to complete the development of the Java class
+<a href="SameDifferenceZZ.java"><tt>SameDifference</tt></a>.
+Its two static public methods 
+&mdash;<tt>findPairs()</tt> and <tt>findPairsDefensive()</tt>&mdash;
+serve the same purpose, which is to return an <tt>ArrayList</tt> 
+(i.e., an instance of the class
+<a href="http://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html"
+ target="_blank">
+<tt>java.util.ArrayList</tt></a>) containing all pairs (i,j) 
+(i.e., instances of the class
+<a href="PairOfInts.java"><tt>PairOfInts</tt></a>)
+satisfying the property that subtracting the j-th element of the
+second of two given arrays from the i-th element of the first array
+yields a specified "delta" value.
+
+</p><p>
+The two methods differ only in that one assumes as a precondition
+that both arrays passed to it contain elements that are in increasing
+order while the other method explicitly tests that condition 
+and throws an exception if it is not satisfied.  (The latter of
+the two methods exemplifies a <em>defensive</em> programming
+approach.)  Of course, in addition to completing the two
+public methods, you are free to add private methods that
+play a supporting role.
+
+</p><p>
+To illustrate the idea, suppose that the two arrays of interest
+are as illustrated below and the delta value is 4.
+
+</p><p>
+<center>
+<table border="0" cellpadding="4">
+<tr><td>
+<pre>     0    1    2    3    4    5    6    7    8
+  +----+----+----+----+----+----+----+----+----+
+a | -1 |  2 |  5 |  6 | 12 | 15 | 20 | 21 | 29 |
+  +----+----+----+----+----+----+----+----+----+
+
+     0   1    2    3     4    5    6    7    8    9   10
+  +----+----+----+----+----+----+----+----+----+----+----+
+b | -4 | -1 |  2 |  3 |  5 |  8 | 14 | 18 | 20 | 22 | 25 |
+  +----+----+----+----+----+----+----+----+----+----+----+</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+There are three pairs (i,j) of locations that satisfy the
+condition <tt>a[i] - b[j] = delta = 4</tt>, and they are
+(3,2), (4,5), and (8,10).
+
+</p><p>
+For your convenience, the Java application
+<a href="SameDifferenceTester.java">SameDifferenceTester</a>
+is provided to you.  In order to make fruitful use of it,
+you must pass to it three <b>command-line arguments</b>
+(or what jGrasp calls "run arguments").
+the first two of which indicate the lengths of the two arrays
+to be compared and the third of which indicates the desired 
+"delta" value.
+How to supply command-line arguments when running a program in jGrasp
+is explained <a href="../../../com_line_args_jGrasp.html">here</a>.
+
+</p><p>
+What <tt>SameDifferenceTester</tt> does is to create two arrays
+of the lengths indicated by the first two command-line arguments,
+populates them with pseudo-randomly chosen values 
+(but ensuring that each array's elements are in increasing order), 
+calls the <tt>findPairs()</tt> method (passing to it as parameters the 
+arrays and the delta value indicated by the third command-line argument), 
+and prints the pairs that occupy the <tt>ArrayList</tt> returned by the
+method.
+Any "false positives" (i.e., pairs that are in the returned
+<tt>ArrayList</tt> but that should not be) are identified as such.
+"False negatives" (i.e., pairs that do not appear in the
+returned <tt>ArrayList</tt> but should be there) are not identified.
+In this respect, this "tester application" is somewhat lacking.
+
+</p><p>
+<table border="2" cellpadding="4" align="right" >
+<tr><td>
+<pre><b>% java SameDifferenceTester 10 15 3</b>
+First array:
+  [-1, 4, 7, 8, 9, 13, 15, 16, 18, 19]
+Second array:
+  [0, 4, 7, 10, 15, 18, 23, 25, 28, 33, 37, 42, 44, 49, 52]
+
+Pairs of locations whose elements differ by 3:
+(2,1)
+(5,3)
+(8,4)</pre>
+</td></tr>
+</table>
+
+</p><p>
+To illustrate, on the right is shown an invocation of
+<tt>DifferenceTester</tt> from the command line in a UNIX environment
+(shown in boldface) and the output that results.
+
+<hr>
+<h3>Note</h3>
+</p><p>
+Remember that this is a course about data structures and algorithms.
+The algorithm that you develop to serve as the basis for the Java
+code that you write should exploit the fact that it processes
+arrays whose elements are in increasing order.
+
+</p><p>
+<hr>
+
+<h3>Program Submission</h3>
+
+Submit your source code file (<tt>SameDiference.java</tt>) from the course web
+page using the <b>Submit/Review</b> link that is adjacent to the link that 
+brought you to this page. (Again, submit <b>only</b> your
+<tt>SameDifference.java</tt> file, not the corresponding <tt>.class</tt> file 
+nor any other file.) 
+
+</p><p>
+Make sure to augment the comments near the top of the class so that you 
+identify yourself, acknowledge any persons who aided you in developing your 
+solution, and point out any flaws that you know about.
+
+</p><p>
+Be aware that you can submit more than one time. Hence, if, after submitting,
+you improve your program (e.g., by fixing logic errors), you should submit 
+the newer version.  Every submitted file should have the same name,
+namely <tt>SameDifference.java</tt>!
+
+</p><p>
+After submitting a file, you can verify that it was copied into the proper
+folder by "reviewing" it.  Just refresh the "Submit Page" and links to
+all files that you have submitted will appear under your name near the
+top left of the page.   Note that when a file with the same name as a
+previously-submitted file is submitted, the older file is renamed so
+that a time stamp is in its name.
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<html>
+<!-- Note: Taken largely from HW #7 of Spring 2012 offering -->
+<head>
+  <title>SE 504  Spring 2017 HW#6</title>
+</head>
+<body>
+<h2>SE 504  Formal Methods and Models<br />
+Spring 2017<br />
+HW #6: Assignment to Array Elements and More Strengthening the Invariant</br />
+Due: 7:30pm, Monday, April 3<br />
+</h2>
+
+</p><p>
+<b>1.</b> Calculate (and simplify as much as possible)
+<br />
+<b>(a)</b> <tt>wp.(b.k := j).(b.j = b.k)</tt> <br />
+<b>(b)</b> <tt>wp.(b.(b.k) := b.j).(b.j != b.k)</tt>
+
+
+<hr>
+</p><p>
+<b>2.</b>
+Modify the program developed in class for the Maximum Segment Sum problem
+(see the relevant web page) so that, in addition to the variable <tt>z</tt>,
+there are two other "output" variables, <tt>left</tt> and <tt>right</tt>,
+which (when the program completes execution) satisfy the condition that
+<tt>A[left..right)</tt> is a segment with the maximum sum.
+
+
+</p><p>
+It is important not only to modify the program correctly but also to
+modify the postcondition and loop invariant properly, i.e., so that
+items (i) and (ii) on the loop checklist are provable.
+(Obviously, both the postcondition and loop invariant need to
+mention <tt>S.left.right</tt> (i.e., the sum of the elements in
+array segment <tt>A[left..right)</tt>.)
+Indeed, solutions that include a proof of (ii) will be looked upon
+favorably relative to those that don't.
+
+</p><p>
+It may make your task easier if you consider that the assignment
+commands <tt>y := (y + A.r) max 0</tt> and <tt>z := z max y</tt>
+that appear in our Maximum Segment Sum solution are equivalent to
+selection commands as indicated here:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr>
+  <th>Assignment Command</th><th>Equivalent Selection Command</th>
+</tr>
+<tr>
+  <td><tt>y := (y + A.r) max 0</tt></td>
+  <td><tt>if y + A.r &ge; 0 &xrarr; y := y + A.r<br />
+          [] y + A.r &le; 0 &xrarr; y := 0<br />
+          fi</tt>
+  </td>
+</tr>
+<tr>
+  <td><tt>z := z max y</tt></td>
+  <td><tt>if z &ge; y &xrarr; skip<br />
+          [] z &le; y &xrarr; z := y<br />
+          fi</tt>
+  </td>
+</tr>
+</table>
+</center>
+
+</p><p>
+For extra credit, have your program ensure that <tt>A[left..right)</tt>
+is a <b>longest</b> segment with the maximum sum.  In other words, any
+segment that is longer must also have a strictly smaller sum.
+
+<!--  Following was included in HW #7 from Spring 2012, but omitted here.
+</p><p>
+For even more extra credit, also make your program ensure that
+<tt>A[left..right)</tt> is <em>rightmost</em> among all
+longest segments having maximum sum.
+(In other words, not only must any segment longer than
+<tt>A[left..right)</tt> have a smaller sum but also any other
+equal-length segment with the same sum must begin "to the left" of
+location <tt>left</tt>.)
+-->
+
+
+</p><p>
+<hr>
+</p><p>
+<b>3.</b>
+Derive a solution (and provide an accompanying narrative) to the
+following programming problem:
+<pre><code>|[ con A : array of int;  { #A > 0 }
+   var z : int;
+
+   S
+
+   {Q: z = (MAX p,q | 0&le;p&le;q&lt;#A : A.q - A.p) }
+]|
+</code></pre>
+
+</p><p>
+The methods used in deriving the program for the Maximum Segment Sum problem
+(see relevant web page) will be useful here.
+In particular, notice the step in the derivation of <tt>E</tt> in which
+either (8.16) or (8.18) (two versions of <b>range split</b>) is applied,
+followed by the (combined) step in which (8.20), (8.14), and (8.20) (again)
+are applied.
+
+</p><p>
+Also note that subtraction distributes over <tt>max</tt> in a particular
+way, producing a <tt>min</tt>.
+That is, 
+</p><p><center><tt>
+(u - v<sub>1</sub>) max (u - v<sub>2</sub>) max ... max (u - v<sub>k</sub>) 
+= u - (v<sub>1</sub> min v<sub>2</sub> min ... min v<sub>k</sub>)
+</tt></center>
+
+</p><p>
+In terms of quantification, this can be stated as
+</p><p>
+<b>Theorem (Subtraction Distributes over max to obtain min):</b>
+Provided that <tt>x</tt> does not occur free in <tt>U</tt>,
+<tt>(MAX x | R : U - V) = U - (MIN x | R : V)</tt>
+
+<!-- The following would apply if the body of the MAX quantification were
+     A.p - A.q.  But I changed it, failing to recognize that the reasoning
+     is a bit more tricky as a result.
+</p><p>
+Also note that subtraction (and addition) distribute over <tt>max</tt>.
+That is, 
+</p><p><center><tt>
+(u<sub>1</sub> - v) max (u<sub>2</sub> - v) max ... max (u<sub>k</sub> - v) 
+= (u<sub>1</sub> max u<sub>2</sub> max ... max u<sub>k</sub>) - v
+</tt></center>
+
+</p><p>
+In terms of quantification, this can be stated as
+</p><p>
+<b>Theorem (Subtraction Distributes over max):</b>
+Provided that <tt>x</tt> does not occur free in <tt>V</tt>,
+<tt>(MAX x | R : U - V) = (MAX x | R : U) - V</tt>
+-->
+
+</p><p>
+<br />
+
+<hr>
+</p><p>
+<b>4.</b>
+Derive a solution (and provide an accompanying narrative) to the
+following programming problem:
+<pre><code>|[ var b : array of int;
+   {P: #b&gt;0 &and; b=B }
+
+   S
+
+   {Q: (&forall;i | 0&le;i&lt;#b : b.i = (MAX j | 0&le;j&le;i : B.j)) }
+]|
+</pre>
+
+</body>
+</html>
+

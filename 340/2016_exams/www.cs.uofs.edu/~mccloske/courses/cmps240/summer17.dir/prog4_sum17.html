@@ -1,0 +1,168 @@
+<html>
+<head>
+  <title>CMPS 240 Summer 2017 Prog. Assg. #4
+  </title>
+</head>
+<body>
+<h2>
+  CMPS 240 &nbsp; Summer 2017<br />
+  Programming Assignment #4: Set of Disjoint Intervals<br />
+  Due: August 15
+</h2>
+
+<h2>Links to relevant Java components</h2>
+<ul>
+  <li><a href="../summer12.dir/prog4_intervals.dir/Interval.java">Interval</a>
+      (concrete class; given in full) (but not until previous assignment
+      is finished)
+  </li>
+  <li><a href="../summer12.dir/prog4_intervals.dir/SetOfDisjointIntervals.java">
+      SetOfDisjointIntervals</a> (interface; given in full)
+  </li>
+  <li>SetOfDisjointIntervalsAbstract (abstract class):
+      <a href="../summer12.dir/prog4_intervals.dir/SetOfDisjointIntervalsAbstractZZ.java">
+      incomplete source code</a> &nbsp;
+      <a href="../summer12.dir/prog4_intervals.dir/SetOfDisjointIntervalsAbstract.class">
+      Java bytecode</a>
+  </li>
+  <li>SetOfDisjointIntervalsViaArryList (concrete class):
+      <a href="../summer12.dir/prog4_intervals.dir/SetOfDisjointIntervalsViaArrayListZZ.java">
+      incomplete source code</a> &nbsp;
+      <a href="SetOfDisjointIntervalsViaArrayList.class">Java bytecode</a>
+  </li>
+  <li><a href="../summer12.dir/prog4_intervals.dir/SetOfDisjointIntervalsApp.java">
+      SetOfDisjointIntervalsApp</a> (concrete class; given in full)
+  </li>
+  <li><a href="../summer12.dir/prog4_intervals.dir/SetOfDisjointIntervalsApp2.java">
+      SetOfDisjointIntervalsApp2</a> (concrete class; given in full;
+      improvement over one above)
+  </li>
+</ul>
+
+<!--
+<h2>Background</h2>
+
+</p><p>
+In a previous assignment, you dealt with the concept of an interval of
+real numbers, leading to the development of a class called
+<b><tt>Interval</tt></b>.  An interval is characterized by two real
+numbers, namely a lower bound and an upper bound, and represents the
+set of all real numbers that fall between them.
+
+</p><p>
+Here we explore this concept further by considering a larger variety
+of sets of real numbers, namely those that can be described as the
+union of finitely many intervals.  We refer to such a set as a
+UFI-set.  For example,
+
+</p><p>
+<center><tt>
+[-3, 6] &cup; [12,25] &cup; [37,38] &cup; [83, 105]
+</tt></center>
+
+</p><p>
+is a UFI-set.
+It should be obvious that any UFI-set can be described by a list of
+intervals in which each one's upper bound is less than that of the
+next one's lower bound, such as we have done in the example above.
+
+</p><p>
+Among the kinds of queries we may want to make about a UFI-set <tt>S</tt>
+are the obvious ones: 
+<ul>
+  <li>Given real number <tt>x</tt>, "Does <tt>S</tt> contain <tt>x</tt>?"
+      (I.e., Is <tt>x</tt> a member of <tt>S</tt>?)
+  </li>
+  <li>Given an interval <tt>I = [x,y]</tt>,
+      "Does <tt>S</tt> contain <tt>I</tt>?"
+      (I.e., Is <tt>I</tt> a subset of <tt>S</tt>?)
+  </li>
+  <li>Given a UFI-set <tt>R</tt>, "Does <tt>S</tt> contain <tt>R</tt>?"
+      (I.e., Is <tt>R</tt> a subset of <tt>S</tt>?)
+  </li>
+</ul>
+
+</p><p>
+The alert reader will notice that each of the first two kinds of queries
+is a special case of the one following it.  (A real number <tt>x</tt>
+corresponds to the length-zero interval <tt>[x,x]</tt> and the interval
+<tt>[x,y]</tt> is itself a UFI-set (that is the union of one interval).
+
+</p><p>
+In what other kinds of operations might a UFI-set participate?
+Among these are the usual "set-theoretic" operations:
+Given two UFI-sets <tt>R</tt> and <tt>S</tt>, compute
+<tt>R &cup; S</tt> (their union),
+<tt>R &cap; S</tt> (their intersection), or
+<tt>R - S</tt> (their difference).
+Note that each of these is itself a UFI-set!
+
+</p><p>
+Not surprisingly, each of the set-theoretic operations mentioned above
+(union, intersection, and difference applied to two UFI-sets)
+can be expressed in terms of analogous operations involving a UFI-set
+and a single interval.
+Let each of <tt>R<sub>1</sub></tt>, <tt>R<sub>2</sub></tt>, ..., and
+<tt>R<sub>m</sub></tt> be mutually disjoint intervals, and similarly for
+<tt>S<sub>1</sub></tt>, <tt>S<sub>2</sub></tt>, ..., and
+<tt>S<sub>n</sub></tt>
+Let <tt>R = &cup;R<sub>1&le;i&le;m</sub></tt> and
+<tt>S = &cup;S<sub>1&le;i&le;m</sub></tt>,
+so that each of <tt>R</tt> and <tt>S</tt> is a UFI-set.
+Then
+</p><p>
+<tt>R &cup; S = (...((R &cup; S<sub>1</sub>) &cup; S<sub>2</sub>) ...) &cup; 
+                S<sub>n</sub></tt> 
+</p><p>
+<tt>R &cap; S = &cup;<sub>1&le;i&le;m,1&le;j&le;n</sub>
+and
+
+ be mutually disjoint intervals, and similarly for
+
+, <tt>R<sub>2</sub></tt>, ...,
+Letting UFI-sets <tt>R</tt> and <tt>S</tt> be
+
+</p><p>
+
+%%%%%%%%%%%%%%%%%
+</p><p>
+For this assignment, you are to complete the development of the Java
+classes <a href="SetOfDisjointIntervalsAbstractZZ.java">
+SetOfDisjointIntervalsAbstract</a> and 
+<a href="SetOfDisjointIntervalsViaArrayListZZ.java">
+SetOfDisjointIntervalsViaArrayList</a>.
+
+.  Each instance of this
+class represents an interval over the real numbers.
+For example, the interval <tt>[4.3, 8.5]</tt> is the set of all 
+real numbers <tt>x</tt> satisfying <tt>4.3 &le; x &le; 8.5</tt>.
+
+</p><p>
+Most of the class's methods are only stubs and are clearly marked as such.
+A few methods are provided in full.
+
+</p><p>
+The simple nature of the subject matter of this assignment (intervals),
+together with the detailed method specifications present in the source
+code provided to you, make it unnecessary to provide any further
+explanation here.
+
+</p><p>
+For the purposes of testing your work, you are encouraged to make use of 
+the Java application <a href="IntervalApp.java">IntervalApp</a>.
+
+-->
+
+
+<hr>
+<h2>Program Submission</h2>
+</p><p>
+Use the <b>Submit/Review</b> link next to the link that brought you here
+in order to submit your source code (i.e., the <tt>.java</tt> file,
+not the <tt>.class</tt> file).
+Remember to include, within your source code, comments that acknowledge
+every person who provided assistance to you and comments that describe
+any deficiencies of which you are aware.
+
+</body>
+</html>

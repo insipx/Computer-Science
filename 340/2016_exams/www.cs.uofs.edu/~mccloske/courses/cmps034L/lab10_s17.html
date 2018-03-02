@@ -1,0 +1,120 @@
+<html>
+<head><title>CMPS 034L  Lab #10</title>
+</head>
+<body>
+<h2>CMPS 034L &nbsp; Spring 2017<br />
+Lab #10: Arrays and (Instance) Classes
+</h2>
+
+</p><p>
+You are to work in groups of two, with one group of three in the
+case that an odd number of students is present.
+
+</p><p>
+Go to the
+<a href="http://practiceit.cs.washington.edu" target="_blank">Practice-It 
+website</a>, log in, and click on the <b>Start Practicing</b> button,
+then on the link labeled <b>Building Java Programs, 4th Edition</b>,
+and then on the link indicating <b>BJP4 Chapter 7</b>.
+
+</p><p>
+<h3>Activity #1: Practice-It Exercises from Chapter 7</h3>
+
+</p><p>
+Here you are asked to develop several Java methods that pertain to arrays.
+Place your final version of each method (after either Practice-It's
+feedback mechanism has deemed it to be error-free or you've given up on
+it) into a Java class called <tt>Lab10</tt>.  At the end, 
+<a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab10_dir">submit</a> it.
+
+<ol>
+  <li><b>BJP4 Exercise 7.1 (lastIndexOf)</b>:
+    Develop a <tt>lastIndexOf()</tt> method for finding, within an array
+    of <tt>int</tt> values, the highest-numbered location of an occurrence
+    of a given <tt>int</tt> value (or -1 if there is no such occurrence).  
+    </p><p>
+    Here's what an <tt>indexOf()</tt> method would look like:
+    <center> 
+    <table border="2" cellpadding="4">
+    <tr><td>
+<pre>/* Returns lowest-numbered location at which the given value (key) 
+** occurs in the given array, or -1 if there are no such occurrences.
+*/
+public static int indexOf(int[] a, int key) {
+   int i = 0;
+   while (i != a.length  &amp;&amp;  a[i] != key) { i++; }  
+   if (i == a.length) { return -1; }
+   else {return i; }
+}</pre>    
+    </td></tr>
+    </table>
+    </center>
+    </p><p>
+    Your <tt>lastIndexOf()</tt> method body can be a little simpler,
+    because, once the loop has terminated, there should be no need to 
+    perform any comparison involving <tt>i</tt>.
+  </li>
+  </p><p>
+  <li><b>BJP4 Exercise 7.2 (range)</b>:
+    Develop a <tt>range()</tt> method that, given an array of <tt>int</tt>
+    values, returns the difference between the largest and smallest elements,
+    plus one.
+  </li>
+  </p><p>
+  <li><b>BJP4 Execise 7.3 (countInRange)</b>:
+    Develop a <tt>countInRange()</tt> method that, given an array of 
+    <tt>int</tt> values, plus two <tt>int</tt> values defining a range,
+    determines how many of the array elements lie in the range.
+  </li>
+  </p><p>
+  <li><b>BJP4 Execise 7.4 (isSorted)</b>:
+    Develop an <tt>isSorted()</tt> method that, given an array of 
+    <tt>double</tt> values, determines whether or not the array elements
+    are in nondecreasing (i.e., ascending) order.
+  </li>
+  </p><p>
+  <li><b>BJP4 Execise 7.11 (isUnique)</b>:
+    Develop an <tt>isUnique()</tt> method that, given an array of 
+    <tt>int</tt> values, determines whether or not the array elements
+    are unique, meaning that no value occurs more than once.
+    A good approach would make use of the <tt>lastIndexOf()</tt>
+    method that you developed earlier (or the <tt>indexOf()</tt>
+    method that was provided).
+  </li>
+  </p><p>
+  <li><b>BJP4 Execise 7.15 (collapse)</b>:
+    Develop a <tt>collapse()</tt> method that, given an array of 
+    <tt>int</tt> values, returns a new array of <tt>int</tt> values
+    of half the length of the given array.  For each i, the element 
+    at location i of the new array should contain the sum of the 
+    elements at locations 2i and 2i+1 of the given array.
+    (Thus, pairs of adjacent elements of the given array have been
+    "collapsed" into single elements of the new array.)
+  </li>
+</ol>
+
+</p><p>
+Don't forget to 
+<a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab10_dir">submit</a>
+your <tt>Lab10</tt> Java class containing all the methods that you
+just completed.  Also make sure to include comments in the class that
+identify all members of the team on which you worked.
+
+<hr>
+</p><p>
+<h3>Activity #2: PersonName class</h3>
+
+</p><p>
+Download the <a href="PersonName.java">PersonName</a> class and
+complete it.  Use jGrasp's Workbench feature to create instances
+of the class (using both constructors) and then to invoke the
+observer methods to verify that everything seems to be working
+correctly.
+
+</p><p>
+When finished, 
+<a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab10_dir">submit</a>
+your <tt>PersonName</tt> source code (i.e., the .java file).
+
+</body>
+</html>

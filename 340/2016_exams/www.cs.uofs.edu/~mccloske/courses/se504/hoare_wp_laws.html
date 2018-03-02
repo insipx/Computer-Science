@@ -1,0 +1,181 @@
+<html>
+<head>
+<title>Laws/properties of Hoare triples and wp predicate transformer
+</title>
+</head>
+<body>
+<h2>
+SE 504 &nbsp; Formal Methods and Models<BR>
+Some laws and properties of Hoare triples and the wp predicate transformer
+</h2>
+
+</p><p>
+The numbering of the laws is based loosely upon where they appear in the
+Kaldewaij book, using section numbers and ordering.
+
+</p><p>
+(2.0.7) <b>Relationship between Hoare triples and wp:</b>
+{P} S {Q}  &nbsp; &equiv; &nbsp;  [P <tt>&rArr;</tt> wp.S.Q]
+
+<h3>General Properties/Laws of Hoare triples:</h3>
+
+</p><p>
+<table border="0" cellpadding="4">
+<tr>
+  <td>(2.0.0)</td><td><b>Excluded Miracle:</b></td> 
+  <td>{P} S {false} &nbsp; &equiv; &nbsp; [&not;P]</td> 
+</tr>
+<tr>
+  <td>(2.0.1)</td><td><b>Termination:</b></td> 
+  <td colspan="2">{P} S {true} &nbsp; &equiv; &nbsp; 
+              "S is guaranteed to terminate if executed 
+               beginning in a state satisfying P"
+  </td>
+</tr>
+<tr>
+  <td>(2.0.2)</td><td><b>Strengthening the Precondition:</b></td>
+  <td>[P' &rArr; P] &nbsp; &rArr; &nbsp;
+      ({P} S {Q} &rArr; {P'} S {Q})
+  </td>
+</tr>
+<tr><td></td>
+    <td>Equivalently (by (3.65)),</td>
+  <td>[P' &rArr; P] &and; {P} S {Q} &nbsp;&rArr;&nbsp; {P'} S {Q}
+  </td>
+</tr>
+<tr>
+  <td>(2.0.3)</td><td><b>Weakening the Postcondition:</b></td>
+  <td>[Q &rArr; Q'] &nbsp; &rArr; &nbsp;
+      ({P} S {Q} &rArr; {P} S {Q'})
+  </td>
+</tr>
+<tr><td></td>
+    <td>Equivalently (by (3.65)),</td>
+  <td>[Q &rArr; Q'] &and; {P} S {Q} &nbsp;&rArr;&nbsp; {P} S {Q'}
+  </td>
+</tr>
+<tr>
+  <td>(2.0.4)</td><td><b>Postcondition Conjunctivity:</b></td>
+  <td>{P} S {Q<sub>1</sub>} &and; {P} S {Q<sub>2</sub>} &nbsp; &equiv; &nbsp; 
+        {P} S {Q<sub>1</sub> &and; Q<sub>2</sub>}
+  </td>
+</tr>
+<tr>
+  <td>(2.0.5)</td><td><b>Precondition Disjunctivity:</b></td>
+  <td>{P<sub>1</sub>} S {Q} &and; {P<sub>2</sub>} S {Q} &nbsp; &equiv; &nbsp; 
+        {P<sub>1</sub> &or; P<sub>2</sub>} S {Q}     
+  </td>
+</tr>
+<tr>
+  <td>(2.0.6)</td><td><b>Postcondition Disjunctivity:</b></td>
+  <td>{P} S {Q} &or; {P} S {R} &nbsp; &rArr; &nbsp; 
+        {P} S {Q &or; R}
+  </td>
+  <!--<td>(If S is deterministic, &rArr; can be strengthened to &equiv;)
+  </td>   WRONG!!
+  -->
+</tr>
+<tr>
+  <td>(2.3.0)</td><td><b>Hoare triple Catenation:</b></td>
+  <td>(&exist;R |: {P} S<sub>0</sub> {R} &and; {R} S<sub>1</sub> {Q})
+      &nbsp; &equiv; &nbsp;
+      {P} S<sub>0</sub>; S<sub>1</sub> {Q} 
+  </td>
+</tr>
+<tr>
+  <td></td><td>Consequently,</td>
+  <td>{P} S<sub>0</sub> {R}  &and;  {R} S<sub>1</sub> {Q} &nbsp;
+         &rArr; &nbsp; {P} S<sub>0</sub>; S<sub>1</sub> {Q}
+  </td>
+</table>
+
+
+<h3>General Properties/Laws of wp:</h3>
+
+<table border="0" cellpadding="4">
+<tr>
+  <td>(2.0.8)</td><td><b>Excluded Miracle:</b></td><td>[&not;wp.S.false]</td>
+</tr>
+<tr>
+  <td>(2.0.9)</td><td><b>Distributivity of Conjunction:</b></td>
+  <td>[wp.S.Q<sub>1</sub> &and; wp.S.Q<sub>2</sub> &nbsp; &equiv; &nbsp; 
+           wp.S.(Q<sub>1</sub> &and; Q<sub>2</sub>)]
+  </td>
+</tr>
+<tr>
+  <td>(2.0.10)</td><td><b>Monotonicity:</b></td>
+  <td>[Q<sub>1</sub> &rArr; Q<sub>2</sub>] &nbsp; &rArr; &nbsp; 
+      [wp.S.Q<sub>1</sub> &rArr; wp.S.Q<sub>2</sub>]
+  </td>
+</tr>
+<tr>
+  <td>(2.0.11)</td><td><b>Distributivity of Disjunction:</b></td>
+  <td>[wp.S.Q<sub>1</sub> &or; wp.S.Q<sub>2</sub> &nbsp; &rArr; &nbsp; 
+      wp.S.(Q<sub>1</sub> &or; Q<sub>2</sub>)]
+  </td>
+  <tr>
+  <td></td><td></td>
+  <td>(If S is deterministic, &rArr; above can be strengthened to &equiv;)
+  </td>
+</tr>
+<tr>
+  <td>(2.3.1)</td><td><b>wp Catenation:</td>
+  <td>[wp.(S<sub>0</sub>; S<sub>1</sub>).Q &nbsp; &equiv; &nbsp; 
+      wp.S<sub>0</sub>.(wp.S<sub>1</sub>.Q)]   
+  </td>
+</tr>
+</table>
+
+<hr>
+<h3>Properties/Laws of wp and Hoare Triples wrt DGCL:</h3>
+
+</p><p>
+<b>wp skip Law (WPsL):</b> [wp.skip.Q &equiv; Q]
+
+</p><p>
+Applying (2.0.7) to this, we get <br />
+<b>Hoare Triple skip Law (HTsL):</b> 
+{P} skip {Q} &nbsp; &equiv; &nbsp; [P &rArr; Q]
+
+</p><p>
+<b>wp Assignment Law (WPAL):</b> 
+[wp.(x := E).Q &nbsp;&equiv;&nbsp; def.E &and; Q(x:=E)]
+
+</p><p>Applying (2.0.7) to this, we get<br />
+<b>Hoare Triple Assignment Law (HTAL):</b> 
+{P} x:=E {Q} &nbsp;&equiv;&nbsp; [P &rArr; def.E &and; Q(x:=E)]
+
+</p><p>
+<b>wp Selection Law (WPSL):</b> 
+Let IF be the program
+</p><p>
+<center>
+<tt><b>if</b> B<sub>1</sub> &rarr; S<sub>1</sub> [] ... []
+       B<sub>n</sub> &rarr; S<sub>n</sub> <b>fi</b></tt>
+</center>
+
+</p><p>
+Then [wp.IF.Q &nbsp;&equiv;&nbsp; 
+  BB &and; (&forall;i | 1&le;i&le;n : B<sub>i</sub> &rArr; wp.S<sub>i</sub>.Q)],
+where BB : (&exist;i | 1&le;i&le;n : B<sub>i</sub>)
+
+</p><p>
+</p><p>Applying (2.0.7) (and some other logic) to this, we get<br />
+<b>Hoare Triple Selection Law (HTifL)</b>: 
+{P} IF {Q} &nbsp;&equiv;&nbsp; [P &rArr; BB] &and;
+(&forall;i | 1&le;i&le;n : {P &and; B<sub>i</sub>} S<sub>i</sub> {Q})
+
+</p><p>
+<b>wp Catenation Law (WPCL):</b> 
+[wp.(S<sub>1</sub>;S<sub>2</sub>).Q &nbsp;&equiv;&nbsp; 
+ wp.S<sub>1</sub>.(wp.S<sub>2</sub>.Q)]
+
+</p><p>
+</p><p>Applying (2.0.7) to this, we get<br />
+<b>Hoare Triple Catenation Law (HTCatL)</b>: 
+{P} S<sub>1</sub>;S<sub>2</sub> {Q} &nbsp;&equiv;&nbsp; 
+{P} S<sub>1</sub> {wp.S<sub>2</sub>.Q}
+
+
+</body>
+</html>

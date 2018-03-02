@@ -1,0 +1,69 @@
+CMPS 240  Fall 2017
+HW #1 Answer Form
+
+Name: ...
+Assisted by: ...
+Known flaws: ...
+
+
+Problem 1:
+----------
+
+/* precondition: every element in A[0..N-1] is either RED, WHITE, or BLUE */
+
+r = ?;  w = ?;  b = ?;
+
+/* loop invariant:
+**   0<=r<=w<=b<=N  and
+**   every element in A[0..r-1] is RED and 
+**   every element in A[r..w-1] is WHITE and
+**   every element in A[w..b-1] is BLUE 
+*/
+while ( ? )  {
+
+   if (A[?] is RED) { 
+      ? 
+   }
+   else if (A[?] is WHITE) { 
+      ? 
+   }
+   else {   // A[?] is BLUE
+      ? 
+   }
+}
+/* post: 0&le;r&le;w&le;b&le;N  and 
+**       every element in A[0..r-1] is RED and 
+**       every element in A[r..w-1] is WHITE and 
+**       every element in A[w..b-1] is BLUE and
+**       b == N
+*/
+
+
+--------------------------------------------------------------------------
+
+Problem 2:
+----------
+
+/* precondition: every element in A[0..N-1] is either RED, WHITE, or BLUE */
+
+r = ?;  m = ?;  w = ?;
+
+/* loop invariant:
+**   0<=r<=m<=w<=N  and
+**   every element in A[0..r-1] is RED and 
+**   every element in A[m..w-1] is WHITE and 
+**   every element in A[w..N-1] is BLUE 
+*/
+while ( ? )  {
+
+
+   ?
+
+}
+/* post: 0<=r<=m<=w<=N  and 
+**       every element in A[0..r-1] is RED and 
+**       every element in A[m..w-1] is WHITE and 
+**       every element in A[w..N-1] is BLUE and
+**       r==m
+*/
+

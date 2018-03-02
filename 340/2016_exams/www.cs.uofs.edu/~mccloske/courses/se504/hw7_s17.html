@@ -1,0 +1,226 @@
+<html>
+<head><title>SE 504 Spring 2017 HW #7</title>
+</head>
+<body>
+<h2>SE 504 Spring 2017<br />
+HW #7: Strengthening the Invariant, Array Assignment, Tail Recursion<br />
+Due: 5:00pm, Thursday, April 13
+</h2>
+
+</p><p>
+<b>1.</b>
+Develop a program with the specification shown below, and provide a narrative
+that describes the steps you took in doing so.
+The inputs to the program are the constant array <tt>B</tt> of reals and the
+constant real number <tt>X</tt>.  The goal is to establish 
+
+</p><p><center><em>y &nbsp;=&nbsp;
+   B.0 &nbsp; + &nbsp; B.1 &times; X &nbsp; + &nbsp;
+   B.2 &times; X<sup>2</sup> &nbsp; + &nbsp; ... + &nbsp;
+   B.N &times; X<sup>N</sup></em>
+</center>
+
+</p><p>
+where <tt>N = #B-1</tt>.
+Thus, the intended program evaluates the polynomial whose coefficients
+are the elements of <tt>B</tt> at the value given by <tt>X</tt>.
+
+</p><p>
+Assume that our programming language lacks an exponentiation operator 
+(or an analogous function/method), or else it would be trivial to devise
+a solution.
+(Even if the programming language had an exponentiation operator, your
+solution will be superior to one that uses it, in terms of efficiency.)
+
+</p><p>
+In deriving a candidate loop invariant from the postcondition, use the
+<em>replace a constant by a fresh variable</em> heuristic.  
+But this time replace the constant <b>0</b> rather than, say, <tt>#B</tt>,
+which is the more obvious one to replace.
+(Notice that the postcondition is written with <b>two</b> occurrences of
+<tt>0</tt>, including one that would normally be omitted.  Replace
+both of them by the same fresh variable.)
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<font size="+1">
+<pre>|[ con X : real;
+   con B : array of real;
+   var y : real;
+
+   y := ?
+
+   {Q: y = (+j | 0 &le; j &lt; #B : B.j &times; X<sup>j-0</sup>)}
+]|</pre>
+</td></tr>
+</font>
+</table>
+</center>
+
+</p><p>
+It may be helpful to recall that multiplication distributes over addition.
+That is,
+<font size="+1">
+</p><p><center><tt>
+u(v<sub>1</sub> + v<sub>2</sub> + ... + v<sub>k</sub>)
+&nbsp;=&nbsp;  uv<sub>1</sub> + uv<sub>2</sub> + ... + uv<sub>k</sub>
+</tt></center>
+</font>
+
+</p><p>
+In terms of quantification, we would put it this way:
+
+</p><p>
+<font size="+1">
+<b>Theorem (Multiplication Distributes over Summation):</b>
+Provided that <tt>z</tt> does not occur free in <tt>U</tt>,
+</p><p>
+<center>
+<tt>(+z | R : U&times;V) &nbsp;=&nbsp; U&times;(+z | R : V)</tt>.
+</center>
+</font>
+
+</p><p>
+<hr>
+</p><p>
+<b>2.</b> Complete the development of the program below and show a proof
+of (ii) from the loop checklist.  (The four other items on the list are
+easy to prove.)  Of course, <b>E</b> refers to an unknown expression.
+Assume that <tt>max</tt> exists as a binary operator in our programming
+language.
+
+</p><p>
+To complete the proof of (ii), you will need to augment the loop invariant
+with a third conjunct in a way similar to what was done in solving the 
+Prefix Sums problem.
+Don't forget that <tt>B</tt> is a rigid variable and therefore cannot
+be mentioned in any command.
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<font size="+1">
+<pre>|[ var b : array of int; {b = B &and; #b>0}
+   var n : int;
+   n := 0;
+   {loop invariant I: (&forall;i | 0&le;i&lt;n : b.i = B.i max B.(i+1)) &and; 0&le;n&le;#b-1 }
+   {bound function t: #b - n}
+   do n &ne; #b-1 ---&gt;
+      n,b := n+1,b(n:<b>E</b>)
+   od
+   {Q': (&forall;i | 0&le;i&lt;n : b.i = B.i max B.(i+1)) &and; n=#b-1 }
+   {Q: (&forall;i | 0&le;i&lt;#b-1 : b.i = B.i max B.(i+1)) }
+]| </pre>
+</font>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+<hr>
+</p><p>
+<b>3.</b>
+Consider this tail recursive definition of function 
+f : &naturals; &times; &naturals; &rarr; &naturals;:
+
+</p><p>
+<center>
+<table border="0" cellpadding="1">
+<tr>
+  <td rowspan="2">f.m.n =</td>
+  <td>{ m max n</td><td>&nbsp; &nbsp;if m min n = 0</td>
+</tr>
+<tr>
+  <td>{ f.(m-1).(n-1)</td>
+  <td>&nbsp; &nbsp;otherwise</td>
+</tr>
+</table>
+</center>
+
+</p><p>
+Using this definition, follow the standard procedure (as covered in lecture)
+by which to derive a program that satisfies the specification below 
+(in which M and N are the inputs).
+The function <b>f</b> is the composition of two functions that are
+familiar to you.  Identify that composition.
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<font size="+1">
+<pre><code>|[ con M, N : int;   { M,N &ge; 0 }
+   var z : int;
+
+   z := ?
+
+   {Q: z = f.M.N }
+]|</code></pre>
+</font>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+<hr>
+</p><p>
+<b>4.</b>
+Consider this pseudo-tail recursive function definition of
+R : list&lt;T&gt; &rarr; list&lt;T&gt;, which uses the
+list notation introduced in Problem 3 of Homework #5.
+
+</p><p>
+<center>
+<table border="0" cellpadding="1">
+<tr>
+  <td rowspan="2">R.x =&nbsp;</td>
+  <td>{ empty</td><td>&nbsp; &nbsp;if x = empty</td>
+</tr>
+<tr>
+  <td>{ R.(tail.x) &nbsp;|&nbsp; [head.x]</td>
+  <td>&nbsp; &nbsp;otherwise</td>
+</tr>
+</table>
+</center>
+
+</p><p>
+Using this definition, follow the standard procedure (as covered in lecture)
+by which to derive a program that satisfies the specification below (in which
+<tt>T</tt> stands for an arbitary data type).
+
+</p><p>
+As an intermediate step, from the given definition of function <tt>R</tt>
+you can derive a (fully) tail recursive definition for function <tt>R'</tt>
+such that (for all lists <tt>x</tt>)&nbsp; <tt>R'.x.empty = R.x</tt>.
+
+</p><p>
+Notice that in the recursive case of the definition, the application of
+<tt>R</tt> is the <b>left</b> operand of the <b>concatenate</b> 
+(or <b>append</b>, if you prefer) operator, not the right operand.  
+This is the opposite of the template that we covered in lecture, which
+means that the roles being played by the two operands here are reversed,
+which you must take account of.
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<font size="+1">
+<pre><code>|[ con X : list&lt;T&gt;;
+   var z : list&lt;T&gt;;
+
+   z := ?
+
+   {Q': z = R'.X.empty }
+   {Q: z = R.X }
+]|</code></pre>
+</font>
+</td></tr>
+</table>
+</center>
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+<html>
+<head><title>CMPS 134 Spring 2017 Test #1 Problem 3 Solution</title>
+</head>
+<body>
+
+Here is the program, annotated with line numbers.
+Below that are the answers, which refer to the code using the line numbers.
+
+</p><p>
+<table border="2" cellpadding="4">
+<tr><td>
+<pre> (1) import java.util.Scanner;
+
+ (2) /* Java application that prompts the user to enter a Fahrenheit temperature
+ (3) ** reading and, in response, displays a table showing the Celsius equivalent
+ (4) ** of that temperature plus five more, each one two degrees warmer than the
+ (5) ** previous one.
+ (6) */
+ (7) public class FahrenheitToCelsiusApp
+ (8) {
+ (9)    public static void main(String[] args)
+(10)    {
+(11)       Scanner keyboard = new Scanner(System.in);
+
+(12)       System.out.print("Enter a Fahrenheit temperature: ");
+
+(13)       double fahTemp = keyboard.nextDouble();   // read input data
+
+(14)       for (double f = fahTemp; f &lt;= fahTemp + 11; f = f + 2.0) {
+
+(15)          double celTemp = fahToCel(f);
+
+(16)          System.out.println(f + " Fahrenheit = " + celTemp + " Celsius.");
+(17)       }
+
+(18)       System.out.println("Goodbye.");
+(19)    }
+
+
+(20)    /* Given a Fahrenheit temperature, returns the equivalent in Celsius.
+(21)    */
+(22)    private static double fahToCel(double t) { return ((t - 32) * 5) / 9; }
+(23) }</pre>
+</td></tr>
+</table>
+
+</p><p>
+(A) <b>assignment statement</b>
+<ul>
+  <li>Line 11: <tt>keyboard = new Scanner(System.in)</tt></li>
+  <li>Line 14: <tt>f = fahTemp</tt></li>
+  <li>Line 14: <tt>f = f + 2.0</tt></li>
+  <li>Line 15: <tt>celTemp = fahToCel(f)</tt></li>
+</ul>
+
+</p><p>
+(B) <b>comment</b>
+<ul>
+  <li>Lines 2-6: All of it is a comment.</li>
+  <li>Line 13: <tt>// read input data</tt></li>
+  <li>Lines 20-21: All of it is a comment.</li>
+</ul>
+
+</p></p>
+(C) <b>numeric literal</b>
+<ul>
+  <li>Line 14: Each of <tt>11</tt> and <tt>2.0</tt></li>
+  <li>Line 22: Each of <tt>32</tt>, <tt>5</tt>, and <tt>9</tt></li>
+</ul>
+
+</p></p>
+(D) <b>method call</b>
+<ul>
+  <li>Line 12: <tt>System.out.print("Enter a Fahrenheit temperature: ")</tt>
+  </li>
+  <li>Line 13: <tt>keyboard.nextDouble()</tt></li>
+  <li>Line 15: <tt>fahToCel(f)</tt></li>
+  <li>Line 16: <tt>System.out.println(f + " Fahrenheit = " + celTemp + 
+                   " Celsius.")</tt>
+  </li>
+  <li>Line 18: <tt>System.out.println("Goodbye.")</tt></li>
+</ul>
+
+</p></p>
+(E) <b>method heading</b>
+<ul>
+  <li>Line 9: <tt>public static void main(String[] args)</tt></li>
+  <li>Line 22: <tt>private static double fahToCel(double t)</tt></li>
+</ul>
+
+</p></p>
+(F) <b>variable declaration</b>
+<ul>
+  <li>Line 11: <tt>Scanner keyboard</tt></li>
+  <li>Line 13: <tt>double fahTemp</tt></li>
+  <li>Line 14: <tt>double f</tt></li>
+  <li>Line 15: <tt>double celTemp</tt></li>
+</ul>
+
+</p></p>
+(G) <b>actual parameter</b>
+<ul>
+  <li>Line 12: <tt>"Enter a Fahrenheit temperature: "</tt></li>
+  <li>Line 15: <tt>f</tt></li>
+  <li>Line 16: <tt>f + " Fahrenheit = " + celTemp + " Celsius."</tt></li>
+  <li>Line 18: <tt>"Goodbye."</tt></li>
+</ul>
+
+</p></p>
+(H) <b>String literal</b>
+<ul>
+  <li>Line 12: <tt>"Enter a Fahrenheit temperature: "</tt></li>
+  <li>Line 16: <tt>" Fahrenheit = "</tt></li>
+  <li>Line 16: <tt>" Celsius."</tt></li>
+  <li>Line 18: <tt>"Goodbye."</tt></li>
+</ul>
+
+</p><p>
+(I) <b>formal parameter declaration</b>
+<ul>
+  <li>Line 9: <tt>String[] args</tt></li>
+  <li>Line 22: <tt>double t</tt></li>
+</ul>
+
+</p><p>
+(J) <b>arithmetic operator</b>
+<ul>
+  <li>Line 14: <tt>+</tt> occurs twice</li>
+  <li>Line 22: Each of <tt>-</tt>, <tt>*</tt>, and <tt>/</tt> occurs</li>
+</ul>
+
+(K) <b>reserved word</b>
+<ul>
+  <li><tt><b>import</b></tt>: line 1</li>
+  <li><tt><b>public</b></tt>: lines 7, 9</li>
+  <li><tt><b>class</b></tt>: line 7</li>
+  <li><tt><b>static</b></tt>: lines 9, 22 </li>
+  <li><tt><b>void</b></tt>: line 9 </li>
+  <li><tt><b>new</b></tt>: line 11 </li>
+  <li><tt><b>double</b></tt>: lines 13-15, 22</li>
+  <li><tt><b>private</b></tt>: line 22</li>
+  <li><tt><b>return</b></tt>: line 22 </li>
+</ul>
+
+</p><p>
+(L) <b>boolean expression/condition</b>
+<ul>
+  <li>Line 14: <tt>f &lt;= fahTemp + 11</tt></li>
+</ul>
+
+</body>
+</html>

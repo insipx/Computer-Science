@@ -1,0 +1,257 @@
+<html>
+<head>
+  <title>CMPS 340  Some sample Relational Algebra Queries</title>
+</head>
+<body>
+<h2>
+CMPS340 <br />
+Some Sample Relational Algebra Queries<br />
+</h2>
+
+<p>
+Using the COMPANY database from the Elmasri/Navathe textbook (7th edition)
+(the schema diagram of which is in Figure 5.5 and a possible state of which
+is illustrated in Figure 5.6), devise solutions, in Relational Algebra,
+to the following informally-stated queries.
+
+<p>
+<b>1.</b>
+Report the last name and birthdate of each male employee whose salary
+is between $40,000 and $60,000.
+
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT Lname, Bdate
+FROM (RESTRICT Employee 
+      WHERE Sex = 'M' AND (40000 &lt;= Salary AND Salary &lt;= 60000)
+     );</pre>
+
+<hr>
+
+</p><p>
+<b>2.</b>
+Report the first and last names of each female employee
+who works on project 7 at least ten hours per week.
+
+<p>
+<b>Solution:</b>
+<pre>PROJECT Fname, Lname
+FROM JOIN (RESTRICT Employee WHERE Sex = 'F')
+     WITH (RESTRICT Works_On WHERE Pno = 7 AND Hours >= 10)
+     WHERE Ssn = Essn; </pre>
+<p>
+Note that either or both of the RESTRICTs could have been done
+<em>after</em> the join, as in
+<pre>PROJECT Fname, Lname
+FROM RESTRICT (JOIN Employee WITH Works_On WHERE Ssn = Essn)
+     WHERE Sex = 'F' AND Pno = 7 AND Hours >= 10; </pre>
+
+</p><p>
+Due to the fact that, in the second solution, the JOIN operation is 
+being applied to tables that include tuples that cannot possibly
+be relevant to the solution (e.g., ones describing male employees
+and ones describing work on projects not numbered 7), it is considered
+to be inferior to the first solution.  As a general rule, you
+want to remove all irrelevant tuples from a table (by applying
+RESTRICT to it) <b>before</b> applying JOIN rather than afterwards.
+
+<hr>
+
+<p>
+<b>3.</b>
+Report the first and last names of each employee whose salary is
+at least $30,000 and who does <em>not</em> work on project 7.
+
+<p>
+<b>Solution:</b>
+The following answer is <b>wrong</b>, as it results in the names of
+employees who work on <em>at least one project other than project 7</em>
+and who have a salary of at least $30,000.  Hence, it will incorrectly
+include some employees (namely, those who work on project 7 in addition to
+working on at least one other one) and incorrectly exclude others
+(namely, those who work on no projects).
+
+<pre><b>Below is WRONG!</b>
+PROJECT Fname, Lname
+FROM JOIN (RESTRICT Employee WHERE Salary >= 30000)
+     WITH (RESTRICT Works_On WHERE Pno != 7)
+     WHERE Ssn = Essn;
+<b>Above is Wrong!</b> </pre>
+
+<p>
+Using the multi-step approach, here is one possible correct answer:
+<pre>
+// get SSN's of all employees
+AllSsn &larr; PROJECT Ssn FROM Employee;
+
+// get SSN's of employees who work on project 7 and rename the
+// attribute so that it matches the attribute of AllSsn
+Proj7Ssn &larr; PROJECT Essn AS Ssn FROM (RESTRICT Works_On WHERE Pno=7);
+
+// use set difference operator to get SSN's of those who don't work on project 7
+Non7Ssn &larr; AllSsn - Proj7Ssn;
+
+// Now result is at hand!
+Result &larr; 
+   PROJECT Fname, Lname
+   FROM JOIN (RESTRICT Employee WHERE Salary >= 30000) AS e
+        WITH Non7Ssn AS f
+        WHERE e.Ssn = f.Ssn; </pre>
+
+</p><p>
+Here is the corresponding "one-line" query:
+
+<pre>PROJECT Fname, Lname 
+FROM JOIN (RESTRICT Employee WHERE Salary >= 30000) AS e
+     WITH ((PROJECT Ssn FROM Employee) - 
+           (PROJECT Essn AS Ssn FROM (RESTRICT Works_On WHERE Pno=7))
+          ) AS f
+     WHERE e.Ssn = f.Ssn; </pre>
+
+</p><p>
+Note that in SQL the set difference operator is written as the word
+<tt>EXCEPT</tt> rather than as a minus sign.
+
+<hr>
+
+<p>
+<b>4.</b>
+For each employee <tt>e</tt> and each project <tt>p</tt> on which <tt>e</tt>
+works, report <tt>e</tt>'s last name, <tt>p</tt>'s name, and the number of
+hours per week that <tt>e</tt> works on <tt>p</tt>.
+
+<p>
+<b>Solution:</b>
+<pre>PROJECT Lname, Pname, Hours
+FROM JOIN (JOIN Employee WITH Works_On WHERE Ssn = Essn)
+     WITH Project 
+     WHERE Pno = Pnumber; </pre>
+
+</p><p>
+<hr>
+<b>5.</b>
+For each employee <tt>e</tt> and each project <tt>p</tt> on which
+<tt>e</tt> works, report <tt>e</tt>'s last name, <tt>p</tt>'s name,
+and the name of the department that controls <tt>p</tt>.
+(The <tt>Dnum</tt> attribute in <tt>Project</tt>
+identifies each project's controlling department.)
+
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT Lname, Pname, Dname
+FROM JOIN Employee
+     WITH (JOIN Works_On 
+           WITH (JOIN Project WITH Department WHERE Dnum = Dnumber)
+           WHERE Pno = Pname
+          )
+     WHERE Ssn = Essn);</pre>
+
+</p><p>
+<b>Alternative Solution:</b>
+<pre>PROJECT Lname, Pname, Dname
+FROM JOIN (JOIN Employee WITH Works_On WHERE Ssn = Essn)
+     WITH (JOIN Project WITH Department WHERE Dnum = Dnumber)
+     WHERE Pno = Pname;</pre>
+
+</p><p>
+<hr>
+<b>6.</b>
+Report the number of employees and their average salary.
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE COUNT(*), AVG(Salary)
+FROM Employee;</pre>
+
+
+</p><p>
+<hr>
+<b>7.</b>
+Report the number of dependents of the employee having SSN 987654321.
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE COUNT(*)
+FROM (RESTRICT Dependents WHERE Essn = '987654321');</pre>
+
+<hr>
+<b>8.</b>
+Report each employee's first and last names together with her/his 
+number of dependents.
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE Fname, Lname, COUNT(*)
+FROM (JOIN Employee WITH Dependent WHERE Ssn = Essn)
+GROUP BY Fname, Lname, Ssn; </pre>
+
+</p><p>
+Note that every item listed in the aggregate clause (i.e., between
+the words <tt>AGGREGATE</tt> and <tt>FROM</tt>) must be either an
+application of an aggregate function (e.g., <tt>SUM</tt>, <tt>COUNT</tt>)
+or an attribute that is also listed in the group-by clause.
+
+</p><p>
+<hr>
+<b>10.</b>
+<b>(a)</b> 
+Report, for each department (identified by its number), the number of
+employees who work for it.
+
+<p>
+<b>Solution:</b>
+<pre>AGGREGATE Dno, COUNT(*)
+FROM Employee
+GROUP BY Dno; </pre>
+
+<p>
+<b>(b)</b> 
+Report, for each department (identified by its name), the number of
+employees who work for it.
+
+<p>
+<b>Solution:</b>
+<pre>AGGREGATE Dname, COUNT(*)
+FROM (JOIN Employee WITH Department WHERE Dno = Dnumber)
+GROUP BY Dname;</pre>
+
+<p>
+Note that this solution assumes that <tt>Dname</tt> is a key of the
+<tt>Department</tt> table, which it is, according to the discussion
+in Chapter 3? where the <tt>COMPANY</tt> database schema was designed.
+
+<p>
+<b>(c)</b>
+Report, for each department (identified by its number), the total
+number of dependents of employees who work for it.
+
+<p>
+<b>Solution:</b>
+<pre>AGGREGATE Dno, COUNT(*)
+FROM (JOIN Employee WITH Dependent WHERE Ssn = Essn)
+GROUP BY Dno </pre>
+
+</p><p>
+<b>11.</b>
+The solutions in Problem 10 have a weakness.
+Suppose that, in 10(a) or (b), there is a department for which
+the number of employees who work for it is zero.  (In the
+COMPANY database, every department must have at least one employee,
+but we one can imagine relaxing this restriction.)
+In (c), it is possible that some department has no employees
+having a dependent.
+
+</p><p>
+In these cases, the number (or name) of such a department will not appear
+in any tuple of the result.  But suppose that we want <b>every</b>
+department to appear in the result, even if the associated number
+is zero?  Is it possible to achieve this? 
+
+</p><p>
+<b>Yes</b>, we can do it using a modified version of the JOIN
+operator called an <b>outer join</b>.  (The plain join operation
+is an <b>inner</b> join.)  There's left, right, and full outer join.
+
+</body>
+</html>
+

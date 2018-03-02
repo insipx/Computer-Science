@@ -1,0 +1,100 @@
+<html>
+<head>
+</head>
+<body>
+<h2>CMPS 134 Spring 2017<br />
+Test #1 (Section 1) Sample Solutions</h2>
+
+</p><p>
+<b>1.</b> Correct answers were indicated on graded test papers.
+
+</p><p>
+Regarding part <b>(h)</b>, the nested loop iterates a total of 12
+times (because it iterates three times during each of the four
+iterations of the outer loop), and prints three *'s each time,
+for a total of 36 *'s.
+
+</p><p>
+Regarding part <b>(i)</b>, the outer loop iterates with its control
+variable <tt>j</tt> assuming the values 1 through 6.
+During each of those iterations, the nested loop iterates with its
+control variable <tt>k</tt> assuming values going from <tt>j</tt>'s
+current value up to and including 5.  This is depicted in the following
+table.
+
+</p><p>
+<center>
+<table border="2" cellpaddint="4">
+<tr><th>Value of <tt>j</tt></th>
+    <th>Values assumed by <tt>k</tt></th>
+    <th># of iterations</th>
+</tr>
+<tr><td>1</td><td>1,2,3,4,5</td><td>5</td></tr>
+<tr><td>2</td><td>2,3,4,5</td><td>4</td></tr>
+<tr><td>3</td><td>3,4,5</td><td>3</td></tr>
+<tr><td>4</td><td>4,5</td><td>2</td></tr>
+<tr><td>5</td><td>5</td><td>1</td></tr>
+<tr><td>6</td><td>none</td><td>0</td></tr>
+</table>
+</center>
+
+</p><p>
+Adding up the values in the rightmost column yields the total number
+of iterations of the nested loop.  That number is 15.
+Because each such iteration prints a single *, 15 is the number
+of *'s that are printed.
+
+</p><p>
+Regarding part <b>(j)</b>, the outer loop iterates with its control
+variable <tt>i</tt> assuming the values 6,3, and 0.
+During each of those iterations, the nested loop iterates with its
+control variable <tt>j</tt> assuming values going from 0 up to
+and including <tt>i</tt>'s current value.
+This is depicted in the following table.
+
+</p><p>
+<center>
+<table border="2" cellpaddint="4">
+<tr><th>Value of <tt>i</tt></th>
+    <th>Values assumed by <tt>j</tt></th>
+    <th># of iterations</th>
+</tr>
+<tr><td>6</td><td>0,1,2,3,4,5,6</td><td>7</td></tr>
+<tr><td>3</td><td>0,1,2,3</td><td>4</td></tr>
+<tr><td>0</td><td>0</td><td>1</td></tr>
+</table>
+</center>
+
+</p><p>
+Adding up the values in the rightmost column yields the total number
+of iterations of the nested loop.  That number is 12.
+Because each such iteration prints a single *, 12 is the number
+of *'s that are printed.
+
+</p><p>
+<b>2.</b> 
+Run <a href="Test1Exprs_1.java">this program</a>.
+
+</p><p>
+<b>3.</b> <a href="test1_java_elem_sol.html">Solution</a>
+
+</p><p>
+<b>4.</b> 
+Run <a href="Test1_Spring2017_1.java">this program</a>.
+
+</p><p>
+<b>5.</b> 
+<a href="CumulativeFaceCardCountDown.java">CumulativeFaceCardCountDown</a>
+
+</p><p>
+<b>6.</b> 
+<a href="Test1DrawFigure.java">Test1DrawFigure</a>.
+As for how to modify the <tt>drawFig()</tt> method so that it can
+draw figures using a different combination of characters, chosen
+by the caller, the answer is to use <b>parameters</b>!
+A second version of the <tt>drawFig()</tt> method, with not only
+a <tt>size</tt> parameter but also four parameters of type <tt>char</tt>,
+is in the given program.
+
+</body>
+</html>

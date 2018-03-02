@@ -1,0 +1,11 @@
+a is rejected
+ab is rejected
+abb is rejected
+ba is rejected
+bbaabaab is rejected
+aba is accepted
+bbabaaba is accepted
+ababa is accepted
+bbbbbbbaba is accepted
+bbababababa is accepted
+

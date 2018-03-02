@@ -1,0 +1,159 @@
+<html>
+<head><title>SE 504 Spring 2017 HW #8</title>
+</head>
+<body>
+<h2>SE 504 Spring 2015<br />
+HW #8: Longest Common Subsequences Revisited<br />
+Due: 7:20pm, Tuesday, May 9
+</h2>
+
+</p><p>
+The Java class <a href="LongComSubseq_504_S17.java">LongComSubseq_504_S17</a>
+is a Java translation of the DGCL (Dijkstra's Guarded Command Language) program
+that we developed in lecture pertaining to the <b>Longest Common Subsequence
+Problem</b>.  (Also see the corresponding web page.)
+
+</p><p>
+The given program, when given two character strings <tt>x</tt> and <tt>y</tt>, 
+computes a table containing the values of the LLCS function ("Length of
+Longest Common Subsequence") with respect to <tt>x</tt> and <tt>y</tt>.  
+(Recall that LLCS.i.j = the length of a LCS (i.e., longest common subsequence)
+of x[0..i) and y[0..j).)  (In lecture we assumed that sequences were indexed
+beginning at one rather than zero, but because Java index ranges begin at
+zero, here we conform to that.)
+
+<hr>
+</p><p>
+<b>1.</b>
+The program's <tt>longestCommonSubsequence()</tt> method, which computes 
+one member of the set of LCS's, was left blank.  Complete it.
+
+</p><p>
+It should be clear that the <tt>llcs[][]</tt> instance variable
+(which contains the values of the LLCS function) provides all the 
+information necessary to compute any and all members of the set
+of LCS's.
+Make sure to annotate your code with comments that indicate an
+invariant and bound function for every loop.
+
+
+<hr>
+</p><p>
+<b>2.</b> (Challenging)
+The program's <tt>numWaysToFormLCS()</tt> method, which computes 
+the number of distinct ways that LCS's can be formed,
+was left blank.  Complete it.
+As was the case for Problem 1, the <tt>llcs[][]</tt> instance variable
+contains information sufficient for doing the calculations.
+
+</p><p>
+The purpose of the following is to make more precise what is
+meant by a "way that an LCS can be formed" and to provide
+some hints as to how to solve the problem.
+
+</p><p>
+Consider, for example, the character sequences 
+<tt>X: adbcbca</tt> and <tt>Y: bdaab</tt>.
+<!-- <tt>X: adbcbcac</tt> and <tt>Y: bdaabc</tt>. -->
+
+</p><p>
+The set of LCS's of X and Y is 
+<tt>{ aa, ab, ba, bb, da, db }</tt>.
+<!-- <tt>{ aac, abc, bac, bbc, dac, dbc }</tt>. -->
+
+</p><p>
+Now, for each common subsequence there is at least one way to
+form it, but possibly more.  To clarify what we mean by that,
+we define a <b>common subsequence index sequence</b> (with respect to
+sequences X and Y) to be a list of ordered pairs of natural numbers
+</p</p>
+<center>
+<tt>&lt;(i<sub>1</sub>,j<sub>1</sub>), (i<sub>2</sub>,j<sub>2</sub>), ...
+(i<sub>k</sub>,j<sub>k</sub>)&gt;</tt>
+</center>
+
+</p><p>
+satisfying the condition that both
+<tt>&lt;i<sub>1</sub>,i<sub>2</sub>, ... ,i<sub>k</sub>&gt;</tt> and
+<tt>&lt;j<sub>1</sub>,j<sub>2</sub>, ... ,j<sub>k</sub>&gt;</tt> are strictly increasing sequences  and
+<tt>X.i<sub>m</sub> = Y.j<sub>m</sub></tt> for all <tt>m = 1..k</tt>
+
+</p><p>
+Of course, such an index sequence describes one way of forming the
+common subsequence 
+<tt>X.i<sub>1</sub> &oplus; X.i<sub>2</sub> &oplus; ... 
+&oplus; X.i<sub>k</sub></tt>, 
+which is necessarily equal to
+<tt>Y.j<sub>1</sub> &oplus; Y.j<sub>2</sub> &oplus; 
+... &oplus; Y.j<sub>k</sub></tt>.
+
+</p><p>
+Here we are using <tt>&oplus;</tt> as a concatenation operator on sequences.
+
+</p><p>
+For example, there are four common subsequence index sequences by
+which common subsequence &nbsp;<tt>ba</tt>&nbsp; is formed: 
+
+</p><p>
+<center>
+<tt>&lt;(3,1),(7,3)&gt;</tt><br />
+<tt>&lt;(3,1),(7,4)&gt;</tt><br />
+<tt>&lt;(5,1),(7,3)&gt;</tt><br />
+<tt>&lt;(5,1),(7,4)&gt;</tt><br />
+</center>
+
+</p><p>
+Let <tt>NLCS.m.n =</tt> the number of distinct common subsequence 
+index sequences describing LCS's of X[0..m) and Y[0..n).
+
+
+</p><p>
+For our example of <tt>X: adbcbca</tt> and <tt>Y: bdaab</tt>,
+the final answer will be 14, as the number of ways to form
+<tt>aa</tt>, <tt>ab</tt>, <tt>ba</tt>, <tt>bb</tt>, <tt>da</tt>,
+and <tt>db</tt> are 1, 4, 4, 1, 2, and 2, respectively.
+
+</p><p>
+The key to arriving at a solution is to properly characterize the value of
+<tt>NLCS.m.n </tt> (for <tt>m,n &gt; 0</tt>) in terms of 
+<tt>NLCS.m.(n-1)</tt>, <tt>NLCS.(m-1).n</tt>, and 
+<tt>NLCS.(m-1).(n-1)</tt>.  
+(However, this characterization is a little more complicated than the
+analogous characterization of <tt>LLCS.m.n</tt> in terms of
+<tt>LLCS.m.(n-1)</tt>, <tt>LLCS.(m-1).n</tt>, and 
+<tt>LLCS.(m-1).(n-1)</tt>.)
+
+</p><p>
+One observation that may be crucial in understanding the various
+recursive cases of <tt>NLCS</tt> follows from the fact that 
+<tt>LLCS</tt> ascends along its rows, columns, and diagonals, 
+but by at most one at each step:
+<blockquote>
+  If <tt>LLCS.m.n = w </tt> (where <tt>m,n &gt; 0</tt>), then each of 
+  <tt>LLCS.m.(n-1)</tt>, <tt>LLCS.(m-1).n</tt>, and <tt>LLCS.(m-1).(n-1)</tt>
+  is either <tt>w-1</tt> or <tt>w</tt>.
+</blockquote>
+
+</p><p>
+One can picture it like this, where we focus on one two-by-two section
+of a table holding the values of <tt>LLCS</tt>:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><th></th><th>n-1</th><th>n</th></tr>
+<tr><th>m</th><td>w-1 or w</td><td><center>w</center></td></tr>
+<tr><th>m-1</th><td>w-1 or w</td><td>w-1 or w</td></tr>
+</table>
+</center>
+
+</p><p>
+Assuming that the value in the cell at location (m,n) is w, each of the
+remaining three cells must contain either w-1 or w (two possibilities),
+which makes for 2<sup>3</sup>, or 8, possible cases.
+However, only five of those cases can occur in an <tt>LLCS</tt> table,
+again due to the fact that it must ascend along rows and columns.
+
+
+</body>
+</html>

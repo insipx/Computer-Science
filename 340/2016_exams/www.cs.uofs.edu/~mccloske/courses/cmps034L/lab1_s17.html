@@ -1,0 +1,276 @@
+<html>
+<head><title>CMPS 034L  Lab #1</title>
+</head>
+<body>
+<h2>CMPS 034L &nbsp; Spring 2017<br />Lab #1: Getting Started</h2>
+
+<h3>Activity #1: Register on course web page</h3>
+</p><p>
+In order to submit the work that you do in CMPS 134 and CMPS 034L
+to be graded (e.g., files containing Java programs), 
+you must complete a simple registration process.
+If you haven't already done that, follow these instructions:
+
+<ol>
+  <li><a href="http://www.cs.uofs.edu/~mccloske/courses/cmps134/index_s17.html"
+       target="_blank">Click here</a> to go to the CMPS 134 course web page.
+       <br /><b>Note:</b> 
+       It would make things easier if you went to the CMPS 134 page in a
+       brand new browser window, rather than in a new tab in the same window, 
+       which is what you will get by clicking on the given link.
+       In the Firefox browser, if you right click on the link, you can
+       then choose to open it in a new Firefox window.  <b>End of note.</b>
+  </li>
+  <li>Select (under the heading <b>Student Functions</b>) the hyperlink 
+      labeled <b>Register</b>.
+  </li>
+  <li>In the text box on the web page that appears, enter your Royal Number
+      (upper case 'R' followed by eight digits), and click on the
+      <b>Submit Form</b> button.
+  </li>
+  <li>On the page that appears ("Registration Page"), you must enter a 
+      password (two times).  (It is important that you remember it, of
+      course.) If you wish, you can enter the other pieces of 
+      personal data requested, but these are optional.
+      Then click on the <b>Submit Form</b> button.  
+  </li>
+  <li>The page that pops up should verify that you registered by saying,
+      among other things, "Authorization completed!!!".
+      But you should verify it yourself by navigating back to the 
+      course web page (e.g., using the browser's BACK button three times
+      should do it) and clicking on the <b>View Class Roster</b> hyperlink.
+      On the page that appears, your name should be among those on the list
+      that is displayed when you click on the "Select" drop-down menu.
+  </li>
+</ol>
+
+<hr>
+<h3>Activity #2: Submit background information</h3>
+</p><p>
+Take five minutes to compose a brief description of your experience
+using computing devices.  In particular, if you've ever done any
+computer programming, indicate how much, in what context (e.g., a
+course in high school), and in which programming language(s).
+</p><p>
+CMPS 134 is an introductory course, so don't be concerned if you
+barely even know what "programming" means.  Typically, more than half
+the students enrolled in the course have never programmed before.
+</p><p>
+Use Wordpad, MS Word, or some similar document editing tool
+to prepare your description.  (Or you can wait until installing
+<b>jGrasp</b> in the next activity and then use its editing
+capabilities to do it.)
+It need only be a paragraph or two in length, but it is expected 
+to be well written (i.e., using proper grammar and coherent sentences),
+such as would be expected of any capable college student.
+</p><p>
+When you have finished, submit your file by 
+<a href="http://www.cs.scranton.edu/~mccloske/Submit.cgi?root=spring17&amp;dir=cmps134&amp;sub=lab1_dir" target="_blank">clicking here</a> 
+and following these instructions:   
+</p><p>
+The web page that pops up should invite you to log in.  Use the
+"Select" drop down menu to find your name, choose it, then
+enter your password where appropriate and click the "SUBMIT FORM"
+button.  The page that should appear says <b>Submit Page</b> at the top.
+(This awkward phrase is meant to indicate that this is a web page to be
+used for submitting work to your instructor.)
+</p><p>
+You can enter a "Title" and/or a "Message" in the text boxes labeled
+as such, but that is not necessary.  What is important is that you
+click on any of the "Browse" buttons underneath the "Message" box, 
+select the file containing the document you just prepared, 
+and then click on the "SUBMIT FORM" button.  
+<p><p>
+You should get a "message submitted!!!" message.
+Use the web browser's BACK button to go back one page, and then
+refresh that page (by clicking on the refresh icon) (and telling
+the browser to "resend" if it asks).  There should be a hyperlink
+on the page to what is now your instructor's copy of the file that
+you just submitted.  You can click on it, which will cause the file
+to be downloaded onto your computer, if you want to verify that it
+is, indeed, a copy of the file that you submitted.
+
+<hr>
+<h3>Activity #3: Installing Java JDK and jGrasp</h3>
+<ol>
+  <li>To install the <b>Java Development Kit</b> (JDK):
+    <ul>
+      <li>click <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html"
+                 target="_blank">here</a>.
+          On the page that pops up, click the big button (near top left of page)
+          with the word "Java" in it with the image of a cup of coffee to its left.
+      </li>
+      <li>On the page that pops up, look in the section headed by the phrase
+          <b>Java SE Development Kit 8u121</b> to find the <b>Product/File Description</b>
+          (left column) appropriate for your computer.  If you have an Apple computer,
+          that would most likely be <b>Mac OS X</b>.  If you have a computer that runs under 
+          Windows, it would probably be <b>Windows x64</b> (but if you have an old
+          "32-bit" machine, it would be <b>Windows x86</b>).
+          Click on the corresponding link in the <b>Download</b> column in order
+          to download the installation program. 
+      </li>
+      <li>Now run the installation program (e.g., by double clicking on the icon
+          representing that program).  During the installation process,
+          you'll need to accept the license agreement and make some choices
+          as to settings.  For the latter, you are encouraged to choose the
+          defaults.
+          </p><p>
+          Take notice of the step that shows precisely where (i.e., in which
+          folder/subdirectory) in your computer's file system Java is being
+          installed.  On a Windows machine, most likely it will be in
+          <b><tt>C:\Program Files\Java\jdk?????</tt></b>, where the ?'s refer
+          to the exact version number of JDK that you are installing.
+          When installation has finished, this folder will have a folder
+          within it named "bin" that contains (executable) files named
+          <tt>javac.exe</tt> and <tt>java.exe</tt>, which are the Java compiler
+          and the JRE (Java Runtime Environment?), respectively.  If you can
+          find these files in this location, you can be reasonably sure that
+          you've completed this step correctly.
+      </li>
+    </ul>
+  </li>
+  <li>To install <b>jGrasp</b>:<br />
+      Click <a href="http://www.jgrasp.org" target="_blank">here</a>.
+      Near the upper right corner of the page that appears will be a link 
+      labeled <b>Download jGRASP</b>.  Click on it, and on the resulting
+      page scroll down a little to find the section indicating
+      <b>jGrasp 2.0.3_05</b>.  Depending upon your computer's operating
+      system, click on the appropriate green button to download an 
+      installation program.  Then run it!  (If your computer runs under
+      Linux, you'll first have to "unzip" the compressed installation
+      program file.)
+      </p><p>
+      Again you may need to accept the license agreement and you are 
+      encouraged to accept the default settings as you proceed.  
+  </li>
+  <li>Verify that the previous steps were successful by downloading,
+      compiling, and executing the 
+      <a href="HelloWorld.java">HelloWorld</a> Java application program.
+      Before doing that, you may want to create a folder/subdirectory
+      on your computer's file system specifically for storing files
+      relevant to this course.
+      </p><p>
+      Having downloaded the <tt>HelloWorld.java</tt> file, click on 
+      its icon.  Depending upon your computer's settings, the file may 
+      be loaded into jGrasp automatically.  Or it might ask you to 
+      choose an application in which to load the file, in which case you
+      should choose jGrasp.
+      </p><p>
+      Once you've got the <tt>HelloWorld</tt> program loaded into
+      jGrasp, compile and run it.  (To compile, click on the button
+      that looks like a green cross.  To run, click on the button
+      to its right, which looks like a humanoid stick figure in the
+      act of running.)
+      </p><p>
+      After you've run the program successfully, insert a new
+      statement immediately after (or before) the statement that
+      prints <tt>Hello, World</tt> and have the new statement
+      print some other message.  Compile and run the updated
+      program.  Show the TA that you have done this!
+  </li>
+</ol>
+
+<hr>
+<h3>Activity #4: Create Practice-It Account</h3>
+</p><p>
+Assuming that you haven't yet created an account for yourself on
+the <b>Practice-It</b> web site, click 
+<a href="http://practiceit.cs.washington.edu" target="_blank">here</a>
+and, on the page that pops up, click on the <b>Create Account</b> button.  
+You will have to provide some personal information (e.g., name,
+e-mail address, school) and, more importantly, choose a username 
+and password. 
+</p><p>
+If you are sensitive about your privacy, you can provide a fictitious 
+name, although your e-mail address probably gives it away, anyway!
+And you will need to provide your e-mail address, because the Practice-It
+system sends you an e-mail via which you must verify that you are trying
+to create an account.)
+
+<hr>
+<h3>Activity #5: Practice-It Exercises</h3>
+</p><p>
+For this activity, you should work in groups of two.
+
+</p><p>
+<a href="http://practiceit.cs.washington.edu" target="_blank">
+Go to the Practice-It web site</a>, log in, and click on the 
+<b>Start Practicing</b> button.  Then click on the link labeled 
+<b>Building Java Programs, 4th Edition</b> and then on the
+link indicating <b>BJP4 Chapter 1</b>.
+</p><p>
+Do the following <b>Practice-It Self-Checks</b> and, when finished,
+show your GTA (graduate teaching assistant) that you've completed
+all of them correctly.  (Go back to the web page that lists all
+the Chapter 1 Self-Checks and refresh it.  Any that were answered
+correctly will be indicated on the page.)
+
+<ol>
+  <li><b>BJP4 Self-Check 1.1 (binaryNumbers)</b>:
+      Oops!  Your instructor forgot to prepare you for the question posed
+      here.  But I'm sure that you can get the right answer in no more than
+      three guesses, as only three of the choices are plausible.
+      Anyway, all the Self-Checks at the end of any chapter are based on 
+      the material in that chapter.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 1.2 (binary1)</b>:
+      Converting decimal numerals into the equivalent binary numerals.
+      (Note that the author of this question fails to make the proper 
+      distinction between "number" and "numeral", which is a common
+      oversight.)
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 1.3 (binary2)</b>:
+      Converting binary numerals into equivalent decimal numerals.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 1.5 (javaVsClass)</b>: 
+      Oops again.  But the answer is in Chapter 1, of course.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 1.6 (legalIdentifiers)</b>: 
+      In Java, an <b>identifier</b> (which is a name that a programmer gives
+      to an entity such as a class or a method) can include only letters 
+      (i.e., any of <tt>a..z</tt> or <tt>A..Z</tt>), digits 
+      (i.e., any of <tt>0..9</tt>), underscores (i.e., <tt>_</tt>), and 
+      dollar signs (i.e., <tt>$</tt>).  
+      But it cannot begin with a digit.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 1.7 (outputSyntax)</b>:
+      Compare the candidate answers to the posed question with the
+      statement in the <tt>HelloWorld</tt> program that prints the
+      "Hello, World" message.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 1.8 (confounding)</b>
+      Recall that <tt>\"</tt> and <tt>\\</tt> are <b>escape sequences</b> 
+      that, when appearing within a literal string, translate to the 
+      characters <b><tt>"</tt></b> and <b><tt>\</tt></b>, respectively.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 1.10 (Shaq)</b>: Escape sequences again.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 1.13 (Sally)</b>: 
+      Developing <tt>println</tt> statements that print strings
+      in which the <b><tt>"</tt></b> and <b><tt>\</tt></b> characters
+      appear.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 1.18 (MyProgram-errors)</b>:
+      Detecting and correcting syntax errors.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 1.19 (SecretMessage-errors)</b>:
+      Detecting and correcting syntax errors.
+  </li>
+</ol>
+
+</p><p>
+Remember, before leaving show your GTA that you've correctly answered 
+all the Self-Checks assigned above.
+
+</body>
+</html>

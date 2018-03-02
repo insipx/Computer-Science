@@ -1,0 +1,7 @@
+baab is accepted
+aabab is accepted
+bbbb is accepted
+bbbababaa is accepted
+aaaaaa is rejected
+abbaaabaa is rejected
+

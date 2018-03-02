@@ -1,0 +1,527 @@
+<html>
+<head>
+  <title>C/IL 102: Notes on Computer Memory/Storage</title>
+</head>
+<body>
+<H2>C/IL 102: Notes on Computer Memory/Storage</em>
+</H2>
+
+<p>
+It may help to first review how quantities of memory/storage are measured.
+A <b>bit</b> (which is contraction for "<b>bi</b>nary digi<b>t</b>")
+is the smallest unit of data, a
+<!-- (physical manifestation of a) -->
+single <tt>0</tt> or <tt>1</tt>.
+Recall that computers represent data (of all kinds, including numbers,
+characters, images, and audio) using 0's and 1's.
+
+A <b>byte</b> is a unit of eight bits.
+A <b>kilobyte</b> (<b>KB</b>) is 2<sup>10</sup> 
+(approximately one thousand, or 10<sup>3</sup>) bytes,
+a <b>megabyte</b> (<b>MB</b>) is 2<sup>20</sup> 
+(approximately one million, or 10<sup>6</sup>) bytes, 
+a <b>gigabyte</b> (<b>GB</b>) is 2<sup>30</sup>
+(approximately one billion, or 10<sup>9</sup>) bytes, and
+a <b>terabyte</b> (<b>TB</b>) is 2<sup>40</sup>
+(approximately one trillion, or 10<sup>12</sup>) bytes.
+
+<p>
+One could reasonably ask the question 
+<p>
+<center><b>Where are programs (i.e., software) and data stored?</b></center>
+
+<p>
+The premise of the question is that the programs that a
+computer executes, and the data that those programs manipulate,
+must have some physical manifestation on some kind of storage medium
+(or, plural, media) that is part of the computer system
+(or accessible by it, at least).
+This gives rise to the next question:
+<p>
+<font size=+1>
+<center><b>What kinds of storage devices are found in computer systems?</b>
+</center>
+</font>
+
+<p>
+The answer may be a bit more involved than you would
+expect, because there are a perhaps surprisingly large number of 
+different kinds of storage devices.  The outline below seeks to 
+identify these and to provide a logical way of organizing them. 
+
+
+
+<H3>Primary (or Main) Memory</H3>
+<ul>
+  <li><b>Registers:</b> These are memory cells (typically four or eight bytes
+      in size) that are part of the processor itself, so that operations
+      (e.g. addition, comparison, etc.) can be performed directly upon
+      data stored therein (and usually within a single clock cycle,
+      which is less than a billionth of a second!).
+      Indeed, only data items (including instructions) that are being held
+      in a register can be operated upon by the processor.  Hence, any data
+      item in RAM that is to be used for some purpose first must be 
+      transferred into a register.
+      <p>
+      In order to keep the electronic circuitry of the processor 
+      at a reasonable level of complexity, the number of registers is
+      quite small, typically no more than a few dozen.
+  </li>
+  <li><b>Cache:</b> This is a block of very high-speed (and expensive)
+      memory cells (typically four bytes in length) used for storing copies
+      of data items also being held in RAM (see below) that have been
+      accessed very recently or are anticipated to be accessed in the
+      very near future.  Due to its high cost, cache capacity is typically
+      limited (this is in early 2009) to the neighborhood of 512KB
+      (one-half MB) to 4MB.
+      <p>
+      Some processors have multiple levels of cache (usually referred to
+      as L1 and L2, for example), with L1 being faster (access within a
+      few clock cycles) but having lower capacity (e.g., tens of KB)
+      than L2 (access to which requires tens of cycles).
+  </li>
+  <li><b>Random Access Memory (RAM)</b>: 
+      This is a block of fairly high-speed memory cells that are used
+      for storing (portions of) currently-executing programs and data
+      that those programs are using.  In early 2008, it was typical for a 
+      "desktop" or "laptop" computer to have RAM with a capacity of 
+      between 512MB (0.5GB) and 4GB.  The price of RAM at that time
+      was about $25 per GB.
+      <p>
+      The term "random" is meant to suggest that the time required to
+      access any particular memory location in RAM is independent of which
+      memory location was accessed most recently.  (This is in contrast to
+      accessing the "data" on a VHS or audio cassette tape, which are 
+      "sequential" (rather than "random") storage devices.  Suppose,
+      for example, that a VHS tape is fully rewound; then to get to the
+      fifth hour of video stored on that tape, you must fast forward
+      past the first four hours.  On the other hand, if the tape were
+      already at the beginning of the fourth hour, you could get to the
+      fifth hour by fast forwarding past only one hour of video.
+  </li>
+  <p>
+  Regarding the interplay between cache and RAM:
+  Roughly speaking, whenever the CPU needs to fetch the data occupying some
+  particular memory cell in RAM, first it looks in cache to see if a copy
+  is already there.  If so, it accesses that copy in a fraction of the time
+  that would have been required to access the corresponding cell in RAM.
+  If not, it accesses the desired cell of RAM; also, anticipating that
+  that same cell of RAM will need to be accessed again in the near future,
+  the CPU copies that cell's contents (as well as that of a block of
+  neighoring cells) into cache (replacing some block of data items that 
+  hasn't been accessed recently).
+  <p>
+  The introduction of cache is a relatively new development, motivated by the
+  fact that (as processor and memory technology has advanced over the years)
+  the ratio between the time needed to transfer data between RAM and a register
+  and the time needed to perform an operation on data (that is necessarily
+  already in a register) has been steadily growing, to the point where,
+  without cache, the CPU would be spending the vast majority of its time
+  waiting for data to be transferred between RAM and registers.  This
+  phenomenon is sometimes referred to as the
+  <a href="http://www.acm.org/crossroads/xrds5-3/pmgap.html">processor-memory
+  bottleneck</a>.
+  <p>
+  The term <b>transitory</b> can be used to describe the kinds of
+  main memory listed so far.  This term is apt because their intended
+  purpose is not to store anything for long, but rather to provide fast
+  access to data (and instructions) currently being used (i.e., related to
+  applications currently running and whatever data they are using).  Because 
+  there is no need to store data in main memory permanently (see
+  exception below), and because it is cheaper to do so, registers,
+  cache, and RAM are designed to be <b>volatile</b>, meaning that,
+  absent a constant application of electrical power, they lose their
+  contents relatively quickly.
+  <p>  
+  <li><b>Read-only Memory (ROM)</b>: A small block of (<b>non-volatile</b>)
+      memory having as one of its purposes to store instructions that
+      are executed whenever the computer is turned on, commencing the
+      so-called "boot-strapping" process by which (crucial components of)
+      the operating system is loaded into RAM, thereby allowing the
+      computer to begin functioning.
+      (From this description, it should be fairly clear
+      why it is vital for ROM to be non-volatile.)
+  </li>
+</ul>
+<H3>Secondary Storage</H3>
+The purpose of secondary storage is to store data and programs on a
+long-term basis.  (Hence, all forms of secondary storage are
+<b>non-volatile</b>, meaning that they retain the data stored on them
+(for a long period of time) without the need for electrical power.)
+As data (or a program) is needed in RAM (e.g., when a program is called
+upon to be executed, such as when the user double clicks upon an icon
+representing that program), it is copied from secondary storage into RAM,
+where it can be accessed quickly.
+<p>
+Among the types of secondary storage media are these:
+<ul>
+  <li><b>Solid-State:</b> For example, flash memory sticks; these usually
+      are attached to a computer via a USB port and have a capacity in
+      the hundreds of MB or a few GB's.
+      They are highly mobile and have largely supplanted floppy disks
+      in recent times.  This kind of storage is widely used in devices
+      such as PDA's and digital cameras.
+  </li>
+  <li><b>Magnetic Disk</b>: These are disks on which data is recorded
+      on a set of concentric rings (or "tracks") (see the figure about
+      4/5-ths of the way through 
+      <A HREF="http://computer.howstuffworks.com/hard-disk.htm/printable">
+      How Hard Disks Work</A>)
+      using properties of magnetism.
+    <ul>
+      <li><a href="http://en.wikipedia.org/wiki/Hard_disk_drive">
+          <b>hard disk</b></a>: high storage capacity (in early 2008, typically 
+          in the range of 80 to 320 GB) and much cheaper than RAM
+          (in early 2008, about $0.25 per GB, which is about 1/100 the price
+          of RAM)  
+      </li>
+      <li>removable/portable disk: zip disk, disk cartridge, floppy disk
+      </li>
+    </ul>
+  </li>
+  <li><a href="http://en.wikipedia.org/wiki/Optical_disc"><b>Optical Disc</b></a>:
+      These are discs on which data is represented
+      by a spiraling track of "pits and lands" (or valleys and bumps,
+      if you prefer).  A laser beam is used to "read" the data on the
+      surface.
+    <ul>
+      <li>CD-ROM: "Read Only" (used for distribution of commercial
+          software, for example)  Standard storage capacity is 640MB.
+      </li>
+      <li>CD-R (or CD-WORM): "Write Once, Read Many" times
+      </li>
+      <li>CD-RW: rewritable multiple times (but you can't really delete
+          a file without deleting all of them!)
+      </li>
+      <li>DVD: similar to CD, but with significantly larger storage capacity
+          (4.7GB)
+      </li>
+    </ul>
+  </li>
+  <li><b>Magnetic Tape</b>: usually used for making backup copies of
+      disk (so that if the disk fails, a recent copy of its contents
+      can be recovered and written onto a new replacement disk) or for
+      archival storage.  Tapes that are kept <b>offline</b> (meaning
+      that they sit on a shelf and are "mounted" onto a tape drive 
+      (by a human or a robotic device) only when needed) are sometimes
+      put into the category of <b>tertiary</b>, as opposed to secondary,
+      storage.
+      Tape drives are what you see spinning in the background in
+      numerous scenes in movies and TV shows depicting a large computer.  
+  </li>
+</ul>
+<p>
+As for why there are so many varieties of storage devices, it boils
+down mostly to considerations of cost, mobility (removability), 
+and advances in technology.
+<p>
+As a general rule of thumb (and not surprisingly), the cost of memory/storage
+(in dollars per unit of storage) varies with the "speed" of the storage device:
+the faster the device, the higher the cost (per MB).
+For example, main memory costs much more than an equal quantity of space
+in secondary storage, by a factor in the hundreds.
+<!-- (In early 2007, space on a hard disk cost about $0.28 per GB, but RAM
+was $75 per GB, making RAM about 250 times as expensive.) -->
+(In early 2008, space on a hard disk cost about $0.25 per GB, but RAM
+was $25 per GB, making RAM about 100 times as expensive.)
+Hence, even if RAM were designed to be non-volatile (and hence suitable for
+storing data on a long-term basis) it would be prohibitively expensive to
+replace hundreds of gigabytes of hard disk storage space with an 
+equal quantity of RAM.
+(Do the calculation: 100GB of RAM would cost about $2500 compared to $25 for
+100GB of hard disk space.  Hence, substituting non-volatile RAM for hard disk
+would increase the cost of a PC substantially!)
+<p>
+On the other hand, if, in an effort to minimize storage costs, we reduced
+main memory to a bare-bones level, we would find that performance would
+suffer terribly, because it would be necessary to store/retrieve data
+onto/from secondary storage more often, and the ratio between access times
+to secondary storage and main memory is on the order of hundreds of
+thousands to one.
+
+<p>
+<font size=+1>
+What is <b>virtual memory</b>?
+</font>
+
+<p>
+The purpose of RAM is to store the programs that are currently running
+and the data that those programs are processing, so that instructions
+and data needed by the CPU can be copied into registers (where the
+CPU can actually make use of them) quickly.
+
+<p>
+However, it often happens that RAM is not large enough to fit all 
+running programs and their data.  To alleviate this situation, many
+modern operating systems implement virtual memory, which basically
+means that some secondary storage (typically some segment of a hard disk)
+is used for holding portions of programs/data that, logically speaking,
+are considered to be in RAM.  Whenever the CPU attempts to fetch an
+instruction or data item from virtual memory, first it must be confirmed
+that that instruction or data item is actually in RAM.  If it is, 
+access proceeds normally.  If not, whatever "page" of virtual memory 
+holds the desired item must first be "swapped" into RAM (from the disk),
+replacing some page of data that was already there, which itself gets
+written to the disk.  The effect of virtual memory, then, is to, in a sense,
+make RAM seem much larger than it actually is.
+
+<p>
+The relationship between RAM and virtual memory is analagous to
+that between cache and RAM.
+
+<p>
+Among the benefits of virtual memory is that it gives programmers the
+freedom to develop programs without worrying too much about how much
+memory a program (or its data) will occupy.  From the user's point of
+view, it makes it possible to run lots of programs simultaneously
+without having to worry about the machine "crashing" due to a lack
+of space in RAM.
+
+<p>
+Sometimes, when virtual memory is being stretched to its limit,
+page swapping becomes so frequent that system performance degrades 
+very badly.  
+(Note that swapping one page for another is a very time-consuming
+operation, which, in the context of an electronic digital computer,
+can mean a duration of as little as a hundredth or thousandth of a second.)
+This is referred to as <b>thrashing</b>.
+Of course, the larger RAM's capacity, the less will be the need for
+swapping and hence the less likely that thrashing will occur.
+If bouts of thrashing are adversely affecting you, don't buy a
+faster CPU.  Rather, install more RAM!!
+
+<h3>Links to Related Information</h3>
+<ul>
+  <li><a href="http://en.wikipedia.org/wiki/Memory_hierarchy">Memory
+      hierarchy (wikipedia)</a> &nbsp;
+      <a href="http://en.wikipedia.org/wiki/File:ComputerMemoryHierarchy.png">
+      diagram depicting memory hierarchy (wikipedia)</a>
+  </li>
+  <li><A HREF="http://computer.howstuffworks.com/hard-disk.htm/printable">
+      How Hard Disks Work (how stuff works)</a>
+  </li>
+  <li><A HREF="http://computer.howstuffworks.com/computer-memory.htm/printable">
+      How Computer Memory Works (how stuff works)</a>
+  </li>
+  <li><A HREF="http://programmedlessons.org/java5/Notes/chap03/cho3_1.html">
+      Computer Memory (at programmedlessons.org)
+  </li>
+</ul>
+
+
+</body>
+</html>
+
+<!--
+<p>
+Recall that the role of the CPU (central processing unit) is to carry out
+instructions.  Included among the kinds of instructions it can perform are
+arithmetic operations on numbers.  In order to keep the electronic
+circuitry of the processor at a reasonable level of complexity,
+only a small number (typically, in the dozens) of storage cells are
+"wired" to have the capability of having such operations applied to
+(the data stored in) them (or for having the result of an operation
+be placed into them).
+These memory cells are referred to as <b>registers</b>.
+
+<p>
+The (much larger) collection of memory cells that are used for holding
+the programs currently running on the machine (and the data that those
+programs are manipulating) is referred to as <b>primary memory</b>.
+This is also known as <b>RAM</b> (which stands for <b>random access
+memory</b>, an allusion to the fact that each of its cells can be
+accessed in the same amount of time, regardless of its address/location).
+Whenever a specific data item in RAM is needed by the CPU, an
+instruction (often called LOAD) is executed that copies its contents
+into one of the registers, where it can be examined or operated upon
+directly (as mentioned above).
+Also, it often happens that the result of performing an operation,
+which initially ends up in a register, is then copied into a memory cell
+in RAM (via a STORE instruction), with the intent to be used later.
+
+
+<p>
+Because LOAD and STORE instructions tend to take a long time, relative
+to other kinds of instructions, today's computer systems include a
+modest-sized block of high-speed memory cells referred to as
+<b>cache</b> memory.
+(Typically, its size will be on the order of a megabyte.)
+The idea is that cache contains copies of data items stored in RAM that
+have been used very recently and hence are likely to be used again
+in the near future.
+Roughly speaking, whenever the CPU needs to fetch the data occupying some
+particular memory cell in RAM, first it looks in cache to see if a copy is
+already there.  If so, it accesses that copy in a fraction of the time that
+it would have taken to access the corresponding cell in RAM.
+If not, it accesses the desired cell of RAM.
+Also, anticipating that that same cell of RAM will need to be accessed
+again in the near future, the CPU copies that cell's contents into
+cache (replacing some data item that was used least recently).
+
+<p>
+An obvious question is this: If cache memory can be accessed more quickly
+than RAM, why not simply use cache in place of RAM?  The answer is, not
+surprisingly, economics: cache is more expensive!
+
+<p>
+So far our discussion has been limited to the kind of memory used for
+storing programs and data currently in use.  What about programs and
+data not being used?  For this we use a variety of storage devices
+referred to as <b>secondary storage</b>.  These include 
+<b>magnetic disk</b> (e.g., hard disk, disk cartridges, floppy disk),
+<b>optical disc</b> (e.g., CD, DVD),
+<b>flash memory</b> (memory sticks), and
+<b>magnetic tape</b> (although tape is sometimes considered to be
+<b>tertiary</b> storage rather than secondary).
+
+
+
+<p>
+To ease into this subject, let's first draw an analogy.
+Imagine that you were an author back in the 1970's (before the Internet
+or the advent of personal computers) and you were writing a book on some
+subject about which much had been written already (e.g., Abraham Lincoln,
+World War II).
+For years you've been doing research, and you have identified hundreds,
+perhaps even thousands, of sources of information about your subject,
+including books, scholarly papers, magazine articles, and photographs.
+You have obtained photocopies of many of the papers/articles and have
+stored them in the filing cabinet in your office.  You have also obtained
+a number of relevant books. ...
+
+<p>
+One might distinguish between items that we are "currently using" and
+those that we are not.  The former would be stuff on your desk and the
+latter not.  
+
+<ul>
+  <li>ideas in your brain</li>
+  <li>items on your desk:
+    <ul>
+      <li>"immediately accessible" information
+          (e.g., on pages right in front of you
+      </li>
+      <li>"close-at-hand" information
+          (e.g., that becomes "immediately accessible" by turning a page or
+          grabbing a paper from the edge of desk and putting it in front of
+          your face)
+      </li>
+    </ul>
+  </li>
+  <li>items in the filing cabinet</li>
+  <li>items in the library across campus/town</li>
+  <li>items in the Abraham Lincoln Library in Illinois</li>
+</ul>
+
+<p>
+Observe that, as we go down the list, the quantity of information
+at each step goes up but its accessibility (i.e., the speed with
+which one can obtain it) goes down.  Why?  First, we tend not to
+be able to keep too many things in our brains.  We can see only
+within a few feet.  Our desk isn't all that big.  Neither is our
+filing cabinet.
+
+<p>
+In computers, we have a similar scenario.
+
+<p>
+<font size=+1>
+<b>What kinds of memory are there?</b>
+</font>
+<pre>
+                                  +
+                                 / \ <--- registers
+                                /___\
+                               /     \
+                              /       \ <--- cache memory
+                             /_________\
+                            /           \
+                           /             \ <--- main memory (RAM/ROM)
+                          /               \
+                         /_________________\
+                        /                   \
+                       /                     \ <-- virtual memory
+                      /                       \
+                     /_________________________\  
+                    /                           \
+                   /                             \
+                  /                               \ <--- secondary storage
+                 /                                 \     (disk)
+                /                                   \
+               /_____________________________________\
+              /                                       \
+             /                                         \
+            /                                           \ <--- tertiary storage
+           /                                             \     (tape)
+          /_______________________________________________\
+
+<p>
+<ul>
+  <li><b>registers:</b> A small number of storage locations directly
+      accessible by the CPU.  (Stuff in your brain.)
+  </li>
+  <li><b>cache memory:</b> Holds copies of very-recently-used data from
+       primary memory.
+      (Documents sitting on table in front of you.)
+  </li>
+  <li><b>primary memory:</b> (Documents in filing cabinet next to desk.)
+  </li>
+  <li><b>virtual memory:</b> 
+  </li>
+  <li><b>secondary storage:</b> Documents in library across town.
+  </li>
+  <li><b>tertiary storage:</b> Documents in library across the country.
+  </li>
+</ul>
+
+<p>
+<font size=+1>
+<b>When do data move from one type of  memory to another?</b>
+</font>
+
+        <p>
+        The contents of memory cells in primary storage are "directly"
+        accessible to the CPU, which can read from (or write into) any such
+        cell in a very small fraction of a second.
+        Roughly speaking, primary storage is used for holding the programs
+        currently running and the data that those programs are using.
+        <p> 
+        Data on secondary storage, on the other hand, takes much longer to
+        access/store.  This is where programs and data are stored on a
+        more permanent basis.  When, for example, a program (such as
+        MS Word) is invoked, it is "loaded" (i.e., copied) from
+        secondary storage into RAM (so that its instructions can be accessed
+        and executed quickly by the CPU).  An MS Word document currently
+        being modified is held in RAM, too, but when the user issues the
+        SAVE command, it is written to disk.
+        <p>
+        Question: If data and programs must be transferred to RAM (from disk)
+        before they can be used, what's the point of even having secondary
+        storage?<br>
+        Answer:
+        <ol>
+          <li> RAM is much more expensive.  At any one time, you are likely
+             to be running only a small number of programs, each of
+             which will be using only a relatively small amount of data.
+             Hence, it makes sense to have a relatively small amount of RAM
+             (for storing that stuff) compared to a lot more secondary storage
+             (for storing all of your various programs and data files).
+          </li>
+          <li> In order to keep its cost from being even higher than it is,
+             RAM is made to be <em>volatile</em>, meaning that it requires a
+             constant source of electrical power in order to maintain its
+             state.  If, for example, a lightning strike makes the lights 
+             flicker, there is a good chance that all the contents of RAM
+             will be wiped out.
+          </li>
+        </ol>
+        <p>
+        Quantities of memory are measured in bytes.  These days, it is typical
+        for a PC to have about 500 megabytes (MB) of RAM and a hard disk
+        of about 20 gigabytes (GB). 
+        (Roughly, "mega" means million and "giga" means billion.)
+    </li>
+
+</body>
+</html>
+-->

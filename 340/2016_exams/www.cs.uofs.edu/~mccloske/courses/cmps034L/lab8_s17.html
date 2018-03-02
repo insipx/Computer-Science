@@ -1,0 +1,178 @@
+<html>
+<head><title>CMPS 034L  Lab #8</title>
+</head>
+<body>
+<h2>CMPS 034L &nbsp; Spring 2017<br />
+Lab #8: Scanners and Classes (that define data types)
+</h2>
+
+</p><p>
+For your convenience, here are a few relevant links to documentation about
+Java classes:
+<ul>
+  <li><a href="http://download.oracle.com/javase/8/docs/api/java/lang/String.html"
+      target="_blank">java.lang.String</a> class.
+  </li>
+  <li><a href="http://www.cs.uofs.edu/~mccloske/courses/cmps134/string_methods.html"
+      target="_blank">Description of most common String methods</a>.
+  </li>
+  <li><a href="http://download.oracle.com/javase/8/docs/api/java/lang/Character.html"
+      target="_blank">java.lang.Character</a> class.
+  </li>
+  <li><a href="http://download.oracle.com/javase/8/docs/api/java/util/Scanner.html"
+      target="_blank">java.util.Scanner</a> class.
+  </li>
+  <li><a href="http://www.cs.uofs.edu/~mccloske/courses/cmps134/scanner_methods.html"
+      target="_blank">Description of most common Scanner methods</a>.
+  </li>
+</ul>
+
+</p><p>
+You are to work in groups of two, with one group of three in the
+case that an odd number of students is present.
+
+</p><p>
+Go to the
+<a href="http://practiceit.cs.washington.edu" target="_blank">Practice-It 
+website</a>, log in, and click on the <b>Start Practicing</b> button,
+then on the link labeled <b>Building Java Programs, 4th Edition</b>,
+and then on the link indicating <b>BJP4 Chapter 6</b>.
+
+</p><p>
+<h3>Activity #1: Practice-It Self-Checks and Exercises from Chapter 6</h3>
+
+<ol>
+  <li><b>BJP4 Self-Check 6.1 (readAFile)</b>:
+     Multiple choice question: "How can we read data from a file in Java?".  
+     </p><p>
+     <b>Hint:</b> Consider what was covered in Wednesday's/Thursday's lecture
+     this week and review the <tt>EmployeesGrossPay</tt> Java program
+     relevant to Chapter 6 (to which there is a link on the course web page).
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 6.2 (scannerDeclaration)</b>:
+    Given is a Java statement that declares and initializes a variable of type
+    <tt>Scanner</tt>.  Contrary to what is suggested, the statement is
+    syntactically correct.  What's wrong with it is that it does not have
+    the desired effect, which is to establish the file named <tt>test.dat</tt>
+    as the input source for the newly created <tt>Scanner</tt> object.
+    </p><p>
+    <b>Hint:</b> Same as in previous item.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 6.3 (scannerDeclarationSyntax)</b>:
+    Same hint as above.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 6.4 (scannerInputTxt)</b>:
+    Same hint as above.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 6.5 (scannerTokens)</b>:
+     Given is a line of text; multiple choice question is to identify
+     the tokens that a <tt>Scanner</tt> would "find" if its <tt>next()</tt>
+     method were repeatedly applied.
+     </p><p>
+     Remember that what separates tokens from each other are "whitespace"
+     characters (spaces, tabs, and newlines).
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 6.6 (scannerTokens2)</b>:
+     Similar to previous item, but this time multiple lines of input
+     are to be considered.  Recall that a <tt>Scanner</tt>'s <tt>next()</tt>
+     method treats newline characters the same as spaces.
+  </li>
+</ol>
+
+<hr>
+</p><p>
+<h3>Activity #2: In which you submit work!</h3>
+
+<ol>
+  <li><b>BJP4 Exercise 6.1 (boyGirl)</b>:
+     After producing a solution and verifying that it is correct (via Practice-It's
+     feedback mechanism), load the Java application 
+     <a href="BJP4_6_1.java">BJP4_6_1</a> into a jGrasp window and then
+     copy and paste your <tt>boyGirl()</tt> method (apologies for the stupid name
+     and problem premise) into the appropriate place within that application.
+     Compile and execute <tt>BJP4_6_1</tt> to make sure that you've pasted the
+     method into it correctly before using this
+     <a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab8_dir">Submit/Review</a> 
+     link to submit it.
+  </li>
+</ol>
+
+<hr>
+</p><p>
+<h3>Activity #3: Practice-It Self-Checks from Chapter 8</h3>
+
+In Practice-It, maneuver your way to the Self-Checks associated to Chapter 8.
+Don't spend a lot of time on the self-checks in this activity.  
+
+<ol>
+  <li><b>BJP4 Self-Check 8.1 (whatisOOP)</b>: Multiple choice</li>
+  <li><b>BJP4 Self-Check 8.2 (whatisAnObject)</b>: Multiple choice</li>
+  <li><b>BJP4 Self-Check 8.3 (StringObject)</b>: Multiple choice</li>
+  <li><b>BJP4 Self-Check 8.6 (whatIsAField)</b>: Multiple choice;
+     note that <em>field</em> and <em>instance variable</em> are synonyms.
+  </li>
+  <li><b>BJP4 Self-Check 8.8 (accessorMutator)</b>: Multiple choice;
+     note that <em>accessor</em> and <em>observer</em> are synonyms.
+  </li>
+  <li><b>BJP4 Self-Check 8.9 (methodCallSyntax)</b>: Multiple choice.</li>
+  <li><b>BJP4 Self-Check 8.13 (printingObjects)</b>: Multiple choice.</li>
+  <li><b>BJP4 Self-Check 8.17 (whatIsAConstructor)</b>: Multiple choice</li>
+</ol>
+
+<hr>
+</p><p>
+<h3>Activity #4: In which you submit work!</h3>
+
+<ol>
+  <li>Download the <a href="TossableCoin2.java">TossableCoin2</a> and
+      <a href="TossableCoin2App.java">TossableCoin2App</a> classes
+      and load them into jGrasp (or whatever IDE you are using).
+      </p><p>
+      Modify <tt>TossableCoin2App</tt> (and change its name to
+      <tt>TossableCoin2LApp</tt>) so that, rather than tossing a coin ten
+      times, it tosses the coin until either ten tosses have resulted in Heads
+      or ten tosses have resulted in Tails.
+      Note that objects that are instances of the <tt>TossableCoin2</tt>
+      class have observer methods (namely, <tt>headsCount()</tt> and
+      <tt>tailsCount()</tt>) by which a client can determine how many
+      times each of Heads and Tails has resulted from past coin tosses.
+      <b>Therefore, don't insert code in the client program for maintaining
+      heads- and tails-counts!</b>  Rather, use the methods just mentioned 
+      to obtain those counts.
+      </p><p>
+      Use this 
+      <a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab8_dir">Submit/Review</a> 
+      link to submit the <tt>TossableCoin2LApp</tt> class.
+      (Do <b>not</b> submit <tt>TossableCoin2</tt> at this time.)
+  </li>
+  <li>Now modify the <tt>TossableCoin2</tt> class by replacing instance variable
+      <tt>showingHeads</tt> by a new instance variable, <tt>faceShowing</tt>, of
+      type <tt>char</tt>.  The idea is that <tt>faceShowing</tt>'s value should
+      be either <tt>'H'</tt> or <tt>'T'</tt>, respectively, depending upon whether
+      the coin is showing <b>Heads</b> or <b>Tails</b>.
+      </p><p>
+      Make whatever modifications are necessary to the source code in
+      <tt>TossableCoin2</tt> in order to make this work.  
+      (Obviously, any code in the class that refers to <tt>headsShowing</tt> 
+      must be changed, since that instance variable no longer plays any role
+      in the class.)
+      </p><p>
+      If your modifications are correct, you should be able to compile the modified
+      class without errors being reported, and you should be able to run both the
+      <tt>TossableCoin2App</tt> and <tt>TossableCoin2LApp</tt> applications
+      (without making any changes to them!), and they should exhibit similar 
+      behavior to what they did before.
+      </p><p>
+      Use this 
+      <a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab8_dir">Submit/Review</a> 
+      link to submit the modified <tt>TossableCoin2</tt> class.
+  </li>
+</ol>
+
+</body>
+</html>

@@ -1,0 +1,804 @@
+<html>
+<head>
+   <title>&nbsp Notes on Chapter 7 (6th ed.) of Elmasri &amp; Navathe</title>
+</head>
+<body>
+<H2>Notes on Chapter 7 (of 6th edition, Chapter 3 of older editions)
+   of Elmasri &amp; Navathe:
+   Data Modeling Using the Entity-Relationship Model </H2>
+
+
+
+<H3>Outline of Database Design</H3>
+<p>
+The main phases of database design are depicted in Figure 7.1 (page 201):
+<!--page 59:-->
+
+<ul>
+  <li><b>Requirements Collection and Analysis</b>: purpose is to produce
+      a description of the users' requirements.
+  </li>
+  <li><b>Conceptual Design</b>:  purpose is to produce a 
+      <em>conceptual schema</em> for the database, including detailed
+      descriptions of <em>entity types</em>, <em>relationship types</em>,
+      and <em>constraints</em>.  All these are expressed in terms provided
+      by the data model being used.
+      (<em>Remark</em>: As the ER model is focused on precisely these
+       three concepts, it would seem that the authors are predisposed to
+       using that data model!)
+  </li>
+  <li><b>Implementation</b>: purpose is to transform the conceptual schema
+      (which is at a high/abstract level) into a (lower-level) 
+      <em>representational/implementational</em> model supported by
+      whatever DBMS is to be used.
+  </li>
+  <li><b>Physical Design</b>: purpose is to decide upon the
+      internal storage structures, access paths (indexes), etc.,
+      that will be used in realizing the representational model
+      produced in previous phase.
+  </li>
+</ul>
+
+
+<hr>
+<H3>7.3: Entity-Relationship (ER) Model</H3>
+<p>
+Our focus now is on the second phase, <b>conceptual design</b>,
+for which The <b>Entity-Relationship (ER) Model</b> (introduced by
+Chen in 1976) is a popular high-level conceptual data model.
+
+<p>
+In the ER model, the main concepts are <b>entity</b>, <b>attribute</b>,
+and <b>relationship</b>.
+
+<H3>7.3.1 Entities and Attributes</H3>
+<p>
+<b>Entity</b>:  
+  An entity represents some "thing" (in the miniworld) that is of 
+  interest to us, i.e., about which we want to maintain some data.
+  An entity could represent a physical object (e.g., house, person,
+  automobile, widget) or a less tangible concept (e.g., company, job,
+  academic course, business transaction).
+
+<p>
+<b>Attribute</b>: An entity is described by its attributes, which are
+  properties characterizing it.  Each attribute has a <b>value</b>
+  drawn from some <b>domain</b> (set of meaningful values).
+
+<p>
+Example: A <em>PERSON</em> entity might be described by <em>Name</em>,
+<em>BirthDate</em>, <em>Sex</em>, etc., attributes, each having a particular
+value.
+
+<p>
+What distinguishes an entity from an attribute is that the latter is
+strictly for the purpose of describing the former and is not, in and
+of itself, of interest to us.  It is sometimes said that an entity
+has an independent existence, whereas an attribute does not.
+In performing data modeling, however, it is not always clear whether
+a particular concept deserves to be classified as an entity or "only"
+as an attribute.
+
+<p>
+We can classify attributes along these dimensions:
+<ul>
+  <li>simple/atomic  vs. composite</li>
+  <li>single-valued vs. multi-valued (or set-valued)</li>
+  <li>stored vs. derived  (<em>Note from instructor:</em> this seems like an
+           implementational detail that ought not be considered at
+           this (high) level of abstraction.)
+  </li>
+</ul>
+
+<p>
+A <b>composite</b> attribute is one that is <em>composed</em> of smaller parts.
+An <b>atomic</b> attribute is indivisible or indecomposable.
+<ul>
+  <li><b>Example 1</b>: A <em>BirthDate</em> attribute can be viewed as being 
+      composed of (sub-)attributes <em>month</em>, <em>day</em>, and 
+      <em>year</em> (each of which would probably be viewed as being atomic).
+  </li>
+  <li><b>Example 2</b>: An <em>Address</em> attribute (Figure 7.4, page 205)
+      <!--64-->
+      can be viewed as being composed of (sub-)attributes for street address,
+      city, state, and zip code. 
+      A street address can itself be viewed as being composed of
+      a number, street name, and apartment number. 
+      As this suggests, composition can extend to a depth of two
+      (as here) or more.
+  </li>
+</ul>
+
+<p>
+To describe the structure of a composite attribute, one can draw
+a tree (as in the aforementioned Figure 7.4).   In case we are
+limited to using text, it is customary to write its name followed
+by a parenthesized list of its sub-attributes.
+For the examples mentioned above, we would write 
+
+<p>
+<center><em>BirthDate(Month, Day, Year)</em><br>
+   <em>Address(StreetAddr(StrNum, StrName, AptNum), City, State, Zip)</em>
+</center>
+
+<p>
+<b>Single- vs. multi-valued</b> attribute:  Consider a <em>PERSON</em> entity.
+The person it represents has (one) <em>SSN</em>, (one) <em>date of birth</em>,
+(one, although composite) <em>name</em>, etc.
+But that person may have zero or more academic degrees, dependents, or
+(if the person is a male living in Utah) spouses!  
+How can we model this via attributes <em>AcademicDegrees</em>, 
+<em>Dependents</em>, and <em>Spouses</em>?
+One way is to allow such attributes to be <em>multi-valued</em>
+(perhaps <em>set-valued</em> is a better term),
+which is to say that we assign to them a (possibly empty) <em>set</em>
+of values rather than a single value.
+
+<p>
+To distinguish a multi-valued attribute from a single-valued one,
+it is customary to enclose the former within curly braces (which makes
+sense, as such an attribute has a value that is a set, and curly braces
+are traditionally used to denote sets).
+Using the <em>PERSON</em> example from above, we would depict its structure
+in text as
+<p>
+<center><em>PERSON(SSN, Name, BirthDate(Month, Day, Year),
+    { AcademicDegrees(School, Level, Year) }, { Dependents }, ...)</em>
+</center>
+
+<p>
+Here we have taken the liberty to assume that each academic degree is
+described by a school, level (e.g., H.S., B.S., Ph.D.), and year.
+Thus, <em>AcademicDegrees</em> is not only multi-valued but also
+composite.  We refer to an attribute that involves some combination of
+multi-valuedness <em>and</em> compositeness as a <b>complex</b> attribute.
+
+<p>
+A more complicated example of a complex attribute is <em>AddressPhone</em>
+in Figure 7.5 (page 207). <!--(page 65).-->  This attribute is for recording
+data regarding addresses and phone numbers of a business.
+The structure of this attribute allows for the business to have
+several offices, each described by an address and 
+a set of phone numbers that ring into that office.
+Its structure is given by
+<p>
+<center><em>{ AddressPhone( { Phone(AreaCode, Number) },
+         Address(StrAddr(StrNum, StrName, AptNum), City, State, Zip)) }
+</em>
+</center>
+
+
+<p>
+<b>Stored vs. derived</b> attribute: 
+   Perhaps <em>independent</em> and <em>derivable</em> would be
+   better terms for these (or <em>non-redundant</em> and <em>redundant</em>).
+   In any case, a <em>derived</em> attribute is one whose value can be
+   calculated from the values of other attributes, and hence need not be
+   stored.
+   <b>Examples:</b> <em>Age</em> can be calculated from <em>BirthDate</em>,
+   assuming that the current date is accessible.  <em>GPA</em> can be
+   calculated, assuming that the necessary data regarding courses and
+   grades is accessible.
+
+<p>
+<b>The Null value</b>: In some cases a particular entity might not have an
+applicable value for a particular attribute.
+Or that value may be unknown.
+<!-- Or, in the case of a multi-valued attribute, the appropriate
+     value might be the empty set.  (So then why not empty set as a value???)
+-->
+<p>
+<em>Example</em>: The attribute <em>DateOfDeath</em> is not applicable
+to a living person and its correct value may be unknown for some
+persons who have died.
+
+<p>
+In such cases, we use a special attribute value (non-value?), 
+called <b>null</b>.
+There has been some argument among database experts
+about whether a different approach (such as having distinct values for
+<em>not applicable</em> and <em>unknown</em>) would be superior.
+
+
+<hr>
+<H3>7.3.2: Entity Types, Entity Sets, Keys, and Domains (Value Sets)</H3>
+
+<p>
+Above we mentioned the concept of a <em>PERSON</em> entity,
+i.e., a representation of a particular person via the use of attributes
+such as <em>Name</em>, <em>Sex</em>, etc.  
+As a general rule, for each entity type there will be multiple (perhaps
+even thousands or millions of) entities of that type about which we want
+to store data in the database, each of them described by the same
+collection of attributes.  Of course, the <em>values</em> of those
+attributes will differ from one entity to another (e.g., one person will
+have the name "Mary" and another will have the name "Rumpelstiltskin").
+Just as likely is that we will want our database to store information
+about other kinds of entities, such as business transactions or academic
+courses, which will be described by entirely different collections of
+attributes.
+
+<p>
+This illustrates the distinction between entity types and
+entity instances.
+An <b>entity type</b> serves as a template for a collection of 
+<b>entity instances</b>, all of which are described by the same
+collection of attributes.
+That is, an entity type is analogous to a <b>class</b> in object-oriented
+programming and an entity instance is analogous to a particular object
+(i.e., instance of a class).  (Or, even simpler, an entity type and
+instance, respectively, are analogous to a data type (e.g., integer) and
+a value of that type (e.g., 57).)
+
+
+<p>
+In ER modeling, we deal only with entity types, not with instances.
+In an ER diagram, each entity type is denoted by a rectangular box.
+
+<p>
+An <b>entity set</b> is the collection of all entities of a particular
+type that exist, in a database, at some moment in time.
+
+<p>
+<b>Key Attributes of an Entity Type</b>:
+A minimal collection of attributes
+(often only one) that, by design, distinguishes any two
+(simultaneously-existing) entities of that type.
+In other words, if attributes <em>A<sub>1</sub></em>
+through <em>A<sub>m</sub></em> together form a key of
+entity type <em>E</em>, and <em>e</em> and <em>f</em> are
+two entities of type <em>E</em> existing at the same time,
+then, in at least one of the attributes <em>A<sub>i</sub></em> 
+(<em>0 &lt; i &lt;= m</em>), <em>e</em> and <em>f</em> must have
+distinct values.
+<p>
+An entity type could have more than one key.
+(An example of this appears in Figure 7.7, page 207<!--67-->, in which the
+<tt>CAR</tt> entity type is postulated to have both
+{ <em>Registration(RegistrationNum, State)</em> } and
+{ <em>VehicleID</em> } as keys.)
+
+<p>
+<b>Domains (Value Sets)</b> of Attributes: The domain of an attribute
+is the "universe of values" from which its value can be drawn.
+In other words, an attribute's domain specifies its set of allowable
+values.  The concept is similar to <b>data type</b>.
+
+
+<hr>
+<H3>Example Database Application: COMPANY</H3> 
+
+<p>
+Suppose that Requirements Collection and Analysis results in the
+following (informal) description of the COMPANY miniworld:
+<p>
+The company is organized as a collection of <b>departments</b>.
+<ul>
+  <li>Each department 
+    <ul>
+      <li>has a unique name</li>
+      <li>has a unique number</li>
+      <li>is associated with a set of locations</li>
+      <li>has a particular employee who acts as its manager
+          (and who assumed that position on some date)
+      </li>
+      <li>has a set of employees assigned to it</li>
+      <li>controls a set of projects</li>
+    </ul>
+  </li>
+  <li>Each project 
+    <ul>
+      <li>has a unique name</li>
+      <li>has a unique number</li>
+      <li>has a single location</li>
+      <li>has a set of employees who work on it</li>
+      <li>is controlled by a single department</li>
+    </ul>
+  </li>
+  <li>Each employee
+    <ul>
+      <li>has a name</li>
+      <li>has a SSN that uniquely identifies her/him</li>
+      <li>has an address</li>
+      <li>has a salary</li>
+      <li>has a sex</li>
+      <li>has a birthdate</li>
+      <li>has a direct supervisor</li>
+      <li>has a set of dependents</li>
+      <li>is assigned to one department</li>
+      <li>works some number of hours per week on each of a set of 
+          projects (which need not all be controlled by the same department)
+      </li>
+    </ul>
+  </li>
+  <li>Each dependent 
+    <ul>
+      <li>has first name</li>
+      <li>has a sex</li>
+      <li>has a birthdate</li>
+      <li>is related to a particular employee in a particular way
+          (e.g., child, spouse, pet)
+      </li>
+      <li>is uniquely identified by the combination of her/his
+          first name and the employee of which (s)he is a dependent
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<hr>
+<h3>7.3.3 Initial Conceptual Design of COMPANY database</H3>
+
+<p>
+Using the above structured description as a guide, we get the following
+preliminary design for entity types and their attributes in the
+COMPANY database:
+<ul>
+  <li>DEPARTMENT(<u>Name</u>, <u>Number</u>, { Locations }, 
+      Manager, ManagerStartDate, { Employees }, { Projects })
+  </li>
+  <li>PROJECT(<u>Name</u>, <u>Number</u>, Location, { Workers },
+      ControllingDept)
+  </li>
+  <li>EMPLOYEE(Name(FName, MInit, LName), <u>SSN</u>, Sex, Address,
+         Salary, BirthDate, Dept, Supervisor, 
+         { Dependents }, { WorksOn(Project, Hours) })
+  </li>
+  <li>DEPENDENT(<u>Employee, FirstName</u>, Sex, BirthDate, Relationship)
+  </li>
+  </li>
+</ul>
+(A diagrammatic version of this appears in Figure 7.8, page 211.
+(Note that the set-valued attributes Employees and Projects are absent 
+from the DEPARTMENT entity type and set-valued attribute Workers is absent
+from the PROJECT entity type.)
+&nbsp <a href="elmasri_navathe.dir/en_6e_fig_7-8.pdf">pdf</a>
+&nbsp <a href="elmasri_navathe.dir/en_6e_fig_7-8.tif">tiff</a>)
+
+<p>
+<em>Remarks</em>: Note that the attribute <em>WorksOn</em> of EMPLOYEE
+   (which records on which projects the employee works) is not only
+   set-valued (because there may be several such projects) but also
+   composite, because we want to record, for each such project, the
+   number of hours per week that the employee works on it.
+   Also, each <em>candidate key</em> has been indicated by underlining it.
+<p>
+   For similar reasons, the attributes <em>Manager</em> and
+   <em>ManagerStartDate</em> of DEPARTMENT really ought to be combined
+   into a single composite attribute.  Not doing so causes little or no
+   harm, however, because these are single-valued attributes.
+   Multi-valued attributes would pose some difficulties, on the other
+   hand.  Suppose, for example, that a department could have two or more
+   managers, and that some department had managers Mary and Harry, whose
+   start dates were 10-4-1999 and 1-13-2001, respectively.  Then the
+   values of the <em>Manager</em> and <em>ManagerStartDate</em> attributes
+   should be <em>{ Mary, Harry }</em> and <em>{ 10-4-1999, 1-13-2001 }</em>.
+   But from these two attribute values, there is no way to determine which
+   manager started on which date.
+   <!--
+   As both of these are sets, we could say, equivalently, that the value of
+   the <em>Manager</em> attribute should be <em>{ Harry, Mary }</em>.
+   What this illustrates is that knowing the set of managers and the
+   set of dates on which they became managers does not allow us to determine
+   which manager started on which date!
+   -->
+   On the other hand, by recording this data as a set of ordered pairs,
+   in which each pair identifies a manager and her/his starting date,
+   this deficiency is eliminated.
+<em>End of Remarks</em>
+
+<hr>
+<p>
+<H3>7.4 Relationship Types, Sets, Roles, and Structural Constraints</H3>
+
+<p>
+Having presented a preliminary database schema for COMPANY,
+it is now convenient to clarify the concept of a <b>relationship</b>
+(which is the last of the three main concepts involved in the ER model).
+
+<p>
+<b>Relationship</b>: This is an association between two entities.
+As an example, one can imagine a <tt>STUDENT</tt> entity being
+associated to an <tt>ACADEMIC_COURSE</tt> entity via, say, an
+<tt>ENROLLED_IN</tt> relationship.
+
+<p>
+Whenever an attribute of one entity type refers to
+an entity (of the same or of a different entity type), we
+say that a relationship exists between the two entity types.
+
+<p>
+From our preliminary COMPANY schema, we identify the following
+<b>relationship types</b> (using descriptive names and ordering the
+participating entity types so that the resulting phrase will be
+in active voice rather than passive):
+<ul>
+  <li>EMPLOYEE &nbsp;<tt>MANAGES</tt>&nbsp; DEPARTMENT 
+      (arising from <em>Manager</em> attribute in DEPARTMENT)
+  </li>
+  <li>DEPARTMENT &nbsp;<tt>CONTROLS</tt>&nbsp; PROJECT
+      (arising from <em>ControllingDept</em> attribute in PROJECT
+      and the <em>Projects</em> attribute in DEPARTMENT)
+  </li>
+  <li>EMPLOYEE &nbsp;<tt>WORKS_FOR</tt>&nbsp; DEPARTMENT
+      (arising from <em>Dept</em> attribute in EMPLOYEE and
+      the <em>Employees</em> attribute in DEPARTMENT)
+  </li>
+  <li>EMPLOYEE &nbsp;<tt>SUPERVISES</tt>&nbsp; EMPLOYEE
+      (arising from <em>Supervisor</em> attribute in EMPLOYEE)
+  </li>
+  <li>EMPLOYEE &nbsp;<tt>WORKS_ON</tt>&nbsp; PROJECT
+      (arising from <em>WorksOn</em> attribute in EMPLOYEE and
+      the <em>Workers</em> attribute in PROJECT)
+  </li>
+  <li>DEPENDENT &nbsp;<tt>DEPENDS_ON</tt>&nbsp; EMPLOYEE
+      (arising from <em>Employee</em> attribute in DEPENDENT and the
+      <em>Dependents</em> attribute in EMPLOYEE)
+  </li>
+</ul>
+
+<p>
+In ER diagrams, relationship types are drawn as diamond-shaped boxes
+connected by lines to the entity types involved.  See Figure 7.2, 
+page 204<!--62-->.  Note that attributes are depicted by ovals connected by
+lines to the entity types they describe (with multi-valued attributes
+in double ovals and composite attributes depicted by trees).
+The original attributes that gave rise to the
+relationship types are absent, having been replaced by the
+relationship types.
+
+<p>
+A <b>relationship set</b> is a set of instances of a relationship type.
+If, say, <tt>R</tt> is a relationship type that relates entity types
+<tt>A</tt> and <tt>B</tt>, then, at any moment in time, the
+relationship set of <tt>R</tt> will be a set of ordered pairs
+<em>(x,y)</em>, where <em>x</em> is an instance of <tt>A</tt> and
+<em>y</em> is an instance of <tt>B</tt>.
+What this means is that, for example, if our COMPANY miniworld is,
+at some moment, such that employees
+<em>e<sub>1</sub></em>, <em>e<sub>3</sub></em>, and <em>e<sub>6</sub></em>
+work for department <em>d<sub>1</sub></em>, employees
+<em>e<sub>2</sub></em> and <em>e<sub>4</sub></em>
+work for department <em>d<sub>2</sub></em>, and employees
+<em>e<sub>5</sub></em> and <em>e<sub>7</sub></em>
+work for department <em>d<sub>3</sub></em>,
+<!--
+ <em>e<sub>1</sub></em>, <em>e<sub>2</sub></em>,
+<em>e<sub>3</sub></em>, <em>e<sub>4</sub></em>,
+<em>e<sub>5</sub></em>, <em>e<sub>6</sub></em>, and
+<em>e<sub>7</sub></em> work for departments
+<em>d<sub>1</sub></em>, <em>d<sub>2</sub></em>, <em>d<sub>1</sub></em>,
+<em>d<sub>2</sub></em>, <em>d<sub>3</sub></em>, <em>d<sub>1</sub></em>,
+and <em>d<sub>3</sub></em>, respectively,
+-->
+then the <tt>WORKS_FOR</tt>
+<b>relationship set</b> will include as <b>instances</b> the ordered pairs
+(<em>e<sub>1</sub></em>, <em>d<sub>1</sub></em>),
+(<em>e<sub>2</sub></em>, <em>d<sub>2</sub>)</em>,
+(<em>e<sub>3</sub></em>, <em>d<sub>1</sub>)</em>, 
+(<em>e<sub>4</sub></em>, <em>d<sub>2</sub>)</em>,
+(<em>e<sub>5</sub></em>, <em>d<sub>3</sub>)</em>,
+(<em>e<sub>6</sub></em>, <em>d<sub>1</sub>)</em>, and
+(<em>e<sub>7</sub></em>, <em>d<sub>3</sub>)</em>.
+See Figure 7.9 on page 213<!--71--> for a graphical depiction of this.
+
+<p>
+<b>Ordering of entity types in relationship types</b>:
+Note that the order in which we list the entity types in describing
+a relationship is of little consequence, except that the
+relationship name (for purposes of clarity) ought to be consistent
+with it.  For example, if we swap the two entity types in each
+of the first two relationships listed above, we should rename
+them <tt>IS_MANAGED_BY</tt> and <tt>IS_CONTROLLED_BY</tt>, respectively.
+
+<p>
+<b>7.4.2 Degree of a relationship type</b>:
+Also note that, in our COMPANY example, all relationship instances will
+be ordered pairs, as each relationship associates an instance from
+one entity type with an instance of another (or the same, in the case
+of <tt>SUPERVISES</tt>) entity type.  Such relationships are
+said to be <em>binary</em>, or to have <em>degree</em> two.
+Relationships with degree three (called <em>ternary</em>) or more
+are also possible, but they do not arise as often in practice.
+This is illustrated in Figure 7.10 (page 214<!--72-->),
+where a relationship <tt>SUPPLY</tt>
+(perhaps not the best choice for a name) has as instances ordered
+triples of suppliers, parts, and projects, with the intent being
+that inclusion of the ordered triple 
+<em>(s<sub>2</sub>, p<sub>4</sub>, j<sub>1</sub>)</em>, for
+example, indicates that
+supplier <em>s<sub>2</sub></em> supplied part <em>p<sub>4</sub></em>
+to project <em>j<sub>1</sub>)</em>.
+
+<p>
+<b>Roles in relationships</b>:
+Each entity that participates in a relationship plays a particular
+<em>role</em> in that relationship, and it is often convenient to
+refer to that role using an appropriate name.
+For example, in each instance of a <tt>WORKS_FOR</tt> relationship set,
+the employee entity plays the role of <em>worker</em> or
+(surprise!) <em>employee</em> and
+each department plays the role of <em>employer</em> or (surprise!)
+<em>department</em>.  Indeed, as this example suggests, often it
+is best to use the same name for the role as for the corresponding
+entity type.
+
+<p>
+An exception to this rule occurs when the same entity type plays two
+(or more) roles in the same relationship.
+(Such relationships are said to be <em>reCURsive</em>, which I
+find to be a misleading use of that term.  A better term might be
+<em>self-referential</em>.)
+For example, in each instance of a <tt>SUPERVISES</tt> relationship set,
+one employee plays the role of <em>supervisor</em> and the other plays
+the role of <em>supervisee</em>.
+
+<p>
+<b>7.4.3 Constraints on Binary Relationship Types</b>
+<p>
+Often, in order to make a relationship type be an accurate model
+of the miniworld concepts that it is intended to represent, we
+impose certain constraints that limit the possible corresponding
+relationship sets.  (That is, a constraint may make "invalid" a
+particular set of instances for a relationship type.)
+
+<p>
+There are two main kinds of relationship constraints
+(on binary relationships).
+For illustration, let <em>R</em> be a relationship set consisting of
+ordered pairs of instances of entity types <em>A</em> and <em>B</em>,
+respectively.
+<ul>
+  <li><b>cardinality ratio</b>: 
+      <ul>
+        <p>
+        <li><b>1:1 (one-to-one)</b>:
+            Under this constraint, no instance of <em>A</em> may particpate
+            in more than one instance of <em>R</em>; 
+            similarly for instances of <em>B</em>.
+            In other words, if <em>(a<sub>1</sub>, b<sub>1</sub>)</em> and
+            <em>(a<sub>2</sub>, b<sub>2</sub>)</em> are (distinct)
+            instances of <em>R</em>, then neither
+            <em>a<sub>1</sub> = a<sub>2</sub></em> nor
+            <em>b<sub>1</sub> = b<sub>2</sub></em>.
+            <br><b>Example</b>: Our informal description of COMPANY says
+            that every department has one employee who manages it.
+            If we also stipulate that an employee may not (simultaneously)
+            play the role of manager for more than one department,
+            it follows that <tt>MANAGES</tt> is 1:1.
+        </li>
+        <p>
+        <li><b>1:N (one-to-many)</b>:
+            Under this constraint, no instance of <em>B</em> may participate
+            in more than one instance of <em>R</em>, but instances of
+            <em>A</em> are under no such restriction.
+            In other words, if <em>(a<sub>1</sub>, b<sub>1</sub>)</em> and
+            <em>(a<sub>2</sub>, b<sub>2</sub>)</em> are (distinct)
+            instances of <em>R</em>, then it cannot be the case that
+            <em>b<sub>1</sub> = b<sub>2</sub></em>.
+            <br><b>Example</b>: <tt>CONTROLS</tt> is 1:N because
+            no project may be controlled by more than one department.
+            On the other hand, a department may control any number of
+            projects, so there is no restriction on the number of
+            relationship instances in which a particular
+            department instance may participate.
+            For similar reasons, <tt>SUPERVISES</tt> is also 1:N.
+        </li>
+        <p>
+        <li><b>N:1 (many-to-one)</b>:
+            This is just the same as 1:N but with roles of the two
+            entity types reversed.
+            <br><b>Example</b>: <tt>WORKS_FOR</tt> and <tt>DEPENDS_ON</tt>
+            are N:1.
+        </li>
+        <p>
+        <li><b>M:N (many-to-many)</b>:
+            Under this constraint, there are no restrictions.
+            (Hence, the term applies to the absence of a constraint!)
+            <br><b>Example</b>: <tt>WORKS_ON</tt> is M:N, because an
+            employee may work on any number of projects and a
+            project may have any number of employees who work on it.
+        </li>
+      </ul>
+  </li>
+  Notice the notation in Figure 7.2 (page 204) for indicating each
+  relationship type's cardinality ratio.  
+
+  <p>
+  Suppose that, in designing a database, we decide to include a
+  binary relationship <em>R</em>, as described above, that relates
+  entity types <em>A</em> and <em>B</em>, respectively.
+  To determine how <em>R</em> should be constrained, with respect to 
+  cardinality ratio, the questions you should ask are these:
+  <p>
+    <center>
+    May a given entity of type B be related to multiple entities of type A?
+    <br /> 
+    May a given entity of type A be related to multiple entities of type B?
+    </center>
+  <p>
+  The pair of answers you get maps into the four possible cardinality ratios
+  as follows:
+  <p><center>
+   (yes, yes) &xrarr;   M:N<br />
+   (yes, no)  &xrarr;  N:1<br />
+   (no, yes)  &xrarr;  1:N<br />
+   (no, no)   &xrarr;  1:1</br />
+  </center>
+  <p>
+
+  <li><b>participation</b>: specifies whether or not the existence of an
+      entity depends upon its being related to another entity via
+      the relationship.
+      <ul>
+        <p>
+        <li><b>total participation (or existence dependency)</b>:
+            To say that entity type <em>A</em> is constrained to
+            <b>participate totally</b> in relationship <em>R</em> is to
+            say that if (at some moment in time) <em>R</em>'s instance set is
+            <p><center>
+            <em>{ (a<sub>1</sub>, b<sub>1</sub>),
+                  (a<sub>2</sub>, b<sub>2</sub>), ...
+                  (a<sub>m</sub>, b<sub>m</sub>) }</em>,
+            </center><br>
+            then (at that same moment) <em>A</em>'s instance set must be
+            <em>{ a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>m</sub> }</em>.
+            In other words, there can be no member of <em>A</em>'s instance
+            set that does not participate in at least one instance of
+            <em>R</em>.
+       
+            <p>
+            According to our informal description of COMPANY, every
+            employee must be assigned to some department.
+            That is, every employee instance must
+            participate in at least one instance of <tt>WORKS_FOR</tt>,
+            which is to say that <em>EMPLOYEE</em> satisfies the
+            total participation constraint
+            with respect to the <tt>WORKS_FOR</tt> relationship.
+            <p>
+            In an ER diagram, if entity type <em>A</em> must participate
+            totally in relationship type <tt>R</tt>, the two are connected
+            by a double line.  See Figure 7.2, page 204.
+        </li>
+        <p>
+        <li><b>partial participation</b>:
+            the absence of the total participation constraint!
+            (E.g., not every employee has to participate in <tt>MANAGES</tt>;
+            hence we say that, with respect to <tt>MANAGES</tt>,
+            <em>EMPLOYEE</em> participates partially.  This is not to say
+            that for all employees to be managers is not allowed; it only
+            says that it need not be the case that all employees are
+            managers.
+        </li>
+      </ul>
+  </li>
+</ul>
+
+<p>
+<b>7.4.4 Attributes of Relationship Types</b> (page 218<!--76-->)
+<p>
+Relationship types, like entity types, can have attributes.
+A good example is <tt>WORKS_ON</tt>, each instance of which
+identifies an employee and a project on which (s)he works.
+In order to record (as the specifications indicate) how many
+hours are worked by each employee on each project, we include
+<em>Hours</em> as an attribute of <tt>WORKS_ON</tt>.  (See
+Figure 7.2 again.)
+In the case of an M:N relationship type (such as <tt>WORKS_ON</tt>),
+allowing attributes is vital.  In the case of an N:1, 1:N, or
+1:1 relationship type, any attributes can be assigned to the
+entity type opposite from the 1 side.  For example, the
+<em>StartDate</em> attribute of the <tt>MANAGES</tt> relationship type
+can be given to either the <em>EMPLOYEE</em> or the <em>DEPARTMENT</em>
+entity type. 
+
+<hr>
+<p>
+<b>7.5 Weak Entity Types</b>:
+An entity type that has no set of attributes that qualify as a key
+is called <b>weak</b>.
+(Ones that do are <b>strong</b>.)
+
+<p>
+An entity of a weak identity type is uniquely identified by the
+specific entity to which it is related (by a so-called
+<b>identifying relationship</b> that relates the weak entity type
+with its so-called <b>identifying</b> or <b>owner entity type</b>)
+in combination with some set of its own attributes
+(called a <em>partial key</em>).
+
+<p>
+<b>Example</b>: A <em>DEPENDENT</em> entity is identified by its first name
+together with the <em>EMPLOYEE</em> entity to which it is related via
+<tt>DEPENDS_ON</tt>.  (Note that this wouldn't work for former
+heavyweight boxing champion George Foreman's sons,
+as they all have the name "George"!)
+
+<p>
+Because an entity of a weak entity type cannot be identified otherwise,
+that type has a <b>total participation constraint</b>
+(i.e., <b>existence dependency</b>) with respect to the identifying
+relationship.
+
+<p>
+This should not be taken to mean that any entity type on which a
+total participation constraint exists is weak.  For example,
+DEPARTMENT has a total participation constraint with respect to
+<tt>MANAGES</tt>, but it is not weak.
+
+<p>
+In an ER diagram, a weak entity type is depicted with a double rectangle
+and an identifying relationship type is depicted with a double diamond.
+<p>
+<b>Design Choices for ER Conceptual Design</b>:
+Sometimes it is not clear whether a particular miniworld concept ought to be
+modeled as an entity type, an attribute, or a relationship type.
+Here are some guidelines (given with the understanding that 
+schema design is an iterative process in which an initial design
+is refined repeatedly until a satisfactory result is achieved):
+<ul>
+  <li>As happened in our development of the ER model for COMPANY,
+      if an attribute of entity type <em>A</em> serves as a reference
+      to an entity of type <em>B</em>, it may be wise to refine that
+      attribute into a binary relationship involving entity types
+      <em>A</em> and <em>B</em>.  It may well be that <em>B</em>
+      has a corresponding attribute referring back to <em>A</em>,
+      in which case it, too, is refined into the aforementioned
+      relationship.  In our COMPANY example, this was exemplified by
+      the <em>Projects</em> and <em>ControllingDept</em> attributes
+      of <em>DEPARTMENT</em> and <em>PROJECT</em>, respectively.
+  </li>
+  <li>An attribute that exists in several entity types may be refined
+      into its own entity type.  For example, suppose that in a
+      UNIVERSITY database we have entity types <em>STUDENT</em>,
+      <em>INSTRUCTOR</em>, and <em>COURSE</em>, all of which have a
+      <em>Department</em> attribute.  Then it may be wise to introduce
+      a new entity type, <em>DEPARTMENT</em>, and then to follow the
+      preceding guideline by introducing a binary relationship between
+      <em>DEPARTMENT</em> and each of the three aforementioned entity types.
+  </li>
+  <li>An entity type that is involved in very few relationships
+      (say, zero, one, or possibly two) could be refined into an attribute
+      (of each entity type to which it is related).
+  </li>
+</ul>
+
+<hr>
+<p>
+<b>7.6 Refining the ER Design for the COMPANY Database</b>:
+<p>
+This refers to what has, in effect, been described above, which
+is to take the preliminary design in Figure 7.8 (page 211) and
+to refine it into the ER Diagram in Figure 7.2
+(<a href="elmasri_navathe.dir/en_6e_fig_7-2.pdf">pdf</a> &nbsp;
+<a href="elmasri_navathe.dir/en_6e_fig_7-2.tif">tiff</a>).
+This is accomplished by converting into a <em>relationship type</em>
+each attribute that represents a relationship and to indicate, for
+each relationship type, whatever cardinality and participation constraints
+are appropriate for it.
+</p><p>
+A slightly different ER Diagram notation (from Abrial) that provides
+a little more specificity as to cardinality ratio constraints, is
+shown in Figure 7.15 
+(<a href="elmasri_navathe.dir/en_6e_fig_7-15.pdf">pdf</a> &nbsp;
+<a href="elmasri_navathe.dir/en_6e_fig_7-15.tif">tiff</a>).
+
+<hr>
+<p>
+<b>7.7 ER Diagrams, Naming Conventions, and Design Issues</b>:
+<p>
+This section discusses our choice of names for the entity and
+relationship types in our ER Diagram (in Figure 7.2) depicting
+the COMPANY database.  It also discusses the diagrammatic features
+of the ER Modeling "language" (see Figure 7.14, page 223).
+
+<hr>
+<p>
+<b>7.8 Example of Another Notation: UML Class Diagrams</b>:
+<p>
+This section compares ER Diagrams with UML class diagrams, which
+are quite similar.
+
+</body>
+</html>
+

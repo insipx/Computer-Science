@@ -1,0 +1,274 @@
+<html>
+<head>
+</head>
+<body>
+<center>
+<table border="1">
+<caption align="top"><b>RedBlueClassifier</b></caption>
+<tr><td>
+<pre>/* Generic Java interface whose implementing classes include methods that
+** classify an element (of the reference type used in instantiating the
+** class) as being in either of two categories, which are whimsically 
+** referred to here as Red and Blue.
+**
+** Author: R. McCloskey, Sept. 2017
+*/
+public interface <b>RedBlueClassifier&lt;T&gt;</b> {
+
+   // Returns true if the given item is classified as Red, false otherwise.
+   boolean isRed(T item);
+
+   // Returns true if the given item is classified as Blue, false otherwise.
+   boolean isBlue(T item);
+}</pre>
+</td></tr>
+</table>
+</center>
+
+<br />
+</p><p>
+<center>
+<table border="1">
+<caption align="top"><b>EvenOddClassifier</b></caption>
+<tr><td>
+<pre>/* An instance of this class, which implements the RedBlueClassifier
+** interface, classifies even integers as Red and odd integers as Blue.
+**
+** Author: R. McCloskey, Sept. 2017
+*/
+public class <b>EvenOddClassifier</b> implements RedBlueClassifier&lt;Integer&gt; {
+
+   public boolean isRed(Integer r) { return r % 2 == 0; }
+   public boolean isBlue(Integer r) { return r % 2 != 0; }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+<br />
+</p><p>
+<center>
+<table border="1">
+<caption align="top"><b>EvenOddClassifier</b></caption>
+<tr><td>
+<pre>/* An instance of this class, which implements the RedBlueClassifier
+** interface, classifies negative Integers as Red and positive (more
+** accurately, nonnegative) Integers as Blue.
+*/
+
+public class NegPosClassifier implements RedBlueClassifier&lt;Integer&gt; {
+
+   public boolean isRed(Integer r) { return r < 0; }
+   public boolean isBlue(Integer r) { return r >= 0; }
+}
+}</pre>
+</td></tr>
+</table>
+</center>
+
+<br />
+</p><p>
+<center>
+<table border="1">
+<caption align="top"><b>RedBluePartitioner</b></caption>
+<tr><td>
+<pre>/* An instance of this class has a method that partitions a given array into
+** two segments in accord with a given Red-Blue Classifier.
+** After partitioning an array, it can report how many swaps occurred
+** while doing so, as well as the location of the boundary between the
+** Red and Blue segments.
+*/
+
+public class <b>RedBluePartitioner</b> {
+
+   // instance variables
+   // ------------------
+
+   // With respect to the most recent execution of the partition() method, 
+   // these variables store the # of swaps that occurred and the location of
+   // the Red/Blue segment boundary, respectively.
+   private int swapCount; 
+   private int r;     
+
+
+   // observers
+   // ---------
+
+   /* Returns the location marking the boundary between the Red and Blue
+   ** segments of whatever array was most recently partitioned by this
+   ** Partitioner.  Specifically, the Red segment includes the locations 
+   ** in the range [0,redBlueBoundary()) and the Blue segment includes
+   ** the locations in the range [redBlueBoundary(),N), where N is the 
+   ** length of the array.
+   */
+   public int redBlueBoundary() { return r; }
+
+
+   /* Returns the number of swaps that occurred during the most recent
+   ** execution of the partition() method.
+   */
+   public int swapCount() { return swapCount; }
+
+
+   /* Partitions the given array in accord with the given Red-Blue
+   ** classifier.  This method employs a loop whose invariant says that
+   ** the Red, Blue, and "?" array segments are in that order.
+   */
+   public &lt;T&gt; void partition(T[] A, RedBlueClassifier&lt;T&gt; c)
+   {
+      swapCount = 0; 
+      r = 0;         // no declaration; this is an instance variable
+      int b = 0;
+
+      assert 0&lt;=r &amp;&amp; r&lt;=b &amp;&amp; b&lt;=A.length : "boundary breach";
+      assert allRed(c,A,0,r) :  "Red segment breach";
+      assert allBlue(c,A,r,b) : "Blue segment breach";
+
+      // loop invariant: 0 <= r <= b <= A.length &&
+      //                 all elements in A[0..r-1] are Red &&
+      //                 all elements in A[r..b-1] are Blue 
+      while (b != A.length) {
+         if (c.isRed(A[b])) {
+            swap(A, r, b);
+            r++; b++;
+         }
+         else if (c.isBlue(A[b])) { 
+            b++;
+         }
+         else {
+            System.out.println("This should never be printed.");
+         }
+         assert 0&lt;=r &amp;&amp; r&lt;=b &amp;&amp; b&lt;=A.length : "boundary breach";
+         assert allRed(c,A,0,r) :  "Red segment breach";
+         assert allBlue(c,A,r,b) : "Blue segment breach";
+      }
+   }
+
+
+   /* Swaps the values occupying the specified locations in the specified array.
+   */
+   private &lt;T&gt; void swap(T[] ary, int i, int j) {
+      T temp = ary[i]; ary[i] = ary[j]; ary[j] = temp; swapCount++;
+   }
+
+   /* Returns true if all elements in the specified array segment
+   ** (i.e., ary[low..high-1]) are classified as Red by the specified
+   ** Classifier c, false otherwise.
+   ** pre: 0 <= low <= high <= ary.length
+   */
+   private &lt;T&gt; boolean allRed(RedBlueClassifier&lt;T&gt; c,
+                              T[] ary, int low, int high)  {
+      int i = low;
+      // loop invariant: all elements in ary[low..i-1] are Red
+      while (i != high  &&  c.isRed(ary[i])) { 
+         i++;
+      }
+      return i == high;
+   }
+
+
+   /* Returns true if all elements in the specified array segment
+   ** (i.e., ary[low..high-1]) are classified as Blue by the specified
+   ** Classifier c, false otherwise.
+   ** pre: 0 <= low <= high <= ary.length
+   */
+   private &lt;T&gt; boolean allBlue(RedBlueClassifier&lt;T&gt; c,
+                               T[] ary, int low, int high)  {
+      int i = low;
+      // loop invariant: all elements in ary[low..i-1] are Blue
+      while (i != high  &&  c.isBlue(ary[i])) { 
+         i++;
+      }
+      return i == high;
+   }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+<br />
+</p><p>
+<center>
+<table border="1">
+<caption align="top"><b>Partition2App</b></caption>
+<tr><td>
+<pre>import java.util.Arrays;
+
+/* Java application intended to demonstrate how to 2-color partition an array using
+** a RedBluePartitioner object supported by instances of classes that implement the
+** RedBlueClassifier interface.  Specifically, an array of Integers is partitioned
+** in accord with an EvenOddClassifier and a NegPosClassifier.
+** 
+** Author: R. McCloskey, Sept. 2017
+*/
+public class Partition2App {
+
+   // Create the Red-Blue partitioner used in this program.
+   static RedBluePartitioner partitioner = new RedBluePartitioner();
+   
+   public static void main(String[] args)
+   {
+      Integer[] b; 
+
+      // Partition an Integer array into even/odd segments
+      b = someIntegerArray();
+      partitionArray(b, new EvenOddClassifier());
+
+      System.out.println("\n-----------------------------");
+      // Partition an Integer array into negative/nonnegative segments
+      b = someIntegerArray();
+      partitionArray(b, new NegPosClassifier());
+   }
+
+   /* Displays the elements of the specified array, partitions the array in 
+   ** accord with the specified Red-Blue clasifier, and then displays the 
+   ** contents of the Red and Blue segments of the array.
+   */
+   private static &lt;T&gt; void partitionArray(T[] a, 
+                                          RedBlueClassifier&lt;T&gt; rbc)
+   {
+      System.out.print("About to partition this array:\n");
+      printArySeg(a,0,a.length);
+      partitioner.partition(a, rbc);
+      printReport(a);
+      System.out.println();
+   }
+
+
+   /* Given a RedBluePartitioner and the array that it most recently
+   ** partitioned, displays the results.  Specifically, it displays the
+   ** number of swaps that occurred and the contents of each of the two
+   ** segments of the array.
+   */
+   private static void printReport(Object[] ary)
+   {
+      int rbBoundary = partitioner.redBlueBoundary();
+
+      System.out.println("\n\n# of swaps: " + partitioner.swapCount());
+      System.out.print("Red segment values: ");
+      printArySeg(ary, 0, rbBoundary);
+      System.out.print("\nBlue segment values: ");
+      printArySeg(ary, rbBoundary, ary.length);
+   }
+
+   /* For each element in the specified array segment (i.e., ary[low..high-1]),
+   ** its toString() image is displayed, followed by a space.
+   */
+   private static void printArySeg(Object[] ary, int low, int high) {
+      for (int i = low; i != high; i++) {
+         System.out.print(ary[i]);  System.out.print(' ');
+      }
+   }
+
+   /* Returns an array of Integer objects.
+   */
+   private static Integer[] someIntegerArray() {
+     return new Integer[] { 5, -13, 0, -6, 1, -8, 7, 9, 0, -4, 2, 7 };
+   }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</body>
+</html>

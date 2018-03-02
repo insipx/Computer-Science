@@ -1,0 +1,112 @@
+<html>
+<head><title>Some Java String methods</title>
+</head>
+<body>
+<h2>CMPS 134 : Some Java String methods</h2>
+
+</p><p>
+Letting <tt>str</tt> and <tt>str2</tt> be of type <tt>String</tt>,
+<tt>k</tt> and <tt>m</tt> be of type <tt>int</tt>,
+and <tt>ch</tt> be of type <tt>char</tt>,
+here are examples of invocations of methods in the 
+<tt>java.lang.String</tt> class:
+
+</p><p>
+<table border="1" cellpadding="4">
+<tr><th>method<br />Invocation</th>
+    <th>Return Type</th>
+    <th>Value Returned</th>
+</tr>
+<tr>
+  <td><tt>str.length()<tt></td>
+  <td><tt>int</tt></td>
+  <td>length of <tt>str</tt></td>
+</tr>
+<tr>
+  <td><tt>str.equals(str2)<tt></td>
+  <td><tt>boolean</tt></td>
+  <td><tt>true</tt> if <tt>str</tt> and <tt>str2</tt> are equal
+      (meaning that their values are identical sequences of characters),
+      <tt>false</tt> otherwise
+  </td>
+</tr>
+<tr>
+  <td><tt>str.indexOf(ch)<tt></td>
+  <td><tt>int</tt></td>
+  <td>lowest-numbered position in <tt>str</tt> at which <tt>ch</tt> occurs,
+      or -1 if there are no occurrences.
+  </td>
+</tr>
+<tr>
+  <td><tt>str.indexOf(ch,k)</tt></td>
+  <td><tt>int</tt></td>
+  <td>lowest-numbered position not less than <tt>k</tt> 
+      at which <tt>ch</tt> occurs in <tt>str</tt>, 
+      or -1 if there are no such occurrences.
+  </td>
+</tr>
+<tr>
+  <td><tt>str.lastIndexOf(ch)</tt></td>
+  <td><tt>int</tt></td>
+  <td>highest-numbered position in <tt>str</tt> at which <tt>ch</tt>
+      occurs, or -1 if there are no occurrences.
+  </td>
+</tr>
+<tr>
+  <td><tt>str.lastIndexOf(ch,k)</tt></td>
+  <td><tt>int</tt></td>
+  <td>highest-numbered position not greater than <tt>k</tt> at which
+      <tt>ch</tt> occurs in <tt>str</tt>, or -1 if there are no such
+      occurrences.
+  </td>
+</tr>
+<tr>
+  <td><tt>str.substring(k,m)</tt></td>
+  <td><tt>String</tt></td>
+  <td>substring of <tt>str</tt> extending from position <tt>k</tt>
+      through position <tt>m-1</tt>.
+  </td>
+</tr>
+<tr>
+  <td><tt>str.substring(k)</tt></td>
+  <td><tt>String</tt></td>
+  <td>suffix of <tt>str</tt> starting at position <tt>k</tt>.
+  </td>
+</tr>
+<tr>
+  <td><tt>str.charAt(k)</tt></td>
+  <td><tt>char</tt></td>
+  <td>character at position <tt>k</tt> of <tt>str</tt>.</td>
+</tr>
+<tr>
+  <td><tt>str.concat(str2)</tt><br /><center>or, equivalently<br /></center>
+      <tt>str + str2</tt></td>
+  <td><tt>String</tt></td>
+  <td>string that results from concatenating <tt>str</tt> and <tt>str2</tt>.
+  </td>
+</tr>
+<tr>
+  <td><tt>str.trim()</tt></td>
+  <td><tt>String</tt></td>
+  <td>string identical to <tt>str</tt> except that any leading or trailing
+      whitespace characters (e.g., spaces, tabs) have been removed
+  </td>
+</tr>
+<tr>
+  <td><tt>str.toUpperCase()</tt></td>
+  <td><tt>String</tt></td>
+  <td>string identical to <tt>str</tt> except that any lower case letters
+      have been replaced by their upper case counterparts
+  </td>
+</tr>
+<tr>
+  <td><tt>str.toLowerCase()</tt></td>
+  <td><tt>String</tt></td>
+  <td>string identical to <tt>str</tt> except that any upper case letters
+      have been replaced by their lower case counterparts
+  </td>
+</tr>
+</table>
+
+</body>
+</html>

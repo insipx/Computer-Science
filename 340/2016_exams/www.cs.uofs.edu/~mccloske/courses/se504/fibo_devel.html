@@ -1,0 +1,376 @@
+<html>
+<head>
+  <title>Development of a program to compute Fibonacci numbers</title>
+</head>
+
+<body>
+<H3>
+SE 504<br>
+Development of a program to compute Fibonacci numbers
+</H3>
+
+<p>
+The Fibonacci function is often defined as follows:
+<p>
+<center>
+<table border="0" cellpadding="0">
+<tr><td>f.0 = 0</td></tr>
+<tr><td>f.1 = 1</td></tr>
+<tr><td>f.k = f.(k-2) + f.(k-1) &nbsp; (for k&gt;1)</tr>
+</table>
+</center>
+
+</p><p>
+Viewing this function as defining the sequence
+</p><p>
+<center>&lt; f.0, f.1, f.2, f.3, ... &gt;</center>
+</p><p>
+gives rise to the so-called Fibonacci sequence
+</p><p>
+<center>&lt; 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, ... &gt;</center>
+<p>
+in which, beginning at the third element, each element is the sum of
+the preceding two.
+
+<p>
+Let's develop a program that, given as input a positive integer N,
+calculates f.N.  Here is a specification:
+
+<pre><code>
+  |[ con N : int;  { N &gt; 0 }
+     var m : int;
+
+     compute_f.N
+
+     { Q : m = f.N }
+  ]|
+</code></pre>
+
+<p>
+It seems likely that we will need to use repetition to solve this problem.
+Applying the <em>replace a constant by a variable</em> heuristic, we can
+rewrite the postcondition <em>Q</em> as the slightly stronger
+<!--  <em>Q'</em>: -->
+<p>
+<center><tt>Q' : m = f.n  &nbsp;&and;&nbsp; n = N</tt></center>
+
+<p>
+Applying the <em>remove a conjunct</em> heuristic, we take the first
+conjunct of <tt>Q'</tt> as a loop invariant and the second as the
+negation of the loop's guard.  We obtain the following refinement of the 
+specification:
+
+<pre><code>
+  |[ con N : int;  { N &gt; 0 }
+     var m : int;
+     var n : int;
+
+     n, m := ?, ?;
+     { I : m = f.n }
+     do n != N  &xrarr;  n, m := ?, ?;
+     od
+     { Q' : m = f.n &nbsp;&and;&nbsp; n = N }
+     { Q : m = f.N }
+  ]|
+</code></pre>
+
+<p>
+First we consider how to initialize <code>n</code> and <code>m</code> so as
+to "truthify" the proposed loop invariant.  That is, we wish to find
+expressions to replace the question marks so that the Hoare Triple
+<p>
+<center><code>{ true } n,m := ?,? {I}</code></center>
+<p>
+holds.  (The post-condition of initialization is the loop invariant;
+the pre-condition of this program is <em>true</em>.  Technically, the
+condition N &gt; 0 is a pre-condition, but because it involves
+only constants we view it as a "global invariant".)
+The obvious possibilities for initialization
+are <code>n,m := 0,0</code> (reflecting the fact that f.0 = 0)
+and <code>n,m := 1,1</code> (reflecting the fact that f.1 = 1).
+We choose the latter for reasons that will become clear later.
+
+<p>
+Either way, this suggests that <code>n</code> should be increased within
+the body of the loop so as to eventually reach value <code>N</code>.
+The simplest way to do that is by incrementing <code>n</code>, so that's
+what we propose.  These refinements lead to the program
+<pre>
+  |[ con N : int;  { N &gt; 0 }
+     var m : int;
+     var n : int;
+
+     n,m := 1,1;
+     { I : m = f.n }
+     do n != N  --->  n,m := n+1,?;
+     od
+     { Q' : m = f.n &nbsp; &and; &nbsp; n = N }
+     { Q : m = f.N }
+  ]|
+</code></pre>
+
+<p>
+It remains to determine how to update <code>m</code> inside the body of
+the loop.  We attempt to calculate the appropriate expression <code>E</code>
+by proving item <em>(ii)</em> among the five proof obligations for a loop:
+
+<pre>
+<em>(ii)</em> {I &and; B} n,m := n+1,E {I}
+
+Assume I and B.
+
+     wp.(n,m := n+1,E).I
+
+  =    < wp assignment law >
+
+     I(n,m := n+1,E)
+
+  =    < defn of I; textual sub. >
+
+     E = f.(n+1)
+</pre>
+
+At this point, our only manipulative opportunity arises from the third
+equation in the definition of <em>f</em>.  However, for that equation
+to apply requires that <code>n+1&gt;1</code>, i.e., <code>n&gt;0</code>.
+As we initialized <code>n</code> to 1 and thereafter all changes to
+<code>n</code> are due to incrementing it, it is clear that 
+<code>n&gt;0</code> will be true.
+(<b>Note:</b> This explains why we initialized <code>n</code> to 1 rather
+than to 0!  <b>End of note.</b>)
+Hence, we incorporate this condition
+into the loop invariant so that we can use it here as an assumption.
+Starting the proof over again with the stronger version of <code>I</code>
+(namely, <code>I = I<sub>0</sub> &and; I<sub>1</sub></code>, where
+<code>I<sub>0</sub> : m = f.n</code> and <code>I<sub>1</sub> : n &gt; 0</code>),
+we get
+
+<p>
+<em>(ii)</em> <code>{I &and; B} n,m := n+1,E {I}</code>
+
+<pre>
+Assume I (i.e., m = f.n and n &gt; 0) and B.
+
+     wp.(n,m := n+1,E).I
+
+  =    < wp assignment law >
+
+     I(n,m := n+1,E)
+
+  =    < defn of I; textual sub. >
+
+     E = f.(n+1) &nbsp;&and;&nbsp; n+1 &gt; 0
+
+  =    < assumption n &gt; 0 implies 2nd conjunct; (Gries 3.39) >
+
+     E = f.(n+1)
+
+  =    < assumption n &gt; 0 implies n+1 &gt; 1,
+         justifying use of 3rd equation in defn of f >
+
+     E = f.(n-1) + f.n
+
+  =    < assumption m = f.n >
+
+     E = f.(n-1) + m
+</pre>
+
+At this point, we observe that it would be nice to have a program variable,
+say <tt>r</tt>, guaranteed to have value f.(n-1) at this point in
+execution, because then we could finish the derivation of E:
+
+<pre><code>
+  =    < assumption r = f.(n-1) >
+
+     E = r + m
+</code></pre>
+ 
+As we are free to introduce such a variable, we do so!  That is, we
+<em>strengthen the loop invariant</em> by adding
+<code>I<sub>2</sub> : r = f.(n-1)</code> as a new conjunct.
+Of course, doing this brings with it the responsibility to introduce
+code to initialize <code>r</code> so as to truthify <code>I<sub>2</sub></code>
+and to update <code>r</code> during each loop iteration so as to preserve
+the truth of <code>I<sub>2</sub></code>.  The refined program is as follows:
+
+<pre>
+  |[ con N : int;  { N &gt; 0 }
+     var m, r : int;
+     var n : int;
+
+     n, m, r := 1, 1, ?;
+     { I : I<sub>0</sub> &and; I<sub>1</sub> &and; I<sub>2</sub>, where
+       I<sub>0</sub> : m = f.n, I<sub>1</sub> : n &gt; 0, and I<sub>2</sub> : r = f.(n-1) }
+     do n != N  --->  n, m, r := n+1, r+m, ?;
+     od
+     { Q' : m = f.n &nbsp; &and; &nbsp; n = N }
+     { Q : m = f.N }
+  ]|
+</pre>
+
+
+Let's calculate the proper initialization to <tt>r</tt>, by deriving an
+expression <code>F</code> satisfying <code>{true} n,m,r := 1,1,F {I}</code>.
+
+<p>
+By the Hoare Triple Assignment Law (and (Gries 3.73)),
+this is equivalent to <code>[I(n,m,r := 1,1,F)]</code>.
+
+<pre>
+     I(n,m,r := 1,1,F)
+
+  =    < defn of I; text. sub. >
+
+     1 = f.1  &and;  1 > 0  &and;  F = f.(1-1)
+
+  =    < defn of f; arithmetic, (Gries 3.39) >
+
+     F = f.0
+
+  =    < defn of f >
+
+     F = 0 
+</pre>
+
+Next we determine how to modify <code>r</code> during each iteration.
+As our previous work has demonstrated that execution of the loop body
+preserves the truth of <code>I<sub>0</sub></code> and
+<code>I<sub>1</sub></code> (neither of which mention <code>r</code>),
+we use as a postcondition only <code>I<sub>2</sub></code>. 
+<pre><code>
+     {I &and; B} n,m,r := n+1, r+m, G {I<sub>2</sub>}
+
+Assume I and B.
+
+     wp.(n,m,r := n+1,r+m,G).I<sub>2</sub>
+
+  =    < defn of I<sub>2</sub>; text. sub >
+
+     G = f.(n+1-1)
+
+  =    < arithmetic >
+
+     G = f.n
+
+  =    < assumption m = f.n >
+
+     G = m
+</code></pre>
+
+We obtain the following program:
+
+<pre><code>
+  |[ con N : int;  { N &gt; 0 }
+     var m, r : int;
+     var n : int;
+
+     n,m,r := 1,1,0;
+     { I : I<sub>0</sub> &and; I<sub>1</sub> &and; I<sub>2</sub>, where I<sub>0</sub> : m = f.n, I<sub>1</sub> : n &gt; 0, and I<sub>2</sub> : r = f.(n-1) }
+     do n != N  &xrarr;  n, m, r := n+1, r+m, m;
+     od
+     { Q' : m = f.n &nbsp; &and; &nbsp; n = N }
+     { Q : m = f.N }
+  ]|
+</code></pre>
+
+All that remains is to provide a bound function.  Here, the obvious
+choice is <code>t : N-n</code>.  Technically, in order to prove item
+<em>(iv)</em>, we need to include the condition <code>n&le;N</code>
+within the loop invariant.  (We can incorporate this into
+<code>I<sub>1</sub></code>.) Clearly, this condition is truthified
+by initializing <code>n</code> to 1 (given that <code>N&gt;0</code> is
+a global invariant) and preserved by incrementing <code>n</code> when
+it is known that <code>n&lt;N</code>, as is guaranteed by 
+<code>I &and; B</code>.
+<p>
+Here is the final, annotated program:
+
+<pre><code>
+  |[ con N : int;  { N &gt; 0 }
+     var m, r : int;
+     var n : int;
+
+     n,m,r := 1,1,0;
+     { I : I<sub>0</sub> &and; I<sub>1</sub> &and; I<sub>2</sub>, where I<sub>0</sub> : m = f.n, I<sub>1</sub> : 0&lt;n&le;N, and I<sub>2</sub> : r = f.(n-1) }
+     { t : N-n }
+     do n != N  &xrarr;  n, m, r := n+1, r+m, m;
+     od
+     { Q' : m = f.n &nbsp; &and; &nbsp; n = N }
+     { Q : m = f.N }
+  ]|
+</code></pre>
+
+</p><p>
+Given the roles played by variables <tt>m</tt> and <tt>r</tt>, one could
+make a reasonable argument that <tt>fibThis</tt> and <tt>fibPrev</tt>,
+respectively, would be better names. 
+
+</p><p>
+Suppose that the precondition had been the weaker <code>N&ge;0</code>
+rather than <code>N&gt;0</code>.  Since the program we developed above
+works for any <code>N</code> strictly greater than zero, all we need to
+do is to introduce a selection command, one branch of which handles the
+case <code>N=0</code> and the other of which handles the case
+<code>N&gt;0</code>.  Of course, the body of the latter branch would be
+the loop (preceded by initialization code) that we developed above.
+The body of the former branch would simply set <code>m</code> to zero,
+as f.0 = 0.  Here is that program:
+
+<pre><code>
+  |[ con N : int;  { N &gt; 0 }
+     var m, r : int;
+     var n : int;
+
+     if N = 0 &xrarr; m := 0;
+     [] N > 0 &xrarr; 
+        { N > 0 }
+        n,m,r := 1,1,0;
+        { I : I<sub>0</sub> &and; I<sub>1</sub> &and; I<sub>2</sub>, where I<sub>0</sub> : m = f.n, I<sub>1</sub> : 0&lt;n&le;N, and I<sub>2</sub> : r = f.(n-1) }
+        { t : N-n }
+        do n != N  &xrarr;  n, m, r := n+1, r+m, m;
+        od
+        { Q' : m = f.n &nbsp; &and; &nbsp; n = N }
+     fi
+     { Q : m = f.N }
+  ]|
+</code></pre>
+
+</p><p>
+But this solution lacks some of the elegance of the original.
+Can we somehow avoid having to introduce the selection command in order
+to handle the case <code>N = 0</code>?
+It turns out that we can!  
+The only place where our reasoning relies upon <tt>n&gt;0</tt> is in the 
+proof of loop checklist item <em>(ii)</em>, as there we made use of the 
+fact that, by definition, n&gt;0 implies f.(n+1) = f.(n-1) + f.n.
+(But this equation fails to hold for n = 0, because 
+f.(-1) is not even defined.)
+
+</p><p>
+But there is no reason why we cannot modify the definition of f()
+to enlarge its domain, as long as we change nothing else about the function.
+So what we seek is a value for f.(-1) that is consistent with
+f.1 = f.(-1) + f.0 (the recursive case of the function instantiated
+with k=1).  But this works out to f.(-1) = f.1 - f.0 = 1 - 0 = 1.
+
+</p><p>
+All we have to change to make our original solution work is to make
+the loop initialization code be
+</p><p><center><code>n,m,r := 0,0,1;</code></center>
+
+</p><p>
+The loop invariant is weakened insofar as <code>I<sub>2</sub></code> becomes
+<p><center><code>I<sub>2</sub> : 0&le;n&le;N</code></center>
+
+</p><p>
+Another generalization that could be made is to define
+f.0 = A and f.1 = B, where A and B are "input constants".  
+(Thus our domain-enlarged function has f.(-1) = B-A.) 
+Then all we have to change in the program is to make the 
+initialization assignment be
+
+</p><p><center><code>n,m,r := 0,A,B-A;</code></center>
+
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<html>
+<head>
+<title>  </title>
+</head>
+
+<body>
+<!--
+<H2>1999 U of S Programming Contest II<br>
+    November 3, 1999<br>
+    Problem 3: Boolean Matrix Error Correction
+</H2>
+-->
+<H2>Boolean Matrix Error Correction</H2>
+
+A boolean matrix is one in which each element is either 0 or 1.
+Such a matrix is said to possess the <b>even parity property</b> if
+each row and each column has an even sum,
+i.e., contains an even number of 1's.
+Here's a 4 x 4 matrix which has the even parity property:
+
+<p>
+<pre>1 0 1 0
+0 0 0 0
+1 1 1 1
+0 1 0 1
+</pre>
+
+<p>
+The sums of the rows are 2, 0, 4, and 2, respectively, and the sum of 
+each and every column is 2.
+
+<p>
+You are to develop a program that takes as input a series of boolean matrices,
+and, for each one, determines whether it possesses the even parity property.
+If a matrix does possess this property, your program should report that
+fact (by printing the message "OK").  
+If not, your program should determine whether the even parity property can 
+be established by flipping only one bit in the matrix.  If so, the program
+should report the location of such a bit.  (The location of the bit in the
+i-th row and j-th column is denoted by the ordered pair <b>(i,j)</b>.
+We count rows from top to bottom and columns from left to right
+starting at zero.)
+If it is not possible to establish the even parity property by flipping
+only a single bit, your program is to report that the matrix is
+"corrupt".
+
+<p>
+Each matrix given as input will be a square matrix (meaning that it has
+an equal number of rows and columns) having at most 20 rows.
+Each matrix will be represented using <em>n</em>+1 lines, where <em>n</em>
+is the number of rows (and columns).  The first line shall contain the
+number <em>n</em> and each of the following <em>n</em> lines will contain
+one row from the matrix (a sequence of <em>n</em> 0's and 1's, separated
+from each other by spaces).
+
+<p>
+<b>Sample Input</b>
+<pre>4
+1 0 1 0
+0 0 0 0
+1 1 1 1
+0 1 0 1
+4
+1 0 1 0
+0 0 1 0
+1 1 1 1
+0 1 0 1
+4
+1 0 1 0
+0 1 1 0
+1 1 1 1
+0 1 0 1</pre>
+
+<p>
+<b>Sample Output</b>
+<pre>OK
+Change bit at location (1,2)
+Corrupt</pre>
+
+<P>
+
+</body>
+</html>

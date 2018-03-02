@@ -1,0 +1,52 @@
+<html>
+<head><title>Algorithms for B<sup>+</sup>-Trees</title>
+</head>
+<body>
+<h2>CMPS 340  File Processing<br />
+B<sup>+</sup>-Trees:  Algorithms for Insertion/Deletion
+</h2>
+
+
+<pre>
+Insert<sup>+</sup>(R):
+  BEGIN
+    find bucket M where R "belongs";  --depends entirely upon R.KEY
+    place R into proper place within M;
+    IF M is overflowing THEN
+       IF M has an immediate sibling M' not on the verge of overflowing THEN
+          redistribute from M to M'
+          appropriately modify the separator of M and M' in their parent
+       ELSE --redistribution not possible
+          split M (i.e., allocate new bucket M' and move second half of
+                         records in M into M')
+          using the B-tree insertion algorithm, insert into their parent a
+                   value that serves as a separator for M and M' 
+       ENDIF
+    ELSE --M not overflowing
+       do nothing
+    ENDIF
+  END Insert;
+
+
+Delete<sup>+</sup>(k):
+  BEGIN
+    find bucket M containing R, where R.KEY = k;
+    remove R from M;
+    IF M is underflowing THEN
+       IF M has an immediate sibling M' not on verge of underflowing THEN
+          redistribute from M' to M
+          appropriately modify the separator of M and M' in their parent
+       ELSE --redistribution not possible
+          merge M and an immediate sibling M' (i.e., move all records of M
+                into M' and then free the space used by M)
+          using B-tree deletion algorithm, delete the separator of M and M'
+                (and the child pointer to M) from their parent
+       ENDIF
+    ELSE --M not underflowing
+       do nothing
+    ENDIF
+  END Delete;
+</pre>
+
+</body>
+</html>

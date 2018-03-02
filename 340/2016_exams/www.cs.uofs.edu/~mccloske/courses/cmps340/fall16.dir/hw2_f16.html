@@ -1,0 +1,143 @@
+<html>
+<head>
+  <title>CMPS 340 Fall 2016 HW #2</title>
+</head>
+<body>
+<h2>CMPS 340  Fall 2016<br />
+    HW #2: Relational Model Constraints and ER-to-Relational Mapping<br />
+    Due: 1pm, Wednesday, September 14
+</h2>
+
+<b>1.</b>
+<em>(i)</em>
+For each of the following "update" operations ((a) through (g)), indicate
+(by placing marks in the appropriate table cells) which relational constraints
+would be violated if the operation were applied to the <tt>COMPANY</tt>
+database state/snapshot illustrated in 
+<a href="../elmasri_navathe.dir/en_6e_fig_3-6.pdf">Figure 3.6</a> (page 72)
+of the E&amp;N textbook (6th edition).
+<!-- (In the 5th edition, see Figure 5.6, page 159.) -->
+For definitions of these constraints, see Sections 3.2.1, 3.2.2, and 3.2.4.
+<!-- (Change the chapter numbers from 3 to 5 in 5th edition.) -->
+You are to assume that the database remains unchanged except for the
+particular tuple mentioned.
+
+<!--Assume that the <b>ON DELETE RESTRICT</b> 
+   <b>cascade</b> option (see near bottom of page 77 in
+   6th edition, page 163 in 5th) <b>is not</b> in effect.
+-->
+
+</p><p>
+<em>(ii)</em>
+For each <b>delete</b> operation (i.e., (f) and (g)), identify all
+tuples (other than the one explicitly mentioned) that would be removed
+from the database, assuming (contrary to part <em>(i)</em>) that the
+<b>ON DELETE CASCADE</b> option were in effect for each foreign key
+in the database.  (This option says that, if tuple A refers (via a
+foreign key) to tuple B, and tuple B is deleted, then tuple A must
+also be deleted.)
+
+</p><p>
+<table border="0" cellpadding="10">
+<tr>
+  <td>  <!-- left column are the update operations -->
+    <b>(a)</b> Insert &lt;'End Global Warming', 13, 'Scranton', 8&gt; 
+               into <tt>Project</tt>.<br />
+    <b>(b)</b> Insert &lt;'888665555', 7, 'Many'&gt; into 
+               <tt>Works_On</tt>.<br />
+    <b>(c)</b> Insert &lt;4, NULL&gt; into <tt>Dept_Locations</tt>.<br />
+    <b>(d)</b> Insert &lt;'Mary', 'J', 'Rumplestiltskin', '333445555', 
+               '1923-04-20', '13 Elm St., Nowhere,CA', 'G', 21325, 
+               '123456789', 1&gt; into <tt>Employee</tt>.<br />
+    <b>(e)</b> Change the tuple &lt;1, 'Houston'&gt; in the
+               <tt>Dept_Locations</tt> table to &lt;NULL, 'Houston'&gt;<br />
+    <!-- Has no other effect!
+    <b>(e)</b> Delete from the <tt>Dept_Locations</tt> table the tuple 
+               &lt;1, 'Houston'&gt;</tt>.<br />
+    -->
+    <b>(f)</b> Delete from the <tt>Employee</tt> table the tuple 
+               whose <tt>Ssn</tt> attribute has value <tt>'987654321'</tt>.
+               <br />
+    <b>(g)</b> Delete from the <tt>Department</tt> table the tuple having
+               value 4 in its <tt>Dnumber</tt> attribute.<br />
+  </td> <!-- end of left column -->
+  <td>  <!-- right column is the table to be filled in -->
+    <table border="1" cellpadding="4">
+    <tr>
+      <th>&nbsp;</th>
+      <th>Domain</th>
+      <th>Key</th>
+      <th>Entity<br />Integrity</th>
+      <th>Referential<br />Integrity</th>
+    </tr>
+    <tr><td>(a)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(b)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(c)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(d)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(e)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(f)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    <tr><td>(g)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+               <td>&nbsp;</td></tr>
+    </table>
+  </td> <!-- end of right column -->
+</tr>
+</table>
+
+<hr>
+<b>2.</b>
+Using the 7-step procedure described in Chapter 9 of E&amp;N,
+<!-- (6th edition),AND 7th  -->
+transform into a relational schema the ER schema diagram below.
+For each relation in your schema, and each attribute in each relation,
+indicate which of the seven steps called for its introduction.
+Feel free to modify names of attributes in order to avoid name clashes
+or to shorten lengthy names, but don't deviate from the practice of 
+using names that are suggestive of purpose/meaning.
+
+</p><p>
+Due to limitations of the software that was used to produce the
+diagram (or perhaps your instructor's lack of familiarity with its
+features), certain diagramatic conventions used here differ from those 
+used in the textbook.  Specifically,
+<ul>
+  <li>weak entity types are indicated by (non-rectangular) parallelograms 
+      (rather than by double rectanges),
+  </li>
+  <li>identifying relationship types are indicated by diamonds containing
+      four line segments that form explicit triangles in the corners
+      (rather than double diamonds),
+  </li>
+  <li>line segments connecting the boxes representing entity types with
+      the diamonds representing relationship types do not necessarily meet 
+      the corner of the latter,
+  </li>
+  <li>multi-valued (i.e., set-valued) attributes are indicated by
+      octagons (rather than double ovals),
+  </li>
+  <li>partial key attributes of weak entity types are indicated, 
+      &mdash;as are, as usual, full keys of regular entity types&mdash;
+      by a solid underline (rather than a dashed underline).
+  </li>
+</ul>
+
+</p><p>
+<a href="prog_contest_er.gv.jpg">Download Image</a>
+
+</p><p>
+<img src="prog_contest_er.gv.jpg" height="600">
+
+<!--
+</p><p>
+Gif:
+<img src="prog_contest_er.gv.gif">
+-->
+
+
+</body>
+</html>

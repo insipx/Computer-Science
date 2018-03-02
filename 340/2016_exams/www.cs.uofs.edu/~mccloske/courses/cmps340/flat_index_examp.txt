@@ -1,0 +1,109 @@
+CMPS 340
+Example to illustrate tradeoffs between logical and physical references in indexes.
+
+
+  ID      Name     Occupation
++--------------------------------+
+| A56     Calvin    doctor       |
+| A76     Mary      lawyer       |   Bucket              ID Index:
+| A84     Beth      teacher      |     #3             
+| B03     Carl      carpenter    |                      ID   Bucket 
++--------------------------------+                    +-----+------+
++--------------------------------+                    | A56 |   3  |
+| B13     Zeke      actor        |                    | B13 |   1  |
+| B36     Helen     biologist    |   Bucket           | E05 |   0  |
+| B89     Jim       doctor       |     #1             | E45 |   2  |
+| C00     Beth      plumber      |                    +-----+------+
++--------------------------------+
++--------------------------------+
+| E05     Jim       teacher      |   Bucket
+| E14     Mary      engineer     |     #0
++--------------------------------+
++--------------------------------+
+| E45     Cindy     lawyer       |   Bucket
+| E66     Tony      teacher      |     #2
++--------------------------------+
+
+
+Name index (logical ref):             Name index (physical ref):
+
+  Name      ID                              Name    Bucket 
++--------+-------+                       +--------+-------+
+|  Beth  |  A84  |                       |  Beth  |   3   |
+|  Beth  |  C00  |                       |  Beth  |   1   |
+| Calvin |  A56  |                       | Calvin |   3   |
+|  Carl  |  B03  |                       |  Carl  |   3   |
+| Cindy  |  E45  |                       | Cindy  |   2   |
+| Helen  |  B36  |                       | Helen  |   1   |
+|  Jim   |  B89  |                       |  Jim   |   0   |
+|  Jim   |  E05  |                       |  Jim   |   1   |
+|  Mary  |  A76  |                       |  Mary  |   0   |
+|  Mary  |  E14  |                       |  Mary  |   3   |
+|  Tony  |  E66  |                       |  Tony  |   2   |
+|  Zeke  |  B13  |                       |  Zeke  |   1   |
++--------+-------+                       +--------+-------+
+
+
+
+----------------------------------------------------------------------
+  ID      Name     Occupation
++--------------------------------+
+| A56     Calvin    doctor       |
+| A76     Mary      lawyer       |   Bucket              ID Index:
+| A84     Beth      teacher      |     #3             
+| B03     Carl      carpenter    |                      ID   Bucket 
++--------------------------------+                    +-----+------+
++--------------------------------+                    | A56 |   3  |
+| B13     Zeke      actor        |                    | B13 |   1  |
+| B36     Helen     biologist    |   Bucket           | E05 |   0  |
+| B89     Jim       doctor       |     #1             | E45 |   2  |
+| C00     Beth      plumber      |                    +-----+------+
++--------------------------------+
++--------------------------------+
+| E05     Jim       teacher      |   Bucket
+| E14     Mary      engineer     |     #0
++--------------------------------+
++--------------------------------+
+| E45     Cindy     lawyer       |   Bucket
+| E66     Tony      teacher      |     #2
++--------------------------------+
+
+
+
+Occupation index (logical ref):       Occupation index (physical ref):
+
+  Occupation   ID                             Occupation  Bucket
++------------+-----+                        +------------+------+
+|  actor     | B13 |                        |  actor     |  1   |
+|  biologist | B36 |                        |  biologist |  1   |
+|  carpenter | B03 |                        |  carpenter |  3   |
+|  doctor    | A56 |                        |  doctor    |  3   |
+|  doctor    | B89 |                        |  doctor    |  1   |
+|  engineer  | E14 |                        |  engineer  |  0   |
+|  lawyer    | A76 |                        |  lawyer    |  3   |
+|  lawyer    | E45 |                        |  lawyer    |  2   |
+|  plumber   | C00 |                        |  plumber   |  1   |
+|  teacher   | A84 |                        |  teacher   |  3   | 
+|  teacher   | E05 |                        |  teacher   |  0   |
+|  teacher   | E66 |                        |  teacher   |  2   | 
++------------+-----+                        +------------+------+
+
+
+
+Logical-to-Physical              Physical-to-Logical
+    mapping:                           mapping:
+
+  0   1   2   3                     0   1   2   3
++---+---+---+---+                 +---+---+---+---+
+| 3 | 1 | 0 | 2 |                 | 2 | 1 | 3 | 0 |
++---+---+---+---+                 +---+---+---+---+
+
+
+
+Operations:
+-----------
+Insert record (B94 ...) belonging in Bucket P1 (L1)  (redistribution)
+Insert record (A80 ...) belonging in Bucket P3 (L0)  (split)
+Delete record in Bucket P0 (L2)  (redistribution)
+Delete record in Bucket P2 (L3)  (merge)
+

@@ -1,0 +1,126 @@
+<html>
+<head>
+<title>CMPS 134 Spring 2017 Test #2 Preview</title>
+</head>
+<body>
+<h2>CMPS 134 Spring 2017<br />  <!-- Fall 2016 -->
+Preview for Test #2
+</h2>
+
+<ul>
+  <li>Know everything that you were supposed to know for Test #1.</li>
+  </p><p>
+  <li>Expect a question in which you are given a set of terms having to
+    do with Java programming and a list of statements each of which
+    has one or two blanks to be filled in from terms in the given set.
+    Example:
+    <ol>
+      <li>A(n) _____ method is one that returns information about the 
+          state of a(n) _____.
+      </li>
+    </ol>
+      The answers are <b>observer</b> and <b>object</b>.
+    </ol>
+  </li>
+  </p><p>
+  <li>Expect a problem in which you are given the code of an "instance" class
+      (i.e., one from which it is intended that objects will be created)
+      and you are asked to write a code segment that might appear in a
+      client program, such as one that creates an object of that class
+      (or perhaps two of them) and carries out some specific task with it/them.
+      </p><p>
+      <b>Example:</b>
+      Develop the <tt>main()</tt> method of an application program
+      that creates two <tt>TossableCoin</tt> objects and repeatedly tosses 
+      both of them until exactly one of them is showing heads.  Then report
+      how many tosses were made to reach that situation.
+  </li>
+  </p><p>
+  <li>Expect a problem in which a program, or code segment, is given and
+    you are asked to show what output it produces.
+    (Or a functional method is given, with parameter value(s) specified,
+    and you are asked to indicate what value the method returns.)
+    Don't be surprised if the code involves the creation and/or manipulation
+    of objects (e.g. Strings, an array).  
+    Also expect to see if-else statement(s) and/or loop(s).
+    If a loop is involved, the problem might ask you to show the values
+    of one or more variables at specific moments in time (e.g., at the
+    end of each loop iteration).
+    </p><p>
+    <b>Example 1:</b> Tell what value is returned by the method call
+    <tt>mystery(100)</tt>, where the relevant method is as follows:
+    </p><p>
+    <table border="1" cellpadding="4">
+    <tr><td>
+<pre>public static int mystery(int m)
+{
+   int low = 0, high = m+1;
+   while (low + 1 != high) {
+      int mid = (low + high) / 2;
+      if (mid * mid <= m) { low = mid; }
+      else { high = mid; }
+   }
+   return low;
+}</pre></td></tr>
+    </table>
+    Also show the values of local variables <tt>low</tt> and <tt>high</tt>
+    at the end of each loop iteration.
+    </p><p>
+    <b>Example 2:</b> Tell what value is returned by the method call
+    <tt>stringSwap("abcdefghi")</tt>, where the relevant method is as 
+    follows:
+    </p><p>
+    <table border="1" cellpadding="4">
+      <tr><td>
+<pre>public static int stringSwap(String s)
+{
+   int k = s.length() / 2;
+   return s.substring(k) + s.substring(0,k);
+}</pre>
+      </td></tr>
+    </table>
+    </p><p>
+    <b>Example 3:</b> Show the contents of array <tt>a[]</tt> upon
+    completion of execution of this code segment:
+    </p><p>
+    <table border="1" cellpadding="4">
+      <tr><td>
+<pre>int[] a = new int[6];
+a[0] = 1;
+for (int i=1; i != a.length; i=i+1) { a[i] = 2 * a[i-1]; }</pre>
+      </tr></td>
+    </table>
+  </li>
+  <li>Expect a problem in which you are given a Java class and are asked
+    to modify a method, or add a new method, so that the method behaves
+    in a specified way.  Another possibility is to write a method that
+    carries out some operation upon a String object (or a pair thereof).
+    </p><p>
+    <b>Example 1:</b> You are given the <tt>WrapAroundCounter</tt> class
+    and are asked to add a new method as follows:
+    </p><p>
+    <table border="1" cellpadding="4">
+    <tr><td>
+<pre>/* Increments this counter by the specified amount (k), wrapping
+** around if appropriate.  For example, if this counter's maximum value
+** is 12 and its current value is 8, then incrementing by 7 results in
+** its value being 2.
+*/
+public void increment(int k) { ... }</pre></td></tr>
+    </table>
+    </p><p>
+    <b>Example 2:</b> Supply a body for the following method:
+    <table border="1" cellpadding="4">
+    <tr><td>
+<pre>/* Returns the distance, within the given String (s), between the
+** first two occurrences of the given character (ch).  If there are 
+** fewer than two occurrences of ch in s, -1 is returned.
+*/
+public static int distanceBetween(String s, char ch) { ... }</pre>
+    </td></tr>
+    </table>
+  </li>
+</ul>
+
+</body>
+</html>

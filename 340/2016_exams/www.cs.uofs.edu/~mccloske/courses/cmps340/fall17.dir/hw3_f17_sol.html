@@ -1,0 +1,195 @@
+<html>
+<head>
+  <title>CMPS 340  Fall 2017  HW #3  Sample Solutions</title>
+</head>
+<body>
+<h2>CMPS 340 Fall 2017<br />
+HW#3: Relational Algebra Query Development<br />
+Sample Solutions
+</h2>
+
+</p><p>
+Using the COMPANY relational database from the Elmasri/Navathe textbook 
+(the schema diagram of which, augmented with arrows showing
+foreign keys, is in Figure 5.7 (7th edition, but 3.7 in 6th edition)
+and a possible state of which is illustrated in 
+<a href="../elmasri_navathe.dir/en_6e_fig_3-6.pdf">Figure 5.6</a>
+(3.6 in 6th edition),
+<!-- (page 72)), --> 
+devise Relational Algebra queries corresponding to the following 
+"information requests".
+
+</p><p>
+<b>1.</b> 
+Report the last name and department # of each employee whose 
+first name is "Gourdhead" and whose salary is at least $70,000.
+<!-- Report the first name and salary of each employee whose last name is
+     "Gorn" and who works for either Department 1 or Department 5.
+-->
+
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT Lname, Dno
+FROM RESTRICT Employee
+     WHERE Fname = 'Gourdhead' AND Salary &gt;= 70000;</pre>
+
+<hr>
+</p><p>
+<b>2.</b> 
+Report the last name and birthdate of each male employee whose
+middle initial is 'T' and who has a female dependent named 'Rumplestiltskin'.
+<!-- 
+  Report the last name and birthdate of each female employee whose
+  salary is at least $60,000 and who works for a department named
+  "Bureaucracy".
+-->
+</p><p>
+<b>Solution:</b>
+<pre>PROJECT e.Lname, e.Bdate
+FROM JOIN (RESTRICT Employee WHERE Sex = 'M' AND Minit = 'T') AS e
+     WITH (RESTRICT Dependent 
+           WHERE Sex = 'F' AND Dependent_name = 'Rumplestiltskin')
+     WHERE Ssn = Essn; </pre>
+
+<hr>
+</p><p>
+<b>3.</b>
+Report the first and last names of each employee who works on 
+a project located in either Scranton or Wilkes-Barre.
+
+</p><p>
+<b>Solution:</b>
+<pre>
+PROJECT Fname, Lname
+FROM JOIN Employee
+     WITH JOIN Works_On
+          WITH (RESTRICT Project 
+                WHERE Plocation = 'Scranton' OR Plocation = 'Wilkes-Barre'
+               )
+          WHERE Pno = Pnumber
+     WHERE Ssn = Essn</pre>
+
+<hr>
+</p><p>
+<b>4.</b>
+Report the first and last names of each employee who works on 
+a project located in Scranton but does not work on any
+project located in Wilkes-Barre.
+
+</p><p>
+<b>Solution:</b> The strategy here is to compute a table containing the
+Ssn's of employees who work on a project in Scranton and another table
+containing the Ssn's of employees who work on a project in Wilkes-Barre.
+Then we subtract the latter from the former to obtain a table containing
+the Ssn's of employees who work on a project in Scranton but do not work
+on any project in Wilkes-Barre.  Having computed those Ssn's, it remains
+to join with Employee to get the corresponding names.
+<pre>
+PROJECT Fname, Lname
+FROM Join Employee
+     WITH (PROJECT Essn
+           FROM JOIN Works_On
+                WITH (RESTRICT Project WHERE Plocation = 'Scranton')
+                WHERE Pno = Pnumber
+          )
+          MINUS
+          (PROJECT Essn
+           FROM JOIN Works_On
+                WITH (RESTRICT Project WHERE Plocation = 'Wilkes-Barre')
+                WHERE Pno = Pnumber
+          )
+     WHERE Ssn = Essn</pre>
+
+<hr>
+</p><p>
+<b>5.</b>
+Report the name and location of each department whose manager works 
+for a different department.  (The department for which an employee
+works is identified by the <tt>Dno</tt> attribute in the tuple
+describing the employee.)
+
+</p><p>
+<b>Solution:</b> NAT_JOIN stands for "natural join".
+
+<pre>PROJECT Dname, DLocation
+FROM NAT_JOIN (JOIN Department 
+               WITH Employee
+               WHERE Dnumber &ne; Dno AND Mgr_ssn = Ssn
+              )
+     WITH Dept_Locations</pre>
+
+<hr>
+</p><p>
+<b>6.</b>
+Report, for each project, its name and number, 
+the number of employees who work on it, 
+and the sum of the hours that they work on it.
+(Try to formulate your query so that the result explicitly 
+identifies projects on which no employee is working.
+Assume that the aggregate <tt>SUM</tt> function treats NULL as
+though it were zero.)
+
+</p><p>
+<b>Solution:</b> LO_JOIN stands for "left outer join".
+<pre>AGGREGATE Pname, Pnumber, COUNT(Essn), SUM(Hours)
+FROM LO_JOIN Project
+     WITH Works_On
+     WHERE Pnumber = Pno
+GROUP BY Pnumber</pre>
+
+</p><p>
+<b>Alternative Solution:</b>
+<pre>PROJECT Pname, Pnumber, EmpCount, SumHours
+FROM LO_JOIN Project
+     WITH (AGGREGATE COUNT(Essn) AS EmpCount, SUM(Hours) AS SumHours
+           FROM Works_On
+           GROUP BY Pno
+          )
+     WHERE Pnumber = Pno</pre>
+
+</p><p>
+The drawback of the alternative solution is that, in the table it produces,
+tuples describing projects on which no employees work will have NULL "values"
+in the <tt>EmpCount</tt> and <tt>SumHours</tt> columns rather than zeros.
+
+<hr>
+</p><p>
+<b>7.</b>
+Report, for each project and each of the two sexes, 
+the number of the project, how many employees of that sex work
+on that project, and the total number of hours that those employees
+devote to that project.  (The resulting table should have attributes
+for project number, sex, # of employees, and total hours.)
+
+</p><p>
+<b>Solution:</b>
+<pre>AGGREGATE Pno, Sex, COUNT(Essn), SUM(Hours)
+FROM JOIN Employee
+     WITH WITH Works_On
+     WHERE Ssn = Essn
+GROUP BY Pno, Sex</pre>
+
+<hr>
+</p><p>
+<b>Bonus:</b> As above, but also include the project name in
+each tuple and try to formulate your query so that the result 
+explicitly identifies project/sex combinations for which the #
+of employees is zero.
+Assume that the aggregate <tt>SUM</tt> function treats NULL as
+though it were zero.)
+
+</p><p>
+<b>Solution:</b> Forthcoming, one hopes
+
+<!--
+<pre>AGGREGATE Pnumber, Pname, Sex, COUNT(Essn), SUM(Hours)
+FROM LO_JOIN Employee
+     WITH LO_JOIN Project
+          WITH Works_On
+          WHERE Pnumber = Pno
+     WHERE Ssn = Essn
+GROUP BY Pnumber, Sex</pre>
+-->
+
+</body>
+</html>

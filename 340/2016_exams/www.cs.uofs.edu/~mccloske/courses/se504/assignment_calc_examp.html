@@ -1,0 +1,87 @@
+<html>
+<head><title>SE 504  Example of Calculating RHS of an Assignment</title>
+</head>
+<body>
+<h2>SE 504:  Example of Calculating RHS of an Assignment</h2>
+
+</p><p>
+<h3>Example 1</h3>
+Consider the Hoare Triple {C = 2i+j} i,j := i-j,E {C = i+j}, where
+E is an expression to be computed so as to satisfy the Hoare Triple.
+We can attempt to calculate E by "solving for it" while carrying out
+a proof of the Hoare Triple.  Here goes:
+
+<!-- Note: If you change i-j to i+j, E comes out to i -->
+</p><p>
+<tt>{C = 2i+j} i,j := i-j,E {C = i+j}</tt>
+
+</p><p>
+By the Law Relating HT with wp, this is equivalent to 
+<tt>[C = 2i+j &rArr; wp.(i,j:=i-j,E).(C=i+j)]</tt>.
+By Gries's Metatheorem (9.16), to prove this it suffices to prove
+the nested implication (i.e., to which the "everywhere" operator is being
+applied).  
+
+<pre>
+   Assume C = 2i+j.
+
+   wp.(i,j:=i-j,E).(C=i+j)
+
+ =   < wp Assignment Law (wpAL) >
+
+   (C=i+j)(i,j:=i-j,E)
+
+ =   < textual substitution >
+
+   C = i-j + E
+   
+ =   < assumption >
+
+   2i + j = i-j + E
+
+ =   < algebra >
+
+   E = i + 2j
+</pre>
+
+</p><p>
+<hr>
+<h3>Example 2</h3>
+
+{P &and; i&ge;0} i,z := i+1,E {P}, where
+P: z = (+j | 0&le;j&lt;i : b.j).
+
+</p><p>
+By the Law Relating HT with wp, this is equivalent to 
+<tt>[P &and; i&ge;0 &rArr; wp.(i,z := i+1,E).P]</tt>.
+By Gries's Metatheorem (9.16), to prove this it suffices to prove
+the embedded implication.
+
+<pre>
+   Assume P and i&ge;0 (where P : z = (+j | 0&le;j&lt;i : b.j)).
+
+   wp.(i,z := i+1,E).P
+
+ =   < wpAL >
+
+   P(i,z := i+1,E)
+
+ =   < definition of P >
+
+   {z = (+j | 0&le;j&lt;i : b.j)(i,z := i+1,E)
+
+ =   < textual substitution >
+
+   E = (+j | 0&le;j&lt;i+1 : b.j)
+
+ =   < Split off term (8.23) (requires assumption i&ge;0) >
+
+   E = (+j | 0&le;j&lt;i : b.j) + b.i
+
+ =   < assumption P >
+
+   E = z + b.i
+</pre>
+
+</body>
+</html>

@@ -1,0 +1,197 @@
+<html>
+<head><title>CMPS 034L  Lab #7</title>
+</head>
+<body>
+<h2>CMPS 034L &nbsp; Spring 2017<br />
+Lab #7: while loops
+</h2>
+
+</p><p>
+For your convenience, here are a few relevant links:
+<ul>
+  <li><a href="http://download.oracle.com/javase/8/docs/api/java/lang/String.htm
+l"
+      target="_blank">java.lang.String</a> class.
+  </li>
+  <li><a href="http://www.cs.uofs.edu/~mccloske/courses/cmps134/string_methods.h
+tml"
+      target="_blank">Description of most common String methods</a>.
+  </li>
+  <li><a href="http://download.oracle.com/javase/8/docs/api/java/lang/Character.
+html"
+      target="_blank">java.lang.Character</a> class.
+  </li>
+</ul>
+
+
+</p><p>
+You are to work in groups of two, with one group of three in the
+case that an odd number of students is present.
+
+</p><p>
+Go to the
+<a href="http://practiceit.cs.washington.edu" target="_blank">Practice-It 
+website</a>, log in, and click on the <b>Start Practicing</b> button,
+then on the link labeled <b>Building Java Programs, 4th Edition</b>,
+and then on the link indicating <b>BJP Chapter 5</b>.
+
+</p><p>
+<h3>Activity #1: Practice-It Self-Checks and Exercises from Chapter 5</h3>
+
+<ol>
+  <li><b>BJP4 Self-Check 5.1 (whileLoops)</b>:
+    Given are several while-loops; for each one you are to indicate
+    how many times it will iterate.  
+    </p><p>
+    The unfortunate notation <tt>x += 10</tt> is shorthand for 
+    <tt>x = x + 10</tt>.  Similarly, <tt>x *= x</tt> is shorthand for
+    <tt>x = x * x</tt>.  Please never use any among the <tt>+=</tt>,
+    <tt>-=</tt>, <tt>*=</tt>, or <tt>/=</tt> operators in your own 
+    programming.
+    </p><p>
+    The less objectionable notation <tt>max--</tt> is shorthand for
+    <tt>max = max - 1</tt>.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 5.3 (whileLoopMystery1)</b>:
+    Given is a method containing a while-loop and having a formal parameter
+    <tt>x</tt>.  For each of several calls to the method (with different
+    parameter values being passed to it), show the output that results.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 5.4 (whileLoopMystery2)</b>:
+    Similar to Self-Check 5.3.
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 5.14 (logicExpressions2)</b>:
+    Given are several boolean expressions involving variables with
+    given values. For each one, indicate its value (true or false).
+  </li>
+  </p><p>
+  <li><b>BJP4 Self-Check 5.27 (assertions1)</b>:
+     Given is a method with formal parameters <tt>console</tt> 
+     (which is a <tt>Scanner</tt> object) and <tt>x</tt> (an integer),
+     and local variables <tt>y</tt> and <tt>count</tt> (both integers).
+     </p><p>
+     Five different "points" in the code, named A through D, are 
+     identified using comments.  For each of the five points and each
+     of three conditions (<tt>y&lt;x</tt>, <tt>y==0</tt>, and
+     <tt>count&gt;0</tt>), you are to indicate whether, when
+     execution reaches that point, that condition will necessarily
+     be <b>true</b> (<tt>ALWAYS</tt>), necessarily be <b>false</b>
+     (<tt>NEVER</tt>), or can possibly be <b>true</b> but also possibly 
+     be <b>false</b> (<tt>SOMETIMES</tt>).
+     </p><p>
+     Note that the statement <tt>y = console.nextInt()</tt> reads an
+     integer value from the input source and stores it in <tt>y</tt>.
+     As a result, the value of <tt>y</tt> can be any value of type
+     <tt>int</tt>, the values in which go from approximately -2 billion
+     to +2 billion.
+  </li>
+  </p><p>
+  <li><b>BJP4 Exercise 5.18 (digitSum)</b>:
+     Develop a method <tt>digitSum(int n)</tt> that, given an integer
+     <tt>n</tt>, returns the sum of the digits in 
+     (the decimal representation of) n.  
+     </p><p>
+     Recall that you can obtain the one's digit of an integer by
+     dividing it by 10 and taking the remainder.  To "chop off" the
+     one's digit of an integer, divide it by 10.
+  </li>
+  </p><p>
+  <li><b>BJP4 Exercise 5.19 (firstDigit)</b>:
+     Develop a method <tt>firstDigit(int n)</tt> that, given an integer
+     <tt>n</tt>, returns the first (i.e., most significant) digit in 
+     (the decimal representation of) n.  
+     </p><p>
+     Recall that you can obtain the one's digit of an integer by
+     dividing it by 10 and taking the remainder.  To "chop off" the
+     one's digit of an integer, divide it by 10.
+  </li>
+  </p><p>
+
+  <!--
+  <li><b>BJP4 Self-Check 5.12 (printLetters)</b>:
+     Develop method <tt>printLetters(String text)</tt> that prints the 
+     letters in the given string, separated by dashes.  
+     This raises a fencepost issue.
+  </li>
+  </p><p>
+  -->
+</ol>
+
+</p><p>
+<h3>Activity #2: In which you submit work!</h3>
+
+<ol>
+  <li><b>BJP4 Self-Check 5.10 (zeroDigits)</b>:
+     Develop method <tt>zeroDigits(int n)</tt> that returns the number of 
+     0's in the decimal representation of n.  
+     As suggested in the problem statement, this problem is better-suited
+     to the use of a <tt>do-while</tt> loop (which we haven't yet covered
+     in class) than to a <tt>while</tt> loop, but it can be solved with
+     either.  (The only problem with using a <tt>while</tt> loop arises
+     when <tt>n</tt> is zero.)
+     </p><p>
+     Recall that you can obtain the one's digit of an integer by
+     dividing it by 10 and taking the remainder.  To "chop off" the
+     one's digit of an integer, divide it by 10.
+     </p><p>
+     Use this 
+     <a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab7_dir">Submit/Review</a> 
+     link to submit it.
+  </li>
+  </p><p>
+  <li><b>BJP Self-Check 5.15 (isVowel)</b>:
+     Develop a method <tt>isVowel(String s)</tt> that determines
+     whether or not the <tt>String</tt> passed to it contains 
+     nothing but a single vowel, in either upper or lower case.
+     The (lowercase) vowels are 'a', 'e', 'i', 'o', and 'u'.
+     </p><p>
+     <b>Hint:</b> A clever way to do this involves use of the
+        <tt>String</tt> class's <tt>indexOf()</tt> method.
+        The <tt>Character.toUpperCase()</tt>  
+        (or <tt>Character.toLowerCase()</tt>) could also be useful.
+     </p><p>
+     Use this 
+     <a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab7_dir">Submit/Review</a> 
+     link to submit it.
+  </li>
+  </p><p>
+  <li>(Optional; If you have the time and inclination!)<br />
+    <b>BJP4 Self-Check 5.16 (isPrime)</b>:
+    Given is a flawed method <tt>isPrime()</tt> that (is intended to)
+    determines whether or not the value passed to it is prime.
+    You are to fix it.
+    </p><p>
+    <b>Hint:</b> Recalling our discussion in class of the 
+    <tt>stringEquals()</tt> method (or whatever we called it) may help
+    you to identify the mistake in the given code.
+    </p><p>
+    Besides having a logic error, the given method has at least one more
+    "deficiency": it is very inefficient.  Consider that, as written,
+    it will, if the value of <tt>n</tt> happens to be prime, evaluate the
+    expression <tt>n % i</tt> for values of <tt>i</tt> from 2 all the way
+    through <tt>n-1</tt>.  But there is no need to have <tt>i</tt> 
+    go anywhere near that high, because if <tt>n</tt> is not prime,
+    its smallest divisor (other than 1) must be far less than <tt>n-1</tt>.
+    </p><p>
+    Use your mathematical intuition to come up with a number K (which will
+    depend upon the value of <tt>n</tt>, of course) that is smaller than
+    <tt>n-1</tt> but is such that <tt>n</tt> is guaranteed to have a divisor
+    in the range 2..K (assuming, of course, that <tt>n</tt> is not prime).
+    Then adjust the source code of <tt>isPrime()</tt> so that, if it finds
+    no divisors in the range 2..K, it returns <tt>true</tt>.
+    </p><p>
+    <b>Hint:</b> Divisors of a number come in pairs.  For example,
+    (1,72), (2,36), (3,24), (4,18), (6,12), and (8,9) are the "divisor pairs"
+    of 72.
+    </p><p>
+    Use this
+    <a href="http://www.cs.uofs.edu/~mccloske/Submit.cgi?root=spring17&dir=cmps134&sub=lab7_dir">Submit/Review</a> 
+     link to submit it.
+  </li>
+</ol>
+
+</body>
+</html>

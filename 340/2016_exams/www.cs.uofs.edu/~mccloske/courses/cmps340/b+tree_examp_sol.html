@@ -1,0 +1,240 @@
+<html>
+<head>
+  <title>Examples of insertion/deletion in a B<sup>+</sup>-tree</title>
+</head>
+<body>
+<H2>
+  CMPS 340 File Processing <br />
+  Examples of insertion/deletion in a B<sup>+</sup>-tree 
+</H2>
+
+<p>
+Consider the B<sup>+</sup>-tree <b>T</b> illustrated below.
+Let its B-tree ---which is comprised of the internal nodes--- have order four. 
+Suppose that the leaves are large enough to hold up to four records.
+In order to ensure that space utilization is no worse than about 50%,
+we allow a minimum of two records in a leaf.
+(Note that each record contains two fields, the first being the ordering
+field (an integer) and the second being a character string.)
+
+<p>
+For each operation in the list (a) through (i),
+show the B<sup>+</sup>-tree that results from performing that operation on 
+<b>T</b>.
+
+<p>
+Assume, in carrying out the operations, that redistribution is used 
+whenever possible.  That is, split an overflowing node only if all its
+adjacent siblings are full.  Similarly, concatenate two nodes only if all
+adjacent siblings of the underflowing node are on the verge of underflowing.
+(Note: Redistribution is never to extend beyond two adjacent siblings!)
+
+<pre>
+(a) insert 56 ink            (e) delete 48 
+(b) insert 11 ink            (f) delete 50 
+(c) insert 31 ink            (g) delete 61
+(d) insert 20 ink            (h) delete 78 
+                             (i) delete 96 
+
+
+                          +----+----+----+
+                          | 24   63   88 |
+                          +----+----+----+
+                         /     |     \    \
+                    +---+      |      \    +-------------------+
+                   /           |       +----------+             \
+                  /            |                   \             \
+    +----+---+----+        +----+----+----+         +----+       +----+
+    | -2   6   19 |        | 34   50   58 |         | 80 |       | 96 |
+    +----+---+----+        +----+----+----+         +----+       +----+
+  /      |   |    |        |    |     \    \        |    |      /     |
+ /       |   |    |        |    |      \    \        )  /      /      |
++        |   |    |        |    |       +    \       | +      /       |
+|  +-------+ | +---------+ | +--------+ | +--------+ | | +-------+   +--------+
+|  | 1 bat | | | 19 cat  | | | 39 dog | | | 61 moo | | | | 88 is |   | 96 an  |
+|  | 4 eel | | | 21 rat  | | | 44 cow | | | 62 due | | | | 91 of |   | 99 the |
+|  +-------+ | | 22 clam | | | 48 ant | | +--------+ | | +-------+   +--------+
+|            | | 23 kirk | | | 49 on  | |            | |
+|            | +---------+ | +--------+ |            | +-----+
+|            |             |            |            |        \
+|            |             |            |            |         \
++--------+  +--------+   +--------+   +--------+   +--------+   +--------+
+| -5 dam |  |  9 bob |   | 27 ted |   | 50 who |   | 75 arf |   | 81 boo | 
+| -3 eat |  | 12 jim |   | 30 tom |   | 55 orc |   | 78 tim |   | 85 you |
++--------+  | 16 amy |   | 32 liz |   +--------|   +--------+   +--------+
+            | 17 eek |   | 33 no  | 
+            +--------+   +--------+
+</pre>
+<hr>
+
+<b>Solutions:</b>
+
+<pre>
+                      +------+
+(a) insert  56 ink:   |50 who|    (insertion into bucket is uneventful)
+                      |55 ork|
+                      |56 ink|
+                      +------+
+</pre>
+
+<hr>
+<pre>
+(b) insert 11 ink:
+
+              +--+--+--+                insertion into bucket causes overflow,
+              |-2|11|19|                which is remedied by redistribution
+              +--+--+--+                with bucket to left.  This requires
+                /    \                  the separator 6 in the parent to be 
+               /      \                 changed to 11 (or 10).
+            +-----+ +------+
+            |1 bat| |11 ink|
+            |4 eel| |12 jim|
+            |9 bob| |16 amy|
+            +-----+ |17 eek|
+                    +------+
+</pre>    
+<hr>
+<pre>
+(c) insert 31 ink:                 
+                       +--+--+--+                 insertion causes bucket to   
+                       |24|58|88|                 split (as no redistribution
+                       +--+--+--+                 is possible).  Insertion of
+                         /    \                   a new separator (32) into
+                        /      +-----+            parent causes overflow,
+                       /              \           which is remedied by
+                      /                \          redistribution with sibling
+               +--+--+--+               +--+--+   to right.
+               |32|34|50|               |63|80|
+               +--+--+--+               +--+--+
+              /  /   |  \               |   \
+         +---+  /    |   \              |    \
+        /      /     |    \             |     \
++------+ +------+ +------+ +------+  +------+ +------+
+|27 ted| |32 liz| |39 dog| |50 who|  |61 moo| |75 arf|
+|30 tom| |33 no | |44 cow| |55 ork|  |62 due| |78 tim|
+|31 ink| +------+ |48 ant| +------+  +------+ +------+
++------+          |49 on |
+                  +------+
+</pre>
+
+<hr>
+<pre>
+(d) insert 20 ink:
+                                       +--+
+                                       |63|
+                                       +--+
+                                      /    \
+                                     /      \
+                           +--------+        +--+
+                          /                      \
+                         /                        \
+                  +--+--+                          +--+
+                  |19 24|                          |88|
+                  +--+--+                          +--+
+                 /   |   \                        /    \
+                /    |    \                      /      \
+          +----+     |     \                    /        \
+         /           |      \                  /          \
+  +--+--+          +--+      +--+--+--+      +--+        +--+
+  |-2  6|          |22|      |34 50 58|      |80|        |96|
+  +--+--+          +--+      +--+--+--+      +--+        +--+
+        |         /    \
+        |        /      \
+     +------+ +------+ +-------+
+     | 9 bob| |19 cat| |22 clam|
+     |12 jim| |20 ink| |23 kirk|
+     |16 amy| |21 rat| +-------+
+     |17 eek| +------+
+     +------+
+</pre>
+   Insertion into bucket causes overflow, requiring a split, which forces the
+   insertion of a new separator (22) into the parent.  This causes an overflow,
+   also requiring a split.  The promotion of 19 into the parent (the root)
+   causes the root to overflow, resulting in the root splitting.
+
+<hr>
+<pre>
+                +------+
+(e) delete 48:  |39 dog|        (removal of record from bucket is uneventful)
+                |44 cow|
+                |49 on |
+                +------+
+</pre>
+<hr>
+<pre>
+(f) delete 50:                      Removal of record from bucket causes
+             +--+--+--+             underflow, which is remedied by
+             |34 49 58|             redistribution with sibling to left.
+             +--+--+--+             The separator is changed from 50 to 49.
+                |   \
+                |    \
+             +------+ +------+
+             |39 dog| |49 on |
+             |44 cow| |55 ork|
+             |48 ant| +------+
+             +------+
+</pre> 
+<hr>
+<pre>
+(g) delete 61:
+              +--+--+
+              |34 50|                     Removal of record from bucket causes
+              +--+--+                     underflow.  Redistribution is not
+                     \                    possible, so the bucket is merged
+                      \                   with its sibling.  The separator
+                      +------+            in the parent is removed without
+                      |50 who|            incident.
+                      |55 ork|          
+                      |62 due|               
+                      +------+
+</pre>
+<hr>
+<pre>
+(h) delete 78:
+                                            Removal of record from bucket
+                   +--+--+--+               causes underflow.  No redis-
+                   |24 58 88|               tribution is possible, so a merge
+                   +--+--+--+               occurs.  Removal of separator in
+                     /    \                 parent causes underflow, which
+                    /      \                is remedied by redistribution.
+                   /        +--+
+                  /             \
+             +--+--+             +--+
+             |34 50|             |63|  
+             +--+--+             +--+
+                    \            |   \
+                     \           |    \
+                      \          |     \
+                   +------+   +------+  +------+
+                   |50 who|   |61 moo|  |75 arf|
+                   |55 ork|   |62 due|  |81 boo|
+                   +------+   +------+  |85 you|
+                                        +------+
+</pre>
+<hr>
+<pre>
+(i) delete 96:                                   Removal of record from bucket
+                                                 causes underflow.  No redis-
+                          +--+--+                tribution is possible, so the
+                          |24 63|                bucket is merged with its
+                          +--+--+                sibling.  Removal of separator
+                             |   \               96 in parent causes underflow,
+                             |    \              which is remedied by merging
+                             |     +------+      (because redistribution is not
+                             |             \     possible).
+                             |              \
+                      +--+--+--+             +--+--+
+                      |34 50 58|             |80 88|
+                      +--+--+--+             +--+--+
+                                            /   |   \
+                                           /    |    \
+                                          /     |     \
+                                         /      |      \
+                                   +------+   +------+   +------+
+                                   |75 arf|   |81 boo|   |88 is |
+                                   |78 tim|   |85 you|   |91 of |
+                                   +------+   +------+   |99 the|
+                                                         +------+
+</pre>
+</body>
+</html>

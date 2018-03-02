@@ -1,0 +1,71 @@
+<html>
+<head>
+  <title>CMPS 240  Summer 2017  Programming Assignment #2b</title>
+</head>
+<body>
+<h2>
+  CMPS 240  Summer 2017<br />
+  Programming Assignment #2b: Implementing a Two-dimensional Matrix via 
+    an Array<br />
+  Due: August 1
+</h2>
+</p><p>
+For this assignment, you are to complete the development of the Java 
+class 
+<a href="../summer12.dir/prog2_matrix_via_array.dir/TwoDimMatrixViaArrayZZ.java">
+TwoDimMatrixViaArray</a>, 
+which implements the Java interface 
+<a href="../summer12.dir/prog2_matrix_via_array.dir/TwoDimMatrix.java">TwoDimMatrix</a>.
+
+</p><p>
+As its name suggests, an instance of a class that implements the
+<tt>TwoDimMatrix</tt> interface is intended to represent a
+two-dimensional matrix.
+Note that the interface has a generic type parameter; the intent is
+that an implementing class will have a corresponding parameter
+having as its purpose to provide the client with the freedom to choose,
+when a matrix is created, the data type of the values that may occupy 
+the cells in the matrix.
+
+</p><p>
+By examining the comments describing the first constructor of the class
+<tt>TwoDimMatrixViaArray</tt>, it should be clear that the intent
+&mdash;similar to that in the previous programming assignment&mdash;
+is to allow the client to choose the row and column index ranges.
+Hence, for example, a client can create a 4&times;3 matrix where the
+rows are numbered -2 through 1 and the columns are numbered 10 through 12.
+
+</p><p>
+From the name of the class, it should be clear that the intent is
+for the values logically occupying the matrix to be stored,
+physically, in a one-dimensional array.
+
+</p><p>
+Hence, the central problem for the programmer is to figure out how
+to map a two-dimensional matrix index <tt>(i,j)</tt> into the
+corresponding array index <tt>k</tt>.  In class, we noted that,
+for the example of a two-dimensional matrix with row index range
+<tt>0..M-1</tt> and column index range <tt>0..N-1</tt>, one 
+suitable mapping is <tt>(i,j) &rarr; i&times;N + j</tt>.
+(This mapping corresponds to what's called <b>row-major ordering</b>,
+in which the matrix's values are stored in the array one row after
+another.)
+
+</p><p>
+Because we are allowing the row and column index ranges to begin
+at non-zero values, the mapping function will be a little more
+complicated.  (Of course, this function should be implemented
+in the form of a private method that is invoked from both the
+<tt>get()</tt> and <tt>put()</tt> methods.)
+
+</p><p>
+Note that <tt>IndexOutOfBoundsException</tt> is defined in
+the package <tt>java.lang</tt>.
+
+</p><p>
+An application that can be used for testing is
+<a href="../summer12.dir/prog2_matrix_via_array.dir/TwoDimMatrixViaArrayTester.java">
+TwoDimMatrixViaArrayTester</a>.
+
+</body>
+</html>

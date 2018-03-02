@@ -1,0 +1,496 @@
+<html>
+<head>
+<title>2-Color Dutch National Flag Solution</title>
+</head>
+<body>
+<h2>
+SE 504 <br />
+Solution of 2-Color version of the Dutch National Flag Problem
+</h2>
+
+
+</p><p>
+Here we supply a solution to the 2-color version of the Dutch National
+Flag problem.  The purpose is to illustrate how to prove the correctness
+of a program in which an array is modified.
+
+</p><p>
+Recall that, in the 2-color version of the Dutch National Flag Problem,
+we are given an array in which every element satisfies exactly one of
+the predicates <tt>isRed()</tt> and <tt>isBlue()</tt>.  
+The goal is to swap elements of the array so as to achieve a state in which
+no BLUE element precedes any RED element.  Further, the location of the 
+boundary between RED and BLUE elements is to be indicated by the variable k.
+
+<h3>Preliminaries</h3>
+</p><p>
+As modifications to the array are restricted to swapping pairs of its
+elements, let us postulate the existence of a command (or subprogram, if
+you prefer to look at it that way) called <b>swap</b>.  This command,
+which involves three parameters, has the following semantics:
+
+</p><p><center><tt>wp.(swap.b.i.j).Q = Q(b := b(i,j : b.j, b.i))</tt></center>
+
+</p><p>
+where (provided that <tt>i=j</tt> implies <tt>E=F</tt>)
+
+</p><p>
+<!-- Table to define b(i,j : E,F).k  -->
+<table border="0" cellpadding="2">
+<tr><td rowspan="3">b(i,j:E,F).k &nbsp;=&nbsp;<font size="+5">{</font></td>
+    <td>E</td><td>if <tt>i=k</tt></td><td></td>
+</tr>
+<tr><td>F</td><td>if <tt>j=k</tt></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(+)</td>
+</tr>
+<tr><td>b.k</td><td>otherwise</td><td></td></tr>
+</table>
+
+<!-- Less sophisticated table for defining b(i,j:E,F).k:
+<table border="0" cellpadding="4">
+<tr><td>&nbsp;</td><td>{ E</td><td>if <tt>i=k</tt></td><td></td></tr>
+<tr><td><tt>b(i,j:E,F).k</tt> &nbsp;=&nbsp;</td>
+    <td>{ F</td><td>if <tt>j=k</tt></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(+)</td>
+</tr>
+<tr><td>&nbsp;</td><td>{ b.k</td><td>otherwise</td><td></td></tr>
+</tt>
+</table>
+-->
+
+<!-- ASCII version of definition of b(i,j : E,F).k:
+                          {  E   if i=k
+         b(i,j : E,F).k = {  F   if j=k                     (+)
+                          {  b.k otherwise
+-->
+
+</p><p>
+Note that this is simply an extension of the notation <tt>b(i:E)</tt>
+denoting an array exactly like <tt>b</tt> except at location <tt>i</tt>.
+
+</p><p>
+Using the <b>if</b> function, (+) can be written as follows:
+
+</p><p><center>
+  <tt>b(i,j : E,F).k  =  if(i=k, E, if(j=k, F, b.k))</tt> &nbsp;&nbsp;&nbsp;(*)
+</center>
+
+</p><p>
+In terms of Hoare Triples (rather than wp), we could say that 
+
+</p><p><center>
+<tt>{Q(b := b(i,j : b.j, b.i)} swap.b.i.j {Q}</tt>
+</center>
+
+</p><p>
+is true and that replacing the precondition with a predicate that
+is strictly weaker would result in a Hoare Triple that is false.
+
+</p><p>
+<b>Lemma 1:</b> Let <tt>b'</tt> be an abbreviation for 
+<tt>b(i,j : b.j, b.i)</tt>.
+Then <br />
+   <b>(a)</b> <tt>b'.i = b.j</tt>,<br />
+   <b>(b)</b> <tt>b'.j = b.i</tt>,<br />
+   <b>(c)</b> <tt>(&forall;k | 0&le;k&lt;#b &and; k&ne;i &and; k&ne;j : 
+        b'.k = b.k)</tt>
+
+</p><p>
+<b>Proof:</b>
+<pre>
+(a)  b'.i                             |  (b)  b'.j
+                                      |
+  =    < defn of b' >                 |    =    < defn of b' >
+                                      |
+     b(i,j : b.j, b.i).i              |       b(i,j : b.j, b.i).j
+                                      |
+  =    < (*) >                        |    =    < (*) >
+                                      |
+     if(i=i, b.j, if(j=i, b.i, b.i))  |       if(i=j, b.j, if(j=j, b.i, b.j))
+                                      |
+  =    < reflexivity of = >           |    =    < reflexivity of = >
+                                      |
+     if(true, b.j, if(j=i, b.i, b.i)) |       if(i=j, b.j, if(true, b.i, b.j))
+                                      |
+  =    < (if.0a) if(true, y, z) = y > |    =    < (if.0a) if(true, y, z) = y >
+                                      |
+     b.j                              |       if(i=j, b.j, b.i)
+</pre>
+
+</p><p>
+To complete the proof of (b), we observe that, if <tt>i&ne;j</tt>,
+the proof continues as follows:
+<pre>
+     if(i=j, b.j, b.i)
+
+  =    < assumption i &ne; j >
+
+     if(false, b.j, b.i)
+
+  =    < (if.0b) if(false, y, z) = z >
+
+     b.i
+</pre>
+
+which is what we wanted.  On the other hand, if <tt>i = j</tt> 
+the proof continues like this:
+
+<pre>
+     if(i=j, b.j, b.i)
+
+  =    < assumption i = j, (Gries 3.84a) >
+
+     if(true, b.i, b.i)
+
+  =    < (if.0a) if(true, y, z) = y >
+
+     b.i
+</pre>
+
+
+</p><p>
+In effect, we've proved both <tt>(i=j) &rArr; (b'.j = b.i)</tt> and
+<tt>(i &ne; j) &rArr; (b'.j = b.i)</tt>, which is to say that we've 
+proved their conjunction.  
+As this conjunction is equivalent to <tt>b'.j = b.i</tt>
+(as shown immediately below), this suffices as a proof of <tt>b'.j = b.i</tt>.
+
+</p><p>
+<b>Theorem:</b> <tt>(p &rArr; q) &and; (&not;p &rArr; q)  =  q</tt> <br />
+<b>Proof:</b>
+<pre>     (p &rArr; q) &and; (&not;p &rArr; q) 
+
+  =    < (Gries 3.78), with p,q,r := p,&not;p,q >
+
+     (p &or; &not;p) &rArr; q
+
+  =    < (Gries 3.28, Metatheorem 3.7, 3.4) >
+
+     true &rArr; q
+
+  =    < (Gries 3.73) >
+
+     q
+</pre>
+
+</p><p>
+Instantiating this theorem with <tt>p,q := i=j, b'.j = b.i</tt> we get
+
+</p><p><center>
+<tt>((i=j) &rArr; (b'.j = b.i) &and; (&not;(i = j) &rArr; (b'.j = b.i)))  =
+    (b'.j = b.i)</tt>
+</center>
+
+</p><p>
+Recognizing that <tt>&not;(i=j)  =  (i &ne; j)</tt>,
+we see that the claim has been proved.
+
+
+</p><p>
+As for (c), by Gries's and Schneider's Metatheorem 9.16 (and remarks just
+before the end of Section 9.1), it suffices to let <tt>k</tt> be 
+an arbitrary integer satisfying the range of the universal quantifier 
+(i.e., <tt>0&le;k&lt;#b &and; k&ne;i &and; k&ne;j</tt>)
+and to show that, for this value of <tt>k</tt>, the body holds.
+In other words, we show
+
+</p><p><center><tt>(0&le;k&lt;#b &and; k&ne;i &and; k&ne;j) &rArr; (b'.k = b.k)
+</tt></center>
+
+</p><p>
+Assume <tt>0&le;k&lt;#b</tt>, <tt>k&ne;i</tt>, and <tt>k&ne;j</tt>.
+<pre>
+     b'.k 
+
+  =    < defn of b' >
+
+     b(i,j : b.j, b.i).k
+
+  =    < (*) >
+
+     if(i=k, b.j, if(j=k, b.i, b.k))
+
+  =    < assumptions k&ne;i and k&ne;j >
+
+     if(false, b.j, if(false, b.i, b.k))
+
+  =    < (if.0b) if(false, y, z) = z (applied to nested if) >
+
+     if(false, b.j, b.k)
+
+  =    < (if.0b) if(false, y, z) = z >
+
+     b.k
+</pre>
+<b>End of proof of Lemma.</b>
+
+</p><p>
+<b>Corollary:</b> <tt>perm.b.b'</tt> 
+(i.e., <tt>b'</tt> is a permutation of <tt>b</tt>)
+
+
+</p><p>
+Before giving the program (and relevant parts of its correctness proof), we
+give another result that will be useful in carrying out that proof:
+
+</p><p>
+<b>Lemma 2:</b> The following is a valid step in an "equational logic style"
+proof:
+<pre>
+     A &and; B
+
+  =    < A &rArr; (B = C) >
+
+     A &and; C
+</pre>
+
+<b>Proof:</b> It follows from Gries (3.62):
+<tt>(A &rArr; (B = C))  =  ((A &and; B) = (A &and; C))</tt>
+
+
+</p><p>
+<hr>
+<h3>Finally, the Program</h3>
+
+
+</p><p>
+Here is a program solving the 2-color version of the Dutch National
+Flag problem.  The manner in which the loop invariant and loop guard
+arose were to replace <tt>k</tt> in the third conjunct of 
+postcondition Q by fresh variable <tt>m</tt> and to add <tt>k = m</tt>
+as a new conjunct, yielding strengthened postcondition Q'.
+The negation of the new conjunct was the basis for the loop guard.
+
+<pre>
+ |[var b : array of T;  { b = B }
+   var k : int;
+   var m : int;
+   k, m := 0, #b;
+
+   { loop invariant I: I1 &and; I2 &and; I3 &and; I4, where
+        I1 : perm.b.B
+        I2 : 0&le;k&le;m&le;#b
+        I3 : (&forall;i | 0&le;i&lt;k : isRed(b.i))
+        I4 : (&forall;i | m&le;i&lt;#b : isBlue(b.i))  }
+   { bound function t: m-k }
+   do k &ne; m &and; isRed(b.k)  &xrarr;  k := k+1;
+   [] k &ne; m &and; isBlue(b.k) &xrarr;  swap.b.k.(m-1); m := m-1; 
+   od
+   { Q': perm.b.B  &and;  (&forall;i | 0&le;i&lt;k : isRed(b.i))  &and;  (&forall;i | <b>m</b>&le;i&lt;#b : isBlue(b.i)) <b>&and; k=m</b> }
+   { Q : perm.b.B  &and;  (&forall;i | 0&le;i&lt;k : isRed(b.i))  &and;  (&forall;i | k&le;i&lt;#b : isBlue(b.i))}
+ ]|
+</pre>
+
+</p><p>
+Letting B0 and B1 denote the two guards of the loop, to prove the program's
+correctness, we would prove each of the following:
+
+</p><p>
+<b>(i)</b> <tt>{b=B} k,m := 0,#b {I}</tt><br />
+<b>(ii)(a)</b> <tt>{I &and; B0} k := k+1 {I}</tt><br />
+<b>(ii)(b)</b> <tt>{I &and; B1} swap.b.k.(m-1); m := m-1 {I}</tt><br />
+<b>(iii)</b> <tt>[I &and; &not;(B0 &or; B1) &rArr; Q]</tt><br />
+<b>(iv)</b> <tt>[I &and; (B0 &or; B1) &rArr; t&gt;0]</tt><br />
+<b>(v)(a)</b> <tt>{I &and; B0 &and; t=C} k := k+1 {t&lt;C}</tt><br />
+<b>(v)(b)</b> <tt>{I &and; B1 &and; t=C} swap.b.k.(m-1); m := m-1 {t&lt;C}</tt>
+
+</p><p>
+As here we are focusing upon proofs involving code segments in which
+arrays are modified, the only items of interest to us are <b>(ii)(b)</b>
+and <b>(v)(b)</b>.
+Proofs of the remaining items are similar to many that you have already seen.
+
+</p><p>
+<b>(ii)(b)</b> <tt>{I &and; B1} swap.b.k.(m-1); m := m-1 {I}</tt>
+</p><p>
+Assume <tt>I</tt> and <tt>B1</tt>.
+<pre>
+    wp.(swap.b.k.(m-1); m := m-1).I
+
+  =   < wp catentation law >
+
+    wp.(swap.b.k.(m-1)).(wp.(m:=m-1).I)
+
+  =   < wp assignment law >
+
+    wp.(swap.b.k.(m-1)).I(m:=m-1)
+
+  =   < wp swap law >
+
+    I(m:=m-1)(b := b(k,m-1 : b.(m-1),b.k))
+
+  =   < abbreviate b(k,m-1 : b.(m-1),b.k)) as b' >
+
+    I(m:=m-1)(b:=b')
+
+  =   < defn of I; textual sub distributes over &and; (and other operators) >
+
+    (I1(m:=m-1) &and; I2(m:=m-1) &and; I3(m:=m-1) &and; I4(m:=m-1))(b := b')
+
+  =   < m does not occur in I1, I3 >
+
+    (I1 &and; I2(m:=m-1) &and; I3 &and; I4(m:=m-1))(b := b')
+
+  =   < textual sub distributes over & >
+
+    I1(b:=b') &and; I2(m:=m-1)(b:=b') &and; I3(b:=b') &and; I4(m:=m-1)(b:=b')
+
+  =   < defn of I1, ..., I4 and text. sub. >
+
+    perm.b'.B &and; 0&le;k&le;m-1&le;#b' &and; (&forall;i | 0&le;i&lt;k : isRed(b'.i)) &and; (&forall;i | m-1&le;i&lt;#b' : isBlue(b'.i)) 
+
+  =   < perm.b'.B follows from transitivity of perm, given that perm.b'.b
+        (by Corollary of Lemma 1) and perm.b.B (assumption); (3.39) >
+
+    0&le;k&le;m-1&le;#b' &and; (&forall;i | 0&le;i&lt;k : isRed(b'.i)) &and; (&forall;i | m-1&le;i&lt;#b' : isBlue(b'.i))
+
+  =   < 0&le;k is assumed; m-1&le;#b' follows from assumption m&le;#b and fact #b = #b' >
+
+    k&le;m-1 &and; (&forall;i | 0&le;i&lt;k : isRed(b'.i)) &and;  (&forall;i | m-1&le;i&lt;#b' : isBlue(b'.i)) 
+
+  =   < by the Corollary to Lemma 3 (see below), k&le;m-1 (the 1st conjunct)
+        implies R = R(b':=b), where R is the 2nd conjunct above;
+        hence, by Lemma 2 (see above) we may replace R by R(b':=b)     >
+
+    k&le;m-1 &and; (&forall;i | 0&le;i&lt;k : isRed(b.i)) &and;  (&forall;i | m-1&le;i&lt;#b' : isBlue(b'.i)) 
+
+      < 2nd conjunct is assumption I3 >
+
+    k&le;m-1 &and; (&forall;i | m-1&le;i&lt;#b' : isBlue(b'.i))
+
+  =   < Split off term (8.23); range non-emptiness follows from assumption m&le;#b and #b=#b') >
+
+    k<=m-1  &and;  isBlue(b'.(m-1))  &and;  (&forall;i | m<=i<#b' : isBlue(b'.i)) 
+
+  =   < b'.(m-1) = b.k (by part (b) of Lemma 1) and 
+        isBlue(b.k) (by assumption); it follows that isBlue(b'.(m-1)) >
+
+    k&le;m-1 &and; (&forall;i | m&le;i&lt;#b' : isBlue(b'.i)) 
+
+  =   < by the Corollary to Lemma 4 (see below), k&le;m-1 (the 1st conjunct)
+        implies R = R(b':=b), where R is the 2nd conjunct above;
+        hence, by Lemma 2 (see above) we may replace R by R(b':=b)     >
+
+    k&le;m-1 &and; (&forall;i | m&le;i&lt;#b : isBlue(b.i)) 
+
+  =   < assumption I4; (Gries 3.39) >
+
+    k&le;m-1
+
+  =   < assumptions k&le;m, k&ne;m >
+
+    true
+</pre>
+    
+
+<hr>
+<b>Lemma 3:</b> <tt>k&le;m-1 &rArr; (&forall;i | 0&le;i&lt;k : b'i = b.i)</tt>
+<br />
+<b>Proof:</b><br />
+    Assume <tt>k&le;m-1</tt>.
+<pre>    true
+
+  =   < Lemma 1, part (c), applied to our b' >
+
+    (&forall;i | 0&le;i&lt;#b &and; i&ne;k &and; i&ne;m-1 : b'.i = b.i)
+
+  =   < Range split (Gries 8.16) >
+
+    (&forall;i | 0&le;i&lt;k &and; i&ne;k &and; i&ne;m-1 : b'.i = b.i)  &and;
+    (&forall;i | k&le;i&lt;#b &and; i&ne;k &and; i&ne;m-1 : b'.i = b.i) 
+
+ ==>  < Gries 3.76b >
+
+    (&forall;i | 0&le;i&lt;k &and; i&ne;k &and; i&ne;m-1 : b'.i = b.i) 
+
+  =   < i&lt;k implies i&ne;k, so can use (A ==> B) = (A &and; B = A) (Gries 3.60) >
+
+    (&forall;i | 0&le;i&lt;k &and; i&ne;m-1 : b'.i = b.i) 
+
+  =   < i&lt;k together with assumption k&le;m-1 implies i&ne;m-1,
+        so once again (Gries 3.60) can be applied           >
+
+    (&forall;i | 0&le;i&lt;k : b'.i = b.i) 
+</pre>
+
+</p><p>
+<b>Corollary:</b> 
+<tt>k&le;m-1 &rArr; ((&forall;i | 0&le;i&lt;k : isRed(b'.i)) = (&forall;i | 0&le;i&lt;k: isRed(b.i)))</tt><br />
+    Assume <tt>k&le;m-1</tt>.
+<pre>
+    (&forall;i | 0&le;i&lt;k : isRed(b'.i))
+
+  =   < assumption k&le;m-1 and Lemma 3; Gries (3.39) >
+
+    (&forall;i | 0&le;i&lt;k : isRed(b'.i))  &and;  (&forall;i | 0&le;i&lt;k : b'.i = b.i)
+
+  =   < Distributivity (Gries 8.15) >
+
+    (&forall;i | 0&le;i&lt;k : isRed(b'.i)  &and;  b'.i = b.i)
+
+  =   < Substitution (Gries 3.84a) >
+
+    (&forall;i | 0&le;i&lt;k : isRed(b.i) &and;  b'.i = b.i)
+
+  =   < Distributivity (Gries 8.15) >
+
+    (&forall;i | 0&le;i&lt;k : isRed(b.i)) &and;  (&forall;i | 0&le;i&lt;k : b'.i = b.i)
+
+  =   < assumption k&le;m-1 and Lemma 3; Gries (3.39) >
+
+    (&forall;i | 0&le;i&lt;k : isRed(b.i)) 
+</pre>
+
+
+</p><p>
+<b>Lemma 4:</b> <tt>k &le; m-1 &rArr; (&forall;i | m&le;i&lt;#b : b'.i = b.i)</tt>
+<br />
+<b>Proof:</b> Similar to that of Lemma 3.
+
+</p><p>
+<b>Corollary:</b> <tt>k &le; m-1 &rArr; ((&forall;i | m&le;i&lt;#b' : isBlue(b'.i)) = (&forall;i | m&le;i&lt;#b: isBlue(b.i)))</tt>
+
+</p><p>
+<b>Proof:</b> Similar to that of Corollary to Lemma 3.
+
+
+<hr>
+</p><p>
+<b>(v)(b)</b> <tt>{I &and; B1 &and; t=C} swap.b.k.(m-1); m := m-1 {t&lt;C}</tt>
+
+</p><p>
+  Assume <tt>I, B1, and t=C</tt>.
+
+<pre>     wp.(swap.b.k.(m-1); m := m-1).(t&lt;C)
+
+  =   < wp catenation law >
+
+    wp.(swap.b.k.(m-1).(wp.(m := m-1).(t&lt;C))
+
+  =   < wp assignment law, defn of t >
+
+    wp.(swap.b.k.(m-1)).(m-1-k < C)
+
+  =   < wp swap law >
+
+    (m-1-k < C)(b := b(k, m-1 : b.(m-1), b.k))
+
+  =   < text. sub. >
+
+    m-1-k < C
+
+  =   < assumption m-k = C >
+
+    m-1-k < m-k
+
+  =   < algebra >
+
+    -1 < 0
+
+  =   < arithmetic >
+
+    true
+<pre>
+
+</body>
+</html>

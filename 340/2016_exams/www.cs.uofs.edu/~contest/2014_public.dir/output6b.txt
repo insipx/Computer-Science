@@ -1,0 +1,11 @@
+0: 0 hits in 1 at bats
+1: 1 hits in 667 at bats
+8: 1 hits in 118 at bats
+352: 19 hits in 54 at bats
+125: 1 hits in 8 at bats
+275: 11 hits in 40 at bats
+99: 7 hits in 71 at bats
+157: 8 hits in 51 at bats
+143: 1 hits in 7 at bats
+663: 53 hits in 80 at bats
+

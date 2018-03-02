@@ -1,0 +1,210 @@
+<html>
+<head>
+<title>Guidelines for proving program correctness</title>
+
+<H3>
+SE 504 &nbsp Formal Methods and Models<br />
+Guidelines for proving the correctness of a program in
+Dijkstra's Guarded Command Language
+<!--(via the Dijkstra/Hoare approach) -->
+</H3>
+</head>
+
+</body>
+<P>
+Let <b>S</b> be a program and let <b>P</b> and <b>Q</b> be predicates over
+the state space of <b>S</b>.  (In other words, the values of <b>P</b> and 
+<b>Q</b> depend upon only variables that occur in <b>S</b>.)
+
+<P>
+To show the validity of the Hoare triple <b>{P} S {Q}</b>,
+follow these rules:
+
+<ol>
+  <li>If <b>S</b> is a <em>catenation</em> (also known as a 
+    <em>sequential composition</em>) <b>S<sub>1</sub>;S<sub>2</sub></b> 
+    (where each of <b>S<sub>1</sub></b> and 
+    <b>S<sub>2</sub></b> is a sequence of one or more commands),
+    develop a predicate <b>R</b> and show the validity of both 
+    <b>{P} S<sub>1</sub> {R}</b> and <b>{R} S<sub>2</sub> {Q}</b>.
+    <P>
+    If the form of <b>S<sub>2</sub></b> makes calculation of
+    <b>wp.S<sub>2</sub>.Q</b> not unduly burdensome, 
+    it would be wise to choose <b>R</b> to be that predicate. 
+    That way, you get <b>{R}&nbsp;S<sub>2</sub>&nbsp;{Q}</b> "for free"
+    and you get <b>R</b> to be as weak as possible, increasing the
+    liklihood that <b>{P} S<sub>1</sub> {R}</b> is valid.
+    </p><p>
+  </li>
+  <li>If <b>S</b> is <tt>skip</tt>, show <b>[P <tt>&rArr;</tt> Q]</b>.
+  </li>
+  </p><p>
+  <li>If <b>S</b> is <tt>abort</tt>, show <b>[P &equiv; false]</b>.
+  </li>
+  </p><p>
+  <li>If <b>S</b> is an assignment <tt>x:=E</tt>, 
+      show <b>[P <tt>&rArr;</tt> Q(x:=E)]</b>.
+  </li>
+  </p><p>
+  <li>If <b>S</b> is a selection (sometimes called "alternative") command
+    </p><p>
+    <center>
+    <table border="0">
+      <tr><td><code>
+              if B<sub>0</sub> ---> S<sub>0</sub><br />
+              [] B<sub>1</sub> ---> S<sub>1</sub><br />
+              .<br />
+              .<br />
+              [] B<sub>r</sub> ---> S<sub>r</sub><br />
+              fi</code>
+      </td></tr>
+    </table>
+    </center>
+    </p><p>
+    show <br />
+
+    <em>(a)</em> <b>[P <tt>&rArr;</tt> BB]</b>,
+    where <b>BB</b> is an abbreviation for the disjunction of the guards
+    (i.e., <b>B<sub>0</sub> &or; B<sub>1</sub> &or; ... &or; B<sub>r</sub></b>)
+    <br />
+    <em>(b)</em> <b>{P &and; B<sub>i</sub>} S<sub>i</sub> {Q}</b> 
+                    (for all i satisfying 0&le;i&le;r) 
+
+    <P>
+    The purpose of (a) is to show that at least one guard is true.
+    (Recall that, if executed in a state in which all its guards are
+    false, a selection command acts like an <b>abort</b> command (see above),
+    which is to say that its behaviour is totally unpredictable.
+    <!-- (see above) (i.e., it causes execution to "abort" (or "hang")). -->
+    The purpose of (b) is to show that any guarded command that is a
+    candidate to be chosen for execution (i.e., any one whose guard is
+    true) is such that, if executed, it is guaranteed to terminate with
+    the postcondition <b>Q</b> being true.
+    <p>
+    <!--Before considering the repetition command, it is worth noting that, by
+    -->
+    By virtue of the facts that <b>[wp.skip.Q = Q]</b>, 
+    <b>[wp.abort.Q = false]</b>, <b>[wp.(x:=E).Q = Q(x:=E)]</b>, and 
+    <b>[wp.IF.Q = (BB &and; (<tt>&forall;</tt>i | 0&le;i&le;r :
+          B<sub>i</sub> <tt>&rArr;</tt> wp.S<sub>i</sub>.Q))]</b>,
+    each of guidelines (2) through (6) above correspond to showing 
+    <b>{P} S {Q}</b> by demonstrating the equivalent
+    <b>[P <tt>&rArr;</tt> wp.S.Q]</b>.
+  </li>
+  </p><p>
+  <li>If <b>S</b> is a loop (also called "repetition") command
+    </p><p>
+    <center>
+    <table border="0">
+      <tr><td><code>
+        do B<sub>0</sub> ---> S<sub>0</sub><br />
+        [] B<sub>1</sub> ---> S<sub>1</sub><br />
+        .<br />
+        .<br />
+        [] B<sub>r</sub> ---> S<sub>r</sub><br />
+        od </code>
+      </td></tr>
+    </table>
+    </center>
+    </p><p>
+    then develop a predicate <b>I</b> (the loop invariant) and a
+    "bound" function <b>t</b> (mapping the state space to the integers) 
+    and show each of the following:
+    <br />
+    (i)   <b>[P <tt>&rArr;</tt> I]</b>  &nbsp;&nbsp; (basis of invariance)
+            (in practice, we show <b>{P} S<sub>init</sub> {I}</b>; see below)
+             <br />
+    (ii)  <b>{I &and; B<sub>i</sub>} S<sub>i</sub> {I}</b> 
+          (for all i satisfying 0&le;i&le;r)
+           &nbsp; &nbsp; (induction step of invariance)<br />
+    (iii) <b>[I &and; &not;BB &nbsp;<tt>&rArr;</tt>&nbsp; Q]</b> &nbsp;&nbsp; 
+             (adequacy of invariant)
+             (BB is the disjunction B<sub>0</sub> &or; ... &or; B<sub>r</sub>)
+          <br />
+    (iv)  <b>[I &and; BB  &nbsp;<tt>&rArr;</tt>&nbsp; t > 0]</b> 
+             (or, equivalently,
+             <b>[I  &and; t&le;0 &rArr; &not;BB]</b>)
+             (boundedness) (BB is as in (iii))<br />
+    (v)   <b>{I &and; B<sub>i</sub> &and; t=C} S<sub>i</sub> {t&lt;C}</b> 
+          (for all i satisfying 0&le;i&le;r)
+          &nbsp;&nbsp; (progress toward termination)<br />
+
+<P>    
+   The purpose of (i) is to show that that <b>I</b> holds just before the 
+   first iteration of the loop.  The purpose of (ii) is to show that if 
+   <b>I</b> holds at the beginning of a particular iteration, it
+   also holds at the end of that iteration.  Thus, (i) and (ii) together 
+   constitute an inductive proof that <b>I</b> is true immediately 
+   before and immediately after each iteration of the loop (which is 
+   exactly what we mean when we refer to <b>I</b> as a loop invariant!).
+<P>
+   The purpose of (iii) is to show that, when the loop terminates (assuming
+   that it does), <b>Q</b> holds.  When the loop terminates, it must be that 
+   <b>BB</b> is false (otherwise the loop wouldn't have terminated) and,
+   by (i) and (ii), that <b>I</b> is true.  Thus, if 
+   <b>I &and; &not;BB <tt>&rArr;</tt> Q</b> holds,
+   not only <b>I &and; &not;BB</b>, but also <b>Q</b>,
+   must be true upon termination of the loop.
+
+<P>By proving (i), (ii), and (iii), one establishes what is called
+   <b>partial correctness</b>, which corresponds to the idea that,
+   <em>if</em> the loop terminates, the postcondition will have been
+   established.  However, the truth of (i), (ii), and (iii) does not 
+   guarantee that the loop will terminate.
+<P>
+   The purpose of (iv) and (v) is to show that the loop necessarily
+   terminates (after finitely many iterations).  This, in conjunction
+   with the proof of partial correctness embodied in (i), (ii), and (iii),
+   yields a proof of <b>total correctenss</b>.
+   Specifically, (v) shows that each loop iteration causes the
+   value of <b>t</b> to decrease.  (More precisely, the value of
+   <b>t</b> in the state existing immediately after an iteration 
+   is less than the value of <b>t</b> in the state existing immediately 
+   before that iteration.)
+   What (iv) shows is that, as long as more iterations are to be performed,
+   <b>t&gt;0</b>.  (Note that any constant can serve in place of zero here,
+   but zero is usually the most natural choice.)
+<P>
+   To understand why (iv) and (v) together guarantee that the number of 
+   loop iterations is finite, consider the following process by which
+   to generate a sequence of integers:
+   Choose some integer <tt>k</tt>, and write it down.  Now write down a
+   smaller integer.  Then write down another which is yet smaller.
+   And so on and so forth.
+   Once you have written a number that is zero or less, you must stop.
+   (You <em>may</em> stop even before you reach zero.)
+   Is it possible for your sequence of numbers to keep growing, without end?
+   <b>No!</b> Indeed, 
+   the length of your sequence can never exceed
+   <!-- your sequence can never grow beyond one of length -->
+   <tt>k+1</tt>.  (A longest possible sequence is 
+   <tt>k, k-1, k-2, ..., 1, 0</tt>.)
+   In other words, the number of times that you may "write a smaller integer"
+   is bounded above by your original choice of <tt>k</tt>.
+   By the same reasoning, (iv) and (v) guarantee that the number of 
+   loop iterations is bounded above by the value of <b>t</b>
+   immediately before the first iteration.
+   More generally, the value of <b>t</b> immediately before any particular
+   iteration is an upper bound on the number of iterations that remain!
+   <P>   
+   Almost every loop is immediately preceded by a short chunk of
+   "initialization" code whose purpose is to truthify the loop invariant,
+   typically by assigning values to one or more variables.  
+   Suppose we have such a chunk of code, <b>S<sub>init</sub></b>,
+   and a selection command <b>DO</b>, and that we want to show
+     <p><center><b>{P} S<sub>init</sub> ; DO {Q}</b></center>
+   <p>
+   Following the advice in (1), we are to choose an "intermediate"
+   predicate <b>R</b> and show the validity of both 
+   <b>{P} S<sub>init</sub> {R}</b> and <b>{R} DO {Q}</b>.
+   By choosing <b>R</b> to be <b>I</b>, (i) boils down to showing
+   <b>[I <tt>&rArr;</tt> I]</b>, which holds trivially!
+   We are then left with the task of showing 
+   <b>{P} S<sub>init</sub> {I}</b>.
+   Hence, in practice we let this Hoare Triple (rather than the
+   trivial <b>[I <tt>&rArr;</tt> I]</b>) play the role of (i) in the 
+   correctness proof.
+  </li>
+</ol>
+</body>
+</html>

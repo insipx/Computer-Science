@@ -1,0 +1,228 @@
+<html>
+<head>
+  <title>CMPS 340  File Processing: 
+    Extendible Hashing insertion/deletion examples</title>
+</head>
+
+<body>
+
+<H3>
+CMPS 340  File Processing<br>
+Extendible Hashing insertion/deletion examples
+</H3>
+
+<p>
+Suppose that we are using an extendible hash table with bucket size 2 and
+suppose that our hash function H is such that
+
+<pre>
+   H(ANT)  = 1110...       H(DOG)   = 0101...       H(PIG)  = 1001...
+   H(BEAR) = 0010...       H(ELK)   = 1000...       H(RAT)  = 0000...
+   H(CAT)  = 1010...       H(GORN)  = 1010...       H(WOLF) = 0111...
+   H(COW)  = 0001...       H(MOOSE) = 0001...  </pre>
+
+<p>
+At the present time, the hash table is as follows:
+
+<pre>
+      Directory
+
+         +----+                   +-----+-----+
+(000)  0 |  *-+--->-------------> | COW | RAT | (000)
+         +----+                   +-----+-----+
+(001)  1 |  *-+--->-------------> +------+----+
+         +----+                   | BEAR |    | (001) 
+(010)  2 |  *-+--->---+           +------+----+
+         +----+        \          +-----+-----+
+(011)  3 |  *-+--->-----+-------> | DOG |     | (01)
+         +----+                   +-----+-----+
+(100)  4 |  *-+--->---+
+         +----+        \          +-----+-----+
+(101)  5 |  *-+--->-----+--->---> | CAT | ELK | (1)
+         +----+        /          +-----+-----+
+(110)  6 |  *-+--->---+  
+         +----+      / 
+(111)  7 |  *-+--->-+
+         +----+ </pre>
+
+<p>
+Each bucket has an associated <em>label</em> (or <em>signature</em>)
+indicating which cells in the directory point to it:  namely, all those
+having an index whose binary representation has the label as a prefix.
+
+<p>
+For each of the following operations, apply it to the hash table above
+(not to the result of applying the previous operations) and show the
+hash table that results.
+<pre>
+      (a)  Insert WOLF.              (b)  Insert ANT.
+      (c)  Insert GORN.              (d)  Delete DOG. 
+      (e)  Delete RAT.               (f)  Delete CAT.
+      (g)  Insert MOOSE.
+</pre>
+
+<p>
+<b>SOLUTIONS:</b>
+
+<p>
+<b>(a)</b> Insert WOLF.
+  WOLF fits quite nicely alongside DOG in the bucket with
+      label <tt>01</tt>.  (Illustration omitted.)
+
+<hr>
+<p>
+<b>(b)</b> Insert ANT.
+This causes overflow of the bucket with label <tt>1</tt>, and
+thus that bucket is split into buckets with labels <tt>10</tt>
+and <tt>11</tt>, into which CAT and ELK are placed appropriately,
+after which we attempt to insert ANT again.  Because <tt>10</tt>
+is a prefix of both H(CAT) and H(ELK), both of these animals are
+placed into the bucket with label <tt>10</tt>, leaving the
+<tt>11</tt> bucket empty.
+Insertion of ANT now goes smoothly, as it belongs in the <tt>11</tt> bucket.
+<pre>
+         +----+                  +-----+-----+
+(000)  0 |  *-+--->------------> | COW | RAT | (000)
+         +----+                  +-----+-----+
+(001)  1 |  *-+--->------------> +------+---+
+         +----+                  | BEAR |   |  (001)
+(010)  2 |  *-+--->---+          +------+---+
+         +----+        \         +-----+---+
+(011)  3 |  *-+--->-----+------> | DOG |   | (01)
+         +----+                  +-----+---+
+(100)  4 |  *-+--->---+              
+         +----+        \         +-----+-----+
+(101)  5 |  *-+--->-----+------> | CAT | ELK | (10)
+         +----+                  +-----+-----+
+(110)  6 |  *-+--->---+
+         +----+        \         +-----+---+
+(111)  7 |  *-+--->-----+------> | ANT |   | (11)
+         +----+                  +-----+---+
+</pre>
+
+
+<hr>
+<p>
+<b>(c)</b> Insert GORN.
+This causes overflow of the bucket with label <tt>1</tt>, and
+thus that bucket is split into buckets with labels <tt>10</tt>
+and <tt>11</tt>, into which CAT and ELK are placed appropriately,
+after which we attempt to insert GORN again.  Because <tt>10</tt> 
+is a prefix of both H(CAT) and H(ELK), both of these animals are placed 
+into the bucket with label <tt>10</tt>, leaving the <tt>11</tt>
+bucket empty.  Attempting to insert GORN leads to splitting the 
+<tt>10</tt> bucket into buckets with label <tt>100</tt> and 
+<tt>101</tt>.  ELK is placed into the former and CAT into the latter.
+Attempting to insert GORN once again, we find room for him
+in the <tt>101</tt> bucket.
+<pre>
+         +----+                  +-----+-----+
+(000)  0 |  *-+--->------------> | COW | RAT | (000)
+         +----+                  +-----+-----+
+(001)  1 |  *-+--->------------> +------+---+
+         +----+                  | BEAR |   |  (001)
+(010)  2 |  *-+--->---+          +------+---+
+         +----+        \         +-----+---+
+(011)  3 |  *-+--->-----+------> | DOG |   | (01)
+         +----+                  +-----+---+
+(100)  4 |  *-+--->------------> +-----+---+
+         +----+                  | ELK |   | (100)
+(101)  5 |  *-+--->-----+        +-----+---+
+         +----+          \       +-----+------+
+(110)  6 |  *-+--->---+   +----> | CAT | GORN | (101)
+         +----+        \         +-----+------+
+(111)  7 |  *-+--->-----+------> +---+---+
+         +----+                  |   |   | (11)
+                                 +---+---+
+</pre>
+
+<hr>
+<p>
+<b>(d)</b> Delete DOG.
+Remove DOG from the <tt>01</tt> bucket.  As there are no
+<em>sibling</em> buckets with which to combine it, we simply leave
+the <tt>01</tt> bucket empty.
+(Only a bucket with label <tt>00</tt> could be a "sibling" to the
+bucket with label <tt>01</tt>, and there is no such bucket.)
+(Illustration omitted.)
+
+<hr>
+<p>
+<b>(e)</b> Delete RAT.
+Remove RAT from the <tt>000</tt> bucket.  As the <tt>000</tt> and <tt>001</tt>
+buckets are "siblings" and the total # of entries in the two of them is now
+two, we can merge them into a <tt>00</tt> bucket containing COW and BEAR.
+Because now the maximum length of any bucket's label is two, we can halve the
+size of the directory, making its depth two.  (In real life, we probably
+wouldn't merge two buckets unless the resulting bucket were somewhat less
+than full, because otherwise the resulting bucket would be likely to undergo
+a split in the near future.)
+
+<pre>
+       +----+                  +-----+------+
+(00) 0 |  *-+--->------------> | COW | BEAR | (00)
+       +----+                  +-----+------+
+(01) 1 |  *-+--->------------> +-----+---+
+       +----+                  | DOG |   | (01)
+(10) 2 |  *-+--->---+          +-----+---+
+       +----+        \         +-----+-----+
+(11) 3 |  *-+--->-----+------> | CAT | ELK | (1)
+       +----+                  +-----+-----+
+</pre>
+
+<hr>
+<p>
+<b>(f)</b> Delete CAT.
+Remove CAT from the <tt>1</tt> bucket.  There is no sibling bucket,
+so that is all we can do.  (Illustration omitted.)
+
+<hr>
+<p>
+<b>(g)</b> Insert MOOSE.
+This causes overflow of the bucket with label <tt>000</tt>.
+Because this bucket has depth 3, which corresponds to DIR_DEPTH, we
+double the size of the directory, making each entry in the new directory
+point to the correct bucket.  Then we split the overflowing bucket into
+buckets with labels <tt>0000</tt> and <tt>0001</tt>, into which COW
+and BEAR are placed appropriately.
+Then we attempt once more to insert MOOSE.
+This time, MOOSE fits nicely alongside COW in the <tt>0001</tt> bucket.
+
+<pre>
+          +----+                   +-----+---+
+(0000)  0 |  *-+--->-------------> | RAT |   | (0000)
+          +----+                   +-----+---+
+(0001)  1 |  *-+--->-------------> +-----+-------+
+          +----+                   | COW | MOOSE | (0001) 
+(0010)  2 |  *-+--->---+           +-----+-------+
+          +----+        \          +------+---+
+(0011)  3 |  *-+--->-----+-------> | BEAR |   | (001)
+          +----+                   +------+---+
+(0100)  4 |  *-+--->---+          
+          +----+       v
+(0101)  5 |  *-+--->---+  
+          +----+       v           +-----+---+
+(0110)  6 |  *-+--->---+---------> | DOG |   | (01)
+          +----+       ^           +-----+---+
+(0111)  7 |  *-+--->---+
+          +----+
+(1000)  8 |  *-+--->--+
+          +----+      v
+(1001)  9 |  *-+--->--+
+          +----+      v
+(1010) 10 |  *-+--->--+---->----> +-----+-----+
+          +----+      ^           | CAT | ELK | (1)
+(1011) 11 |  *-+--->--+           +-----+-----+
+          +----+      ^   
+(1100) 12 |  *-+--->--+ 
+          +----+      ^
+(1101) 13 |  *-+--->--+
+          +----+      ^
+(1110) 14 |  *-+--->--+
+          +----+      ^
+(1111) 15 |  *-+--->--+
+          +----+
+</pre>
+
+</body>
+</html>

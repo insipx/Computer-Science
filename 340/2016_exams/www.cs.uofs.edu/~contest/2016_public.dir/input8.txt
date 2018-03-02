@@ -1,0 +1,22 @@
+5 2 13
+1 4
+0 b 0
+0 b 3
+4 b 4
+3 a 3
+0 a 1
+3 b 1
+1 a 0
+1 b 1
+3 b 4
+1 a 2
+2 a 4
+4 a 2
+4 b 3
+6
+baab
+aabab
+bbbb
+bbbababaa
+aaaaaa
+abbaaabaa

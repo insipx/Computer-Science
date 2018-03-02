@@ -1,0 +1,80 @@
+<html>
+<head>
+  <title>CMPS 340 Fall 2017 HW #1 Sample Solutions</title>
+</head>
+<body>
+<h2>CMPS 340 Fall 2017 <br />
+HW #1 Sample Solutions
+</h2>
+
+<b>1.</b> Solutions:
+<br /><b>(a)</b><em>(i)</em>: (M:N, total, partial)
+<br /><b>(a)</b><em>(ii)</em>: (1:N, partial, total)
+<br /><b>(a)</b><em>(iii)</em>: (1:1, partial, partial)
+<br /><b>(a)</b><em>(iv)</em>: (M:N, total, total)
+<br /><b>(a)</b><em>(v)</em>: (N:1, partial, partial)
+<br /><b>(a)</b><em>(vi)</em>: (M:N, total, partial)
+
+</p><p>
+<b>(b)</b> One correct answer (among many) 
+is the set A &times; {b<sub>1</sub>}, which in gory detail is
+{(a<sub>1</sub>,b<sub>1</sub>),
+  (a<sub>2</sub>,b<sub>1</sub>),
+  (a<sub>3</sub>,b<sub>1</sub>)}
+
+</p><p>
+<b>(c)</b>
+Consider any answer of the form <b>(x:1,y,total)</b>, 
+where x is either "1" or "N" and y is either "total" or "partial".
+(There are four such combinations, of course.)
+Let R &sube; A&times;B be a relationship set consistent with such an answer.
+There being four elements in B, and B's participation in R being
+total, R must contain <b>at least four</b> ordered pairs.
+<!--
+  (a<sub>1</sub>,b<sub>i</sub>), (a<sub>2</sub>,b<sub>j</sub>),
+  (a<sub>3</sub>,b<sub>k</sub>), and (a<sub>4</sub>,b<sub>m</sub>).
+-->
+</p><p>
+In order for R to satisfy the x:1 cardinality constraint,
+no member of A may appear in more than one of the ordered pairs in R.
+There being three elements in A, R must contain <b>at most three</b> 
+ordered pairs.
+</p><p> 
+But it is impossible for the number of pairs contained in R to be <b>both</b>
+at least four <b>and</b> at most three.  Hence, such an R does not exist.
+This covers four of the five impossible answers.
+
+</p><p>
+The remaining impossible answer is <b>(1:N,total,partial)</b>.
+Let R &sube; A&times;B be a relationship set consistent with such an answer,
+but not with a stronger answer.  (A stronger answer would be one in
+which either the "N" was replaced by "1" or the "partial" was replaced
+by "total", or both.)
+
+</p><p>
+Because of the "1" in the answer, no two ordered pairs of R can have
+the same B-component. Because of the "partial", at least one member
+of B must not appear in any ordered pair of R.
+(If every member of B appeared in an ordered pair, the "partial" could
+be strengthened to "total".)
+Due to B having four members, it follows that R contains
+<b>at most three</b> ordered pairs.
+
+</p><p>
+Because of the "total" in the answer, and the fact that A has three
+members, R must have at least three members, with each a<sub>i</sub>
+appearing in one.  But some a<sub>i</sub> must appear in at least
+two ordered pairs, or else R would be consistent with an answer
+in which the "N" were replaced by the stronger "1".  Thus, R must
+contain <b>at least four</b> ordered pairs.
+
+</p><p>
+But it is impossible for the number of pairs contained in R to be <b>both</b>
+at most three <b>and</b> at least four.  Hence, such an R does not exist.
+
+<hr>
+<b>2.</b> None available, at present.
+
+
+</body>
+</html>

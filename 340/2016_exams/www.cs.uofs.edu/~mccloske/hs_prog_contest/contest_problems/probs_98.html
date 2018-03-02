@@ -1,0 +1,440 @@
+<html>
+<head>
+<title>1998 U of S Programming Contest Problems</title>
+<H2>University of Scranton 1998 High School Programming Contest Problems
+</H2>
+</head>
+
+<body>
+
+<A HREF="#Dec_Rep_Rat_Nums">Problem 1: 
+         Decimal Representation of Rational Numbers</A><br>
+<A HREF="#Any_Way_Home">Problem 2: Any Way Home?</A><br>
+<A HREF="#Shortest_Subsequence">Problem 3:
+         Shortest Substring Containing a Subsequence</A><br>
+<A HREF="#String_Editor">Problem 4: String Editor</A><br>
+<A HREF="#Scheduling">Problem 5: Scheduling</A><br>
+<A HREF="#Rectangles_and_Points">Problem 6: Rectangles and Points</A>
+
+
+<p> &nbsp;<br>
+<A NAME="Dec_Rep_Rat_Nums">
+<hr>
+<b>Problem 1: Decimal Representation of Rational Numbers</b></A>
+
+<p>
+A rational number is one that can be expressed as a fraction 
+<!-- <sup>k</sup>/<sub>m</sub>,  -->
+<b>k/m</b>,
+where k and m are integers and m is nonzero.
+It turns out that these are also the numbers than can be expressed 
+in <em>repeating decimal</em> form.
+That is, every rational number can also be written in the form
+<p>
+<center>p.d<sub>1</sub> d<sub>2</sub> d<sub>3</sub> 
+... d<sub>n-r</sub> <b>(</b>
+d<sub>n-r+1</sub> d<sub>n-r+2</sub> ...  d<sub>n</sub> <b>)</b>
+</center>
+<br>
+
+<!-- <centEr><table border=0 align=center><tr><td>
+     <Table align=left><tr><td nowrap align=center>
+     p.d<sub>1</sub> d<sub>2</sub> d<sub>3</sub> 
+     <font face=symbol>¼</font></td>
+     <td nowrap align=center>
+     <hr NOSHADE>
+     d<sub>n-r+1</sub> d<sub>n-r+2</sub> <font face=symbol>¼</font
+     >d<sub>n</sub><Br>&nbsp;<br></td><td nowrap align=center>
+     </td></Table>
+     </td></table></centEr>
+-->
+
+where p is an integer, each d<sub>i</sub> is a digit between 0 and 9, and
+the
+parentheses around <!--  bar over -->
+the last r digits indicate that that sequence of digits repeats forever.
+
+<p>
+You are to develop a program that takes as input two nonnegative integers
+k and m (a numerator and denominator) and that produces as output the
+<em>simplest</em> repeating decimal representation of the rational number
+<b>k/m</b>.
+By simplest we mean that the number of digits appearing after the
+decimal point is minimum.
+For example, the rational number 13/6 is represented
+by each of 
+2.1(6), 2.16(6), and 2.1(66),
+but only the first of these is in simplest form.
+As another example, the simplest repeating decimal representation of 40/4 is
+10.(0).
+
+<p>
+Your program should terminate when the user enters zero for the
+denominator.
+
+<p>
+In order to simplify the task of producing output, your results are to be
+written in the form p.d<sub>1</sub> d<sub>2</sub> ... d<sub>n</sub>
+&nbsp;&nbsp;r, where r indicates the
+length of the repeating sequence of digits.  (See example below.)
+
+<p>
+You may assume that any rational number used in testing your program
+is such that its simplest repeating decimal representation
+has no more than thirty digits appearing after the decimal point.
+<br><br>
+<p>
+<b>Sample Program Execution:</b><br>
+<p>
+<tt> 
+  Enter numerator: <u><tt>14</tt></u> <br>
+  Enter denominator: <u><tt>5</tt></u> <br>
+  2.80  1 <br><br>
+  Enter numerator: <u><tt>131</tt></u> <br>
+  Enter denominator: <u><tt>350</tt></u> <br>
+  0.37428571  6 <br><br>
+  Enter numerator: <u><tt>56</tt></u> <br>
+  Enter denominator: <u><tt>0</tt></u>
+</tt>
+
+<p> &nbsp;<br>
+<A NAME="Any_Way_Home">
+<hr>
+<b>Problem 2: Any Way Home?</b></A>
+
+<p>
+Imagine a country in which each road provides a one-way path from
+one city to another.
+In such a country there may be cities such that, once you have left
+them, there is no way back!
+
+<p>
+Write a program that, given as input a table describing the map of
+the country, identifies those cities from which it is not possible to 
+make a "round trip".
+More precisely, the program should identify any city having the property
+that there is no path of roads by which you can leave it
+and later return to it. 
+
+<p>
+The first input is an integer n describing the number of cities
+in the country.  (Cities are numbered from 1 to n.)
+On the remaining n lines of input is an 
+n&times;n table of 0's and 1's describing the map of the country.
+A one in row i and column j indicates that there is a one-way road
+from city i to city j.  A zero indicates the absence of such
+a road.  (Rows are numbered from top to bottom, columns from left to
+right, as they appear on the screen.)
+
+<p>
+You may assume that n&le;20.
+Repeat until the user enters zero for the number of cities.
+
+<p>
+<b>Sample Program Execution:</b><br>
+<p>
+<tt>
+   Enter number of cities: <u>8</u><br>
+   <u>0 1 1 0 0 0 0 0</u><br>
+   <u>0 0 1 0 0 0 0 1</u><br>
+   <u>1 0 0 0 0 0 0 0</u><br>
+   <u>0 0 0 0 1 0 1 1</u><br>
+   <u>0 0 0 0 0 1 0 1</u><br>
+   <u>0 0 0 0 1 0 0 0</u><br>
+   <u>0 0 1 0 0 0 0 1</u><br>
+   <u>0 0 0 0 0 0 0 0</u>
+   <br><br>
+<p>
+   4 7 8
+   <br><br>
+<p>
+   Enter number of cities: <u>0</u>
+</tt>
+
+<p> &nbsp;<br>
+<A NAME="Shortest_Subsequence">
+<hr>
+<b>Problem 3: Shortest Substring Containing a Subsequence</b></A>
+
+<p>
+Let S and T be strings of letters.
+We say that S is a <em>subsequence </em> of T if the letters that
+make up S appear in the same order within T, but not necessarily
+adjacent to one another. &nbsp;For example, <b>MOO</b> is a subsequence
+of <b>NONMONOTONIC</b>, because the letters <b>M</b>, 
+<b>O</b>, and <b>O</b> appear within <b>NONMONOTONIC</b>
+as the fourth, fifth, and seventh letters, respectively.
+&nbsp;However, <b>POT</b> is neither a subsequence of <b>LIFTS</b>
+nor of <b>ATROPHY</b>.  In the first case, not all of the letters in
+<b>POT</b> appear in <b>LIFTS</b>; in the second case,
+although all the letters of <b>POT</b> are present in
+<b>ATROPHY</b>, they are not in the proper order.
+
+<p>
+You are to develop a program that takes as input two strings S and T
+of lower case letters and reports whether or not S is a subsequence of T.
+If it is not, your program should simply print 0; if it is, your program
+should print the starting and ending positions of the
+<em>shortest </em> substring of T containing S as a subsequence.
+(Positions are numbered from left to right starting at 1.)
+If there are two or more shortest substrings of T containing S as a
+subsequence, identify the leftmost such substring.
+
+<p>
+Your program should repeat until two empty strings are issued as input.
+You may assume that no string has length exceeding 80.
+
+<p>
+<b>Sample Program Execution:</b><br>
+<tt>
+<p>
+  Enter S: <u>ben</u><br>
+  Enter T: <u>aboekneno</u><br>
+  2 6
+  <br><br>
+<p>
+  Enter S: <u>pelth</u><br>
+  Enter T: <u>dgiephwrtlx</u><br>
+  0
+  <br><br>
+<p>
+  Enter S: <u>sss</u><br>
+  Enter T: <u>tstststsstst</u><br>
+  6 9
+  <br><br>
+<p>
+  Enter S: <br>
+  Enter T:
+</tt>
+
+<p> &nbsp;<br>
+<A NAME="String_Editor">
+<hr>
+<b>Problem 4: String Editor</b></A>
+
+<p>
+You are to write a program that accepts as input a single string and then
+allows the user to enter commands that modify the string.
+Your program should implement five types of commands: DELETE, REPLACE,
+INSERT, RESTART, and QUIT.
+
+<p>
+If the user enters the command DELETE, your program should prompt the user
+for the starting and ending positions of the substring to be deleted.
+(Positions are numbered from left to right starting at 1.)
+
+<p>
+If the user enters the command REPLACE, your program should prompt the
+user for the starting and ending positions of the substring to be replaced,
+and then prompt the user for the replacement string.  (Note that the
+replacement string need not be the same length as the one being replaced.)
+
+<p>
+If the user enters the command INSERT, your program should prompt
+the user for the position at which to insert a string, and then prompt
+for the string to be inserted.
+
+<p>
+For each of the above commands, after the user has responded to the 
+prompt, your program should carry out the command, 
+print the updated string,
+and then prompt the user to enter another command. 
+
+<p>
+If the user enters the command RESTART, your program should discard
+the current string and prompt the user to enter a new string.
+
+<p>
+If the user enters the command QUIT, your program should terminate.
+
+<p>
+You may assume that the length of the string being edited will never
+exceed 80 characters.
+
+<p>
+<b>Sample Program Execution:</b><br>
+<tt>
+<p>
+  Enter string: <u>Existence precedes essence.</u>
+  <br><br>
+<p>
+  Command: <u>DELETE</u><br>
+  Starting position: <u>11</u><br>
+  Ending position: <u>19</u><br><br>
+  Existence essence.
+  <br><br>
+<p>
+  Command: <u>INSERT</u><br>
+  Starting position: <u>6</u> <br>
+  Insertion string: <u>EE</u> <br><br>
+  ExistEEence essence.
+  <br><br>
+<p>
+  Command: <u>RESTART</u><br><br>
+  Enter string: <u>Nowhere</u><br>
+  Command: <u>REPLACE</u><br>
+  Starting position: <u>3</u><br>
+  Ending position: <u>6</u><br>
+  Replacement string: <u>p</u><br><br>
+  Nope
+  <br><br>
+<p>
+  Command: <u>QUIT</u>
+</tt>
+
+
+<p> &nbsp;<br>
+<A NAME="Scheduling">
+<hr>
+<b>Problem 5: Scheduling</b></A>
+
+<p>
+You are to write a program that schedules jobs as follows. &nbsp;The program
+should first prompt for the number of jobs to be scheduled, an integer
+between 0 and 10. &nbsp;Next the program should prompt for the arrival time and
+duration of each job, where the arrival time will be an integer between 0
+and 19 and the duration will be an integer between 1 and 10. &nbsp;Your program
+should output a schedule indicating what job should be worked on at each
+point in time between time 0 and the time when all jobs have finished.
+
+<p>
+A job cannot be worked on until it arrives, and jobs are prioritized so that
+shorter jobs will be worked on first. &nbsp;If a job arrives that will take less
+time to complete than the job currently being worked on, the current job is
+interrupted <!-- and "put on pause" -->
+while the shorter job is worked on.
+Now, it may happen that this shorter job is interrupted by an even shorter
+job.  And so on and so forth.
+When a job is completed, if others are waiting to be resumed or
+started, the job needing the shortest amount of time to complete should be
+worked on next.  (Ties are broken by arrival time: the earlier the arrival
+time, the higher the priority.)
+
+<p>
+Your output should indicate, as illustrated in the example below,
+the times at which the jobs are started, interrupted, resumed, and
+completed.
+Until the user enters 0 for the number of jobs, your program should repeat.
+
+<p>
+The complexity of the example shown below merits explanation:
+Job 1 arrives at time 3, and since it is the only job available,
+it is started.  When job 2 (with duration 7) arrives at time 4, it 
+takes priority over job 1, because job 1 has 9 remaining units of time.
+Thus, job 1 is interrupted and job 2 is started.  Job 3 arrives at time
+7, but since its duration, 5 units, exceeds the time remaining for job 2, 
+4 units, we do not interrupt job 2.  However, job 4's arrival at time 9
+causes us to interrupt job 2 (which has 2 remaining units of time, compared
+to job 4's having duration 1).  Job 4 finishes at time 10, at which time
+we resume job 2, because, among all jobs present (jobs 1, 2, and 3), it
+has the smallest remaining time to completion.
+By the time job 2 finishes, job 5 has arrived.  Among jobs still
+present (jobs 1, 3, and 5), job 5 has the smallest remaining time to
+completion, and thus it is started.  When job 5 completes, job 3 is started,
+because it takes priority over job 1.  Finally, job 3 finishes, job 1 is
+resumed, and it finishes.
+
+<p>
+<b>Sample Program Execution:</b><br>
+<tt>
+<p>
+  Enter number of jobs: <u>5</u><br>
+  Enter arrival time for job 1: <u>2</u><br>
+  Enter duration for job 1: <u>11</u><br>
+  Enter arrival time for job 2: <u>4</u><br>
+  Enter duration for job 2: <u>7</u><br>
+  Enter arrival time for job 3: <u>7</u><br>
+  Enter duration for job 3: <u>5</u><br>
+  Enter arrival time for job 4: <u>9</u><br>
+  Enter duration for job 4: <u>1</u><br>
+  Enter arrival time for job 5: <u>11</u><br>
+  Enter duration for job 5: <u>3</u>
+  <br><br>
+<p>
+  Time 2: start job 1<br>
+  Time 4: interrupt job 1, start job 2<br>
+  Time 9: interrupt job 2, start job 4<br>
+  Time 10: finish job 4, resume job 2<br>
+  Time 12: finish job 2, start job 5<br>
+  Time 15: finish job 5, start job 3<br>
+  Time 20: finish job 3, resume job 1<br>
+  Time 29: finish job 1
+  <br><br>
+<p>
+  Enter number of jobs: <u>0</u>
+</tt>
+
+<p> &nbsp; <br>
+<A NAME="Rectangles_and_Points">
+<hr>
+<b>Problem 6: Rectangles and Points</b></A>
+
+<p>
+You are to write a program that
+prompts the user to enter two ordered pairs of real numbers,
+(x<sub>1</sub>,y<sub>1</sub>) and (x<sub>2</sub>,y<sub>2</sub>), each of which represents a point on the
+cartesian plane.  These points are to be interpreted to be opposing
+corners of a rectangle whose sides are parallel to the coordinate axes.
+(That is, two sides of the rectangle are horizontal and the other two
+are vertical).
+
+<p>
+Your program is then to (repeatedly) prompt the user for an ordered
+pair of real numbers (x,y) representing another point on the plane.
+For each such point entered by the user, the program should output the
+distance from that point to the point on the perimeter of the rectangle
+which is closest to it.
+
+<p>
+The third point may be anywhere in the plane, including inside
+the rectangle, outside the rectangle, or on its perimeter.
+
+<p>
+The program should terminate when the point entered corresponds
+to the first corner of the rectangle.
+
+<p>
+<em>Reminder: </em> The distance between points
+(u<sub>1</sub>,v<sub>1</sub>) and (u<sub>2</sub>,v<sub>2</sub>) is
+the square root of
+<!-- [<font face=symbol>Ö</font> -->
+(u<sub>1</sub> - u<sub>2</sub>)<sup>2</sup> + 
+ (v<sub>1</sub> - v<sub>2</sub>)<sup>2</sup>.
+
+<p>
+<b>Sample Program Execution:</b><br>
+<tt>
+<p>
+  Enter opposing corners of rectangle:<br>
+  x1: <u>2.0</u><br>
+  y1: <u>2.0</u><br>
+  x2: <u>5.0</u><br>
+  y2: <u>4.0</u><br>
+
+<p>
+  Enter a point:<br>
+  x: <u>4.5</u><br>
+  y: <u>3.0</u>
+  <br><br>
+<p>
+  Shortest distance to rectangle is 0.5.
+  <br><br>
+<p>
+  Enter a point:<br>
+  x: <u>7.0</u><br>
+  y: <u>7.0</u>
+  <br><br>
+<p>
+  Shortest distance to rectangle is 3.6055.
+  <br><br>
+<p>
+  Enter a point:<br>
+  x: <u>2.0</u><br>
+  y: <u>2.0</u>
+</tt>
+<p>
+
+<p><hr><small>File translated from T<sub><font size="-1">E</font></sub>X by <a href="http://hutchinson.belmont.ma.us/tth/">T<sub><font size="-1">T</font></sub>H</a>, version 2.00.<br>On 16 Aug 1999, 14:04.</small>
+
+</body>
+</HTML>

@@ -1,0 +1,298 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>1994 U of S High School Programming Contest Problems</TITLE>
+</HEAD>
+<BODY>
+<H2>University of Scranton 1994 High School Programming Contest Problems</H2>
+
+
+<A HREF="#Perfect_Numbers">Problem 1: Perfect Numbers</A><br />
+<A HREF="#Add_Them_Up">Problem 2: Add Them Up</A><br />
+<A HREF="#English_Math_Parser">Problem 3: English Mathematical Parser</A><br />
+<A HREF="#Conjugates">Problem 4: Conjugates</A><br />
+<A HREF="#Wraparound_Numbers">Problem 5: Wraparound Numbers</A><br />
+<A HREF="#Square_Roots">Problem 6: Square Roots</A>
+
+<p>&nbsp;
+<p>
+<A NAME="Perfect_Numbers">
+<hr>
+<b>Problem 1: Perfect Numbers</b></A>
+
+<p>
+A positive integer is said to be a perfect number if it is equal to the 
+sum of its positive divisors less than itself.  For example, 28 is 
+perfect, because 
+<center>
+  28 = 1 + 2 + 4 + 7 + 14
+</center>
+
+<p>
+On the other hand, 12 is not perfect, because 
+<center>
+  12 &ne; 1 + 2 + 3 + 4 + 6
+</center>
+
+<p>
+You are to write a program that prompts the user to enter a positive
+integer and responds by reporting whether or not the given number is
+perfect.  The program should terminate when the user enters 0.
+
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter a positive integer: <u>12</u><br />
+12 IS NOT perfect.<br />
+<br />
+Enter a positive integer: <u>28</u><br />
+28 IS perfect.<br />
+<br />
+Enter a positive integer: <u>0</u>
+</tt>
+
+
+<p> &nbsp;
+<p>
+<A NAME="Add_Them_Up">
+<hr>
+<b>Problem 2: Add Them Up</b></A>
+
+<p>
+Develop a program that takes as input two "long" nonnegative integers 
+and ouputs their sum.  The inputs will be no longer than 30 digits.
+(Thus, their sum will be no longer than 31 digits.)
+The program should repeat until the user enters zero for both inputs.
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+1st input:  <u>10371</u><br />
+2nd input:  <u>315</u><br />
+Result: 10686<br />
+<br /> 
+1st input: <u>54696543201678654789456</u><br />
+2nd input: <u>82067690004564356875434</u><br />
+Result: 136764233206243011664890<br />
+<br />
+1st input: <u>0</u><br />
+2nd input: <u>0</u><br />
+Result: 0
+</tt>
+
+<p> &nbsp;
+<p>
+<A NAME="English_Math_Parser">
+<hr>
+<b>Problem 3: English Mathematical Parser</b></A>
+
+<p>
+<P>Develop a program that reads an arithmetic expression written in English,
+such as
+<p>
+<center>
+  NINE&nbsp; PLUS&nbsp; SEVEN
+</center>
+<p>
+and that outputs the number that is the result of evaluating the expression.
+
+<p>
+More precisely, the input will be a one-digit number, written as a word in
+upper case letters, followed by a space, followed by one of the words
+"PLUS", "MINUS", "TIMES", or "DIVIDED-BY", followed by a space, followed
+by another one-digit number, written as a word in upper case letters.
+
+<p>Here, "DIVIDED-BY" means integer division.
+(Example: 8 divided by 3 is 2.)&nbsp;
+The spellings for one-digit numbers are as follows: "ZERO", "ONE", "TWO",
+"THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", and "NINE".
+
+You may assume that no input expression will call for division by zero.
+Your program should repeat until the user enters an expression that evaluates
+to zero.
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Input: <u>NINE PLUS FOUR</u><br />
+Result: 13<br />
+<br />
+Input: <u>FIVE MINUS SEVEN</u><br />
+Result: -2<br />
+<br />
+Input: <u>EIGHT DIVIDED-BY THREE</u><br />
+Result: 2<br />
+<br />
+Input: <u>ZERO TIMES SIX</u><br />
+Result: 0<br />
+</tt>
+
+<p> &nbsp;
+<p>
+<A NAME="Conjugates">
+<hr>
+<b>Problem 4: Conjugates</b></A>
+
+<p>
+Two strings <b>X</b> and <b>Y</b> are said to be conjugates if, 
+by shifting the symbols of <b>Y</b> in a cyclic fashion zero or 
+more times, you can arrive at <b>X</b>.
+For example, the strings <em>ababba</em> and <em>abbaab</em> 
+are conjugates because by shifting the symbols of the latter
+two positions to the right (or, equivalently, four positions to the left),
+you arrive at the former.
+On the other hand, <em>ababba</em> and <em>abaabb</em> are not conjugates,
+as you can easily verify.
+It is clear from the definition that two strings cannot be conjugates
+unless they have the same length.
+
+<P>
+You are to develop a program that prompts the user to enter two strings 
+(the maximum length for a string is 20 characters) and that responds by
+reporting whether the two are conjugates.  The program terminates when
+the user enters the empty string.  </P>
+
+<P>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter 1st string: <u>ababba</u><br />
+Enter 2nd string: <u>abbaab</u><br />
+The two strings are conjugates.<br />
+<br />
+Enter 1st string: <u>ababba</u><br />
+Enter 2nd string: <u>abaabb</u><br />
+The two strings are NOT conjugates.<br />
+<br />
+Enter 1st string: <u>ababbbbacabba</u><br />
+Enter 2nd string: <u>acbabaabb</u><br />
+The two strings are NOT conjugates.<br />
+<br />
+Enter 1st string: <u></u><br />
+</tt>
+
+
+<p> &nbsp;
+<p>
+<A NAME="Wraparound_Numbers">
+<hr>
+<b>Problem 5: Wraparound Numbers</b></A>
+
+<p>
+Let us consider each digit in a positive integer to be:
+<ol>
+  <li>a "place" we can visit, and</li>
+  <li>an instruction telling us how many places to the right we should
+      move (wrapping around to the leftmost digit when necessary) to 
+      find the next place to visit.</li>
+</ol>
+
+<P>
+For example, take the number 2635.  Let us begin by visiting its leftmost
+digit, 2.  It tells us that we should next visit the digit <b>two</b>
+places to its right, which is the 3.  The 3 tells us to move <b>three</b>
+places to the right, which (wrapping around) lands us on the 6.
+We then move <b>six</b> places to the right (again wrapping around) 
+to land on the 5.  Moving <b>five</b> places to the right (which involves
+wrapping around twice) lands us on the 2.
+Notice that we are back to where we started and that every digit has been
+visited.  This property characterizes the so-called 
+<em>wraparound numbers</em>. 
+That is, a wraparound number is a positive integer having the property
+that, if we begin by visiting its leftmost digit and proceed to visit its
+digits according to the rule we followed in the example above,
+<!-- we will end up back at the leftmost digit -->
+all digits will be visited, and, furthermore, the first digit to be 
+visited for a second time will be the leftmost one.
+Thus, 2635 is a wraparound number.</P>
+
+<P>
+For another example, take 21674.  It is <em>not</em> a wraparound number,
+because if we begin by visiting the 2, we will next visit the 6, then the
+7, then the 2, then the 6, then the 7, etc., etc., never having visited
+the 1 or the 4.
+As a last example, take 12.  It is <em>not</em> a wraparound number, because
+we would visit the 1, then the 2, and then the 2 again, failing to return to
+the leftmost digit.
+
+<P>
+You are to write a program that prompts the user to enter a positive integer
+and that responds by telling whether or not it is a wraparound number.
+The program should terminate when the user enters the number 0.</P>
+
+
+<P>
+<b>Sample Program Execution:</b><br />
+
+<p>
+<tt>
+Please enter a number: <u>2635</u><br />
+2635 IS a wraparound number.<br />
+<br />
+Please enter a number: <u>21674</u><br />
+21674 IS NOT a wraparound number.<br />
+<br />
+Please enter a number: <u>0</u>
+</tt>
+
+
+
+<p> &nbsp;
+<p>
+<A NAME="Square_Roots">
+<hr>
+<b>Problem 6: Square Roots</b></A>
+
+<p>
+Develop a program that takes as input a positive integer
+<!-- real number -->
+and outputs an approximation to its square root.
+Your program may not include a call to any built-in root-finding
+subprogram that may be available in your programming language environment.
+
+<p>
+The value computed by your program is considered to be correct if it
+satisfies at least one of the following conditions:
+<ul>
+  <li>It differs from the actual square root of the input by 
+      no more than 0.001.</li>
+  <li>Its square differs from the input by no more than 0.001.</li>
+</ul>
+
+<p>
+The program should terminate when the user enters zero as input.</P>
+
+<p>
+<b>Sample Program Execution:</b>
+
+<p>
+<tt>
+Enter an integer: <u>9</u><br />
+Square root is 3.0008<br />
+<br />
+Enter an integer: <u>27</u><br />
+Square root is 5.196<br />
+<br />
+Enter an integer: <u>0</u>
+</tt>
+
+<!-- 
+  Enter a real number: <u>9.0</u><br />
+  Square root is 3.0008<br />
+  <br />
+  Enter a real number: <u>27.0</u><br />
+  Square root is 5.1961<br />
+  <br />
+  Enter a real number: 0.0<br />
+-->
+
+</BODY>
+</HTML>

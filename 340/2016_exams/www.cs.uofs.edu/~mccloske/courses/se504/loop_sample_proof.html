@@ -1,0 +1,256 @@
+<html>
+<head><title>Sample proof of a program computing 1 + 2 + ... + n</title>
+</head>
+<body>
+<H3>SE 504  Formal Methods and Models<br>
+Sample proof of a program computing 1 + 2 + ... + n
+</H3>
+
+</p><p>
+Problem: Prove the correctness of the following program:
+<pre>
+  |[ con N : int; 
+     var j, sum : int; 
+     {precondition P: N &gt;= 0}
+     j, sum := 0,0;
+     {invariant I : 0&lt;=j&lt;=N  &and;  sum = (+i | 0&lt;i&lt;=j : i)}
+     {bound function t: N-j}
+     do j &ne; N  --->  j := j+1 ; sum := sum+j;
+     od;
+     {postcondition Q : sum = (+i | 0&lt;i&lt;=N : i) }
+  ]|
+</pre>
+
+</p><p>
+For the purpose of making hints more precise, it is helpful to name
+each conjunct of <tt>I</tt>.  We have
+<pre>
+   I1 : 0&lt;=j       I2 : j&lt;=N      I3 : sum = (+i | 0&lt;i&lt;=j : i)
+</pre>
+
+</p><p>
+(Note that the first conjunct of <tt>I</tt> is really an abbreviation for 
+<tt>I1 &and; I2</tt>.)
+The given program is a loop preceded by some initialization.  Thus, to prove
+its correctness, it suffices to prove each of the five points on the loop 
+checklist, which we do now.
+
+</p><p>
+<b>(i)</b> <tt>{P} S<sub>init</sub> {I}</tt>
+    &nbsp;(i.e., <tt>[P ==> wp.S<sub>init</sub>.I]</tt>)
+
+<pre>
+     wp.S<sub>init</sub>.I
+
+   =    < defn of S<sub>init</sub> >
+
+     wp.(j,sum := 0,0).I
+
+   =    < wp assignment rule >
+
+     I(j,sum := 0,0)
+
+   =    < defn. of I, textual substitution >
+
+     0&lt;=0  &and;  0&lt;=N  &and;  0 = (+i | 0&lt;i&lt;=0 : i)
+
+   =    < range 0&lt;i&lt;=0 is empty; by Empty Range (8.13), result is 0 >
+
+     0&lt;=0  &and;  0&lt;=N  &and;  0 = 0
+
+   =    < (0&lt;=0) = true, (0 = 0) = true; Identity of &and; (3.39), twice >
+
+     0&lt;=N
+
+   =    < definition of P >
+
+     P 
+</pre>
+
+</p><p>
+Thus, we have demonstrated that <tt>[P = wp.S<sub>init</sub>.I]</tt>, 
+from which it certainly follows that <tt>[P ==> wp.S<sub>init</sub>.I]</tt>.
+
+</p><p>
+<b>NOTE:</b> The above is written at a greater level of detail than is really
+necessary to obtain such a simple result.  In practice, we would normally
+just observe that execution of S<sub>init</sub> (in a state satisfying
+<tt>P</tt>) "obviously" establishes a state that satisfies <tt>I</tt>.
+However, when things are not so obvious, we should rely upon our
+formal notation to guide us in proving, rigorously, what is needed.
+Typically, proving checkpoint (ii) is somewhat more difficult than proving
+(i) and thus the level of detail given above (as well as below) is more
+appropriate in that context.
+
+</p><p>
+<br />
+<b>(ii)</b> <tt>{I &and; B} S {I}</tt> 
+   (i.e., <tt>[I &and; B  ==>  wp.S.I]</tt>)
+ 
+<p>
+  Of course, here we have <tt>B : j &ne; N</tt>.
+
+<p>
+  We assume both <tt>I</tt> and <tt>B</tt> and prove <tt>wp.S.I</tt>.
+<pre>
+     wp.S.I
+
+  =     < defn of S >
+
+     wp.(j:=j+1; sum:=sum+j).I
+
+  =     < wp catenation (sequential composition) rule >
+
+     wp.(j:=j+1).(wp.(sum:=sum+j).I)
+
+  =     < wp assignment rule >
+
+     wp.(j:=j+1).(I(sum:=sum+j))
+
+  =     < wp assignment rule >
+
+     (I(sum:=sum+j))(j:=j+1)
+
+  =     < defn of I, textual substitution >
+
+     (0&le;j &and; j&le;N &and; sum+j = (+i | 0&lt;i&le;j : i))(j:=j+1)
+
+  =     < textual substitution >
+
+     0&le;j+1  &and;  j+1&le;N  &and;  sum+(j+1) = (+i | 0&lt;i&le;j+1 : i)
+
+  =     < I1 implies 0&le;j+1; I2 &and; B implies j+1&le;N; (3.39) twice >
+
+     sum+(j+1) = (+i | 0&lt;i&le;j+1 : i)
+
+  =     < (8.23) One-point rule (Assumption I1 guarantees range is non-empty) >
+
+     sum+(j+1) = (+i | 0&lt;i&le;j : i) + i(i:=j+1)
+
+  =     < Assumption I3 and textual substitution >
+
+     sum+(j+1) = sum + (j+1)
+
+  =     < = is reflexive >
+
+     true
+</pre>
+
+</p><p>
+Thus, we have demonstrated that <tt>[I &and; B  ==>  wp.S.I]</tt>,
+as required!
+
+</p><p>
+<br />
+<b>(iii)</b> <tt>[I &and; &not;B  ==>  Q]</tt>
+
+<pre>
+    I &and; &not;B
+
+  =    < defn of B >
+
+    I &and; &not;(j &ne; N)
+
+  =    < defn of I; &not;(j&ne;N) = (j=N)>
+
+    0&le;j  &and;  j&le;N  &and;  sum = (+i | 0&lt;i&le;j : i)  &and;  j=N
+
+  =    < Substitution (3.84a), with e,f := j,N and E := sum = (+i | 0&lt;i&le;j : i) >
+
+    0&le;j  &and;  j&le;N  &and;  sum = (+i | 0&lt;i&le;N : i)  &and;  j=N
+
+ ==>   < (3.76b) >
+
+    sum = (+i : 0&lt;i&le;N : i) 
+
+  =    < defn of Q >
+
+    Q 
+</pre>   
+
+</p><p>
+<br />
+<b>(iv)</b> <tt>[I &and; B  ==>  t > 0]</tt> 
+
+</p><p>
+Recalling that the bound function <tt>t</tt> is given by the expression
+<tt>N - j</tt>, we assume <tt>I &and; B</tt> and show that <tt>N-j > 0</tt>.
+
+<pre>
+    N - j > 0
+
+  =    < algebra >
+
+    N > j
+
+ =     < assumptions B: j &ne; N  and  I2: j <= N together guarantee j < N  >
+
+    true
+</pre>
+
+
+
+</p><p>
+<br />
+<b>(v)</b> <tt>{I &and; B &and; t=T} S {t < T}</tt>.
+
+<p>
+Because we have chosen <tt>t : N-j</tt>, this is just
+<tt>{I &and; B &and; N-j=T} S {N-j < T}</tt>,
+which is equivalent to 
+<tt>[I &and; B &and; N-j = T  ==>  wp.S.(N-j &lt; T)]</tt>
+
+<pre>  
+    wp.S.(N-j < T)
+
+  =   < defn of S >
+
+    wp.(j:=j+1; sum:=sum+j).(N-j < T)
+
+  =   < wp catenation (sequential composition) law >
+
+    wp.(j:=j+1).(wp.(sum:=sum+j).(N-j < T))
+
+  =   < wp assignment rule >
+
+    wp.(j:=j+1).(N-j < T)(sum:=sum+j)
+
+  =   < textual substitution  (no occurrences of sum in N-j<T) >
+
+    wp.(j:=j+1).(N-j < T)
+
+  =   < wp assignment rule >
+
+    (N-j < T)(j:=j+1)
+
+  =   < textual substitution >
+
+    N-(j+1) < T
+
+  =   < assumption N-j = T >
+
+    N-(j+1) < N-j
+
+  =   < algebra >
+
+    -1 < 0
+
+  =   < arithmetic >
+
+    true
+</pre>
+
+</p><p>
+Again, the above is written at an excessive level of detail.  In practice,
+we would simply observe that <tt>S</tt> causes the value of <tt>j</tt>
+to increase by one (while leaving the value of <tt>N</tt> unchanged),
+from which it follows that the value of <tt>N-j</tt> (i.e., the value of 
+<tt>t</tt>) decreases by one on each iteration of the loop.
+
+</p><p>
+In practice (and depending upon the intended readership), in proofs such
+as the ones above we would combine some of the more trivial sequences of
+steps together into a single step.
+
+</body>
+</html>

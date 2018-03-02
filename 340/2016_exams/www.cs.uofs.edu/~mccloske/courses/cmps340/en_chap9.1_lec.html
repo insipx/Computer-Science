@@ -1,0 +1,251 @@
+<html>
+<head>
+   <title>&nbsp Notes on Section 9.1 of Elmasri &amp; Navathe</title>
+</head>
+<body>
+<H2>Notes on Section 9.1 of Elmasri &amp; Navathe:
+    Mapping an ER Schema to a Relational Database Schema </H2>
+
+<b>STILL UNDER CONSTRUCTION</b>
+
+<p>
+Here we illustrate the 7-step procedure for deriving a
+relational database schema from an ER schema diagram
+(as described in Section 9.1 of E&amp;N) by applying it to the
+<a href="elmasri_navathe.dir/en_6e_fig_7-2.pdf" target="_blank">COMPANY 
+ER schema</a> obtained in Chapter 7.
+(It is assumed that the reader is familiar with the
+<b>relational data model</b>, the main concepts of which include
+<b>relation</b>, <b>tuple</b>, and <b>attribute</b> (or their loose
+equivalents, <b>table</b>, <b>row</b>, and <b>column</b>, respectively).
+See Chapter 3 of E&amp;N (Chap. 7 in older editions of the book) 
+and/or the relevant web page.)
+
+<H3>Step 1: Strong Entity Types</H3>
+
+</p><p>
+For each regular (i.e., strong, non-weak) entity type <em>E</em> in the
+ER schema, create a relation <b>E</b>.
+For each single-valued attribute <em>A</em> of <em>E</em> having no 
+multi-valued sub-attributes, make all its atomic sub-attributes
+(including only <em>A</em> itself, if it is atomic) be attributes
+of <b>E</b>.
+
+</p><p>
+Choose as the primary key of <b>E</b> the collection of attributes
+arising from some key of <em>E</em>.
+
+</p><p>
+In the COMPANY example (using Figure 7.2 (3.2 in older editions)),
+this step leads us to the following (partial) relational schema:
+<ul>
+  <li><b>EMPLOYEE</b>(<em><u>SSN</u>, Fname, Minit, Lname, Bdate, Sex,
+       Address, Salary</em>)
+  </li>
+  <li><b>DEPARTMENT</b>(<em><u>Number</u>, Name</em>)</li>
+  <li><b>PROJECT</b>(<em><u>Number</u>, Name, Location</em>)</li>
+</ul>
+
+</p><p>
+Notice that (composite) <em>Name</em> attribute of the <em>EMPLOYEE</em>
+entity type gives rise to three attributes in the relation
+<b>EMPLOYEE</b>, corresponding to its three atomic sub-attributes.
+
+</p><p>
+We arbitrarily chose <em>Number</em> as the primary key for both
+<b>DEPARTMENT</b> and <b>PROJECT</b>, 
+although we could have chosen <em>Name</em> for either one.
+(According to Figure 7.2 (3.2 in older editions),
+both attributes (individually, that is) are keys
+of the corresponding entity types.)
+
+
+<H3>Step 2: Weak Entity Types</H3>
+<p>
+For each weak entity type <em>W</em> in the ER schema,
+create a relation <b>W</b>.  As in Step 1, for each single-valued
+attribute of <em>W</em> having no multi-valued sub-attributes,
+make all its atomic sub-attributes be attributes of <b>W</b>.
+
+</p><p>
+Let <em>E</em>, with corresponding relation <b>E</b>,
+be an <b>owner entity type</b> of <em>W</em>. 
+Add as (<b>foreign key</b>) attributes of <b>W</b> the attributes
+forming the primary key of <b>E</b>.  (These attributes can be
+renamed, if desired.)
+</p><p>
+The primary key of <b>W</b> includes all the foreign key attributes
+added as a result of the previous paragraph, plus any partial key
+attributes of weak entity type <em>W</em>.
+
+</p><p>
+For the COMPANY example, this step results in the introduction of
+relation <b>DEPENDENT</b>, which includes as attributes all those associated
+with weak entity type <em>DEPENDENT</em> in Figure 7.2 (3.2 in older editions),
+plus the primary key <em>SSN</em> (renamed <em>ESSN</em>) of the relation
+<b>EMPLOYEE</b> (which arose from owner entity type <em>EMPLOYEE</em>).
+The primary key of <b>DEPENDENT</b> is the partial key <em>Name</em> in
+combination with the foreign key, <em>ESSN</em>.
+
+</p><p>
+We add the following to our relational schema:
+<ul>
+  <li><b>DEPENDENT</b>(<em><u>ESSN, Name</u>, Sex, Birthdate,
+       Relationship</em>)</li>
+</ul>
+
+</p><p>
+<b>Note:</b> It is possible for a weak entity type <em>W<sub>1</sub></em>
+to have an owner entity type <em>W<sub>2</sub></em> that is itself weak.
+In that case, the introduction of relation <b>W<sub>2</sub></b> should
+occur before that of <b>W<sub>1</sub></b> in order to ensure that the
+attributes forming the primary key of <b>W<sub>1</sub></b> can be
+ascertained when it is introduced.
+<b>End of note.</b>
+
+<H3>Step 3: 1:1 Relationships</H3>
+</p><p>
+For each binary 1:1 relationship type <tt>R</tt> with participating
+entity types <em>S</em> and <em>T</em>, choose one of the corresponding
+relations, say <b>S</b>, and include as a foreign key in <b>S</b>
+the attribute(s) forming the primary key of <b>T</b>.
+(<em>Note</em>: If possible, the role of <em>S</em> should be played by
+an entity type constrained to participate totally in <tt>R</tt>.
+Include as attributes of <b>S</b>, in addition, all atomic sub-attributes
+of any attributes of <tt>R</tt> not involving multi-valuedness.
+</p><p>
+With respect to COMPANY, consider the <tt>MANAGES</tt> relationship, which
+is 1:1.  Among its participating entity types, <em>EMPLOYEE</em> and
+<em>DEPARTMENT</em>, we choose the latter to play the role of <em>S</em>
+because it (and not the former) is constrained to participate totally.
+(Recall that every department must have a manager; not every employee must
+be a manager, however.)
+Following the guidelines, we add foreign key attribute <em>MgrSSN</em>
+(corresponding to primary key <em>SSN</em> of <b>EMPLOYEE</b>) to relation
+<b>DEPARTMENT</b>.  We also add attribute <em>MgrStartDate</em>,
+corresponding to the <em>StartDate</em> attribute of <tt>MANAGES</tt>.
+
+<p>
+Updating our relational schema, we get
+<ul>
+  <li><b>DEPARTMENT</b>(<em><u>Name</u>, Number, MgrSSN, MgrStartDate</em>)
+  </li>
+</ul>
+
+<p>
+In the case that <em>both</em> participating entity types are constrained
+to participate totally in <tt>R</tt>, a viable alternative approach is
+to map the two entity types, plus the relationship, into a single
+relation.  This relation would include all the atomic sub-attributes of
+all attributes of <em>S</em>, <em>T</em>, and <tt>R</tt>
+not involving multi-valuedness.
+
+<H3>Step 4: 1:N and N:1 Relationships</H3>
+</p><p>
+For each regular (i.e., non-identifying) binary N:1 relationship type
+<tt>R</tt> involving entity types <em>S</em> and <em>T</em>
+(where <em>S</em> is at the <em>N-side</em>),
+include as a foreign key in <b>S</b>
+the attribute(s) forming the primary key of <b>T</b>.
+(This makes sense, as each entity in <em>S</em>'s entity set will 
+participate in at most one instance of <tt>R</tt>.)
+</p><p>
+Include as attributes of <b>S</b>, in addition, any atomic sub-attributes
+of attributes of <tt>R</tt> not involving multi-valuedness.
+</p><p>
+For (regular) 1:N relationships, do the same thing, reversing the roles of
+<em>S</em> and </em>T</em>.
+</p><p>
+In the COMPANY example, this guideline leads us to augment our
+relational schema to obtain the following:
+<ul>
+  <li><b>EMPLOYEE</b>(<em><u>SSN</u>, Fname, Minit, Lname, Bdate,
+       Sex, Address, Salary, <font color="blue"> DeptNum, 
+       SuperSSN</font></em> )
+  </li>
+  <li><b>PROJECT</b>(<em><u>Name</u>, Number, Location,
+      <font color="blue">CntrlDeptNum</font></em>)
+  </li>
+</ul>
+
+<H3>Step 5: M:N Relationships</H3>
+<p>
+For each M:N relationship type <em>R</em>, create a new relation <b>R</b>
+to represent <em>R</em>.
+Include as foreign key attributes in <b>R</b> the primary keys of the
+relations corresponding to the participating entity types.
+Together those attributes will comprise the primary key of <b>R</b>
+<p>
+Include as attributes of <b>R</b>, in addition, all atomic sub-attributes
+of attributes of <em>R</em> not involving multi-valuedness.
+<p>
+Note that, unlike 1:1, 1:N, and N:1 relationships, 
+we cannot represent an M:N relationship by including a
+foreign key (plus any attributes of the relationship) in a 
+relation corresponding to one of the two participating entity types.
+<p>
+In the COMPANY example, the M:N relationship <tt>WORKS_ON</tt> is
+mapped into a relation <b>WORKS_ON</b> with foreign key attributes
+<em>PNO</em> (referring to the number of the participating project instance)
+and <em>ESSN</em> (referring to the SSN of the participating
+employee instance).  These two attributes together form the primary key
+of <b>WORKS_ON</b>.  The attribute <em>Hours</em> (taken from the
+<tt>WORKS_ON</tt> relationship) is included as an attribute of
+<b>WORKS_ON</b>, too.
+
+<p>
+Note that the approach described here for mapping M:N relationships
+from the ER to the relational model could be applied 
+(as an alternative to what was described in Steps 3 and 4)
+to 1:1, 1:N, and N:1 relationships.
+Doing so is recommended for relationships that are expected to
+have few instances (relative to the number of instances of
+the relation into which a foreign key attribute would be inserted,
+following the guidelines of Step 3 or 4) in order to avoid lots
+of <b>null</b> values in foreign key attributes.
+<p>
+Following this alternative approach, the primary key of the
+"relationship relation" will be the foreign key attribute(s) that
+refers to the participating entity type at the <em>N-side</em>
+of the relationship.  (The foreign key attribute referring to the
+entity type at the <em>1-side</em> would not be part of the primary key.)
+<p>
+For example, suppose that we wanted to keep track of which employees
+were married to one another.  Then we would have a binary 1:1 relationship
+<tt>MARRIED_TO</tt> with participating entity types 
+<em>EMPLOYEE</em> and <em>EMPLOYEE</em>.  Following the guidelines of
+Step 3, we would include an attribute <em>Spouse</em>, say, in the
+relation <b>EMPLOYEE</b>.  But if 95% of our employees are not part
+of a married couple of employees, 95% of the instances of <b>EMPLOYEE</b>
+will have the value <b>null</b> in the <em>Spouse</em> attribute.
+In this case, it would probably make more sense to introduce, in
+accord with the guidelines of Step 5, a relation <b>MARRIED_TO</b>
+instead.
+
+<H3>Step 6: Multi-valued Attributes</H3>
+<p>
+For each multi-valued attribute <em>A</em>, create a new relation
+<b>R</b>.  It will include as attributes all the atomic sub-attributes
+of <em>A</em> plus the primary key <em>K</em> of the relation corresponding
+to the entity type or relationship having <em>A</em> as a 
+multi-valued attribute.
+The primary key of <b>R</b> is the combination of <em>A</em> and <em>K</em>.
+<p>
+In our COMPANY example, consider multi-valued attribute 
+<em>Locations</em> of entity type <em>DEPARTMENT</em>.
+We create relation <b>DEPT_LOCATIONS</b> and include as attributes
+<em>DLocation</em> (corresponding to <em>Locations</em> itself)
+and the foreign key <em>DNumber</em> (referring to the number of the
+department).  Together these form the primary key.
+<p>
+Note that E&amp;N don't address the problem of nested multi-valued
+sub-attributes.  
+
+<H3>Step 7: n-ary (n>2) Relationships</H3>
+<p>
+SUPPLY example (page 293)
+<hr>
+
+</body>
+</html>
+

@@ -1,0 +1,94 @@
+<html>
+<head>
+  <title>Proving Correctness of another Assignment Command</title>
+</head>
+<body>
+<H2>
+SE 504 <br />
+Proving Correctness of an Assignment (2)
+</H2>
+
+<p>
+The Hoare Triple law for assignment says
+<p><center>
+             <tt>{P} x:=E {Q} &nbsp;&equiv;&nbsp;  [P &rArr; Q(x := E)]</tt>
+</center>
+<p>
+Example: Prove <tt>{P} z,y := z*x,y+1 {P}</tt>, 
+where <tt>P: z = x<sup>y</sup> &and; y&ge;0</tt>
+</center>
+
+<p>
+<b>Solution</b>: By the Hoare Triple law for assignment, it suffices to prove 
+<tt>P &rArr; P(z,y := z*x,y+1)</tt>.
+The usual approach is to assume the antecedant and to show the consequent:
+
+<pre>
+  Assume P.
+
+     P(z,y := z*x,y+1)
+
+  =     < defn of P >
+
+     (z = x<sup>y</sup> &and; y&ge;0)(z,y := z*x,y+1)
+
+  =     < textual substitution >
+
+     z*x = x<sup>y+1</sup> &and; y+1 &ge; 0
+
+  =     < Assumption y&ge;0 implies y+1 &ge; 0 >
+
+     z*x = x<sup>y+1</sup> &and; true
+
+  =     < (3.39) true is identity of &and; >
+
+     z*x = x<sup>y+1</sup> 
+
+  =     < Assumption z = x<sup>y</sup> >
+
+     x<sup>y</sup>*x = x<sup>y+1</sup>
+
+  =     < algebra: a<sup>b</sup> * a<sup>c</sup> = a<sup>b+c</sup> >
+
+     x<sup>y+1</sup> = x<sup>y+1</sup>
+
+  =     < = is reflexive >
+
+     true
+</pre>
+
+<hr>
+<p>
+Now suppose that we use the wp approach instead of the Hoare Triple approach.
+The relationship between wp and Hoare Triples is
+<p><center>
+        <tt>{P} S {Q} &nbsp;&equiv;&nbsp;  [P &rArr; wp.S.Q]</tt>
+</center>
+
+<p>
+Furthermore, the wp assignment rule is <tt>[wp.(x:=E).Q &equiv; Q(x:=E)]</tt>.
+
+<p>
+Hence, to prove <tt>{P} z,y := z*x,y+1 {P}</tt>
+we show the equivalent
+<p><center><tt>
+ [P &nbsp;&rArr;&nbsp; wp.(z,y := z*x,y+1).P]</tt>
+</center>
+<p>
+The usual approach is to assume the antecedant and to show the consequent:
+<pre>
+  Assume P.
+
+     wp.(z,y := z*x,y+1).P</sub>
+
+  =     < wp assignment rule >
+
+     P(z,y := z*x,y+1)
+
+  =     ...
+</pre>     
+As this is the first line of the proof above, we simply continue as in
+that proof.
+
+</body>
+</html>

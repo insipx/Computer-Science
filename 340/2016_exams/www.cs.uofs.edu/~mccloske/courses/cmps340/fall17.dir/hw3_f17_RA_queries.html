@@ -1,0 +1,119 @@
+<html>
+<head>
+  <title>CMPS 340  Fall 2017  HW #3</title>
+</head>
+<body>
+<h2>CMPS 340 Fall 2017<br />
+HW#3: Relational Algebra Query Development<br />
+Due: 1pm, Friday, September 29
+</h2>
+
+</p><p>
+Using the COMPANY relational database from the Elmasri/Navathe textbook 
+(the schema diagram of which, augmented with arrows showing
+foreign keys, is in Figure 5.7 (7th edition, but 3.7 in 6th edition)
+and a possible state of which is illustrated in 
+<a href="../elmasri_navathe.dir/en_6e_fig_3-6.pdf">Figure 5.6</a>
+(3.6 in 6th edition),
+<!-- (page 72)), --> 
+devise Relational Algebra queries corresponding to the following 
+"information requests".
+
+</p><p>
+<b>1.</b> 
+Report the last name and department # of each employee whose 
+first name is "Gourdhead" and whose salary is at least $70,000.
+<!-- Report the first name and salary of each employee whose last name is
+     "Gorn" and who works for either Department 1 or Department 5.
+-->
+
+</p><p>
+<b>2.</b> 
+Report the last name and birthdate of each male employee whose
+middle initial is 'T' and who has a female dependent named 'Rumplestiltskin'.
+<!-- 
+  Report the last name and birthdate of each female employee whose
+  salary is at least $60,000 and who works for a department named
+  "Bureaucracy".
+-->
+
+</p><p>
+<b>3.</b>
+Report the first and last names of each employee who works on 
+a project located in either Scranton or Wilkes-Barre.
+
+</p><p>
+<b>4.</b>
+Report the first and last names of each employee who works on 
+a project located in Scranton but does not work on any
+project located in Wilkes-Barre.
+
+<!-- old (3) and (4)
+  <b>3(a)</b> 
+  Report the first and last names of each employee who 
+  has both male and female dependents.
+  <br />
+  <b>3(b)</b>
+  Report the first and last names of each employee who 
+  has male dependents but no female dependents.
+
+  </p><p>
+  <b>4.</b>
+  <!-- Report the name of each project on which works an employee having 
+       last name "Rumplestiltskin".
+  -- >
+-->
+
+</p><p>
+<b>5.</b>
+Report the name and location of each department whose manager works 
+for a different department.  (The department for which an employee
+works is identified by the <tt>Dno</tt> attribute in the tuple
+describing the employee.)
+<!-- Report the first and last names of each employee who works on a project
+  that is controlled by a department other than the one for which the
+  employee works.
+-->
+
+</p><p>
+<b>6.</b>
+Report, for each project, its name and number, 
+the number of employees who work on it, 
+and the sum of the hours that they work on it.
+(Try to formulate your query so that the result explicitly 
+identifies projects on which no employee is working.
+Assume that the aggregate <tt>SUM</tt> function treats NULL as
+though it were zero.)
+<!--
+  Report, for each department, its name, the number of employees who work 
+  for it, and the sum of their salaries.
+  (The department for which an employee works is indicated by the 
+  <tt>Dno</tt> attribute in the <tt>Employee</tt> table.)
+  Try to formulate your query so that the result explicitly 
+  includes departments for which no employees work.
+  Assume that the aggregate <tt>SUM</tt> function treats NULL as
+  though it were zero.
+-->
+<!--
+  Report, for each of the two sexes ('M' and 'F'), the number of
+  employees of that sex who manage some department and the average of
+  their salaries.
+-->
+
+</p><p>
+<b>7.</b>
+Report, for each project and each of the two sexes, 
+the number of the project, how many employees of that sex work
+on that project, and the total number of hours that those employees
+devote to that project.  (The resulting table should have attributes
+for project number, sex, # of employees, and total hours.)
+</p><p>
+<b>Bonus:</b> As above, but also include the project name in
+each tuple and try to formulate your query so that the result 
+explicitly identifies project/sex combinations for which the #
+of employees is zero.
+Assume that the aggregate <tt>SUM</tt> function treats NULL as
+though it were zero.)
+
+</body>
+</html>

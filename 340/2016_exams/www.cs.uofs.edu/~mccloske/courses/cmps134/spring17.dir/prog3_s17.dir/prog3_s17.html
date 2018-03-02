@@ -1,0 +1,271 @@
+<html>
+<head>
+  <title>CMPS 134  Spring 2017  Programming Assignment #3</title>
+</head>
+<body>
+<h2>CMPS 134 Spring 2017<br />
+    Programming Assignment #3: Calendar Date Lexer<br />
+    Due: 11:59pm, Thursday, March 23
+</h2>
+
+<h3>Background: Lexical Analysis</h3>
+</p><p>
+In computer science, the term <em>lexical analysis</em> refers to the
+process of identifying, within a string of characters, its smallest
+meaningful component parts, called <em>lexemes</em>.  
+When (the source code of) a Java class is provided as input to a
+Java compiler, the compiler's first action is to apply its
+lexical analyzer (or <em>lexer</em>, for short) for the purpose of
+identifying each occurrence of a keyword, identifier, comment,
+literal (numeric or otherwise), operator (arithmetic, relational), 
+etc., etc.
+
+</p><p>
+The next phase of compilation is <em>syntactic analysis</em>, in which
+the sequence of lexemes identified during lexical analysis is processed
+in order to determine whether or not the original source code is free
+of syntax errors and, if so, to build an intermediate representation of
+the program that can be converted into executable code (called
+<em>bytecode</em> in the case of Java).
+
+</p><p>
+To make an analogy, lexical analysis in the context of analyzing 
+sentences written in English would correspond to finding the 
+individual words and punctuation symbols and in determining each
+word's part of speech (e.g., noun, verb, adjective).
+Syntactic analysis would then correspond to diagramming each
+sentence (e.g., by identifying subjects, verbs, direct objects,
+prepositional phrases, etc.).
+
+<h3>Background: Calendar Dates</h3>
+</p><p>
+Calendar dates are expressed in several different formats,
+but they all convey the same three pieces of information: month,
+day, and year.  Several formats in common use are listed in
+<a href="https://en/wikipedia/org/wiki/Calendar_date">Wikipedia's 
+Calendar_date entry</a>.
+
+</p><p>
+For this particular programming assignment, we will be interested
+in four calendar date formats, which we illustrate here using examples:
+
+</p><p>
+<center>
+<table border="2" cellpadding="4">
+<tr>
+  <th>Format Name</th><th>Example 1</th><th>Example 2</th><th>Example 3</th>
+</tr>
+<tr>
+  <td>Y_MONTH_D</td>
+  <td>"<tt>2013 SEPTEMBER 5</tt>"</td>
+  <td>"<tt>55 MARCH 15</tt>"</td><td>"<tt>1964 APRIL 10</tt>"</td>
+</tr>
+<tr>
+  <td>M/D/Y</td>
+  <td>"<tt>11/29/2019</tt>"</td>
+  <td>"<tt>2/5/1915</tt>"</td>
+  <td>"<tt>7/4/576</tt>"</td>
+</tr>
+<tr>
+  <td>Y-M-D</td>
+  <td>"<tt>1974-04-08</tt>"</td>
+  <td>"<tt>0002-05-23</tt>"</td>
+  <td>"<tt>1678-12-19</tt>"</td>
+</tr>
+<tr>
+  <td>DMonY</td>
+  <td>"<tt>7Dec1954</tt>"</td>
+  <td>"<tt>26Apr674</tt>"</td>
+  <td>"<tt>12May1825</tt>"</td>
+</tr>
+</table>
+</center>
+
+</p><p>
+The double quotes surrounding each date are not part of the date
+itself, but are there simply to emphasize that each date is a
+string with no leading or trailing spaces.
+
+</p><p>
+Notice that, among the four formats of interest to us, only
+Y-M-D requires all three components (year, month, and day) to
+be expressed using fixed-length fields, including leading zeros
+for padding if necessary.  (We will assume that only years in
+the range 0..9999 are of interest to us, so that four digits
+are always sufficient.)  The only other field of fixed length
+is the month within the DMonY format, which has length three.
+
+</p><p>
+Given a calendar date in a particular format, identifying its
+component parts (i.e., lexically analyzing it) is fairly easy.
+This is especially so for the Y-M-D format, because each of its
+fields is fixed in length.  The Y_MONTH_D and M/D/Y formats are
+easy, too, because in each one the fields are separated by a
+particular character that acts as a <em>delimiter</em>: 
+space in the former and slash in the latter.
+The DMonY format is slightly more difficult, because there is
+no delimiter.  Rather, the month field begins with the first
+occurrence of a letter and ends with the last.  (Or, perhaps
+better: it begins with the first occurrence of a letter and has
+length three).
+
+
+<h3>Requirements</h3>
+</p><p>
+For this assignment, you are to finish the development of an incomplete
+Java class, called <a href="CalendarDateLexerZZ.java">CalendarDateLexer</a>.
+As its name suggests, its purpose is to act as a lexer 
+(i.e., lexical analyzer) on strings that are (assumed to be)
+calendar dates.
+
+</p><p>
+Specifically, the class includes twelve public methods, three for
+each of the four calendar date formats introduced above.
+The three methods devoted to dates in the Y-M-D format are
+<tt>yearFromYMD()</tt>, <tt>monthFromYMD()</tt>, and
+<tt>dayFromYMD()</tt>.  The methods devoted to the other
+formats are similarly named, with <tt>YMD</tt> replaced in an
+obvious way.
+
+</p><p>
+As the method names suggest, each one has as its purpose to
+return the appropriate substring of the calendar date that it
+receives via its formal parameter.  For example, the call
+<tt>monthOfYMD("1974-04-08")</tt> should evaluate to "<tt>04</tt>".
+
+</p><p>
+In order to complete the class, you will have to develop the bodies
+of several of the methods.  Each one is well marked by a comment that 
+says "STUB!".  
+(The term "stub" refers to a method whose body is essentially empty.)
+
+</p><p>
+Keep in mind that the methods in <tt>CalendarDateLexer</tt>
+are <b>not responsible</b> for verifying the validity of the
+calendar dates passed to them as parameters.  They are responsible
+for providing "meaningful" results only when given valid dates.
+Thus, when developing the code for each method, assume that the 
+String passed to it via its formal parameter is a valid calendar date
+in the assumed format.
+
+
+<table border="2" cellpadding="4" align="right">
+<tr><th>Input</th></tr>
+<tr><td>
+<pre>M/D/Y 7/14/1975
+Y_MONTH_D 2018 JANUARY 7
+DMonY 25Dec1856
+Y-M-D 0987-05-11</pre>
+</td></tr>
+<tr><th>Output</th></tr>
+<tr><td>
+<pre>M/D/Y: 7/14/1975
+  Year: 1975
+  Month: 7
+  Day: 14
+
+Y_MONTH_D: 2018 JANUARY 7
+  Year: 2018
+  Month: JANUARY
+  Day: 7
+
+DMonY: 25Dec1856
+  Year: 1856
+  Month: Dec
+  Day: 25
+
+Y-M-D: 0987-05-11
+  Year: 0987
+  Month: 05
+  Day: 11</pre>
+</td></tr>
+</table>
+
+<h3>Testing Your Work</h3>
+</p><p>
+In order to make it convenient to test your work, provided is a
+Java application program
+<a href="CalendarDateLexerTester.java">CalendarDateLexerTester</a>
+and an <a href="cal_dates.txt">accompanying data file</a>.
+The program reads data from a file, under the assumption that 
+each line of data contains a calendar date format identifier followed 
+by a calendar date in that format.
+For each line of input data, the program echos the indicated
+format and date, followed by (on successive lines) the year, month,
+and day components of the date.
+Of course, it obtains the year, month, and day components by calling 
+the appropriate methods of the <tt>CalendarDateLexer</tt> class.
+
+</p><p>
+To the right appears sample input data (as could appear in the
+data file) and the output that the program should produce if
+fed that input data.  The output that it actually produces will
+depend upon the methods in the <tt>CalendarDateLexer</tt> class
+that the student is responsible for completing.
+
+</p><p>
+How does the application program "know" from which data file to read
+its input?  <b>Answer:</b>
+<ul>
+  <li>If a <b>command line argument</b> (or what jGrasp refers to as a 
+    <b>run argument</b>) is specified when the program is run, 
+    that argument is taken to be the name of the input file.
+  </li>
+  <li>Otherwise, the program prompts the user to enter the name
+    of the input file and takes the response as being that name.
+  </li>
+</ul>
+
+</p><p>
+<a name="runarg">
+The next likely question is: How is a run argument specified when a
+Java program is run via jGrasp? <b>Answer:</b>
+
+<ol>
+  <li>Make the application program to be run the current class 
+      (by clicking on the window containing its source code).
+  </li>
+  <li>Click on <b>Build</b> (in the Menu Bar) so that the associated
+      menu appears.
+  </li>
+  <li>Click on the <b>Run Arguments</b> box on the menu so that it has a
+      checkmark in it.
+      A text box should immediately appear above the application program's
+      source code.
+  </li>
+  <li>Enter into that text box one or more run arguments, separated by
+      spaces.  For this program, you would enter <tt>cal_dates.txt</tt>
+      (or the name of whatever file you want to use as input).
+  </li> 
+  <li>Click on the Run icon.
+  </li>
+</ol>
+
+</p><p>
+A sample input data file is provided, as indicated above.
+But you are encouraged to make up your own input data, or to modify
+that which was given.  A good choice of a text editor for this
+purpose is the one provided by jGrasp.  To make a new file, 
+click on <b>File</b>, then follow the path through <b>New</b>, 
+</b>Other</b>, and <b>Plain Text</b>.
+
+<hr>
+<h3>Program Submission</h3>
+Submit your source code file (<tt>CalendarDateLexer.java</tt>) from
+the course web page using the <b>Submit/Review</b> link that is adjacent
+to the link that brought you to this page.  (Again, submit <b>only</b>
+the <tt>CalendarDateLexer.java</tt> file, 
+<b>not</b> the corresponding <tt>.class</tt> file and <b>not</b>
+any other <tt>.java</tt> file.)
+Make sure to augment the comments in the given program so that you
+identify yourself, acknowledge any persons who aided you in developing
+your solution, and point out any flaws that you know about.
+
+</p><p>
+Be aware that you can submit more than one time.  Hence, if, after
+submitting, you improve your program (e.g., by fixing logic errors),
+you should submit the newer version.
+
+</body>
+</html>
+

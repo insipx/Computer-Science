@@ -1,0 +1,128 @@
+<html>
+<head>
+  <title>CMPS 134 &nbsp; Spring 2017 &nbsp; Programming Assignment #5</title>
+</head>
+<body>
+<h2>CMPS 134 &nbsp; Spring 2017<br />
+Programming Assignment #5: An Improved UmpireClicker Class<br />
+Due: 11:59pm, April 23 
+</h2>
+
+<h3>Specification</h3>
+</p><p>
+Recall our discussion of the <b>umpire clicker</b> device
+and the various Java classes that we developed to model it:
+<a href="UmpireClicker1.java">UmpireClicker1</a>,&nbsp;
+<a href="UmpireClicker2.java">UmpireClicker2</a>,&nbsp; and
+<a href="UmpireClicker3.java">UmpireClicker3</a>,
+the last of which 
+is a client of
+<a href="WrapAroundCounter.java">WrapAroundCounter</a>.
+<!-- uses (above class) as a "support" class. -->
+There is also a client application program,
+<a href="UmpireClickerApp.java">UmpireClickerApp</a>.
+
+</p><p>
+For this assignment you are to take the source code of either
+<tt>UmpireClicker2</tt> or <tt>UmpireClicker3</tt> and to modify it
+so as to obtain a new class that models an improved version of the device.
+The new class should be called <tt>UmpireClicker2A</tt> or
+<tt>UmpireClicker3A</tt>, depending upon which class you took as your
+starting point.
+<!--
+  <a href="umpire_clicker.dir/BetterUmpireClickerX.java">Here</a>
+  is an incomplete version of that class.
+-->
+
+</p><p>
+Your class should have <b>exactly</b> the same collection of public methods
+as does the original.  In particular, each <tt>get<b>X</b>Count()</tt>
+(<b>X</b> = Strike, Out, etc.)
+observer method returns the value of one of the four counters 
+(which here we will refer to by <b>INNING</b>, <b>OUT</b>, <b>BALL</b>,
+and <b>STRIKE</b>, respectively) and each mutator method advances one of them.
+
+</p><p>
+What distinguishes the original umpire clicker from the improved version
+is that, in the former, the only way that any of the counters can be updated
+is by the umpire doing it explicitly (which for us means via a call to the
+corresponding <tt>advance<b>X</b>Count()</tt> mutator method).
+In the latter, however, an explicit update of one counter will, in certain
+situations, trigger (implicit) updates to others.
+
+</p><p>
+To illustrate, consider the original umpire clicker and imagine what
+could happen in a circumstance in which the batter's count includes
+three balls.  If the next pitch is not in the strike zone (and the batter
+does not swing at it), the umpire will call "Ball!" and then advance the 
+<b>BALL</b> counter.  Observing that the <b>BALL</b> display now reads 
+<b>4</b> (which means that the batter has just been "walked"), the umpire
+will instruct the batter to go to first base.
+In preparation for the next batter coming to the plate,
+the umpire must not only advance <b>BALL</b> 
+so that it reads <b>0</b> but also advance <b>STRIKE</b> 
+(as many times as necessary) so that it, too, reads <b>0</b>.
+In the improved version of the device, <b>BALL</b> being (explicitly)
+advanced to <b>0</b> triggers <b>STRIKE</b> being reset to <b>0</b> 
+implicitly (i.e., without any intervention from the umpire).
+
+</p><p>
+For similar reasons, when <b>STRIKE</b> is advanced from <b>3</b> to
+<b>0</b> (signaling a strikeout), <b>BALL</b> can be reset to <b>0</b>.
+Also, when <b>OUT</b> is advanced from <b>3</b> to <b>0</b> (signaling the
+end of a half-inning), both <b>BALL</b> and <b>STRIKE</b> can be reset
+to <b>0</b>.
+Finally, every second time <b>OUT</b> is advanced from <b>3</b>
+to <b>0</b> (signaling the end of an inning), <b>INNING</b> can be advanced.
+(Indeed, the umpire should never manually advance <b>INNING</b>,
+except from <b>0</b> to <b>1</b> while simultaneously bellowing,
+"Play ball!".)
+
+</p><p>
+Contrary to what you might think at first, it would <b>not be correct</b>
+to advance <b>OUT</b> whenever the umpire advanced <b>STRIKE</b> from
+<b>3</b> to <b>0</b>, because if the third strike is dropped by the catcher,
+the batter can "strike out" but yet still reach first base safely.
+Also, it would not be correct to reset <b>BALL</b> and <b>STRIKE</b> to
+<b>0</b> after every time the umpire advanced <b>OUT</b>, because
+the out may have been made by a baserunner (e.g., attempting to "steal"
+a base).
+
+</p><p>
+To reiterate and clarify, your completed version of 
+<tt>UmpireClicker<em><b>X</b></em>A</tt> (<tt><em>X</em></tt> = 2 or 3)
+should satisfy these conditions:
+<ol>
+  <li>It has the same collection of public methods as the original
+      <tt>UmpireClicker<b>X</b></tt> class.
+  </li>
+  <li>Each of its methods has the same "signature" as the
+      corresponding method in the original class 
+      (meaning the same list of formal arguments).
+  </li>
+  <li>The effect of each of its methods differs from its counterpart
+      in the original class only in that the former carries out the
+      implicit counter updates described above, whereas the latter
+      does not.
+  </li>
+</ol>
+
+<hr>
+<h3>Submission</h3>
+</p><p>
+Submit your source code file(s) (<tt>UmpireClicker<b><em>X</em></b>A.java</tt>) 
+(where <tt><em>X</em></tt> = 2 or 3) from the course web page
+using the Submit/Review link that is adjacent to the link that brought you
+to this page. (Again, submit the .java file, <b>not</b> the .class file.)
+Make sure to include comments in your program identifying yourself,
+indicating that it is a solution to Prog. Assg. #5, acknowledging 
+any persons who aided you in devloping your solution, and 
+pointing out any flaws of which you are aware.
+
+</p><p>
+Be aware that you can submit more than one time. Hence, if, after submitting,
+you improve your program (e.g., by fixing logic errors), you should submit
+the newer version. 
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<title>PMJ's Submit Page</title><body background="fall17/images/background.jpg"><h1>Submit Page</h1>
+<h2>fall17, cmps240, prog1_dir <small><i>as of Fri Oct 06, 2017, 13:26:55</i></small></h2>
+<h2>Login:</h2>
+<form action='/~mccloske/Submit.cgi' method='post'  ENCTYPE='multipart/form-data' ><input type=hidden name='hasForm' value="yes">
+<input type=hidden name='root' value='fall17'><input type=hidden name='dir' value='cmps240'><input type=hidden name='sub' value='prog1_dir'><input type=hidden name='pass' value='2'><SELECT NAME='tag[0]' size=1>
+<OPTION SELECTED value =0>Select:
+<OPTION value =1>Adhikari_Prakash
+<OPTION value =2>Albertson_David_G
+<OPTION value =3>Bennett_Colin_P
+<OPTION value =4>Bluhm_Emily_V
+<OPTION value =5>Brannelly_Glenn
+<OPTION value =6>Burns_Matthew_J
+<OPTION value =7>Buttner_Andrew_G
+<OPTION value =8>Cavanaugh_Joseph_P
+<OPTION value =9>Colina-Garcia_Luis_M
+<OPTION value =10>Dauer_Brian_W
+<OPTION value =11>Do_Robert
+<OPTION value =12>Donoghue_Patrick_A
+<OPTION value =13>Gallagher_Clarence_J
+<OPTION value =14>Kathalynas_Michael_A
+<OPTION value =15>McTiernan_Sean_J
+<OPTION value =16>Mejia_Gianni_R
+<OPTION value =17>Merolla_Joe
+<OPTION value =18>Oliverio_Vincent_T
+<OPTION value =19>Ortiz_Brayan_O
+<OPTION value =20>Phillips_Maximillian_V
+<OPTION value =21>Quigley_Timothy_M
+<OPTION value =22>Roani_Mario_J
+<OPTION value =23>Roselle_Lorenzo_G
+<OPTION value =24>Spock_Jim
+<OPTION value =25>Thapa_Akash
+<OPTION value =26>Vicente_Christina
+<OPTION value =27>deBarros_Stephanie_L
+<OPTION value =28>
+</SELECT>
+<input type=password name='tag[1]' size=20 value=><center><input type=submit value='SUBMIT FORM'>&nbsp;&nbsp;<input type=reset></center></form>

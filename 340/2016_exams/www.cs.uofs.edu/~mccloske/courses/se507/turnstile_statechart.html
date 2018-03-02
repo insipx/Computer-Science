@@ -1,0 +1,139 @@
+<html>
+<head><title>Statechart for Jackson's Zoo Turnstile Problem</title>
+</head>
+<body>
+<h2>SE 507<br />
+Sample Statechart for Jackson's Zoo Turnstile Problem
+</h2>
+
+<p>
+What follows is a (tabular) description of a statechart that is intended to
+describe the requirements for Jackson's and Zave's Zoo Turnstile Problem,
+as we studied in class.
+(It is left to the reader to render it in a graphical form.)
+The statechart is the orthogonal product of three (super-)states:
+</p><p><center>
+<tt>Turnstile &times; ActionNeeded &times; CoinsVsPushes</tt>
+</center>
+
+</p><p>
+For each of these three super-states, we provide a table that lists
+each of its constituent states and their transitions,
+with the default (i.e., initial) state listed first. 
+Each transition is described by the event that triggers it, the condition
+necessary for the transition to occur (if applicable), the state to which
+the transition goes, and any action/event that is to be generated as a
+result of the transition occurring.
+
+</p><p>
+We have taken the liberty to assume that there is a variable <tt>paid</tt>
+of type integer (with initial value zero) such that its value
+(which corresponds to <b>#coin - #push</b>, using notation similar to
+that used in class) can be tested in evaluating a condition and can be
+changed by a generated action. 
+
+<h3>Turnstile</h3>
+<table border=5 cellpadding=3>
+<tr>
+  <th><b>State</b></th>
+  <th><b>Event</b></th>
+  <th><b>Condition</b></th>
+  <th><b>To-State</b></th>
+  <th><b>Generated Action(s)</b></th>
+</tr>
+<tr>
+  <td>Locked</td>
+  <td>unlock</td>
+  <td>&nbsp;</td>
+  <td>Unlocked</td>
+  <td>&nbsp;</td>
+</tr>
+<tr>
+  <td>Unlocked</td>
+  <td>lock</td>
+  <td>&nbsp;</td>
+  <td>Locked</td>
+  <td>&nbsp;</td>
+</tr>
+</table>
+
+<h3>ActionNeeded</h3>
+<table border=5 cellpadding=3>
+<tr>
+  <th><b>State</b></th>
+  <th><b>Event</b></th>
+  <th><b>Condition</b></th>
+  <th><b>To-State</b></th>
+  <th><b>Generated Action(s)</b></th>
+</tr>
+<tr>
+  <td>NoneNeeded</td>
+  <td>requestLock</td>
+  <td>in UnLocked</td>
+  <td>MustLock</td>
+  <td>&nbsp;</td>
+</tr>
+<tr>
+  <td>NoneNeeded</td>
+  <td>requestUnlock</td>
+  <td>in Locked</td>
+  <td>MustUnlock</td>
+  <td>&nbsp;</td>
+</tr>
+<tr>
+  <td>MustLock</td>
+  <td>timeout (&lt;760ms)</td>
+  <td>&nbsp;</td>
+  <td>NoneNeeded</td>
+  <td>lock</td>
+</tr>
+<tr>
+  <td>MustUnlock</td>
+  <td>timeout (&lt;250ms)</td>
+  <td>&nbsp;</td>
+  <td>NoneNeeded</td>
+  <td>unlock</td>
+</tr>
+</table>
+
+<h3>CoinsVsPushes</h3>
+<table border=5 cellpadding=3>
+<tr>
+  <th><b>State</b></th>
+  <th><b>Event</b></th>
+  <th><b>Condition</b></th>
+  <th><b>To-State</b></th>
+  <th><b>Generated Action(s)</b></th>
+</tr>
+<tr>
+  <td>Equal</td>
+  <td>coin</td>
+  <td>&nbsp;</td>
+  <td>Excess</td>
+  <td>requestUnlock; paid<tt>:=</tt>1</td>
+</tr>
+<tr>
+  <td>Excess</td>
+  <td>coin</td>
+  <td>&nbsp;</td>
+  <td>Excess</td>
+  <td>paid <tt>:=</tt> paid+1</td>
+</tr>
+<tr>
+  <td>Excess</td>
+  <td>push</td>
+  <td>paid&gt;1</td>
+  <td>Excess</td>
+  <td>paid <tt>:=</tt> paid-1</td>
+</tr>
+<tr>
+  <td>Excess</td>
+  <td>push</td>
+  <td>paid=1</td>
+  <td>Equal</td>
+  <td>requestLock; paid<tt>:=</tt>0</td>
+</tr>
+
+</table>
+</body>
+</html>

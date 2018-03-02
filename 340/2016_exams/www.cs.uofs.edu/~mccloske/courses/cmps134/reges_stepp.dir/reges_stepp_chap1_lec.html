@@ -1,0 +1,552 @@
+<html>
+<head>
+  <!--<title>Notes accompanying slides for Reges/Stepp Chapter 1</title> -->
+  <title>Notes supplementing Reges/Stepp Chapter 1</title>
+</head>
+<body>
+<h2>Notes suplementing Reges/Stepp Chapter 1</h2>
+
+<h3>1.1 Basic Computing Concepts</h3>
+<p>
+<b>What is computer science?</b>
+The name would suggest that it is the study of computers, but that's
+not quite right.  As Edsger Dijkstra (1972 ACM Turing Award winner) put it,
+
+<blockquote>
+  Computer science is no more about computers than astronomy is
+  about telescopes.
+</blockquote>
+
+The point is that, just as telescopes serve as a tool for studying
+the nature of the cosmos (which is the subject of astronomy),
+so computers serve as a tool for studying
+the nature of <b>computation</b>.
+So <b>computation science</b> would be a better term.
+
+</p><p>
+Various definitions of computer science have been offered, including
+Wikipedia's:
+<blockquote>
+  The study of theoretical foundations of information and computation
+  and their implementation and application in computer systems.
+</blockquote>
+</p>
+<p>
+As with other academic disciplines, computer science has a number of 
+sub-disciplines, including graphics, artificial intelligence, databases,
+and networking.
+
+</p><p>
+At the center of the discipline, according to Donald E. Knuth
+(1974 ACM Turing Award winner), is
+<b>algorithmic thinking</b>, which is the kind of thinking needed for
+developing <b>algorithms</b>. 
+An <b>algorithm</b> is a precisely stated list of instructions for
+carrying out some task (typically for the purpose of solving some problem).
+
+</p><p>
+Reges and Stepp argue that a good reason for studying programming is that
+it is the best way to come to an understanding of algorithmic thinking.
+
+</p><p>
+Examples of algorithms include a recipe for making apple pie,
+instructions for assembling a piece of exercise equipment, 
+for tying a Windsor Knot, for putting on a pair of pants, or
+for walking from the parking pavilion to McGuirrin Hall.
+</p>
+<p>
+Algorithms such as these are written in a natural language (e.g., English)
+and can be supplemented with pictures, videos, or diagrams.
+They are intended to be read/viewed and executed by human beings.  
+</p>
+<p>
+In contrast, the kind of algorithm that we will be focused on in this
+course, which is referred to as a <b>computer program</b>, is intended
+to be read and executed by a computer, which, being a machine,
+is extremely stupid.  (An algorithm that can be carried out by a
+machine, with no human intervention, is said to be <b>effective</b>.)
+Indeed, unlike humans (who have common sense and intelligence, and thus
+are often able to figure out instructions that are ambiguous, unclear, or
+plain wrong), a computer follows instructions quite blindly/literally,
+just as does a kitchen appliance, an automobile, or a chain saw.
+We will find that, as a consequence of this, developing computer programs
+that work exactly as intended tends to be more difficult than writing
+instructions for making an apple pie.
+
+</p><p>
+A computer program, then, is an organized set of instructions that is
+intended to be interpreted and executed by a computer.
+
+</p><p>
+Knuth, recalling the cliche
+<blockquote>
+  You don't <em>really</em> understand something until you've taught it.
+  <!-- A person doesn't really understand something until after teaching it
+  to someone else.
+   -->
+</blockquote>
+noted that it would be more accurate to say
+<blockquote>
+  You don't <em>really</em> understand something until you've taught it
+  to a computer (meaning that you've written an algorithm).
+  <!-- A person doesn't <em>really</em> understand something until after
+      teaching it to a computer (i.e., by expressing it as a program).
+  -->
+</blockquote>
+
+
+</p><p>
+Having tried above to provide a sense of what computer science is, 
+next we try to address the question <b>What is a computer?</b>
+
+</p><p>
+Depending upon how broadly the term is defined, lots of devices can
+be classified as computers, including cell phones, calculators, GPS systems,
+even Furbies, because all of them carry out instructions that process data.
+</p>
+<p>
+A <b>universal</b> computer is one that is <b>programmable</b>
+in one or more languages in which <em>any</em> effective algorithm can be
+expressed.
+In the 1930's, several mathematicians described different kinds of
+"theoretical" computing devices (including the Turing Machine),
+all of which turned out to be equally "powerful", meaning 
+(in effect) that any algorithm expressible/executable on any one of
+them was also expressible/executable on any of the others.
+Because no one has yet described a machine with greater capability,
+any device with computing power equal to a Turing Machine is said to 
+be <b>universal</b>.  Today's PC's and laptop computers are universal, and
+these are the kinds of computers that we will use in this course.
+</p>
+<p>
+<b>Hardware and Software</b>:
+A computer system includes various physical devices collectively referred
+to as <b>hardware</b>.  These devices serve different purposes, but all
+contribute to the goal of executing
+computer programs, which are referred to collectively as <b>software</b>.
+Hardware is tangible, software is not.
+One can draw an analogy to, say, an apple pie recipe.  The paper and ink
+used in rendering the recipe's instructions have physical existence,
+as does the person who carries out the recipe, but the essence of
+the recipe is the information it conveys, which is intangible, and
+not the medium (paper, ink) on which it is stored.
+Similarly, software is physically encoded on a storage device 
+(e.g., hard disk or flash drive) and is executed by a processor,
+but its essence is found in the instructions that it specifies
+(which, as a whole, describes an algorithm).
+</p>
+<p>
+Among the hardware devices that compose a computer system are
+<ul>
+  <li><b>central processing unit</b> (CPU): it executes instructions</li>
+  <li><b>(primary) memory</b> (RAM): where data and programs are stored 
+      while in use (short term)
+  </li>
+  <li><b>(secondary) storage</b> (e.g., magnetic disk (hard disk),
+      optical disk (CD, DVD), flash memory, magnetic tape):
+      where data and programs are stored (long term)
+  </li>
+  <li><b>input devices</b>: keyboard, mouse, microphone, game controller</li>
+  <li><b>output devices</b>: monitor (screen), printer, speaker,
+      actuator (e.g., for robot control)
+  </li>
+</ul>
+</p>
+<p>
+Software is typically classified as being in one of two categories:
+<b>system</b> or <b>application</b>.
+The former refers to software whose purpose is to make the machine
+usable or more convenient.  The primary example of system software is the
+<b>operating system</b> (e.g., MS Windows 8, Mac OS X, Linux),
+which is the program that manages the entire operation of
+the machine.
+The latter refers to software that performs tasks of direct interest to
+users (e.g., game playing, word processing, web browsing).
+
+</p><p>
+<b>The Digital Realm</b>:
+In a digital computer, all data is stored in the form of digits.
+In particular, modern digital computers, for reasons having to do
+with engineering concerns (e.g., cost and reliability), encode data
+using (physical manifestations of) binary digits, or <b>bits</b>.
+A binary digit can be either a <b>0</b> or a <b>1</b>.
+(Analogously, a decimal digit is any of <b>0</b>, <b>1</b>, <b>2</b>, ...,
+or <b>9</b>.)
+That is, we can think of all data as being encoded by sequences of
+0's and 1's.  For example, the character <b><tt>A</tt></b> is encoded
+as <b><tt>01000001</tt></b> under the the widely-used ASCII character-encoding
+standard.  And the integer <tt>53</tt> is encoded as <b><tt>00110101</tt></b>
+using standard base-2 representation.
+
+</p><p>
+Because RAM is organized as groups of bits of length 8, called <b>bytes</b>,
+we typically use the byte as a unit of measure of storage usage/capacity.
+To refer to quantities in the thousands, millions, billions, etc., of bytes,
+we use the prefixes <b>kilo</b> (2<sup>10</sup>, or 1024),
+<b>mega</b> (2<sup>20</sup>, or about a million),
+<b>giga</b> (2<sup>30</sup>, or about a billion),
+<b>tera</b> (2<sup>40</sup>, or about a trillion).
+<b>peta</b> (2<sup>50</sup>, or about a quadrillion).
+(See Table 1.2, page 6.)
+
+</p><p>
+<b>Programs and Programming</b>:
+A (computer) program is an organized set of instructions, written in a
+particular <b>programming language</b>, that can be executed by a
+digital computer.  
+</p>
+<p>
+<b>What is meant by "programming language"?</b>:
+A language has <b>syntax</b> and <b>semantics</b>.
+<ul>
+  <li>A language's syntax is the set of rules that govern whether a given
+      expression is valid (i.e., of correct form).
+  </li>
+  <li>A language's semantics determines the meaning of 
+      each valid expression.
+  </li>
+</ul>
+
+<!--  As an alternative to using English below, could instead illustrate
+  syntax and semantics using expressions from high school algebra.
+
+-->
+
+</p><p>
+English's syntax, for example, dictates that none of the following are
+valid sentences:
+<ul>
+  <li><em>Cat big fluffy.</em> &nbsp; (lacks a verb)</li>
+  <li><em>Ran loose jump.</em> &nbsp; (lacks a subject)</li>
+  <li><em>He own a cat.</em> &nbsp; (singular subject, plural verb)</li>
+  <li><em>Mary hit he.</em> &nbsp; 
+       (direct object in nominative case rather than objective case)
+  </li>
+  <li><em>Go die in a corner</em>  &nbsp; (lacks a terminator (e.g., period))
+  </li>
+</ul>
+
+</p><p>
+As for semantics, consider the sentence
+<blockquote>Mary threw the round ball.</blockquote>
+
+</p><p>
+The meaning of a sentence depends upon the words that appear in it,
+what those words refer to, the order in which those words occur, and,
+more generally, the structure of the sentence.
+Here, two entities are involved, referred to by "Mary" and "ball",
+and one action, referred to by "threw".
+Also, one quality/characteristic is referred to by "round".
+
+</p><p>
+Who did the throwing?  Mary, not the ball.<br />
+What was thrown?  The ball, not (necessarily) Mary.<br />
+When did it happen?  In the past, according to the verb's tense.<br />
+What is round in shape?  The ball, not Mary.
+
+</p><p>
+The good news is that the syntax of a typical programming language 
+is much simpler than the syntax of English (or other natural languages).
+Hence, learning the syntax of Java (the programming language that we
+will be using in this course) is easier than learning the syntax
+of English.  (On the other hand, people spend years learning English 
+while you have only a couple of months to learn Java!)
+
+</p><p>
+The bad news is that a Java program will not work (indeed, the computer
+will "refuse" to execute it) if it includes even one syntax error!
+Indeed, computers are very intolerant of syntax errors.
+This is probably in contrast to English teachers that you had in
+high school, who may have penalized you for such errors but not
+rejected your work outright!
+
+</p><p>
+As for semantics, a program "means" what it says to do.
+In other words, its meaning is embodied in how the executing
+machine behaves when running the program.
+
+</p><p>
+<b>Why do we use Java in this course?</b>:
+During the past fifteen or so years, Java has become a very popular 
+programming language, not only in the software industry but also in
+introductory programming courses.
+In particular, it is <b>object-oriented</b>, which is currently in favor.
+(Later in the course, that term will become meaningful.)
+
+</p><p>
+As a first example of a Java program, we give you the following:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public class HelloWorld {
+   public static void main(String[] args) {
+      System.out.println("Hello, World!");
+   }
+} </pre>
+</td></tr>
+</table>
+</center>
+
+<p>
+This program, when executed, simply displays the message
+<b><tt>Hello, World!</tt></b>, as directed by the
+<tt>System.out.println</tt> statement. 
+Indeed, the lines that "introduce" the class <tt>HelloWorld</tt>
+and the method called <tt>main</tt> don't "do anything" except to
+provide structural information.
+
+</p> <p>
+<b>Hierarchical structure of a Java program</b>:
+The units of a Java program can be described, loosely, as follows:
+<ul>
+  <li>Every Java program is composed of one or more <b>classes</b>,
+      each of which is stored in a file whose name matches the class's
+      name (and has a <tt>.java</tt> extension).
+      Hence, the class above would properly be stored in a file called
+      <tt>HelloWorld.java</tt>.
+  </li>
+  <li>Every class includes zero or more <b>methods</b>, each of
+      which can be "called" (or "invoked").
+      Our <tt>HelloWorld</tt> program has one method,
+      the name of which is <tt>main</tt>.
+  </li>
+  <li>Every method includes zero or more <b>statements</b>,
+      each of which directs the computer to take some particular action 
+      or to carry out some operation.
+      In <tt>HelloWorld</tt>, the lone statement in the lone method is
+      <tt>System.out.println(...)</tt>.
+  </li>
+</ul>
+
+</p>
+<p>
+One can make an obvious analogy with a book, which is composed of
+chapters, each of which is composed of paragraphs, each of which is
+composed of sentences, etc.
+</p>
+<p>
+In addition to the rules above, at least one class in a Java application
+must include a method called <tt>main</tt> whose heading matches the one 
+(more or less) in the <tt>HelloWorld</tt> class.
+It is this method that serves as a program's "entry point", meaning
+the place where execution begins.  (Even better, you can think of
+program execution as beginning with a call to the <tt>main</tt> method.) 
+</p>
+<p>
+Syntactically, a class begins with a <b>header</b>, followed by its
+<b>body</b> enclosed between curly braces.  The same is true for methods.
+</p>
+<p>
+For the moment, don't worry about the meaning of <b>keywords</b> such
+as <tt>public</tt>, <tt>static</tt>, or <tt>void</tt>.  In due time,
+these will come to make sense to you.
+</p>
+<p>
+<b>Formatting:</b>
+Notice how the code in <tt>HelloWorld</tt> is formatted.  Our intent
+is to make a class's code as easy to read (for a human) as possible by
+providing visual cues (e.g., indentation, similar to a traditional
+outline) that suggest the structure of the class.  Different programmers
+have different preferences regarding formatting.  The <tt>HelloWorld</tt>
+class above is formatted in the style of Kernighan &amp; Ritchie.
+Another popular style would have it look like this:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>public class HelloWorld
+{
+   public static void main(String[] args)
+   {
+      System.out.println("Hello, World!");
+   }
+}</pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Here, the curly braces that begin and end the body of a class or method
+are lined up in the same column.  Notice, however, that the heading of
+a method is still indented with respect to the class's heading, and each
+statement in a method is indented with respect to the method's heading.
+As in a traditional outline, indentation is used to show, for each component,
+within which other component it is nested.
+
+</p><p>
+Carefully formatting code is strictly for ease of reading (by humans).
+From the point of view of the Java compiler, the following version of
+<tt>HelloWorld</tt> is identical to those above:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>   public class HelloWorld { public    static void main(String[]
+ args) { System.out.println
+ ("Hello, World!"); }
+      } </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+Indeed, we could put the entire program on one line, if we wished.
+
+</p><p>
+<b>Comments:</b>
+Aside from formatting, another technique that programmers use to help a
+reader to understand code more easily is to include <b>comments</b>.
+Indeed, comments are included in code to provide such information as
+its author(s), the date(s) on which it was written/modified, and known
+flaws, as well as both to document its intended behavior and,
+in some cases, to explain how that behavior is achieved.
+</p>
+<p>
+The Java compiler "ignores" comments, which is to say that a program's
+behavior does not change as a result of adding or removing comments.
+</p>
+<p>
+In Java, comments come in two varieties.  A "rest-of-line" comment begins
+with two slashes (<tt>//</tt>) and extends to the end of the line.
+The other kind begins with <tt>/*</tt> and extends to the next occurrence
+of <tt>*/</tt>, which may be on the same line or any number of lines later.
+Here is an augmented version of <tt>HelloWorld</tt> with comments:
+
+</p><p>
+<center>
+<table border="1" cellpadding="4">
+<tr><td>
+<pre>/* Author: J. Programmer
+** Date Written: February 31, 1995
+** Purpose: Displays the message "Hello, World!"
+*/
+public class HelloWorld {
+   public static void main(String[] args) {
+      System.out.println("Hello, World!");  // displays the message
+   }
+} </pre>
+</td></tr>
+</table>
+</center>
+
+</p><p>
+<b>Identifiers and Keywords</b>:
+In the Java language, certain words have a specific meaning and are
+reserved to be used only to convey that meaning in particular contexts.
+These are called <b>keywords</b> (or, in some languages, <b>reserved</b>
+words).  Examples include <b><tt>public</tt></b>, <b><tt>class</tt></b>,
+and <b><tt>void</tt></b>.  (See the <tt>HelloWorld</tt> program for
+instances of these keywords in context.)  (A list of (all?) 50 Java
+keywords appears on page 20 of the textbook.)
+
+</p> <p>
+Other words appearing in a program are introduced by a programmer for
+the purpose of naming things, such as a class, a method, or a variable.
+Such words are called <b>identifiers</b>.
+(jGrasp shows keywords in purple and identifiers in black.)
+
+</p><p>
+By Java's syntax rules, an identifier must be composed of letters,
+underscores (<tt><b> _ </b></tt>), dollar signs (<tt><b>$</b></tt>),
+and decimal digits (i.e., any of <tt>0</tt>, <tt>1</tt>, ..., <tt>9</tt>), 
+but cannot begin with a digit.
+Unlike many programming languages, Java is <b>case sensitive</b>,
+meaning, for example, that it recognizes <tt>myDog</tt> and <tt>MydOg</tt>
+as being distinct identifiers due to the fact that, even though the letters
+match, not all of them agree in case. 
+
+</p><p>
+Certain conventions (i.e., common practices that are intended to heighten
+uniformity and thereby to aid understanding) exist regarding the form of
+identifiers.  Specifically, classes are usually named by a sequence of words,
+each of which has only its first letter capitalized.
+Identifiers for methods (and variables) look similar, except that the
+first word is not capitalized.
+This is sometimes called "camel case" (because the outline of an
+identifier looks like a camel, where the upper case letters are the humps).
+
+</p> <p>
+Examples: <b><tt>HelloWorld</tt></b> is an identifier naming a class, while
+<b><tt>doSomethingStupid</tt></b> is an identifier naming a method.
+
+
+</p><p>
+<b>Exploring the <tt>println</tt> and <tt>print</tt> statements</b>:
+Augment the <tt>HelloWorld</tt> program by inserting some new
+<tt>println</tt> statements to print other messages.
+(Note: Actually, such statements are calls/invocations of the
+<tt>println</tt> method associated to the object called <b><tt>out</tt></b>
+in the library class <tt>System</tt>.)
+Observe that each invocation displays a message on a different line.
+
+</p><p>
+Now change a few of the <tt>println</tt> invocations to instead invoke
+<tt>print</tt>.  Notice that if we invoke <tt>print</tt> followed by
+either <tt>print</tt> or <tt>println</tt>, the two messages appear on
+the same line.
+</p><p>
+
+<b>1.3 Program Errors</b>:
+<ul>
+  <li><b>syntax</b>: analogous to a grammatical error in English.</li>
+  <li><b>logic</b>: the program doesn't perform as expected; gives 
+     incorrect results.
+  </li>
+  <li><b>runtime</b>: Program execution aborts because some specified
+     operation cannot be carried out.  Potential causes are a logic error
+     (e.g., resulting in division by zero) or invalid input data.
+  </li>
+</ul>
+</p><p>
+The textbook (pp. 25-27, 29) illustrates several different kinds of 
+<b>syntax errors</b> (specifically, file name does not match class name,
+misspelled identifier (<tt>pruntln</tt>, <tt>system</tt>), missing
+semicolon, omitting a required keyword (e.g., <tt>class</tt>, <tt>void</tt>),
+forgetting to end a comment).
+Note that, although the compiler supplies a message
+for each error that it finds in a program, the messages are not always
+particularly helpful (especially to a beginner) in figuring out exactly
+what is wrong.  Also, correcting the first error is usually the best
+strategy, because subsequent error messages often are due to the
+compiler getting "confused" by the first error.
+</p><p>
+As an example of a <b>runtime error</b>, could run <tt>MeanProgram</tt>
+and supply invalid input.
+
+</p><p>
+<b>1.4 Procedural Decomposition</b>: At least two reasons for it:
+Make program more understandable (by expressing it in hierarchical
+form rather than not) and reduce redundancy.
+<b>Example:</b> Recipe for making a cake.  (Page 30.)
+Or consider the chapters in a book.
+</p><p>
+As for removing redundancy, consider the <tt>DrawBoxes</tt> program,
+which draws two "boxes" on the console window.  (See page 31.)
+</p><p>
+Modify it to <tt>DrawBoxes2</tt> by putting the drawing of a box
+into a static <tt>drawBox()</tt> method.  Then call it twice from
+the <tt>main()</tt> method.
+
+</p></p>
+Note that <b>any</b> method, and not just <tt>main()</tt>, can call
+other methods.  See <tt>FooBarBazMumble</tt> on page 36.
+
+</p></p>
+<b>1.5 Case Study: DrawFigures</b>.
+Before we can do this, must explore String literals, in particular
+escape sequences, so as to be able to print backslashes.
+</p><p>
+<b>String literals</b>:
+Notice that the messages that we printed using <tt>print</tt> and
+<tt>println</tt> were all enclosed in double quotes.  This is how
+we specify a <b>String literal</b>.
+
+</p><p>
+<em>To be continued ...</em>
+
+</body>
+</html>

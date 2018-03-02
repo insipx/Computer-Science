@@ -1,0 +1,367 @@
+<html>
+<head>
+<title>
+</title>
+</head>
+<body>
+<H3>
+CMPS 340 <br />
+Notes on Chapter 3 (<b>Indexing</b>) of <em>Managing Gigabytes</em>,
+by I.H. Witten, A. Moffat, T.C. Bell
+</H3>
+<p>
+Compressing the text in a full-text database (such as was the subject
+of Chapter 2) is only part of the solution of maintaining such a
+database, as it does nothing to address the issue of how to organize
+the data so that queries can be resolved efficiently and relevant
+portions of the data can be extracted quickly.
+To address these issues, we turn to the concept of an <b>index</b>.
+
+<p>
+There is no need here to point out the great utility of indexes in 
+finding information that would otherwise take much more time to find,
+as the reader should already appreciate this.
+
+<p>
+In our current context, we view our data as being organized as a
+set of <b>documents</b>, each one described by a set of
+<b>representative terms</b>.
+Our goal is to be able to retrieve all documents that contain
+combinations of specified terms, or are otherwise judged to be
+<b>relevant</b> to a specified set of terms.
+A document will be the <b>unit of text retrieved</b> 
+in response to such a query. 
+
+<p>
+<b>Exactly what constitutes a document is application-dependent.</b>
+If our database is the Bible, for example, each verse may play the
+role of a document, so that if we supply the query "God AND hell", 
+any verse containing both words should be in the result.
+On the WWW, each web page could be considered a document.
+In the ACM Digital Library, each published article is a document.
+
+<p>
+Another issue is the <b>granularity</b> of the index, which refers to
+the resolution to which term <b>locations</b> are recorded within each
+document.  At the <em>finest</em> level of granularity, the index will record
+the exact location of every term in every document (so that the entire
+collection of documents can be reconstructed from the index!).
+The most <em>coarse</em> level of granularity would simply record
+which terms are in each document, but nothing more precise.
+
+<p>
+<b>Granularity influences index size.</b>
+Unsurprisingly, the less fine-grained the index is, the less space is
+necessary to store it.  Most of this chapter is devoted to techniques
+for storing the index efficiently.  For example, in a document-level
+index, each entry has a pointer to a document.  If there are a million
+(i.e., approximately <em>10<sup>6</sup></em>)
+documents in the collection, a straightforward representation scheme
+would use 20 bits per pointer (because
+<em>20 =</em> <tt>&lceil;</tt><em>lg 10<sup>6</sup></em><tt>&rceil;</tt>).
+However, in a typical document collection with that many documents,
+it is possible to reduce this to about 6 bits per pointer.
+
+<p>
+See <b>Tables 3.2, 3.3, and 3.4</b>, for an example of a document collection
+(of 6 lines of text, each considered a document), and a document-level
+index and a word-level index.
+
+<p>
+<b>How to choose representative terms</b>?
+Another question that must be resolved by the database designer is
+how the representative terms for each document are to be
+chosen.  (In some contexts, this is done by humans, as when the author
+of an article specifes a handful of terms that (s)he believes best
+describes the content of the article.  But in the context of a
+database containing hundreds of thousands, millions, or more documents,
+especially one in which new documents are being added all the time,
+this is not practical.)
+
+<p>
+Perhaps the simplest answer is to take each of the words that appears
+in the document and to declare it, verbatim, to be a term.
+This maximizes the number of terms used to describe each document,
+of course.  Probably worse, it can lessen the ability of the system
+to retrieve documents that are relevant to a given query.
+To address this, we have
+<ul>
+  <li><b>case folding</b>: this refers to the action of replacing all
+      uppercase characters in a string by their lowercase counterparts.
+      That way, strings such as <em>junk</em>, <em>Junk</em>, and
+      <em>JUNK</em> will all be folded to the index term <em>junk</em>,
+      and hence treated as though they are the same word.
+      This helps to avoid case mismatches in queries (the situation in
+      which a document fails to be retrieved because the user searched
+      for, say, "junk", but only "Junk" (and not "junk") was among the
+      words appearing in a relevant document).
+      </p><p>
+      On the other hand, case folding works to the detriment of a 
+      user who attempts to search for particuluar proper names, such as
+      <em>General Motors</em>.
+      </p><p>
+      In some situations, it may be worthwhile to provide an index
+      structure that accommodates both case-folded and case-sensitive
+      queries.  
+  </li>
+  </p><p>
+  <li><b>stemming</b>: this refers to reducing a word to its root
+      (by removing a suffix, or prefix, perhaps), so that, for example,
+      <em>compress</em>, <em>compression</em>, and <em>compressed</em>
+      all reduce to the same term.
+      (Another example: 
+      <em>work</em>, <em>works</em>, <em>worker</em>, 
+      <em>working</em>, <em>worked</em>.)
+
+      </p><p>
+      Some terms should not be stemmed, including proper names.
+      </p><p>
+      Actual implementation of a good stemming algorithm requires a
+      detailed knowledge of English (or whatever language(s) the documents
+      are written in).  The stemmer used to produce the text in Figure 3.9
+      (page 146) includes over 500 rules (and exceptions to rules),
+      coded as a finite-state machine.
+      (One widely-used stemming algorithm is due to Martin Porter,
+      originally appearing in 1980.)
+      </p><p>
+      The principal purpose of stemming and case folding is to simplify
+      the construction of queries (relieving the user from the need to
+      worry about the fact that the same word can appear in various forms),
+      but with it comes a bonus of a substantial reduction in the number
+      of distinct terms, which translates into a reduction in the size of
+      the inverted file.
+  </li>
+  </p><p>
+  <li><b>eliminating stop words</b>: this refers to ignoring
+      frequently-occurring terms (the list of which is called a
+      <b>stop list</b>) that are judged to have little or no indexing value.
+      Words such as <em>a</em>, <em>the</em>, <em>of</em>, etc., appear in
+      practically every document, so what would be the point of using them
+      as index terms?
+      <p>
+      In an uncompressed index, a quarter of the space used would be
+      saved by eliminating such frequently-occurring terms.  (Note that
+      their inverted lists would be very long!)
+      <p>
+      Interestingly, the authors spend part of page 148 and all of page 149 
+      arguing that perhaps it is not a great idea to eliminate stop words.
+      Reasons: they could be important ("to be or not to be" in Shakespeare),
+      their case-folded and stemmed versions could correspond to less-frequent
+      terms (e.g., the month of <em>May</em>, the noun <em>will</em> 
+      (as in <em>free will</em> or the <em>will</em> of a dead person),
+      and the noun <em>can</em> (as in <em>tin can</em>).
+      Also, when the index is compressed, it turns out that the inverted
+      lists of stop words may account for only about 4 per cent of the
+      total, so perhaps omitting them costs more (in terms of reduced
+      query-answering ability) than the benefits gained (in reduced
+      storage space).
+  </li>
+  </p><p>
+  <li><b>thesaural substitution/conflation</b>: this refers to treating
+      synonyms as the same word.  Hence, for example, any document having
+      <em>car</em> as a representative term may also be considered to have
+      <em>automobile</em> as another, even if the latter never appears in it.
+      The idea is to improve responsiveness to queries so that the user
+      would not have to say <tt>(car OR automobile) AND accident</tt>,
+      as <tt>car AND accident</tt> would be sufficient.
+  </li>
+</ul>
+
+<H3>3.3 Inverted File Compression</H3>
+
+The index is comprised of a lexicon (a collection of terms) together
+with a pointer, for each term, to its inverted list, which contains
+the # of documents for which the term has been deemed "representative"
+followed by the ID's of each such document.  (We assume here that the 
+document ID's are integers in the range <em>1..N</em>, where <em>N</em>
+is the # of documents in the collection.
+(See Table 3.3 (page 112) for the inverted lists corresponding to the
+<em>Pease Porridge</em> nursery rhyme.  Amazingly, every term appears
+in exactly two of the "documents".)
+
+</p><p>
+For example, one term's inverted list might be 
+<pre>&lt; 9; 3, 5, 47, 59, 130, 134, 200, 221, 340 &gt;</pre>
+
+</p><p>
+The leading <tt>9</tt> indicates the length of the term's inverted list,
+which, of course, corresponds to <em>f<sub>t</sub></em>, the number of
+documents in which the term appears.
+</p></p>
+Notice that the document ID's are listed in ascending order.
+Why is that a good choice?  Because there is a very good chance that
+in answering most queries the system will "want to" compute the
+intersection of (the sets corresponding to) two (or more) inverted lists.
+To do this efficiently (i.e., in linear time with respect to the sum of
+the lengths of the lists), the lists must be in ascending order.
+
+</p><p>
+To support the calculation of document-term weights, we'd want to
+store each <em>f<sub>d,t</sub></em> value, too.
+
+</p><p>
+If we want to support <em>proximity searches</em> (which allow a query to
+indicate that two terms must appear adjacent to, or "near to", each other)
+efficiently, we need to store the locations, within each document, of
+the term's occurrences.  (See Table 3.4, page 113.)  (Here again, is the
+issue of granularity.)
+
+<p>
+How should the document ID's be encoded?
+The most straightforward approach is to use a number of bits corresponding
+to that commonly used for storing integer values (so that values begin
+on word or byte boundaries).  This could be 32, or, if 16 is sufficient,
+that many.
+
+<p>
+On the other hand, if we don't care about aligning values on byte or
+word boundaries, and if there are <em>N</em> documents in the collection, 
+it would suffice to use
+<em>1 +</em> <tt>&lfloor;</tt><em>lg N</em><tt>&rfloor;</tt>
+bits to store each document ID.
+For <em>N = 1000</em>, for example, this would be 10.
+
+<p>
+But we can do even better.  What if we store the list of ID's as
+a list of <em>d-gaps</em> (difference gaps)?  That is, rather
+than storing the document ID's themselves, we store the differences
+between adjacent ID's, referred to as <em>d-gaps</em>.
+Using the example from above, we would translate 
+
+<pre>&lt; 9; 3, 5, 47, 59, 130, 134, 200, 221, 340 &gt;</pre>
+into
+<pre>&lt; 9; 3, 2, 42, 12, 61, 4, 66, 21, 119 &gt;</pre>
+
+<p>
+Notice that the sum of the first <em>m</em> d-gaps is equal to
+the <em>m</em>-th document ID, for each <em>m</em>.
+In particular, the sum of all d-gaps in a list is equal to
+the last document ID in the list from which it was derived.
+
+<p>
+The d-gaps are obviously smaller than the ID's themselves, but
+it is not clear that we can get any savings in space.
+(After all, d-gap values in the range 512 to 1000 are still
+possible, and such values require 10 bits of storage.)
+
+<p>
+Well, various encoding schemes have been proposed to achieve compression in
+d-gap lists.  How well each one works to encode a d-gap list depends upon
+the particular values occurring in that list.
+
+<p>
+For example, consider a term (say, <em>compute</em>) that appears in 
+400 out of the 1000 documents in our collection.  Suppose that this
+term appears in document 1000.  Then the elements in its d-gap list will
+sum to 1000.  If we were to use standard binary encoding, each of the
+400 items on the list would be encoded using 10 bits, for a total of
+4000 bits.  On the other hand, suppose that we used a <b>unary</b>
+encoding scheme.  One such scheme is to represent each positive integer
+<em>k</em> by the bit string <tt>1<sup>k-1</sup>0</tt> (i.e., k-1 ones
+followed by a single zero).  Notice that the set of codewords
+<em>{ 0, 10, 110, 1110, 11110, ... }</em> is prefix-free and hence
+uniquely decipherable.  As the representation for each value <em>k</em>
+takes <em>k</em> bits, and the sum of the d-gaps in the list
+is 1000, the entire list of d-gaps will be encoded using only 1000 bits!
+This is a 75% savings compared to the 4000 bits needed using standard
+binary encoding.
+
+<p>
+On the other hand, if we used unary encoding for the list of
+of d-gaps above (nine items summing to 340), 340 bits would be 
+needed, in comparison to 90 bits (9 items times 10 bits per item)
+using standard binary encoding.
+
+<p>
+Hence we see that which encoding scheme is better depends upon the
+distribution of values in the list.  A unary scheme is better when
+the d-gap values are small, whereas standard binary encoding is
+superior when the d-gap values are large.
+
+<p>
+Several other encoding schemes have been invented that are superior
+to both the unary and standard binary schemes when the d-gap values
+are moderate in size.
+
+<p>
+One such scheme is Elias's Gamma encoding, which encodes each positive
+integer <em>k</em> by the bit string <em>xy</em>, where <em>x</em> is
+the unary encoding of <em>1 + floor(lg k)</em> and <em>y</em> is
+the standard binary encoding of <em>k</em>, except with its leading
+1 omitted.
+Recall that the standard binary encoding of <em>k</em> has length 
+<em>1 + floor(lg k)</em>; hence, the <em>x</em> part of an Elias Gamma
+codeword tells us precisely how long the <em>y</em> part is, namely,
+<em>|x| - 1</em>.  It follows that the set of Elias Gamma codewords
+for all positive integers is uniquely decipherable.
+(Algorithm for deciphering:
+read bits until the first occurrence of 0, which marks the end of
+<em>x</em> (the unary part).  Letting <em>m</em> be the positive integer
+represented by <em>x</em> (i.e., <em>m = |x|</em>), then read the next
+<em>m-1</em> bits, which constitutes <em>y</em> (the binary part).
+
+<p>
+From the above we see that the Elias Gamma codeword for positive integer
+<em>k</em> has length <em>1 + 2 &times; floor(lg k)</em>.
+This compares with <em>k</em> bits for the unary representation of <em>k</em>
+and <em>ceiling(lg N)</em> bits for the fixed-length binary representation
+(where <em>N</em> is the constant equal to the number of documents).
+
+<p>
+If we compare these three encoding schemes (by graphing their length
+functions, as just described), we find that unary coding beats Elias
+Gamma coding for <em>k &lt; 5</em> (actually, they tie at <em>k=3</em>,
+but that Elias Gamma is better for all <em>k &gt; 5</em>.
+<p>
+To compare these schemes to fixed-length binary encoding requires that
+we choose a particular value for <em>N</em>.  For <em>N = 1000</em>,
+for example, every value of <em>k</em> is encoded using 10 bits.
+Thus, unary encoding beats it for <em>k &lt; 10</em> but loses to it
+for all <em>k &gt; 10</em>.  As for Elias Gamma, it wins when
+<em>k &lt; 32</em> but loses for all <em>k &gt;= 32</em>.
+
+<p>
+For a larger database, say with <em>N = 10<sup>6</sup></em>,
+fixed-length binary encoding would use 20 bits to represent each value.
+Hence, unary encoding would beat it when <em>k &lt; 20</em> and
+Elias Gamma would beat it when <em>k &lt; 1024</em>.
+
+<p>
+There exist more sophisticated encoding schemes that, in practice,
+are better than any of the three mentioned above.  Due to their
+sophistication, we will not bother to go into details.
+The main point is that people have spent a lot of effort in developing
+various encoding schemes for the purpose of minimizing how much storage space
+is used by lists of d-gap values, and, not surprisingly, which scheme is
+better depends upon the particular values in the list.
+
+<p>
+<b>Global methods</b>: same encoding scheme applied to all inverted lists
+<ul>
+  <li><b>non-parameterized</b> (scheme is fixed)
+     <ul>
+       <li><b>unary</b>: good for very small d-gap values (and hence for
+            inverted lists of terms that appear in many documents)</li>
+       <li><b>fixed-length binary</b>:  good for large d-gap values</li>
+       <li><b>Elias Gamma</b>: good for small-to-moderate d-gap values</li>
+       <li><b>Elias Sigma</b>: slightly worse than Gamma for small d-gap
+                values; gets better and better than Gamma as d-gap values
+                increase
+       </li>
+     </ul>
+  </li>
+  <li><b>parameterized</b>: exact details of encoding scheme depend upon a
+          parameter that is chosen based upon distribution of d-gap values
+          across the entire index.
+     <ul>
+       <li>Bernoulli</li>
+       <li>Observed Frequency</li>
+     </ul>
+  </li>
+</ul>
+<b>Local methods</b>: applied to each inverted list individually
+    based upon its distribution of d-gap values
+
+
+</body>
+</html>
