@@ -1,0 +1,20 @@
+program WrapAroundCounterClient {
+
+  input  keyboard.new();
+  output console.new();
+
+  {
+    console.print("Enter limit:");
+    integer limit.new(keyboard.nextInteger());
+    WrapAroundCounter one.new(1,limit);
+    console.println(one.tostring());
+
+    while(one.get().LT(one.getUpper())) {
+      console.print("ah ");
+      console.print(one.get());
+      console.print(" and ");
+      one.advance(); 
+    }
+    console.println(one.get());
+  }
+}

@@ -1,0 +1,10 @@
+// _Java Example Program - HelloWorld._java
+//
+_java
+lang
+//prgram HelloWorld {
+//  output console.new();
+//  {
+//    console.println("Hello World!");
+//  }
+//}

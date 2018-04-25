@@ -1,0 +1,34 @@
+// _Java Example Program - MeanProgram._java
+// (Version using infix expressions; with operator symbols)
+program MeanProgram {
+
+  final integer SENTINEL.new(0);
+
+  {
+     integer total.new(0);
+     integer count.new(0)
+     integer aNumber;
+
+     aNumber.new();
+     aNumber.set(getInteger("Enter an integer:"));
+     while((aNumber != SENTINEL)) {
+       total.set(total + aNumber);
+       count.set(count + 1);
+       aNumber.set(getInteger("Enter an integer:"));      
+     }
+     output.print("The mean of these integers is ");
+     if((count > 0)) {
+       real mean.new((total.realOf() / count.realOf()));
+       output.print(mean);   
+       //Or alternatively output.printf("%10.2f",mean);
+     } else {
+       output.print("undefined!");
+     }
+     output.println();
+  }
+
+  private integer getInteger(string prompt) {
+    output(prompt);
+    return input.nextInteger();
+  }
+}

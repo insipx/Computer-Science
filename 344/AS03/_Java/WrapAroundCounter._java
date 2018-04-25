@@ -1,0 +1,45 @@
+/* _Java Example Class - WrapAroundCounter._java
+*/
+class WrapAroundCounter extends object {
+
+    private integer lowerBound;
+    private integer upperBound;
+    private integer current;
+
+    public new(integer lower, integer upper) {
+        lowerBound.new(lower);
+        upperBound.new(upper);
+        current.new(lower);
+    }
+
+    public integer getlowerBound() {
+        return lowerBound.new_integer();
+    }
+    
+    public integer getupperBound() {
+        return upperBound.new_integer();
+    }
+
+    public integer get() {
+        return current.new_integer();
+    }
+    
+    public advance() {
+        if(current.LT(upperBound)) {
+            current.set(current.sum(1));
+        } else {
+            current.set(lowerBound);
+        }
+    }
+
+    public string tostring() {
+        string result.new();
+        return result.concat(current.new_string()).
+                      concat(" in ").
+                      concat(lowerBound.new_string()).
+                      concat(":").
+                      concat(upperBound.new_string());
+    }
+
+    {} //No class initialization   
+}

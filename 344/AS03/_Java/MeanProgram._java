@@ -1,0 +1,36 @@
+// _Java Example Program - MeanProgram._java
+//
+
+program MeanProgram {
+  input  keyboard.new();
+  output console.new();
+  final integer SENTINEL.new(0);
+
+  {
+     integer total.new(0);
+     integer count.new(0);
+     integer aNumber;
+
+     aNumber.new();
+     aNumber.set(getInteger("Enter an integer:"));
+     while(aNumber.NE(SENTINEL)) {
+       total.set(total.sum(aNumber));
+       count.set(count.sum(1));
+       aNumber.set(getInteger("Enter an integer:"));      
+     }
+     console.print("The mean of these integers is ");
+     if(count.GT(0)) {
+       real mean.new(total.realOf().quotient(count.realOf()));
+       console.print(mean);   
+       //console.printf("%10.2f",mean);
+     } else {
+       console.print("undefined!");
+     }
+     console.println();
+  }
+
+  integer getInteger(string prompt) {
+    console(prompt);
+    return keyboard.nextInteger();
+  }
+}

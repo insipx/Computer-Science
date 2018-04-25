@@ -1,0 +1,34 @@
+   0: // _Java Example Program - MeanProgram._java                |0| -99,1,0
+   1: // (Version using infix expressions; with operator symbols) |3| -99,2,0
+   2: program MeanProgram {                                       |6| 10,-1,3,20,0
+   3:                                                             |11| 0
+   4:   final integer SENTINEL.new(0);                            |12| 5,-1,4,-1,5,24,8,18,-7,6,19,23,0
+   5:                                                             |25| 0
+   6:   {                                                         |26| 20,0
+   7:      integer total.new(0);                                  |28| -1,4,-1,7,24,8,18,-7,6,19,23,0
+   8:      integer count.new(0)                                   |40| -1,4,-1,8,24,8,18,-7,6,19,0
+   9:      integer aNumber;                                       |51| -1,4,-1,9,23,0
+  10:                                                             |57| 0
+  11:      aNumber.new();                                         |58| -1,9,24,8,18,19,23,0
+  12:      aNumber.set(getInteger("Enter an integer:"));          |66| -1,9,24,14,18,-1,10,18,-6,11,19,19,23,0
+  13:      while((aNumber != SENTINEL)) {                         |80| 17,18,18,-1,9,-3,12,-1,5,19,19,20,0
+  14:        total.set(total + aNumber);                          |93| -1,7,24,14,18,-1,7,-3,13,-1,9,19,23,0
+  15:        count.set(count + 1);                                |107| -1,8,24,14,18,-1,8,-3,13,-7,14,19,23,0
+  16:        aNumber.set(getInteger("Enter an integer:"));        |121| -1,9,24,14,18,-1,10,18,-6,11,19,19,23,0
+  17:      }                                                      |135| 21,0
+  18:      output.print("The mean of these integers is ");        |137| -1,15,24,-1,16,18,-6,17,19,23,0
+  19:      if((count > 0)) {                                      |148| 6,18,18,-1,8,-3,18,-7,6,19,19,20,0
+  20:        real mean.new((total.realOf() / count.realOf()));    |161| -1,19,-1,20,24,8,18,18,-1,7,24,-1,21,18,19,-3,22,-1,8,24,-1,21,18,19,19,19,23,0
+  21:        output.print(mean);                                  |189| -1,15,24,-1,16,18,-1,20,19,23,0
+  22:        //Or alternatively output.printf("%10.2f",mean);     |200| -99,23,0
+  23:      } else {                                               |203| 21,2,20,0
+  24:        output.print("undefined!");                          |207| -1,15,24,-1,16,18,-6,24,19,23,0
+  25:      }                                                      |218| 21,0
+  26:      output.println();                                      |220| -1,15,24,-1,25,18,19,23,0
+  27:   }                                                         |229| 21,0
+  28:                                                             |231| 0
+  29:   private integer getInteger(string prompt) {               |232| 9,-1,4,-1,10,18,-1,26,-1,27,19,20,0
+  30:     output(prompt);                                         |245| -1,15,18,-1,27,19,23,0
+  31:     return input.nextInteger();                             |253| 13,-1,28,24,-1,29,18,19,23,0
+  32:   }                                                         |263| 21,0
+  33: }                                                           |265| 21,

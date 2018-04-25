@@ -1,0 +1,9 @@
+// _Java Example Program - HelloWorld._java
+//
+import _java.lang;
+program HelloWorld {
+  output console.new();
+  {
+    console.println("Hello World!");
+  }
+}
