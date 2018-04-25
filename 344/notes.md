@@ -92,3 +92,67 @@ TL;DR Functional > Every other paradigm
 | Got Char            |          |          | Start    |          |
 | Error               |          |          |          |          |
 
+## Array Initialization
+
+- initialization at storage time (int someArr[] = {3, 12 ,3 24 ,4});
+
+## Heterogeneous Arrays
+
+- Elements do not need to be of same type
+  - JS, Python, Perl, Ruby
+
+
+
+## Lisp
+- Lots of parentheses
+- Different Memory Paradigm
+  - Symbol Table (with add and sub stuff like that)
+  - Another table for holding numbers n' shit
+  - and the cons-cell memory table holding all CAR-CDR (now known as First/Rest) cells. A low-level technique by the dude who created Lisp makes all this work. 
+    - important to consider and know when working in Lisp
+- Lisp has no 'False', just 'Nil'
+- True goes by 'T'
+- (Rest X) - if X is a list, gives everything but the first thing in X 
+  - must check that X is not Nil
+
+
+
+
+### Proposal
+
+- should have title
+- name
+- date
+- should mention it's for senior project for CS 490
+- Provide Background
+  - students interpret to literally: (who is this project intended for? (who would use this?))
+    - what need/problem does it fulfill/solve?
+      - go in depth on the problem and why it is so problematic
+    - what resources are needed
+      - could be talking about hardware
+      - could be talkin about software
+      - need to go in-depth (the language to be used, is a database required, etc, etc)
+- Talk about what it 'may' become
+
+#### Proposal Requirements
+
+- Functional Requirements
+  - Specify what functionality the software will provide
+  - identify roles people will play
+  - use-case diagrams
+- Non-Functional Requirements
+- Do a glossary
+- Testing - (Unit Tests, Integration Tests, System Tests)
+
+
+
+
+### AS04
+
+- `No two of the same items in one set
+- refactor so all CONDS are replaced with IFS
+
+
+
+
+
