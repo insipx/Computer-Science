@@ -22,14 +22,14 @@
 (SET 'SEMPTY NIL)
 
 (DEFUN SEMPTYP (S)
-  (IF (EQ S SEMPTY) T NIL)
+  (IF (EQUAL S SEMPTY) T NIL)
 )
 
 ;-------------------------------------------------------------------------------
 
 (DEFUN SMEMBERP (E S)
   (IF (SEMPTYP S) NIL        ; first if
-    (IF (EQ E (FIRST S)) T ; nested if
+    (IF (EQUAL E (FIRST S)) T ; nested if
       (SMEMBERP E (REST S)) ; else
     )
   )
@@ -37,21 +37,22 @@
 
 (DEFUN SINCLUDE (E S)
   (IF (SMEMBERP E S) S      ; if
+    (IF (member E S :test 'equal) S
     (APPEND S (CONS E NIL)) ; else
+    )
   )
 )
 
 ; - not sure what these functions do yet
 (DEFUN PREFIX (E S RESULT)
-  (IF (EQ E (FIRST S)) RESULT
-      (PREFIX E (REST S) (APPEND RESULT (CONS (FIRST S) NIL)))
+  (COND ((EQUAL E (FIRST S)) RESULT)
+        (T (PREFIX E (REST S) (APPEND RESULT (CONS (FIRST S) NIL))))
   )
-       
 )
 
 (DEFUN SUFFIX (E S RESULT)
-  (IF (EQ E (FIRST S)) (REST S)
-      (SUFFIX E (REST S) RESULT)
+  (COND ((EQUAL E (FIRST S)) (REST S))
+        (T (SUFFIX E (REST S) RESULT))
   )
 )
 
