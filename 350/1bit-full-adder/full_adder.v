@@ -15,7 +15,7 @@
 *
 */
 
-module my_nand;
+module full_adder;
     wire sum, cout;
     reg a,b,cin;
     assign sum = (a & ~b & ~cin) | (~a & ~b & cin) | (a & b & cin) | (~a & b & ~cin);
