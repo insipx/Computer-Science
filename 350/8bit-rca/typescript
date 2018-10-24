@@ -1,0 +1,27 @@
+Script started on 2018-10-24 11:39:17-04:00
+_insi@rezz:/home/insi/Projects/Computer-Science/350/8bit-rca\[insi@rezz 8bit-rca]# iverilog -o rca 8bit_re[K[K
+8bit_cla.v  8bit_rca.v  
+[insi@rezz 8bit-rca]# iverilog -o rca 8bit_rca.v 
+_insi@rezz:/home/insi/Projects/Computer-Science/350/8bit-rca\[insi@rezz 8bit-rca]# vvp rca 
+                   0 a=xxxxxxxx, b=xxxxxxxx, cin=x, sum=xxxxxxxx cout=x
+                  10 a=01111111, b=00000000, cin=0, sum=01111111 cout=0
+                  20 a=01111111, b=00000000, cin=1, sum=10000000 cout=0
+                  30 a=00001110, b=00000011, cin=0, sum=00010001 cout=0
+                  40 a=01111111, b=00000001, cin=0, sum=10000000 cout=0
+                  50 a=00000010, b=00000101, cin=0, sum=00000111 cout=0
+                  60 a=10000010, b=00000101, cin=0, sum=10000111 cout=0
+                  70 a=11111110, b=00000101, cin=0, sum=00000011 cout=1
+_insi@rezz:/home/insi/Projects/Computer-Science/350/8bit-rca\[insi@rezz 8bit-rca]# iverl[Kilog -o cla 8bit_cla.v 
+_insi@rezz:/home/insi/Projects/Computer-Science/350/8bit-rca\[insi@rezz 8bit-rca]# vvp cla 
+                   0 a=xxxxxxxx, b=xxxxxxxx, cin=x, sum=xxxxxxxx cout=x
+                  10 a=01111111, b=00000000, cin=0, sum=01111111 cout=0
+                  20 a=01111111, b=00000000, cin=1, sum=10000000 cout=0
+                  30 a=00001110, b=00000011, cin=0, sum=00010001 cout=0
+                  40 a=01111111, b=00000001, cin=0, sum=10000000 cout=0
+                  50 a=00000010, b=00000101, cin=0, sum=00000111 cout=0
+                  60 a=10000010, b=00000101, cin=0, sum=10000111 cout=0
+                  70 a=11111110, b=00000101, cin=0, sum=00000011 cout=1
+_insi@rezz:/home/insi/Projects/Computer-Science/350/8bit-rca\[insi@rezz 8bit-rca]# exit
+exit
+
+Script done on 2018-10-24 11:39:43-04:00
