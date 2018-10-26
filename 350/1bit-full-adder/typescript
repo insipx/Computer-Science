@@ -1,0 +1,18 @@
+Script started on 2018-10-12 13:04:37-04:00
+]0;insi@rezz:/home/insi/Projects/Computer-Science/350/1bit-full-adder[insi@rezz 1bit-full-adder]# iverilog -o full_adder full_adder.v
+]0;insi@rezz:/home/insi/Projects/Computer-Science/350/1bit-full-adder[insi@rezz 1bit-full-adder]# ls
+[0m[01;32mfull_adder[0m  full_adder.v  typescript
+]0;insi@rezz:/home/insi/Projects/Computer-Science/350/1bit-full-adder[insi@rezz 1bit-full-adder]# vvp full_adder
+                   0 a=x, b=x, cin=x, sum=x cout=x
+                  10 a=0, b=0, cin=0, sum=0 cout=0
+                  20 a=0, b=0, cin=1, sum=1 cout=0
+                  30 a=0, b=1, cin=0, sum=1 cout=0
+                  40 a=0, b=1, cin=1, sum=0 cout=1
+                  50 a=1, b=0, cin=0, sum=1 cout=0
+                  60 a=1, b=0, cin=1, sum=0 cout=1
+                  70 a=1, b=1, cin=0, sum=0 cout=1
+                  80 a=1, b=1, cin=1, sum=1 cout=1
+]0;insi@rezz:/home/insi/Projects/Computer-Science/350/1bit-full-adder[insi@rezz 1bit-full-adder]# exit
+exit
+
+Script done on 2018-10-12 13:04:49-04:00
