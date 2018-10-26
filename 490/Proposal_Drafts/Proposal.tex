@@ -1,0 +1,122 @@
+\documentclass[]{article}
+
+%opening
+\title{%
+	Ethereum Debug (EDB) \\
+	\large	Proposal for Computer Projects 2018 \\
+	\large University of Scranton}
+
+\author{Andrew Plaza}
+
+\begin{document}
+
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Context}
+\subsection{Who Needs It?}
+
+\iffalse
+====================================== COMMENT ==============================================================
+I would give more context to the importance of Ethereum. What is Ethereum? What is blockchain? you do not need to write much in terms of this. But you should include a few sentences. The general structure of your context 1.1 can be: 1.) general idea of blockchain. 2.) what is ethereum in terms of blockchain? 3.) What are the problems facing Ethereum. 4.) These problems result in needs for solutions. These needs thus constitute reasons for a new system. 5.) who would benefit from this new system?
+
+This would require a switch of 1.1 and 1.2
+
+(Jackowitz)
+Since it is not likely that most of your readers will be familiar with Ethereum (hasn't that been your experience as you have spoken with folks in the department) I think it vital that you first provide background on blockchain, blockchain programming and specifically Ethereum.
+====================================== COMMENT ==============================================================
+\fi
+
+The Ethereum Community Open Source community, hobbyist and early-adopter developers need an intuitive and familiar way of testing their applications written in niche languages. A familiar interface and underlying software with an emphasis on ease of use, extensibility, and maintainability needs to be developed.
+
+\subsection{Reasons For A New System?}
+\iffalse
+====================================== COMMENT/JACKOWITZ ======================================================
+What exactly is meant by "debugging solutions"? Also, a few sentences later what is meant by "testing solutions"?
+
+I find these phrases to be vague.
+====================================== COMMENT/JACKOWITZ ======================================================
+\fi
+Currently, debuggers for specialized blockchain programming languages remain either non-existent or extremely limited. The most popular current debugger is an online interactive IDE \footnote{Remix Online IDE: https://remix.ethereum.org/}. Although providing some popular functions of debugging, it is cumbersome and complicated to use. Despite this lack of , however, applications written in these languages greatly benefit from extensive testing and debugging in order to better ensure security and a seamless user experience.
+
+\subsection{Where Will It Be Used?}
+\iffalse
+====================================== COMMENT/Mat ======================================================
+What is GDB? Before you start using acronyms, you should first detail the full name of the item and then put the acronym in parenthesis. At this point, you can use the acronym. For example, I might say, " at the United Nations (UN), I saw Stalin. It was a weird experience seeing Stalin at the UN." I 1.) first introduced the name with the acronym in parenthesis; 2.) you can use the acronym now without needing to use the whole name. 
+====================================== COMMENT/Mat ======================================================
+
+====================================== COMMENT/JACKOWITZ ======================================================
+I think it beneficial for you to be much more specific about the "debug library", which seems to be at the core of what you are proposing.
+====================================== COMMENT/JACKOWITZ ======================================================
+\fi
+
+This new debugger and debug library will be used locally on the developer's machine in command-line interface form similar to GDB, or in the form of a Visual Studio Code plugin. The debug library may be used in conjunction with any popular IDE plugin framework to build a customized debugging interface for mainstream IDE's. 
+
+\subsection{Software Requirements}
+\iffalse
+====================================== COMMENT/JACKOWITZ ======================================================
+Are you or are you not proposing to develop such a plugin? It is unclear from what you have said here. 
+====================================== COMMENT/JACKOWITZ ======================================================
+\fi
+In order to develop this plugin a robust and tested EVM (Ethereum Virtual Machine) implementation is needed \footnote{Parity EVM will be used: https://github.com/paritytech/parity/tree/master/ethcore/evm/src}. In addition to this, a compiler for these languages is required to be used. During development, work-flow will consist of the use of vim as an editor, Rust document generation for documentation of the debug API, and native Rust testing constructs for integration and unit testing.
+
+\subsection{Intended Target Demographic}
+Developers who work for organizations such as Augur or Enjin, hobbyist/early-adopters interested in blockchain programming and applications.
+
+\bigskip
+\section{Overview}
+
+\subsection{Problem}
+Current testing solutions are either non-existent or too complicated and cumbersome in use to be truly apart of a developers work-flow. There is currently no integration into mainstream IDE's such as Visual Studio Code or IntelliJ, nor any local debug libraries in existence. As these specialized languages become more and more popular, more advanced debugging techniques will become more important in order to test applications growing in size and complexity. 
+
+\subsection{Objectives}
+\begin{itemize}
+	\item Create a debug library supporting at least the Solidity language with a robust and clear API that is well-documented
+	\item Implement basic debug functions (step over, step into, next, info (breakpoint information), backtrace, print, quit, kill)
+	\item Implement an interactive REPL for testing/interpreting code on-the-fly
+	\item Create a VSCode plugin implementing the debug library
+	\item Create a simple command-line interface implementing debug library
+	\item Document debug library API and make it public by publishing/hosting it on the web via Github Pages
+\end{itemize}
+
+\subsection{Inputs}
+The main languages to be supported by the debugger are LLL (Low-level Lisp-like language), Solidity, Serpent, and Vyper. All these languages compile down to the same bytecode processed by the EVM. In addition to bytecode being output during compilation, the abstract syntax tree of the program is also provided. LLL is closest in it's level of abstraction, similarity, and direct access to instructions represented by the bytecode, while the other languages are more abstract and unique in their style, and are often compared to Javascript or Python.
+
+Users who input these languages are given the option to execute debug features through their chosen interface (VSCode or CLI). These features correspond to functions which are handled and included by the debug library.
+
+\subsection{Outputs}
+Breakpoints requested by the user will be highlighted and/or indicated in some way by the interface application (VSCode or CLI). In addition, the interface will show pertinent information given by the debug library in a appealing format. The library will manage and output variables, stack traces, current line numbers/execution location and REPL information via IPC to the interface.
+
+\subsection{Features}
+\begin{itemize}
+\item Resolution of imports present in program being debugged
+\item Compilation of code from parent language (LLL/Solidity/Serpent/Vyper) to bytecode. This compilation includes generation of the Abstract Syntax Tree
+\item Source mapping of bytecode to parent language
+\item Launching of an emulated VM/REPL environment
+\item Setting/Enabling/Disabling of breakpoints
+\item Halting execution of VM at breakpoints
+\item Providing information about execution (variables, stack)
+\item Options to step over, step into, continue, print, quit, kill, or restart execution
+\item On-the-fly code interpretation and testing (REPL)
+\end{itemize}
+
+\subsection{Constraints}
+The debug library will be written in the Rust programming language \footnote{https://www.rust-lang.org/en-US/}. Fortunately, support for Rust among the Ethereum Open Source community is strong, particularly with the popularity of the Parity Ethereum application \footnote{https://www.parity.io/}. However, compilers for all but one of the programming languages are written with C. Rust bindings for the Solidity compiler already exist, but bindings for LLL, Serpent, and Vyper will have to be generated \footnote{https://github.com/rust-lang-nursery/rust-bindgen}. 
+
+Since the debugger will act with a local version of the EVM, performance impact of working with a test or live blockchain does not exist. In consideration of program runtime during debugging, however, performance may be impacted depending on the number of trace calls on function definitions being debugged, or number of checks for breakpoints on code instructions. In addition, the method of IPC communication chosen may impact the speed of communication and responsiveness with IDE plugin frameworks.
+
+\newpage
+\section{Feasibility}
+Crucial work on this project has already been underway, with some parts of the project completed \footnote{EDBv1: https://github.com/ethdbg/ethdbg}. These completed parts of the debugger, however, were created using NodeJS instead of Rust. Particularly, source mapping, code execution control, EVM hooks/interaction with the EVM, and a VSCode debugging plugin \footnote{VSCode Plugin: https://github.com/ethdbg/vscode-ethdbg} written in Typescript have already been completed.
+
+The choice to use Rust for this project came out of concerns for performance, maintainability, documentation, and API usability. NodeJS proved to be a poor choice in all three of these aspects, while Rust excels at these three areas. Rust provides several important advantages in terms of including intuitive IPC features, data structures, library management, package management, along with testing and documentation tooling. I am also fairly confident in my experience with Rust, having worked with a number of previous projects written in the language, including an Open Source Operating system, and Linux Window Manager. Therefore, much of the first phase of the project will simply include porting the existing and working NodeJS debugger logic to Rust.
+
+Once this is complete, work on implementing the missing features from the first version of the debugger will begin. This includes implementing functions which take further advantage of the execution control already present in the first version of the debugger. These are some of the basic functions required for debugging, such as 'next', 'continue', 'kill', and 'step into'. In addition to this, the inspection and outputting of variables, and a REPL written in Rust must be completed.
+
+Once these features are complete, a simple CLI debugger can be created, and the VSCode plugin will have to be modified to work with the new IPC interface, with the missing features added.
+
+Considering the time-frame of this project, and my previous experience writing applications in Rust, it seems very likely the project will be completed in the time given.
+ 
+\end{document}

@@ -155,4 +155,27 @@ TL;DR Functional > Every other paradigm
 
 
 
+# Prolog
+
+- ​
+
+
+
+
+
+
+
+### Storage Bindings
+
+- **Stack Dynamic**: Data bound to activation records on stack. Come and go as data activations come and go. Created at runtime. Created/uncreated dynamically
+- **Explicit Heap Dynamic**: `new`, `malloc`, etc. Explicitly allocated
+- **Implicit Heap Dynamic**: nothin'
+
+
+
+
+### Axiomatic Semantics
+
+
+
 

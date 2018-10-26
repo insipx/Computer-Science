@@ -1,0 +1,30 @@
+\ifglsentryexists{blockchain}{}%
+{%
+\gls@defglossaryentry{blockchain}%
+{%
+name={Blockchain},%
+sort={Blockchain},%
+type={main},%
+first={Blockchain},%
+firstplural={Blockchains},%
+text={Blockchain},%
+plural={Blockchains},%
+description={A growing list of records stored using some datastructure (usually a variation of a tree) and linked through cryptography},%
+descriptionplural={A growing list of records stored using some datastructure (usually a variation of a tree) and linked through cryptography},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={},%
+longplural={},%
+short={},%
+shortplural={},%
+counter={page},%
+parent={},%
+%
+}%
+}%

@@ -1,0 +1,104 @@
+\documentclass[]{article}
+
+%opening
+\title{%
+	Ethereum Debug (EDB) \\
+	\large	Proposal for Computer Projects 2018 \\
+	\large University of Scranton}
+
+\author{Andrew Plaza}
+
+\begin{document}
+
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Context}
+\subsection{Who Needs It?}
+
+In recent years, blockchain and digital currencies have rocketed in popularity. Many have realized blockchain technology has the potential to revolutionize society. In general, blockchain can be thought of as a decentralized monetary system shared across the world via the internet, while remaining almost free to use. One may compare the basic functions of a cryptocurrency to the functions of a bank. Apart from how one uses it, owning a variety of cryptocurrency is no different than owning some amount of U.S dollars. For instance, owning one 'Bitcoin' has an equivalent value in USD (currently, 1 Bitcoin is equal to 8513.08\$). Despite being unofficial and not endorsed by any government, value is attributed to these currencies through adoption and speculative investment. Much like stocks, the value of these currencies is very volatile, so many have found it to their advantage to speculate on the price in the hopes of earning some money.
+
+Cryptocurrency, however, does not just strive to copy and replace the traditional banking system. Instead, cryptocurrencies put forth clear advantages to traditional banking. They are decentralized and cryptographically secure. Unlike traditional banking, no 'middleman' exists or is necessary to make transactions with bitcoin. This works because of blockchain which is by its very definition and use-case decentralized. The blockchain solves one of the most prominent roadblocks with a digital and decentralized money system, which can be explained through the 'double-spend' problem. The double-spend problem occurs when some person (person A) owns some amount of money. For example, person A owns 50\$. Person A sends some other individual 50\$. At the same time, Person A creates the same exact transaction but to yet another individual. Clearly, both these transactions cannot go through, since Person A only owns 50\$, not 100\$. Blockchain solves this issue. In essence, blockchain is a ledger that can be downloaded by anyone with an internet connection. This blockchain serves as 'memory' for digital monetary systems. Whoever downloads and uses a blockchain on their computer system can be said to be a 'blockchain node'. Anytime a transaction with Bitcoin is created, it is recorded onto the blockchain (the ledger), which then updates, via the internet, every other blockchain anyone else has downloaded. The blockchain keeps track of every single transaction ever made, therefore keeping track of how much money everybody owns.  Before a transaction is recorded onto the blockchain, however, it must be confirmed. This means a few users running blockchain nodes, chosen at random, run through every transaction a user made in order to make certain the money exists and can be transfered. If a transaction cannot be confirmed, it is considered invalid, and so the blockchain is not updated with this transaction. A simple and useful way to conceptualize the blockchain, then, is as a linked-list of transactions that everyone owns, and is updated if a transaction is found to be valid.
+
+Blockchain nodes are differentiated through private-public key encryption. Once a user downloads the blockchain, it encrypts itself and the user receives a private and public key.The public key can be shared with anybody and serves as an address people may send currency to. In the blockchain, transactions made by any one user are associated with this public key. That is, the public key serves as an identifier in the blockchain entry. This doubles as a identification mechanism, too. Before sending a transaction a user must confirm who they are by signing the transaction with their public key, which may only be done if they also own the private key. It becomes very important to keep the private key safe; losing or giving away one's private key will lead to the compromise of any and all funds of cryptocurrency owned by that key. 
+
+It is useful to think of the blockchain in terms of an infinite state-machine. That is, the machine has a start state but no defined end-state. One may think of each transaction as a state of this machine. A new transaction creates a new unique state for the machine. These states are kept track of by an internal data structure (IE: the linked-list). All of this creates what we know as the blockchain.
+
+\footnote{Gavin Wood, \textit{Ethereum Whitepaper} http://gavwood.com/Paper.pdf}
+
+ Ethereum takes this concept a step further; Ethereum, another blockchain currency, allows any developer the ability to create their own software on top of Ethereum's own core state machine. Therefore, in order to facilitate the developers ability to write software for Ethereum, a set of specialized programming languages were built. 
+
+The Ethereum Open Source community, hobbyist and early-adopter developers, however, need an intuitive and familiar way of testing their applications. A debugger with a familiar interface and an emphasis on ease of use, extensibility, and maintainability needs to be developed.
+
+The core of this project concerns the debug library. This library serves as the engine that enables many plugins and client-facing interfaces to be built. In essence, this library will allow the launch of a process that exposes its debug functionality via an inter-process communication (IPC) protocol. Documentation of the IPC protocol allows the development of plugins by third-parties for various development environments and workflows. For demonstration purposes, two simple interfaces will be developed in addition to the library. These are the command-line interface and the Visual Studio Code plugin. Therefore, the 'debugger' references some interface and the core library working together.
+
+\subsection{Reasons For A New System?}
+Currently, debuggers for specialized blockchain programming languages remain either non-existent or extremely limited. The most popular current debugger is an online tool known as an Integrated Developer Experience (IDE) and named 'Remix'.\footnote{\textit{Remix} https://remix.ethereum.org/} Although providing some popular functions of debugging, Remix is cumbersome and complicated to use. Despite this lack of debuggers, however, applications written in Ethereums programming languages greatly benefit from extensive testing and debugging in order to better ensure security and a seamless user experience.
+
+
+\subsection{Where Will It Be Used?}
+ 
+This new debugger will be used locally on the developer's machine. The debug library, however, may be used in conjunction with any popular IDE plugin framework to build a customized debugging interface for mainstream IDE's. 
+
+\subsection{Software Requirements}
+In order to develop the debug library, a robust and tested Ethereum Virtual Machine (EVM) implementation is needed.\footnote{\textit{Parity EVM} https://github.com/paritytech/parity/tree/master/ethcore/evm/src} In addition to this, a compiler for these languages is required to be used. During development, workflow will consist of vim as an editor, Rust document generation for documentation of the debug API, and native Rust testing constructs for integration and unit testing.
+
+\subsection{Intended Target Demographic}
+Developers who work for organizations such as Augur or Enjin, hobbyist/early-adopters interested in blockchain programming and applications.
+
+\section{Overview}
+
+\subsection{Problem}
+Current testing solutions are either non-existent or too complicated and cumbersome in use to be truly a part of a developers workflow. There is currently no integration into mainstream IDE's such as Visual Studio Code, or any debug libraries in existence. As these specialized languages become more and more popular, more advanced debugging techniques will become more important in order to test applications growing in size and complexity. 
+
+\subsection{Objectives}
+\begin{itemize}
+	\item Create a debug library supporting at least the Solidity language with a robust and clear API that is well-documented
+	\item Implement basic debug functions (step over, step into, next, info, backtrace, print, quit, kill)
+	\item Implement an read-eval-print loop (REPL) for testing code on-the-fly
+	\item Create a VSCode plugin implementing the debug library
+	\item Create a simple command-line interface implementing debug library
+	\item Document debug library API and make documentation public by publishing/hosting it on the web via Github Pages
+\end{itemize}
+
+\subsection{Inputs}
+The debugger will support the main languages of LLL (Low-level Lisp-like language), Solidity, Serpent, and Vyper. All these languages compile down to the same bytecode processed by the EVM. In addition to bytecode being output during compilation, the abstract syntax tree of the program is also provided. LLL is closest in it's level of abstraction, similarity, and direct access to instructions represented by the bytecode, while the other languages are more abstract and unique in their style, and are often compared to Javascript or Python.
+
+Users who input these languages are given the option to execute debug features through their chosen interface (VSCode or CLI). These features correspond to functions which are handled and included by the debug library.
+
+\subsection{Outputs}
+The interface will show pertinent information given by the debug library in a appealing format. The information that will be displayed includes breakpoints, variables, stack traces, execution information and the REPL. The library will manage and output this information via IPC to the interface.
+
+\subsection{Features}
+\begin{itemize}
+\item Resolution of imports present in program being debugged
+\item Compilation of code from parent language (LLL/Solidity/Serpent/Vyper) to bytecode. This compilation includes generation of the Abstract Syntax Tree
+\item Source mapping of bytecode to parent language
+\item Launching of an emulated VM/REPL environment
+\item Setting/Enabling/Disabling of breakpoints
+\item Halting execution of VM at breakpoints
+\item Providing information about execution (variables, stack)
+\item Options to step over, step into, continue, print, quit, kill, or restart execution
+\item On-the-fly code interpretation and testing (REPL)
+\end{itemize}
+
+\subsection{Constraints}
+The debug library will be written in the Rust programming language.\footnote{\textit{Rust} https://www.rust-lang.org/en-US/} Fortunately, support for Rust among the Ethereum Open Source community is strong, particularly with the popularity of the Parity Ethereum application.\footnote{\textit{Parity} https://www.parity.io/} However, compilers for all but one of the programming languages are written with C. Rust bindings for the Solidity compiler already exist, but bindings for LLL, Serpent, and Vyper will have to be generated.\footnote{\textit{Rust-Bindgen} https://github.com/rust-lang-nursery/rust-bindgen}
+
+Since the debugger will act with a local version of the EVM, performance impact of working with a test or live blockchain does not exist. In consideration of program runtime during debugging, however, performance may be impacted depending on the number of trace calls on function definitions being debugged, or number of checks for breakpoints on code instructions. In addition, the method of IPC communication chosen may impact the speed of communication and responsiveness with IDE plugin frameworks.
+
+
+\section{Feasibility}
+Crucial work on this project has already been underway, with some parts of the project completed.\footnote{Andrew Plaza, Sean Batzel \textit{ethdbg} https://github.com/ethdbg/ethdbg} These completed parts of the debugger, however, were created using NodeJS instead of Rust. Particularly, source mapping, code execution control, EVM hooks/interaction with the EVM, and a VSCode debugging plugin written in Typescript have already been completed.\footnote{Andrew Plaza, Sean Batzel \textit{VSCode Plugin} https://github.com/ethdbg/vscode-ethdbg}
+
+The choice to use Rust for this project came out of concerns for performance, maintainability, documentation, and API usability. NodeJS proved to be a poor choice in all three of these aspects, while Rust excels at these three areas. Rust provides several important advantages in terms of including intuitive IPC features, data structures, library management, package management, along with testing and documentation tooling. I am also fairly confident in my experience with Rust, having worked with a number of previous projects written in the language, including an Open Source Operating system and Linux Window Manager. Therefore, much of the first phase of the project will simply include porting the existing and working NodeJS debug library logic to Rust.
+
+Once this is complete, work on implementing the missing features from the first version of the debug library will begin. This includes implementing functions which take further advantage of the execution control already present in the first version of the debugger. These are some of the basic functions required for debugging, such as 'next', 'continue', 'kill', and 'step into'. In addition to this, the inspection and outputting of variables, and a REPL written in Rust must be completed.
+
+Once these features are complete, a simple command line interface can be created, and the VSCode plugin will have to be modified to work with the new IPC interface.
+
+Considering the time-frame of this project, and my previous experience writing applications in Rust, it seems very likely the project will be completed in the time given.
+ 
+\end{document}
