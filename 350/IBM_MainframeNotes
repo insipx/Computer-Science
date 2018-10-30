@@ -1,0 +1,114 @@
+IBM Mainframes and their uses today
+
+    - BS: CIS
+    - Masters: Software Engineering
+    - started IBM full-time in 2016, Pughkeepsie, NY
+    - Mainframe ~ 50years old
+        - first mainframe: 1964 April. IBM System 360
+            - Capable of 13,300 decimal operations per second
+            - Programmed via COBOL, RPG, Assembler, RPG, Fortran, PL/I
+            - Started at $133,000 ($1,085,000 today)
+        - IBM z14 : July 2017
+            - Runs at 5.2GHz
+                - Fastest microprocessor by clockspeed
+                    - not a major part of how a mainframe works, but fun fact
+                - can do up to 12 bil encrypted txs per day
+                - 1,000 concurrent NoSQL databases
+                - 2 million docker containers
+            - Operating Systems
+                - z/OS
+                    - Mainframe-exclusive operating system
+                    - emerged as *the* operating system for ibm mianframes
+                    - 99.99% uptime for 97% of enterprise users (2015 survey)
+                        - very stable; only way to knockout is something like state-wide power outage
+                    - App-level compatibility maintained for all applications
+                - z/TPF
+                    - Transaction Processing Facility
+                    - Real-Time operating system
+                    - built for extreme volume and reliability
+                        - Even more uptime/reliability
+                - Linux on IBM Z
+                    - Linux compiled for z/Architecture
+                    - runs natively on mainframe hardware
+
+What is z/OS?
+    - Complex operating system with many components
+    - JES (Job Entry Subsystem)
+        - Mainframes built to do work
+        - how to do work?
+            - build up huge instructions/datasets
+            - line it up in a file called a 'job'
+            - JES handles this
+    - NFS (Network File System)
+        - need to know where data/files are at all times across network
+    - USS (z/OS Unix System Services)
+    - z/OSMF (z/OS Management Facility)
+        - People still use terminals as the main way to interact with Mainframe
+        - trying to move to newer form of UI
+    - IOS (Input/Output Supervisor)
+        - Anytime need to pull data off an accessory device, IOS handles that
+    - Contents Supervisor
+        - like a 'God in the Cloud' that sits above everything that happens in zBOX
+        - can see everything thats going on,
+    - RACF (Resource Access Control Facility - priced product)
+        - Security Component of Z
+        - priced product; everything else in above list is included in z/OS
+            - RACF is not, need to pay for it and developed by IBM
+
+Top 6 industries using mainframe technology
+    - Banking
+        - Account Transactions, ATM Operations
+    - Insurance
+        - Customer data, claims processing
+    - Healthcare
+        - Patient records, prescriptions. Things like this need to be processed quickly
+    - Government
+        - "They Do Really Cool Stuff"
+    - Aviation
+        - flight bookings/schedule -- part of what built the tech in the first place
+    - Retail
+        - Purchases, refunds, other transactions, etc etc
+
+What can Mainframes Do Today
+    - Pervasive Encryption
+        - enabled by z14 hardware
+        - all mainframe data encrypted in-flight and at-rest
+    - Multi-Factor Authentication
+        - same idea applies with multi factor authentication on mainframe
+        - Token Identification and more
+        - integrated into 40-year-old products!
+    - Parallel Sysplex
+        - link multiple mainframes together as one "system" image
+        - Data sharing + parallel computing = high availability
+        - data redundancy - many data centers around US
+        - Enabled via XCF - Cross System Coupling Facility
+        - Introduced 1994
+        - Run the world's biggest companies
+            - 92 of largest 100 banks
+            - top 10 largest insurance companies
+            - 23 of the top 25 airlines
+            - 23 of the top 25 retailers
+    - What challenges does the mainframe face?
+        - Dwindling Skill Base
+        - Highly Skilled veterans at or near retirement age
+            - becoming mainframe expert takes decades
+        - lack of fresh faces
+            - mainframes struggle to compete with 'cooler' platforms
+            - Formal mainframe education is limited
+            - Hiring increasing across the industry, ut more is needed
+        - increasing complexity
+            - nothing gets easier to use and maintain
+
+Lou's Recommendations on mainframe
+    - Terminal Talk Podcast
+        - Hosted by Jeff Bisti and Frank De Gilio
+            - recoreded on-site in poughkeepsie
+    - IBM Knowledge Center
+        - Repository of IBM Z documentation and information
+        - Programmer's guides, Administrator's manuals, and more
+    - Books!
+        - IBM Redbooks: Introduction to the New Mainframe
+        - Mainframe Basics for Security Professionals
+    - lsbalzan@us.ibm.com -- Lou Balzani
+
+
