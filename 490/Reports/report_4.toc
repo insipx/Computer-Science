@@ -1,36 +1,32 @@
 \contentsline {section}{\numberline {0.1}Introduction}{2}
 \contentsline {section}{\numberline {0.2}Levels}{2}
 \contentsline {subsection}{\numberline {0.2.1}High Level System Model}{3}
-\contentsline {subsection}{\numberline {0.2.2}CLI Options: TUI Mode, JSON-RPC Mode}{4}
+\contentsline {subsection}{\numberline {0.2.2}User Interface Modes}{4}
 \contentsline {subsubsection}{\numberline {0.2.2.1}Abstract Specification}{4}
-\contentsline {subsubsection}{\numberline {0.2.2.2}Interface Design}{4}
-\contentsline {subsubsection}{\numberline {0.2.2.3}Component Design: TUI Mode}{4}
-\contentsline {subsubsection}{\numberline {0.2.2.4}Component Design: JSON-RPC Mode}{4}
-\contentsline {subsection}{\numberline {0.2.3}Debugger Core}{4}
+\contentsline {subsubsection}{\numberline {0.2.2.2}Algorithm Design}{4}
+\contentsline {subsubsection}{\numberline {0.2.2.3}Component: TUI Mode}{4}
+\contentsline {subsubsection}{\numberline {0.2.2.4}Component: JSON-RPC Mode}{4}
+\contentsline {subsection}{\numberline {0.2.3}Debugger Core, EDB}{4}
 \contentsline {subsubsection}{\numberline {0.2.3.1}Abstract Specification}{4}
 \contentsline {subsubsection}{\numberline {0.2.3.2}Interface Design}{4}
-\contentsline {subsubsection}{\numberline {0.2.3.3}Algorithm Design}{4}
-\contentsline {subsubsection}{\numberline {0.2.3.4}Data Structure Design}{4}
-\contentsline {subsection}{\numberline {0.2.4}Emulator, Execution Control}{4}
-\contentsline {subsubsection}{\numberline {0.2.4.1}Abstract Specification}{4}
-\contentsline {subsubsection}{\numberline {0.2.4.2}Interface Design}{4}
-\contentsline {subsubsection}{\numberline {0.2.4.3}Algorithm Design}{4}
-\contentsline {subsection}{\numberline {0.2.5}CodeFile}{4}
-\contentsline {subsubsection}{\numberline {0.2.5.1}Abstract Specification}{4}
-\contentsline {subsubsection}{\numberline {0.2.5.2}Interface Design}{4}
-\contentsline {subsubsection}{\numberline {0.2.5.3}}{4}
-\contentsline {subsection}{\numberline {0.2.6}AST Traversal}{4}
-\contentsline {subsubsection}{\numberline {0.2.6.1}Abstract Specification}{4}
-\contentsline {subsubsection}{\numberline {0.2.6.2}Interface Design}{4}
-\contentsline {subsection}{\numberline {0.2.7}Contracts}{4}
-\contentsline {subsubsection}{\numberline {0.2.7.1}Abstract Specification}{4}
-\contentsline {subsubsection}{\numberline {0.2.7.2}Interface Design}{4}
-\contentsline {subsection}{\numberline {0.2.8}Source Mapping}{4}
-\contentsline {subsubsection}{\numberline {0.2.8.1}Abstract Specification}{4}
-\contentsline {subsubsection}{\numberline {0.2.8.2}Interface Design}{4}
-\contentsline {subsection}{\numberline {0.2.9}Compiler}{4}
-\contentsline {subsubsection}{\numberline {0.2.9.1}Abstract Specification}{4}
-\contentsline {subsubsection}{\numberline {0.2.9.2}Interface Design}{4}
-\contentsline {section}{\numberline {0.3}User Interface}{4}
-\contentsline {section}{\numberline {0.4}Help System}{5}
-\contentsline {section}{\numberline {0.5}}{5}
+\contentsline {subsubsection}{\numberline {0.2.3.3}Component: Address Cache}{5}
+\contentsline {subsubsection}{\numberline {0.2.3.4}Component: Breakpoints}{6}
+\contentsline {subsection}{\numberline {0.2.4}Emulator, Execution Control}{6}
+\contentsline {subsubsection}{\numberline {0.2.4.1}Abstract Specification}{6}
+\contentsline {subsubsection}{\numberline {0.2.4.2}Interface Design}{7}
+\contentsline {subsubsection}{\numberline {0.2.4.3}Algorithm Design}{7}
+\contentsline {subsubsection}{\numberline {0.2.4.4}Data Strucure Design}{7}
+\contentsline {subsubsection}{\numberline {0.2.4.5}Component: Persistant Account State}{7}
+\contentsline {subsubsection}{\numberline {0.2.4.6}Component: Opcode and Instruction Mappings}{7}
+\contentsline {subsection}{\numberline {0.2.5}CodeFile}{7}
+\contentsline {subsubsection}{\numberline {0.2.5.1}Abstract Specification}{7}
+\contentsline {subsubsection}{\numberline {0.2.5.2}Interface Design}{7}
+\contentsline {subsubsection}{\numberline {0.2.5.3}Component: Contract File}{7}
+\contentsline {subsubsection}{\numberline {0.2.5.4}Component: Contract}{7}
+\contentsline {subsubsection}{\numberline {0.2.5.5}Component: AST Traversal}{7}
+\contentsline {subsubsection}{\numberline {0.2.5.6}Component: Source Mapping}{7}
+\contentsline {subsubsection}{\numberline {0.2.5.7}Component: Compiler}{7}
+\contentsline {subsubsection}{\numberline {0.2.5.8}Component: Variable Decoding}{7}
+\contentsline {section}{\numberline {0.3}User Interface}{7}
+\contentsline {section}{\numberline {0.4}Help System}{8}
+\contentsline {section}{\numberline {0.5}}{8}
