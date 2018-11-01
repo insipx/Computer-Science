@@ -3,7 +3,7 @@
 \usepackage{listings, listings-rust}
 \usepackage{titlesec}
 \setcounter{secnumdepth}{4}
-\usetikzlibrary{fit}
+\usetikzlibrary{fit,arrows,automata}
 \usepackage[toc,section=section]{glossaries}
 
 \tikzset{
@@ -200,7 +200,7 @@
         \node[draw,text width=4.2cm] (Object State) at (0, 1) {\textbf{Object State:}\\
                 - Ethereum Account State\\
                 - SputnikVM\\
-                - Positions\\
+                - Opcode Positions[]\\
                 - (Transaction,Block)\\
                 - Client\\};
         \draw[->,draw] (Block) to (Emulator);
@@ -217,9 +217,65 @@
         The interface of the Debugger and Emulator level hold many similiarites. For instance, the Emulator is able to `step\_forward`, `step\_back`, and `run\_until` a certain point in execution has been reached. However, instead of stepping over lines in source code, functions at the Emulator level deal only with stepping instructions in the bytecode. Therefore, 'step\_forward' means execute the next instruction in the bytecode array, and 'step\_back' means to step back to the overall state before the current instruction had been executed. Functions to peek at the current state of the Virtual Machine are also exposed, in order to faciliate variable-decoding at in the Debugger level.
 
     \subsubsection{Algorithm Design}
-    \subsubsection{Data Strucure Design}
+
+\begin{figure}[!h]
+\centering
+    \begin{tikzpicture}[->,>=stealth',shorten >=2pt,auto,node distance=4cm,semithick]
+        \tikzstyle{every state}=[fill=purple,draw=none,text=white]
+
+        \node[initial,state] (A)                    {};
+        \node[state]         (B) [above right of=A] {\footnotesize step\_forward};
+        \node[state]         (D) [below right of=A] {\footnotesize step\_back};
+        \node[state]         (C) [right of=B]       {\footnotesize push position};
+        \node[state]         (E) [below of=C]       {\footnotesize update storage};
+        \node[state]         (F) [below of=E]       {\footnotesize pop position};
+        \node[state]         (G) [right of=E]       {\footnotesize restart evm};
+
+    \path   (A) edge              node {} (B)
+                edge              node {} (D)
+            (B) edge              node {} (C)
+            (C) edge              node {} (E)
+            (D) edge              node {} (F)
+            (E) edge              node {}       (A)
+            (F) edge              node {} (G)
+            (G) edge              node {} (E);
+                %edge              node {0,1,R} (A);
+            % (E) edge [bend left]  node {1,0,R} (A);
+    \end{tikzpicture}
+\end{figure}
+
+        There are two main parts of the Emulators Algorithm Design: In-Memory representation of Non-Volatile Storage, and states of the EVM.
+        \newpage
+
+    \vspace{0.5cm}
+
+    \textbf{Emulator States}:
+
+    \vspace{0.5cm}
+
+        The Emulator is required to have the ability to reference all state of the Ethereum Virtual Machine of executing code during any point in execution. This means that the Stack and Memory for every line in source code must be stored. This is done in order to faciliate stepping through all possible points in execution (including stepping backward). The easiest way of doing so would be to save a copy of the EVM Stack, Memory, and Program Counter in a as a tuple in a dynamically-sized stack. The top of the stack would be the previous state of the Ethereum Virtual Machine. If a user needs to step back, then this state-stack could be popped and the resulting states in the EVM reverted. This, however, may require a large amount of memory depending on the size of the program, and would increase considerably if the Ethereum Smart Contract were to call an external library. This is because an external library requires its own and entirely seperate EVM Stack, Memory (CITE ETHEREUM YELLOW PAPER) (As per the specification in the Ethereum Yellow Paper). The actual execution of smart contracts, however, is inexpensive. Therefore, in order to decrease the memory-footprint of the Emulator, only the opcode-position in the bytecode-array of the corresponding line in source code is stored by the Emulator in a stack. If a user wishes to step back, then, the current EVM state is first totally wiped, the positions-vector popped, and the EVM re-run to the corresponding opcode position that was popped from the positions vector.
+
+        \vspace{0.5cm}
+
+        \textbf{Non-Volatile Storage}
+
+        \vspace{0.5cm}
+
+            A user may want to chain a second (or more) transactions after executing one transaction that acts on the state from the first transaction. Therefore, the state of non-volatile storage is kept track of on a per-contract basis that is seperate from the state stored in the Ethereum Test Node. If the user needs to step back, the state changed only from the currently-executing contract is wiped and re-populated along with the EVM state. This state is kept in a nested hashmap, where the first level of the hashmap is a mapping between account addresses (160bit hashes) and a hashmap. The second level is a mapping between unsigned-256bit integers and unsigned-256bit integer. This second level is the 'Non-Volatile' storage for a particular smart contract identified by an account address at the first level.
+
+            % IN GLOSSARY: Non-Volatile storage is used for storing arbitrary values on the Ethereum Blockchain.
+
     \subsubsection{Component: Persistant Account State}
+        In order to faciliate a clean test environment for users wishing to test code, there must be an aspect of seperation from the verbatim Ethereum Test Node State. In other words, the debugger must present an environment where the user may manipulate and mutate their program without having to worry about affecting any change in the node that is running locally, and before committing the changes to the node. This is done in sequentially:
+        \begin{enumerate}
+            \item Pull the current state from the local Ethereum Test Node before execution of the user's program
+            \item Handle state updates originating from users program that is being debugged within the debugger
+            \item Allow user to run other functions/programs/mutate the state further based based on the previously debugged program (chaining execution)
+            \item Provide an option to commit all state changes to test node if debugging is finished
+        \end{enumerate}
+
     \subsubsection{Component: Opcode and Instruction Mappings}
+        A requirement of the emulator is to handle the current position in the bytecode that is being executed.
 
 \subsection{CodeFile}
     \subsubsection{Abstract Specification}
