@@ -1,4 +1,3 @@
-`include "mux.v"
 
 /**
 * Andrew Plaza
