@@ -1,0 +1,16 @@
+Script started on 2018-11-30 13:35:06-05:00
+]0;insi@rezz:~/Projects/Personal/Computer-Science/350/ALU[insi@rezz ALU]$ iverilog -o alu_test alu_test.v
+]0;insi@rezz:~/Projects/Personal/Computer-Science/350/ALU[insi@rezz ALU]$ ls
+8bit_rca.v  alu.v  alu_test  alu_test.v  mux.v	mux_test.v  rotate_shifter.v  test_rotate_shifter.v  typescript
+]0;insi@rezz:~/Projects/Personal/Computer-Science/350/ALU[insi@rezz ALU]$ vvp alu_test
+                   0 a=xxxxxxxx, b=xxxxxxxx, out=xxxxxxxx
+                  10 a=00011001, b=00011110, out=00110111
+                  20 a=00011110, b=00011001, out=00000101
+                  30 a=00001010, b=00000101, out=01000001
+                  40 a=00001111, b=00001100, out=00000011
+                  50 a=00010101, b=00001100, out=00000100
+                  60 a=00001100, b=00000101, out=00001101
+]0;insi@rezz:~/Projects/Personal/Computer-Science/350/ALU[insi@rezz ALU]$ exit
+exit
+
+Script done on 2018-11-30 13:35:16-05:00
