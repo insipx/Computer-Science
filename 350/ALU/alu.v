@@ -4,7 +4,7 @@
 * VeriLog Assignment 3: Algorithmic Logic Unit
 */
 
-`include "mux.v"
+`include "./mux.v"
 
 module alu;
 
